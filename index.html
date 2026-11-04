@@ -29,7 +29,7 @@ const petLevel=1+Math.floor(s.minutes/180),petProgress=(s.minutes%180)/180*100;
 $('petBar').style.width=petProgress+'%';$('petText').textContent='小貓 Lv.'+petLevel+' · 陪伴 '+Math.floor(s.minutes)+' 分鐘 · 小屋 Lv.'+s.home+' · 下次成長還需 '+Math.ceil(180-s.minutes%180)+' 分鐘';
 $('feed').textContent='升級小屋 ('+homeCost+' 金幣)';$('feed').disabled=s.coins<homeCost;
 $('achList').innerHTML=[['帶薪呼吸 1 小時',s.minutes>=60],['第一個寶箱',s.opened>=1],['生存 10 小時',s.minutes>=600],['小貓長大了',petLevel>=2],['武器大師',s.weapon>=5],['一週生存王',s.minutes>=2700]].map(([name,done])=>'<li>'+(done?'已達成 · ':'尚未解鎖 · ')+name+'</li>').join('');}
-$('attack').addEventListener('click',()=>{settle();const cost=s.weapon*60;if(s.coins<cost)return;s.coins-=cost;s.weapon++;store();notice('武器升到 Lv.'+s.weapon+'！每次通關額外獲得 '+(s.weapon-1)*5+' 金幣。');update()});
+$('attack').addEventListener('click',()=>{settle();const cost=s.weapon*60;if(s.coins<cost)return;s.coins-=cost;s.weapon++;store();notice('武器升到 Lv.'+s.weapon+'！之後每分鐘可獲得更多金幣。');update()});
 $('chest').addEventListener('click',()=>{settle();if(Math.floor(s.minutes/90)<=s.opened)return;s.opened++;const reward=30+s.weapon*10;s.coins+=reward;store();notice('寶箱開啟！獲得 '+reward+' 枚金幣。');update()});
 $('feed').addEventListener('click',()=>{settle();const cost=s.home*90;if(s.coins<cost)return;s.coins-=cost;s.home++;store();update()});
 $('demo').addEventListener('click',()=>alert('每個平日 08:00–17:00 自動累積金幣與陪伴時間。每 30 分鐘通關，每 90 分鐘可開寶箱，每 180 分鐘小貓成長。關閉網頁也能累積，週末不計時。'));
