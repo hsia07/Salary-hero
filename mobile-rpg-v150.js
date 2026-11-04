@@ -44,7 +44,7 @@ body>header{display:none!important}
 #home .v150-dock button{padding:8px 1px;font-size:11px;min-width:0}
 #home .v150-dock span{display:block;font-size:23px}
 #home .v150-version{text-align:center;font-size:10px;opacity:.7;margin-top:9px}
-body>.tabs{display:none!important}
+body>.tabs{display:none!important} body:has(#home:not(.active))>.tabs{display:flex!important} #home .v150{isolation:isolate} #home .v150-battle:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#f7cb7b12 1px,transparent 1px),linear-gradient(#e3ac6a0c 1px,transparent 1px);background-size:48px 48px;pointer-events:none} #home .v150-panel-title{letter-spacing:1px} #home .v150-dock button:active,#home .v150-actions button:active{transform:translateY(2px);filter:brightness(1.2)}
 @media(max-width:390px){#home .v150-brand{font-size:28px}#home .v150-battle{height:340px}}
 `;document.head.append(style);
 const root=document.createElement('div');root.className='v150';root.innerHTML=`
@@ -57,14 +57,14 @@ const root=document.createElement('div');root.className='v150';root.innerHTML=`
 <nav class="v150-dock"><button data-nav="home"><span>🏠</span>首頁</button><button data-nav="battle"><span>⚔️</span>副本</button><button data-nav="bag"><span>🎒</span>背包</button><button data-nav="forge"><span>⚒️</span>鍛造</button><button data-nav="more"><span>⚙️</span>更多</button></nav>
 <div class="v150-version">V15.0 · 手機 RPG 首頁重製</div>`;
 home.prepend(root);$('#v150Stage',root).append(stage);
-const hero=$('#heroActor svg',stage);if(hero){$('#v150Idle',root).prepend(hero.cloneNode(true));$('#v150Gear',root).append(hero.cloneNode(true))}
+const hero=$('#heroActor svg',stage);if(hero){$('#v150Idle',root).prepend(hero.cloneNode(true));$('#v150Gear',root).append(hero.cloneNode(true))} const equipArt=$('.v135-equip-svg svg')||$('#heroEquipmentArt svg')||$('#heroPreview svg');if(equipArt)$('#v150Gear',root).replaceChildren(equipArt.cloneNode(true));
 function nav(id){const b=document.querySelector('.tabs [data-tab="'+id+'"]');if(b)b.click()}
 root.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>nav(b.dataset.nav));
-root.querySelectorAll('[data-salary]').forEach(b=>b.onclick=()=>{const toggle=$('#adventureJournalToggle'),journal=$('#adventureJournal');if(journal?.hidden)toggle?.click();if(journal){journal.hidden=false;journal.scrollIntoView({behavior:'smooth'})}else nav('more')});
-$('#v150Go',root).onclick=()=>{const fight=$('#fight');if(fight)fight.click();else nav('battle')};
-$('#v150Auto',root).onclick=()=>$('#gameAuto')?.click();
-$('#v150Speed',root).onclick=()=>$('#worldSpeedBtn')?.click();
-function sync(){for(const [a,b]of [['earned','v150Today'],['weekEarned','v150Week'],['monthEarned','v150Month']]){const x=$('#'+a),y=$('#'+b,root);if(x&&y)y.textContent=x.textContent}const auto=$('#gameAuto')?.textContent||'';const on=!/OFF|關閉|停止/.test(auto);$('#v150Auto',root).textContent=on?'⚔ 自動 ON':'⚔ 自動 OFF';$('#v150Auto',root).setAttribute('aria-pressed',String(on));$('#v150Speed',root).textContent='⏩ ×'+(window.salaryHeroBattleSpeed||1);const level=$('#heroLevel')||$('#level');if(level)$('#v150Level',root).textContent='社畜勇者 · '+level.textContent;}
+root.querySelectorAll('[data-salary]').forEach(b=>b.onclick=()=>{const sheet=$('.v135-salary-sheet'),btn=$('.v134-money button');if(sheet){sheet.hidden=false;return}if(btn){btn.click();return}nav('more')});
+$('#v150Go',root).onclick=()=>{const fight=$('#fight');if(fight){fight.click();return}nav('battle')};
+$('#v150Auto',root).onclick=()=>{const auto=$('#gameAuto');if(auto)auto.click();else nav('battle')};
+$('#v150Speed',root).onclick=()=>{const speed=$('#worldSpeedBtn');if(speed)speed.click();else nav('battle')};
+function sync(){for(const [a,b]of [['earned','v150Today'],['weekEarned','v150Week'],['monthEarned','v150Month']]){const x=$('#'+a),y=$('#'+b,root);if(x&&y)y.textContent=x.textContent}const auto=$('#gameAuto')?.textContent||'';const on=/ON|開啟|自動中/.test(auto)&&!/OFF|關閉|停止/.test(auto);$('#v150Auto',root).textContent=on?'⚔ 自動 ON':'⚔ 自動 OFF';$('#v150Auto',root).setAttribute('aria-pressed',String(on));$('#v150Speed',root).textContent='⏩ ×'+(window.salaryHeroBattleSpeed||1);const level=$('#heroLevel')||$('#level');if(level)$('#v150Level',root).textContent='社畜勇者 · '+level.textContent;const gear=$('.v135-equip-svg svg')||$('#heroEquipmentArt svg')||$('#heroPreview svg');if(gear){const dest=$('#v150Gear',root),old=dest?.querySelector('svg');if(dest&&(!old||old.outerHTML!==gear.outerHTML))dest.replaceChildren(gear.cloneNode(true))}const coins=$('#coins')||$('#gold');if(coins)$('#v150Coins',root).textContent=coins.textContent;const gems=$('#gems')||$('#diamonds');if(gems)$('#v150Gems',root).textContent=gems.textContent;}
 sync();setInterval(sync,1200);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
