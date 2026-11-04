@@ -45,6 +45,34 @@ body>header{display:none!important}
 #home .v150-dock span{display:block;font-size:23px}
 #home .v150-version{text-align:center;font-size:10px;opacity:.7;margin-top:9px}
 body>.tabs{display:none!important} body:has(#home[hidden])>.tabs,body:has(#home[style*='display: none'])>.tabs{display:flex!important} #home .v150{isolation:isolate} #home .v150-battle:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#f7cb7b12 1px,transparent 1px),linear-gradient(#e3ac6a0c 1px,transparent 1px);background-size:48px 48px;pointer-events:none} #home .v150-panel-title{letter-spacing:1px} #home .v150-dock button:active,#home .v150-actions button:active{transform:translateY(2px);filter:brightness(1.2)}
+
+/* V15.2 cinematic scene treatment */
+#home .v150{background:radial-gradient(ellipse at 12% 23%,#b47a4638,transparent 36%),radial-gradient(ellipse at 86% 44%,#7d4a8b44,transparent 42%),linear-gradient(160deg,#261b33,#171629 80%);box-shadow:inset 0 0 80px #05020d}
+#home .v150-brand{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(31px,9vw,44px);background:linear-gradient(#fff8ce 8%,#f9d58b 38%,#b96e30 78%,#fff2b7);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 1px #431d24)}
+#home .v150-panel{position:relative;border:2px solid #bd7b41;box-shadow:0 0 0 1px #ffdc8a66,inset 0 0 0 1px #ffca6d44,0 10px 26px #0b0816b0}
+#home .v150-panel:before,#home .v150-panel:after{content:'✦';position:absolute;top:-7px;z-index:6;color:#ffe0a2;font-size:19px;text-shadow:0 0 8px #ff9b2d}
+#home .v150-panel:before{left:4px}#home .v150-panel:after{right:4px}
+#home .v150-panel-title{border-bottom:1px solid #d5a15e;background:linear-gradient(90deg,#251b2b,#79503f 50%,#251b2b);box-shadow:0 3px 8px #130c1c88}
+#home .v150-battle{overflow:hidden;background:linear-gradient(180deg,#0f1735aa,#4d3a5c66 64%,#2a1b32bb),radial-gradient(ellipse at 60% 34%,#ffcb9355,transparent 45%),url("./art/world-guild-v12.svg") center 60%/cover no-repeat}
+#home .v150-battle:after{content:'';position:absolute;left:-20%;right:-20%;bottom:-22%;height:37%;border-radius:50%;background:radial-gradient(ellipse,#b89a72a0,#41344b66 65%,transparent 70%);pointer-events:none}
+#home .v150-battle .hero-actor{z-index:3!important;filter:drop-shadow(0 8px 9px #0008) drop-shadow(0 0 12px #ffcb6566);animation:v152Hero 2.2s ease-in-out infinite}
+#home .v150-battle .mob-actor{z-index:3!important;filter:drop-shadow(0 8px 9px #0009) drop-shadow(0 0 10px #ed72b555);animation:v152Enemy 2.8s ease-in-out infinite}
+@keyframes v152Hero{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}@keyframes v152Enemy{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+#home .v150-mini{background:linear-gradient(180deg,#3b3456b3,#2b253f9c),url("./art/world-guild-v12.svg") center/cover}
+#home .v150-mini:after{content:'Z z z';position:absolute;top:12px;left:12px;font-family:Georgia,serif;font-size:17px;font-weight:bold;color:#fff1cb;letter-spacing:5px;transform:rotate(-12deg);text-shadow:0 2px 5px #0d0a1e}
+#home .v150-mini>svg{transform:rotate(-20deg) translate(-10px,14px) scale(.87);filter:drop-shadow(0 8px 5px #0008)}
+#home .v150-cat{filter:drop-shadow(0 4px 5px #0009);animation:v152Cat 3s ease-in-out infinite}
+@keyframes v152Cat{50%{transform:translateY(-3px)}}
+#home .v150-gear{background:radial-gradient(ellipse at center,#a3827355,#2d2644 70%);position:relative}
+#home .v150-gear:before{content:'';position:absolute;width:70%;height:23%;bottom:8px;border-radius:50%;border:2px solid #edc58c88;box-shadow:0 0 18px #ffc27666,inset 0 0 20px #efad6b55;transform:rotateX(55deg)}
+#home .v150-gear svg{position:relative;z-index:1;filter:drop-shadow(0 3px 12px #f7b85d66)}
+#home .v150-primary{position:relative;background:linear-gradient(180deg,#f9ce78 0%,#b76c38 13%,#923f35 75%,#5e253a);border:3px solid #ffdfa1;box-shadow:0 0 0 3px #663a2c,0 0 22px #d99056aa,inset 0 3px #fff3bb77;letter-spacing:2px}
+#home .v150-primary:active{transform:scale(.98)}
+#home .v150-dock{grid-template-columns:repeat(5,minmax(0,1fr));position:sticky;bottom:0;z-index:15;background:#21172de8;backdrop-filter:blur(12px);border:1px solid #9b6c4b;border-radius:15px;padding:5px;box-shadow:0 -5px 18px #09061199}
+#home .v150-dock button{border:0;background:transparent;font-size:10px}
+#home .v150-dock button:first-child{background:linear-gradient(#8e5738,#543046);border:1px solid #e7b76e}
+@media(prefers-reduced-motion:reduce){#home .v150-battle .hero-actor,#home .v150-battle .mob-actor,#home .v150-cat{animation:none!important}}
+
 @media(max-width:390px){#home .v150-brand{font-size:28px}#home .v150-battle{height:340px}}
 `;document.head.append(style);
 const root=document.createElement('div');root.className='v150';root.innerHTML=`
@@ -55,7 +83,7 @@ const root=document.createElement('div');root.className='v150';root.innerHTML=`
 <button class="v150-primary" id="v150Go">⚔ 出擊戰鬥</button>
 <div class="v150-grid"><section class="v150-panel"><div class="v150-panel-title">☕ 上班掛機中</div><div class="v150-mini" id="v150Idle"><span class="v150-cat">🐈</span></div><div class="v150-actions"><button data-salary>💰 薪資明細</button></div></section><section class="v150-panel"><div class="v150-panel-title">🛡 裝備預覽</div><div class="v150-gear" id="v150Gear"></div><div class="v150-actions"><button data-nav="bag">背包</button><button data-nav="forge">鍛造</button></div></section></div>
 <nav class="v150-dock"><button data-nav="home"><span>🏠</span>首頁</button><button data-nav="battle"><span>⚔️</span>副本</button><button data-nav="bag"><span>🎒</span>背包</button><button data-nav="forge"><span>⚒️</span>鍛造</button><button data-nav="more"><span>⚙️</span>更多</button></nav>
-<div class="v150-version">V15.0 · 手機 RPG 首頁重製</div>`;
+<div class="v150-version">V15.2 · 場景與角色演出升級</div>`;
 home.prepend(root);$('#v150Stage',root).append(stage);
 const hero=$('#heroActor svg',stage);if(hero){$('#v150Idle',root).prepend(hero.cloneNode(true));$('#v150Gear',root).append(hero.cloneNode(true))} const equipArt=$('.v135-equip-svg svg')||$('#heroEquipmentArt svg')||$('#heroPreview svg');if(equipArt)$('#v150Gear',root).replaceChildren(equipArt.cloneNode(true));
 function nav(id){const b=document.querySelector('.tabs [data-tab="'+id+'"]');if(b){b.click();window.scrollTo({top:0,behavior:'smooth'})}}
