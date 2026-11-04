@@ -1,0 +1,46 @@
+{
+  "version": "0.6.0",
+  "title": "薪水勇者美術整合包",
+  "status": "reference-and-runtime-map",
+  "note": "概念圖裁切僅供美術參考，不可當作透明角色或動畫圖集。現有 SVG 為可執行過渡素材。",
+  "reference": "art/reference/salary-hero-v6-concept.png",
+  "runtime": {
+    "background": "art/enchanted-office.svg",
+    "hero": "art/hero-idle.svg",
+    "minion": "art/paper-minion.svg",
+    "boss": "art/printer-boss.svg",
+    "equipment": {
+      "weapon": "art/equipment-weapon.svg",
+      "helmet": "art/equipment-helmet.svg",
+      "armor": "art/equipment-armor.svg",
+      "boots": "art/equipment-boots.svg",
+      "ring": "art/equipment-ring.svg",
+      "necklace": "art/equipment-necklace.svg"
+    }
+  },
+  "animationStates": {
+    "hero": [
+      "idle",
+      "attack",
+      "hurt",
+      "victory"
+    ],
+    "minion": [
+      "idle",
+      "hurt",
+      "defeat"
+    ],
+    "boss": [
+      "idle",
+      "attack",
+      "hurt",
+      "defeat"
+    ]
+  },
+  "future": [
+    "transparent PNG/WebP sprite atlases",
+    "skill effects",
+    "drop effects",
+    "mobile visual QA"
+  ]
+}
