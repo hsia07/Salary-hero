@@ -38,7 +38,7 @@ function settle(){const now=Date.now();if(!s.seeded){s.seeded=true;s.last=now;lo
 function powerOf(it){if(!it)return 0;return it.atk*2+it.def*1.5+it.hp*.28+(it.affix==='暴擊'?it.bonus:it.affix==='閃避'?it.bonus*.75:0)}
 function bestEquipmentPlan(){
  // Bounded beam search evaluates full character power, including overlapping set bonuses.
- const pool={};for(const slot of SLOTS){const all=[s.equipped[slot],...s.inventory.filter(it=>it&&it.slot===slot)].filter(Boolean);const ranked=[...all].sort((a,b)=>powerOf(b)-powerOf(a));const selected=ranked.slice(0,4);for(const it of all)if(setForItem(it)&&!selected.some(x=>x.id===it.id))selected.push(it);pool[slot]=[null,...selected.slice(0,14)]}
+ const pool={};for(const slot of SLOTS){const all=[s.equipped[slot],...s.inventory.filter(it=>it&&it.slot===slot)].filter(Boolean);const ranked=[...all].sort((a,b)=>powerOf(b)-powerOf(a));const selected=ranked.slice(0,4);if(s.equipped[slot]&&!selected.some(x=>x.id===s.equipped[slot].id))selected.push(s.equipped[slot]);for(const it of all)if(setForItem(it)&&!selected.some(x=>x.id===it.id))selected.push(it);pool[slot]=s.equipped[slot]?selected.slice(0,14):[null,...selected.slice(0,14)]}
  let beam=[{eq:{},score:0}];for(const slot of SLOTS){const next=[];for(const state of beam)for(const it of pool[slot]){const eq={...state.eq,[slot]:it},score=stats(eq).power;next.push({eq,score})}next.sort((a,b)=>b.score-a.score);beam=next.slice(0,90)}
  const current=stats().power,best=beam[0];if(!best||best.score<=current+.00001)return [];
  return SLOTS.map(slot=>({slot,it:best.eq[slot],old:s.equipped[slot]})).filter(x=>x.it&&(!x.old||x.it.id!==x.old.id))
