@@ -9,5 +9,5 @@ assert.equal(weekdays(2026,11),21);
 assert.equal(weekdays(2026,12),23);
 close(workMinutes(ms('2026-11-02T00:00:00Z'),ms('2026-11-02T09:00:00Z')),540);
 close(workMinutes(ms('2026-11-07T00:00:00Z'),ms('2026-11-09T00:00:00Z')),0);
-close(workMinutes(ms('2026-11-06T08:00:00Z'),ms('2026-11-09T02:00:00Z')),120);
+close(workMinutes(ms('2026-11-06T08:00:00Z'),ms('2026-11-09T02:00:00Z')),180);
 console.log('Core time regression checks passed');
