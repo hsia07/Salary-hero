@@ -5,6 +5,10 @@ on:
       - 'art/v18/runtime/**'
       - 'art/v18/runtime-manifest.json'
       - 'scripts/validate-v18-assets.py'
+      - 'v18/art-loader.mjs'
+      - 'v18/art-loader.test.mjs'
+      - 'v18/battle-state.mjs'
+      - 'v18/battle-state.test.mjs'
       - '.github/workflows/v18-art-assets.yml'
   workflow_dispatch:
 jobs:
@@ -12,5 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate asset existence, format, size and transparency
+      - name: Run V18 engine and art loader regression tests
+        run: node --test v18/battle-state.test.mjs v18/art-loader.test.mjs
+      - name: Validate production asset package (expected to fail until assets are uploaded)
         run: python3 scripts/validate-v18-assets.py
