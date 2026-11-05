@@ -10,8 +10,12 @@ on:
         type: string
 permissions:
   contents: write
+concurrency:
+  group: v18-salaryman-art-import
+  cancel-in-progress: false
 jobs:
   import:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v18-salaryman-art-')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +28,7 @@ jobs:
           TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           if [ -z "$TAG" ]; then echo 'Missing release tag'; exit 1; fi
-          gh release download "$TAG" --pattern salaryman-frames.zip --dir /tmp
+          gh release download "$TAG" --pattern salaryman-frames.zip --dir /tmp --clobber
       - name: Validate archive and install 11 transparent frames
         run: |
           python -m pip install pillow
@@ -57,6 +61,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add art/v18/runtime/hero/frames/
           if git diff --cached --quiet; then
             echo "No frame changes"
