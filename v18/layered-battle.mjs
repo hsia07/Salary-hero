@@ -36,7 +36,7 @@ function paint(now){
  sprite(heroPose,heroX,175+bob,145,190);
  sprite(phase==='hurt'?'enemy.hurt':phase==='victory'?'enemy.defeat':'enemy.idle',enemyX,180,155,170);
  if(phase==='attack'&&t<.35)sprite('effects.slash',heroX+95,175,195,185);
- if(now-impactAt<280)sprite('effects.impact',enemyX-25,205,130,130);
+ if(now>=impactAt&&now-impactAt<280)sprite('effects.impact',enemyX-25,205,130,130);
  if(phase!=='idle'&&t>.52){phase='idle';phaseAt=now;}
  if(game.state.enabled&&now-lastTick>1100/game.state.speed){
   lastTick=now;strike(now);
