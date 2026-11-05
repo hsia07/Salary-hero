@@ -37,7 +37,7 @@ function paint(now){
  ctx.save();ctx.translate(0,officeH);ctx.scale(W/600,arenaH/420);
  const t=(now-phaseAt)/1000;
  const bob=Math.sin(now/280)*3;
- const heroX=phase==='attack'?125+Math.min(t/.18,1)*85:125;
+ const heroX=phase==='attack'?125+Math.min(Math.max(t,0)/.18,1)*85:125;
  const enemyX=now>=impactAt&&now-impactAt<250?400+Math.sin(now/32)*7:400;
  const heroPose=phase==='attack'?'hero.attack':phase==='victory'?'hero.victory':phase==='hurt'?'hero.hurt':'hero.idle';
  sprite(heroPose,heroX,175+bob,145,190);
@@ -51,12 +51,13 @@ function paint(now){
  }
 }
 function strike(now=performance.now()){
+ if(!art||now<defeatUntil)return;
  const prev=game.state.kills;
  game.tick({manual:true});
  const defeated=game.state.kills>prev;
  phase=defeated?'victory':'attack';
  phaseAt=now;impactAt=now+160;
- if(defeated)defeatUntil=now+450;
+ if(defeated)defeatUntil=now+600;
 }
 toggle.onclick=()=>game.setAuto(!game.state.enabled);
 speed.onclick=()=>game.setSpeed(game.state.speed===1?2:1);
