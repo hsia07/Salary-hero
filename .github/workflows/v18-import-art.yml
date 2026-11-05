@@ -30,7 +30,9 @@ jobs:
           test -s /tmp/v18-art/v18-art.zip
       - name: Safely import the 13 manifest assets
         run: python3 scripts/import-v18-art.py /tmp/v18-art/v18-art.zip
-      - name: Validate files
+      - name: Install image decoder
+        run: python3 -m pip install --user Pillow==11.3.0
+      - name: Validate production asset package
         run: python3 scripts/validate-v18-assets.py
       - name: Run V18 unit tests
         run: node --test v18/battle-state.test.mjs v18/art-loader.test.mjs
