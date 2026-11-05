@@ -12,7 +12,7 @@ main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{l
 .unit{position:absolute;bottom:19%;width:30%;text-align:center;transition:transform .16s;z-index:2}.unit.hero{left:11%}.unit.enemy{right:9%}
 .sprite{font-size:72px;filter:drop-shadow(0 6px 6px #000b);line-height:1.25;user-select:none}.unit.attack{transform:translateX(36px) scale(1.08)}.unit.hurt{filter:brightness(1.8) sepia(1) saturate(8) hue-rotate(310deg);transform:translateX(8px)}.unit.dead{opacity:0;transform:scale(.6)}@media(prefers-reduced-motion:reduce){.unit,.bar>i{transition:none!important}.damage.show{animation:none!important}}
 .bar{height:10px;border:1px solid #e6b36e;border-radius:20px;background:#1a1022;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,#52d982,#b8f26c);transition:width .15s}
-.unit b{display:block;font-size:12px;text-shadow:0 2px 3px #000}.damage{position:absolute;top:27%;right:17%;font-size:28px;font-weight:900;color:#ff787e;text-shadow:0 3px 0 #651733;opacity:0;z-index:3}.damage.show{animation:float .6s ease-out}
+.sprite img{width:100%;height:96px;object-fit:contain;display:block;filter:drop-shadow(0 6px 6px #0009)}.sprite.has-art .standin{display:none}.unit b{display:block;font-size:12px;text-shadow:0 2px 3px #000}.damage{position:absolute;top:27%;right:17%;font-size:28px;font-weight:900;color:#ff787e;text-shadow:0 3px 0 #651733;opacity:0;z-index:3}.damage.show{animation:float .6s ease-out}
 @keyframes float{0%{opacity:0;transform:translateY(18px)}25%{opacity:1}100%{opacity:0;transform:translateY(-25px)}}
 .controls{display:flex;gap:8px;flex-wrap:wrap}button{background:#503354;color:#fff1c5;border:1px solid #e5b569;border-radius:12px;padding:12px 15px;font-weight:700;cursor:pointer;flex:1}button:active{background:#785078}
 .stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
@@ -20,16 +20,20 @@ main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{l
 </style></head><body><main><h1>⚔️ 薪水勇者 V18.7</h1><small>獨立戰鬥引擎驗證｜不使用含角色的整張設計稿</small>
 <section class="panel"><div class="stats"><span id="wave">第 1 波</span><span id="gold">🪙 0</span><span id="kills">擊敗 0</span></div></section>
 <div class="arena" id="arena"><div class="window"></div><div class="floor"></div>
-<div class="unit hero" id="hero"><div class="sprite" aria-label="勇者佔位素材">🧑🏻‍🎤</div><b>勇者</b><div class="bar"><i id="heroHp" style="width:100%"></i></div></div>
-<div class="unit enemy" id="enemy"><div class="sprite" aria-label="印表機怪物佔位素材">🖨️</div><b id="enemyName">加班印表機</b><div class="bar"><i id="enemyHp" style="width:100%"></i></div></div>
+<div class="unit hero" id="hero"><div class="sprite" id="heroSprite" aria-label="勇者獨立精靈"><span class="standin">🧑🏻‍🎤</span></div><b>勇者</b><div class="bar"><i id="heroHp" style="width:100%"></i></div></div>
+<div class="unit enemy" id="enemy"><div class="sprite" id="enemySprite" aria-label="印表機怪物獨立精靈"><span class="standin">🖨️</span></div><b id="enemyName">加班印表機</b><div class="bar"><i id="enemyHp" style="width:100%"></i></div></div>
 <div class="damage" id="damage">-12</div></div>
 <section class="panel"><div class="controls"><button id="auto">自動戰鬥 ON</button><button id="speed">速度 ×1</button><button id="hit">手動攻擊</button><button id="equip">武器：初始劍</button></div><p id="log" aria-live="polite">開始戰鬥。角色目前是佔位圖示，尚非正式美術。</p></section>
-<p><small>驗收重點：場景不包含靜態角色；敵人 HP 歸零會消失並生成新敵人；停止自動戰鬥後不會自動攻擊。武器切換已影響真實攻擊力，但外觀仍是佔位圖示；正式精靈與場景美術尚待製作。</small></p>
+<p><small>驗收重點：場景不包含靜態角色；敵人 HP 歸零會消失並生成新敵人；停止自動戰鬥後不會自動攻擊。武器切換已影響真實攻擊力；對應透明素材未部署時顯示佔位圖示；正式精靈與場景美術尚待製作。</small></p>
 <p><a href="./v18-art-test.html?v=18.5">返回美術參考頁</a> · <a href="./?v=17.1">返回 V17 正式版</a></p></main>
 <script type="module">
 import {BattleState} from './v18/battle-state.mjs';
 const $=id=>document.getElementById(id);
-const game=new BattleState({onChange:render});const gear=['starter','iron','gold'];const gearNames={starter:'初始劍',iron:'鐵劍',gold:'黃金劍'};
+const game=new BattleState({onChange:render});
+const art={starter:'./art/v18/sprites/hero-starter.webp',iron:'./art/v18/sprites/hero-iron.webp',gold:'./art/v18/sprites/hero-gold.webp',enemy:'./art/v18/sprites/printer-idle.webp'};
+function useSprite(id,src){const host=$(id);const image=new Image();image.alt=id==='heroSprite'?'獨立勇者角色':'獨立印表機怪物';image.onload=()=>{host.querySelector('img')?.remove();host.prepend(image);host.classList.add('has-art')};image.onerror=()=>{image.remove();host.classList.remove('has-art')};image.src=src}
+useSprite('heroSprite',art.starter);useSprite('enemySprite',art.enemy);
+const gear=['starter','iron','gold'];const gearNames={starter:'初始劍',iron:'鐵劍',gold:'黃金劍'};
 let lastLog='';
 function render(s){
 $('wave').textContent='第 '+s.wave+' 波';$('gold').textContent='🪙 '+s.gold;$('kills').textContent='擊敗 '+s.kills;
@@ -44,7 +48,7 @@ else {$('log').textContent='對 '+s.enemy.name+' 造成 '+entry.damage+' 傷害'
 }
 $('auto').onclick=()=>game.setAuto(!game.state.enabled);
 $('speed').onclick=()=>game.setSpeed(game.state.speed===1?2:1);
-$('equip').onclick=()=>{const next=(gear.indexOf(game.state.hero.equipment)+1)%gear.length;game.equip(gear[next]);};
+$('equip').onclick=()=>{const next=(gear.indexOf(game.state.hero.equipment)+1)%gear.length;game.equip(gear[next]);useSprite('heroSprite',art[gear[next]]);};
 $('hit').onclick=()=>{if(game.state.enabled){$('log').textContent='自動戰鬥中；請先關閉自動戰鬥再手動攻擊。';return;}game.state.enabled=true;game.tick();game.state.enabled=false;game.emit()};
 let elapsed=0;let previous=performance.now();function frame(now){const delta=Math.min(100,now-previous);previous=now;if(game.state.enabled){elapsed+=delta*game.state.speed;if(elapsed>=1200){elapsed=0;game.tick()}}else elapsed=0;requestAnimationFrame(frame)}requestAnimationFrame(frame);game.emit();
 </script></body></html>
