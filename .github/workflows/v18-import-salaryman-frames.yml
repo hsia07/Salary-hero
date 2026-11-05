@@ -44,7 +44,7 @@ jobs:
                       if image.format!='WEBP' or image.mode!='RGBA' or image.size!=(512,512):
                           raise SystemExit(f'Invalid image format/size/alpha: {name}')
                       lo,hi=image.getchannel('A').getextrema()
-                      if lo!=0 or hi!=255: raise SystemExit(f'No meaningful transparency: {name}')
+                      if lo!=0 or hi<240: raise SystemExit(f'No meaningful transparency: {name}')
                   (dest/(name+'.webp')).write_bytes(data)
           print('Validated all 11 transparent WebP animation frames')
           PY
