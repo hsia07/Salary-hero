@@ -1,0 +1,68 @@
+{
+  "version": "18.9.0-preproduction",
+  "status": "asset-production-required",
+  "referenceOnly": "art/v18/home-master.webp",
+  "renderPolicy": {
+    "neverUseReferenceAsBattleBackground": true,
+    "requireTransparentCharacterAssets": true,
+    "requireCharacterFreeBackground": true,
+    "disableMissingAssetFallbackToConcept": true
+  },
+  "style": {
+    "direction": "high-detail Japanese fantasy chibi RPG",
+    "lighting": "warm gold against deep indigo and violet",
+    "pixelDensity": "consistent across all assets",
+    "camera": "three-quarter side-view",
+    "resolution": "2x or 4x source then downsample consistently"
+  },
+  "assets": {
+    "battleBackground": {
+      "path": "art/v18/runtime/backgrounds/office-corridor.webp",
+      "contains": [
+        "architecture",
+        "floor",
+        "lighting"
+      ],
+      "forbidden": [
+        "hero",
+        "enemy",
+        "slash",
+        "UI",
+        "text"
+      ],
+      "status": "missing"
+    },
+    "hero": {
+      "idle": "art/v18/runtime/hero/idle.webp",
+      "attack": "art/v18/runtime/hero/attack.webp",
+      "hurt": "art/v18/runtime/hero/hurt.webp",
+      "victory": "art/v18/runtime/hero/victory.webp",
+      "status": "missing"
+    },
+    "enemy": {
+      "idle": "art/v18/runtime/enemies/printer-idle.webp",
+      "hurt": "art/v18/runtime/enemies/printer-hurt.webp",
+      "defeat": "art/v18/runtime/enemies/printer-defeat.webp",
+      "status": "missing"
+    },
+    "effects": {
+      "slash": "art/v18/runtime/effects/slash.webp",
+      "impact": "art/v18/runtime/effects/impact.webp",
+      "status": "missing"
+    },
+    "office": {
+      "background": "art/v18/runtime/backgrounds/office-desk.webp",
+      "sleepingHero": "art/v18/runtime/hero/sleeping.webp",
+      "cat": "art/v18/runtime/pets/orange-cat.webp",
+      "status": "missing"
+    }
+  },
+  "acceptance": [
+    "No baked-in characters on background",
+    "All unit assets alpha transparent",
+    "Consistent scale and lighting",
+    "Switching gear changes hero appearance",
+    "Enemy removal leaves no ghost",
+    "Mobile Safari quality and performance verified"
+  ]
+}
