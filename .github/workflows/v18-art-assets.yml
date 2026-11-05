@@ -1,0 +1,16 @@
+name: V18 art asset validation
+on:
+  push:
+    paths:
+      - 'art/v18/runtime/**'
+      - 'art/v18/runtime-manifest.json'
+      - 'scripts/validate-v18-assets.py'
+      - '.github/workflows/v18-art-assets.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate asset existence, format, size and transparency
+        run: python3 scripts/validate-v18-assets.py
