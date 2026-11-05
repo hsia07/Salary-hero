@@ -16,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           persist-credentials: true
       - name: Download uploaded frame archive
         env:
@@ -61,5 +62,5 @@ jobs:
             echo "No frame changes"
           else
             git commit -m "V18: import 11 validated salaryman animation frames"
-            git push
+            git push origin HEAD:main
           fi
