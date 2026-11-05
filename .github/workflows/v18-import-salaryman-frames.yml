@@ -1,0 +1,61 @@
+name: Import V18 salaryman animation frames
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag containing salaryman-frames.zip
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download uploaded frame archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.release_tag }}
+        run: gh release download "$TAG" --pattern salaryman-frames.zip --dir /tmp
+      - name: Validate archive and install 11 transparent frames
+        run: |
+          python -m pip install pillow
+          python - <<'PY'
+          import io, zipfile
+          from pathlib import Path
+          from PIL import Image
+          names=['idle-01','idle-02','idle-03','idle-04','walk-01','walk-02','attack-01','attack-02','hurt-01','hurt-02','sleep-01']
+          archive=Path('/tmp/salaryman-frames.zip')
+          if not archive.exists(): raise SystemExit('Missing salaryman-frames.zip')
+          with zipfile.ZipFile(archive) as z:
+              expected={n+'.webp' for n in names}
+              actual={n for n in z.namelist() if not n.endswith('/')}
+              if actual != expected: raise SystemExit(f'Archive mismatch: missing {expected-actual}; unexpected {actual-expected}')
+              dest=Path('art/v18/runtime/hero/frames')
+              dest.mkdir(parents=True,exist_ok=True)
+              for name in names:
+                  data=z.read(name+'.webp')
+                  if len(data)>2_000_000: raise SystemExit(f'Oversized: {name}')
+                  with Image.open(io.BytesIO(data)) as image:
+                      image.load()
+                      if image.format!='WEBP' or image.mode!='RGBA' or image.size!=(256,256):
+                          raise SystemExit(f'Invalid image format/size/alpha: {name}')
+                      lo,hi=image.getchannel('A').getextrema()
+                      if lo!=0 or hi!=255: raise SystemExit(f'No meaningful transparency: {name}')
+                  (dest/(name+'.webp')).write_bytes(data)
+          print('Validated all 11 transparent WebP animation frames')
+          PY
+      - name: Commit frames
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art/v18/runtime/hero/frames/
+          if git diff --cached --quiet; then
+            echo "No frame changes"
+          else
+            git commit -m "V18: import 11 validated salaryman animation frames"
+            git push
+          fi
