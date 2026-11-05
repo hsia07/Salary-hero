@@ -1,9 +1,17 @@
 (()=>{'use strict';
 const ROOT='./art/v4/',COUNT={hero_idle:6,hero_walk:6,hero_attack:6,hero_hurt:3,hero_down:3,monster_idle:4,monster_attack:6,monster_hurt:3,cat_idle:4,cat_motion:6};
 const file=(key,n)=>ROOT+key+'_'+String(n).padStart(2,'0')+'.png';
+// Some source attack frames contain two characters baked into one PNG.
+// Restrict those animations to clean frames until the atlas is re-exported.
+const SAFE_FRAMES={hero_attack:[0,1],monster_attack:[1,3]};
 function init(){const stage=document.getElementById('v150Stage'),hero=document.getElementById('heroActor'),mob=document.getElementById('mobActor');if(!stage||!hero||!mob)return false;
 const style=document.createElement('style');style.textContent=`
-#home #v150Stage .v165-sprite{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:auto;pointer-events:none;z-index:2;filter:drop-shadow(0 6px 8px #0009)}
+#v150Stage .v165-sprite{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:auto;pointer-events:none;z-index:2;filter:drop-shadow(0 6px 8px #0009)}
+#v150Stage .hero-actor.v165-sprite-ready{left:12%!important}
+#v150Stage .mob-actor.v165-sprite-ready{right:10%!important}
+#v150Stage .v165-sprite-ready{overflow:visible}
+#v150Stage .v165-sprite-ready>svg{display:none!important}
+#v150Stage .v165-sprite-ready .v162-weapon{display:none!important}
 #home #v150Stage .v165-sprite-ready>svg{display:none!important;visibility:hidden!important}
 #home #v150Stage .v165-sprite-ready>.v165-sprite{display:block!important;opacity:1!important}
 #home #v150Stage .v165-sprite-ready{isolation:isolate}
@@ -16,9 +24,9 @@ const chars={hero:{host:hero,action:'hero_idle',until:0},monster:{host:mob,actio
 let assetReady=false,failed=false,raf=0;
 function assign(ch,key,index){const src=file(key,index);if(ch.current===src||ch.failedSrc===src)return;ch.current=src;ch.img.src=src}
 function animate(type,ms){const c=chars[type.startsWith('hero')?'hero':'monster'];if(!COUNT[type])return;c.action=type;c.until=performance.now()+ms;c.frame=0;c.current=''}
-const probe=new Image();probe.onload=()=>{assetReady=true;for(const [key,ch] of Object.entries(chars)){const img=new Image();img.className='v165-sprite';img.alt=key==='hero'?'勇者動畫':'怪物動畫';img.onload=()=>ch.host.classList.add('v165-sprite-ready');img.onerror=()=>{ch.host.classList.remove('v165-sprite-ready');failed=true;ch.failedSrc=ch.current;ch.current=''};ch.img=img;ch.host.prepend(img)}
+const probe=new Image();probe.onload=()=>{assetReady=true;for(const [key,ch] of Object.entries(chars)){const img=new Image();img.className='v165-sprite';img.alt=key==='hero'?'勇者動畫':'怪物動畫';img.onload=()=>{ch.host.classList.add('v165-sprite-ready');for(const svg of ch.host.querySelectorAll(':scope > svg'))svg.style.setProperty('display','none','important');const weapon=ch.host.querySelector('.v162-weapon');if(weapon)weapon.style.setProperty('display','none','important')};img.onerror=()=>{ch.host.classList.remove('v165-sprite-ready');failed=true;ch.failedSrc=ch.current;ch.current=''};ch.img=img;ch.host.prepend(img)}
 const idle=document.getElementById('v150Idle');if(idle){const bg=new Image();bg.onload=()=>{idle.style.backgroundImage='url("'+ROOT+'sleeping_hero_scene.png")';idle.style.backgroundSize='cover';idle.style.backgroundPosition='center'};bg.src=ROOT+'sleeping_hero_scene.png'}
-let last=0;function draw(t){if(!document.contains(stage))return;if(t-last>110){last=t;for(const ch of Object.values(chars)){if(t>ch.until&&ch.action!== (ch===chars.hero?'hero_idle':'monster_idle')){ch.action=ch===chars.hero?'hero_idle':'monster_idle';ch.frame=0;ch.current=''}const count=COUNT[ch.action],frame=Math.floor(ch.frame++/(ch.action.includes('attack')?1:2))%count;assign(ch,ch.action,frame)}}raf=requestAnimationFrame(draw)}raf=requestAnimationFrame(draw);
+let last=0;function draw(t){if(!document.contains(stage))return;if(t-last>110){last=t;for(const ch of Object.values(chars)){if(t>ch.until&&ch.action!== (ch===chars.hero?'hero_idle':'monster_idle')){ch.action=ch===chars.hero?'hero_idle':'monster_idle';ch.frame=0;ch.current=''}const frames=SAFE_FRAMES[ch.action],count=frames?frames.length:COUNT[ch.action],i=Math.floor(ch.frame++/(ch.action.includes('attack')?2:2))%count,frame=frames?frames[i]:i;assign(ch,ch.action,frame)}}raf=requestAnimationFrame(draw)}raf=requestAnimationFrame(draw);
 stage.dataset.spriteStatus='ready';};
 probe.onerror=()=>{stage.dataset.spriteStatus='missing';const warn=document.createElement('span');warn.className='v165-asset-warning';warn.textContent='角色素材尚未部署 · 顯示舊版';stage.append(warn)};
 probe.src=file('hero_idle',0);
