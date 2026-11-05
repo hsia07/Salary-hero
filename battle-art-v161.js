@@ -1,0 +1,20 @@
+(()=>{'use strict';
+const BASE='./art/v4/',A={hero_idle:6,hero_walk:6,hero_attack:6,hero_hurt:3,hero_down:3,monster_idle:4,monster_attack:6,monster_hurt:3};
+const $=s=>document.querySelector(s),path=(key,i)=>BASE+key+'_'+String(i).padStart(2,'0')+'.png';
+function start(){const stage=$('#v150Stage'),hero=$('#heroActor'),monster=$('#mobActor');if(!stage||!hero||!monster)return false;
+const styles=document.createElement('style');styles.textContent=`#home #v150Stage .v161-ready>svg{visibility:hidden!important}#home #v150Stage .v161-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 7px #0008) drop-shadow(0 0 8px var(--v161-color,#bdbdbd))}#home #v150Stage .v161-gear-label{position:absolute;bottom:0;left:0;right:0;z-index:10;text-align:center;color:#fff2cf;background:#271b37d9;font-size:11px;border-top:1px solid var(--v161-color,#bdbdbd)}#home #v150Idle.v161-idle{background-size:cover;background-position:center}#home #v150Idle.v161-idle>svg,#home #v150Idle.v161-idle>.v150-cat{display:none}`;document.head.append(styles);
+const state={hero:'hero_idle',monster:'monster_idle',heroUntil:0,monsterUntil:0,frame:0},sprites={};
+for(const [key,host] of [['hero',hero],['monster',monster]]){const img=new Image();img.className='v161-frame';img.alt=key==='hero'?'勇者':'辦公室怪物';img.onload=()=>host.classList.add('v161-ready');img.onerror=()=>{host.classList.remove('v161-ready');img.removeAttribute('src')};host.prepend(img);sprites[key]=img}
+const label=document.createElement('span');label.className='v161-gear-label';stage.append(label);
+const original=window.salaryHeroArtEvents||{},set=(who,act,duration)=>{state[who]=act;state[who+'Until']=performance.now()+duration};
+window.salaryHeroArtEvents={...original,attack:()=>{set('hero','hero_attack',680);set('monster','monster_hurt',480);original.attack?.()},hurt:()=>{set('hero','hero_hurt',480);original.hurt?.()},defeat:()=>{set('monster','monster_hurt',700);original.defeat?.()},walk:()=>set('hero','hero_walk',700),monsterAttack:()=>set('monster','monster_attack',680)};
+const colors=['#c5c6c7','#72d89b','#68aafc','#c183ff','#f4b45e','#ff78b9'];let last=0;
+function render(t){if(!document.contains(stage))return;if(t-last>=120){last=t;state.frame++;for(const who of ['hero','monster']){if(t>state[who+'Until'])state[who]=who+'_idle';const action=state[who],frames=A[action]||4,index=Math.floor(state.frame/(action.includes('attack')?1:2))%frames,src=path(action,index);if(sprites[who].getAttribute('src')!==src)sprites[who].src=src}}requestAnimationFrame(render)}requestAnimationFrame(render);
+const kills=$('#kills'),hp=$('#stageEnemyHp'),wave=$('#stageWave');let prevKills=kills?.textContent,prevHp=hp?.getBoundingClientRect().width,prevWave=wave?.textContent;
+setInterval(()=>{const k=kills?.textContent,h=hp?.getBoundingClientRect().width,w=wave?.textContent;if(prevKills!=null&&Number(k)>Number(prevKills))set('monster','monster_hurt',650);else if(prevHp!=null&&h!=null&&h<prevHp-2){set('hero','hero_attack',650);set('monster','monster_hurt',480)}else if(prevWave!=null&&w!==prevWave)set('hero','hero_walk',650);prevKills=k;prevHp=h;prevWave=w;
+const txt=($('#heroEquipmentArt')||$('#heroPreview')||$('#bag'))?.textContent||'',rarity=/神話|不朽/.test(txt)?5:/傳說/.test(txt)?4:/史詩/.test(txt)?3:/稀有|精良/.test(txt)?2:/優良/.test(txt)?1:0,weapon=/法杖|魔杖/.test(txt)?'法杖':/弓|箭/.test(txt)?'弓':/斧/.test(txt)?'斧':'劍';stage.style.setProperty('--v161-color',colors[rarity]);label.textContent=['普通','優良','稀有','史詩','傳說','神話'][rarity]+' · '+weapon;
+},400);
+const idle=$('#v150Idle');if(idle){const test=new Image();test.onload=()=>{idle.style.backgroundImage='url("'+BASE+'sleeping_hero_scene.png")';idle.classList.add('v161-idle')};test.src=BASE+'sleeping_hero_scene.png'}
+const version=$('.v150-version');if(version)version.textContent='V16.1 · 美術影格載入器（缺圖時回退舊角色）';return true}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{if(!start()){let n=0,t=setInterval(()=>{if(start()||++n>30)clearInterval(t)},300)}});else if(!start()){let n=0,t=setInterval(()=>{if(start()||++n>30)clearInterval(t)},300)}
+})();
