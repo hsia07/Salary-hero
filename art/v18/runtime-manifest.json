@@ -1,5 +1,5 @@
 {
-  "version": "18.9.0-preproduction",
+  "version": "18.10.0-preproduction",
   "status": "asset-production-required",
   "referenceOnly": "art/v18/home-master.webp",
   "renderPolicy": {
@@ -9,14 +9,14 @@
     "disableMissingAssetFallbackToConcept": true
   },
   "style": {
-    "direction": "high-detail Japanese fantasy chibi RPG",
+    "direction": "high-detail expressive anime chibi office-worker RPG; tragicomic exhausted salaryman, not conventional knight",
     "lighting": "warm gold against deep indigo and violet",
     "pixelDensity": "consistent across all assets",
-    "camera": "three-quarter side-view",
+    "camera": "consistent 3/4 front-side chibi, whole-body silhouettes and fixed feet baseline",
     "resolution": "2x or 4x source then downsample consistently",
-    "referencePolicy": "STRICT 1:1 visual fidelity to user-approved V18.0 master",
+    "referencePolicy": "Use owner-approved 2026-11-05 salaryman character sheet for protagonist; retain original V18.0 master for environmental palette and portrait composition",
     "layout": "portrait, upper sleeping office, middle combat, lower eight-tab navigation",
-    "characters": "brown-haired chibi hero, red cape, ornate gold-black armor; orange sleeping cat; angry printer enemy",
+    "characters": "Xia: messy dark brown hair, severe under-eye shadows, droopy blue-grey eyes, rumpled white office shirt, loose red tie, dangling staff badge, worn dark trousers, oversized briefcase, coffee cup, red cape resembling a draped office blanket; orange sleeping cat; angry office-printer enemy",
     "palette": "warm gold accents, violet/indigo architecture, cyan slash, coral-red cape",
     "ui": "ornate gold-framed eight navigation tabs, no duplicate salary labels"
   },
@@ -66,15 +66,20 @@
     "No baked-in characters on background",
     "All unit assets alpha transparent",
     "Consistent scale and lighting",
-    "Switching gear changes hero appearance",
     "Enemy removal leaves no ghost",
-    "Mobile Safari quality and performance verified"
+    "Mobile Safari quality and performance verified",
+    "Hero must read as exhausted office worker at first glance, not armored knight",
+    "Idle yawns/sips coffee, attack swings laptop or briefcase, hurt collapses, victory lies down",
+    "Gear appearance changes require separate transparent equipment layers or approved sprite variants",
+    "Reference composites and candidate crops must never be treated as production assets"
   ],
   "referenceAcceptance": {
     "composition": "Match master layout and proportions",
     "silhouette": "Preserve hero, cat and printer shapes",
     "materials": "Preserve ornamental gold trim and saturated anime lighting",
     "avoid": "Do not bake any moving entity or game text into runtime background",
-    "status": "locked by owner 2026-11-05"
+    "status": "salaryman hero direction approved by owner; asset production still required",
+    "character": "Owner-approved white-background salaryman sheet, user provided; dark eye bags, coffee, loosened tie, ID badge, red blanket cape",
+    "environment": "Original V18 master office/arena lighting, portrait UI and gold indigo palette"
   }
 }
