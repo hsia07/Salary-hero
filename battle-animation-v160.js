@@ -19,7 +19,7 @@ const readNumber=id=>{const e=document.getElementById(id);if(!e)return null;cons
 const pulse=(el,cls,duration)=>{el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),duration)};
 const hit=()=>{if(!active)return;const now=Date.now();if(now-lastAttack<330)return;lastAttack=now;pulse(hero,'v16-attack',460);pulse(mob,'v16-hurt',500);const fx=document.createElement('span');fx.className='v16-impact';fx.textContent='⚡';stage.append(fx);setTimeout(()=>fx.remove(),460)};
 const down=()=>{if(active)pulse(mob,'v16-down',700)};
-const tick=()=>{const kills=readNumber('kills'),wave=document.getElementById('stageWave')?.textContent||'',status=document.getElementById('stageStatus')?.textContent||'',hp=document.getElementById('stageEnemyHp');const hpVal=hp?Math.round(hp.getBoundingClientRect().width*10)/10:null;
+const tick=()=>{if(stage.parentElement?.dataset.combatEvents==='authoritative'||document.querySelector('#v150Stage[data-combat-events="authoritative"]'))return;const kills=readNumber('kills'),wave=document.getElementById('stageWave')?.textContent||'',status=document.getElementById('stageStatus')?.textContent||'',hp=document.getElementById('stageEnemyHp');const hpVal=hp?Math.round(hp.getBoundingClientRect().width*10)/10:null;
 if(previousKills!==null&&kills!==null&&kills>previousKills){hit();setTimeout(down,140)}
 else if(previousHp!==null&&hpVal!==null&&hpVal<previousHp-2){hit()}
 else if(previousWave!==null&&wave!==previousWave&&/戰|攻|討伐|冒險/.test(status)){hit()}
