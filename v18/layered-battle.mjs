@@ -36,6 +36,9 @@ async function loadOptionalCharacterFrames(){
    loaded.set(name,image);
   }
   return loaded;
+ }catch(error){
+  console.warn('Optional salaryman frames unavailable:',error);
+  return null;
  }finally{
   if(loaded.size!==names.length)for(const image of loaded.values())image.close?.();
  }
