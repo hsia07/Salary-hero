@@ -13,7 +13,12 @@
     "lighting": "warm gold against deep indigo and violet",
     "pixelDensity": "consistent across all assets",
     "camera": "three-quarter side-view",
-    "resolution": "2x or 4x source then downsample consistently"
+    "resolution": "2x or 4x source then downsample consistently",
+    "referencePolicy": "STRICT 1:1 visual fidelity to user-approved V18.0 master",
+    "layout": "portrait, upper sleeping office, middle combat, lower eight-tab navigation",
+    "characters": "brown-haired chibi hero, red cape, ornate gold-black armor; orange sleeping cat; angry printer enemy",
+    "palette": "warm gold accents, violet/indigo architecture, cyan slash, coral-red cape",
+    "ui": "ornate gold-framed eight navigation tabs, no duplicate salary labels"
   },
   "assets": {
     "battleBackground": {
@@ -64,5 +69,12 @@
     "Switching gear changes hero appearance",
     "Enemy removal leaves no ghost",
     "Mobile Safari quality and performance verified"
-  ]
+  ],
+  "referenceAcceptance": {
+    "composition": "Match master layout and proportions",
+    "silhouette": "Preserve hero, cat and printer shapes",
+    "materials": "Preserve ornamental gold trim and saturated anime lighting",
+    "avoid": "Do not bake any moving entity or game text into runtime background",
+    "status": "locked by owner 2026-11-05"
+  }
 }
