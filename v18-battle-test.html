@@ -10,7 +10,7 @@ main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{l
 .window{position:absolute;left:30%;top:4%;width:40%;height:42%;border:6px solid #d3a85f;border-radius:75px 75px 5px 5px;background:linear-gradient(#384a94,#ab77ac 65%,#f3a875);box-shadow:0 0 40px #a98bdb66}
 .floor{position:absolute;left:-20%;bottom:-35%;width:140%;height:68%;border:2px solid #aa7bc3;border-radius:50%;box-shadow:0 0 32px #b26af7aa,inset 0 0 35px #bc85f888}
 .unit{position:absolute;bottom:19%;width:30%;text-align:center;transition:transform .16s;z-index:2}.unit.hero{left:11%}.unit.enemy{right:9%}
-.sprite{font-size:72px;filter:drop-shadow(0 6px 6px #000b);line-height:1.25;user-select:none}.unit.attack{transform:translateX(36px) scale(1.08)}.unit.hurt{filter:brightness(1.8) sepia(1) saturate(8) hue-rotate(310deg);transform:translateX(8px)}.unit.dead{opacity:0;transform:scale(.6)}
+.sprite{font-size:72px;filter:drop-shadow(0 6px 6px #000b);line-height:1.25;user-select:none}.unit.attack{transform:translateX(36px) scale(1.08)}.unit.hurt{filter:brightness(1.8) sepia(1) saturate(8) hue-rotate(310deg);transform:translateX(8px)}.unit.dead{opacity:0;transform:scale(.6)}@media(prefers-reduced-motion:reduce){.unit,.bar>i{transition:none!important}.damage.show{animation:none!important}}
 .bar{height:10px;border:1px solid #e6b36e;border-radius:20px;background:#1a1022;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,#52d982,#b8f26c);transition:width .15s}
 .unit b{display:block;font-size:12px;text-shadow:0 2px 3px #000}.damage{position:absolute;top:27%;right:17%;font-size:28px;font-weight:900;color:#ff787e;text-shadow:0 3px 0 #651733;opacity:0;z-index:3}.damage.show{animation:float .6s ease-out}
 @keyframes float{0%{opacity:0;transform:translateY(18px)}25%{opacity:1}100%{opacity:0;transform:translateY(-25px)}}
@@ -18,7 +18,7 @@ main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{l
 .stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
 #log{min-height:54px;font-size:13px;color:#e7d6c7}a{color:#f3c678}
 </style></head><body><main><h1>⚔️ 薪水勇者 V18.6</h1><small>獨立戰鬥引擎驗證｜不使用含角色的整張設計稿</small>
-<section class="panel"><div class="stats"><span id="wave">第 1 關</span><span id="gold">🪙 0</span><span id="kills">擊敗 0</span></div></section>
+<section class="panel"><div class="stats"><span id="wave">第 1 波</span><span id="gold">🪙 0</span><span id="kills">擊敗 0</span></div></section>
 <div class="arena" id="arena"><div class="window"></div><div class="floor"></div>
 <div class="unit hero" id="hero"><div class="sprite" aria-label="勇者佔位素材">🧑🏻‍🎤</div><b>勇者</b><div class="bar"><i id="heroHp" style="width:100%"></i></div></div>
 <div class="unit enemy" id="enemy"><div class="sprite" aria-label="印表機怪物佔位素材">🖨️</div><b id="enemyName">加班印表機</b><div class="bar"><i id="enemyHp" style="width:100%"></i></div></div>
@@ -30,9 +30,9 @@ main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{l
 import {BattleState} from './v18/battle-state.mjs';
 const $=id=>document.getElementById(id);
 const game=new BattleState({onChange:render});
-let lastKill=0,lastLog='';
+let lastLog='';
 function render(s){
-$('wave').textContent='第 '+s.wave+' 關';$('gold').textContent='🪙 '+s.gold;$('kills').textContent='擊敗 '+s.kills;
+$('wave').textContent='第 '+s.wave+' 波';$('gold').textContent='🪙 '+s.gold;$('kills').textContent='擊敗 '+s.kills;
 $('heroHp').style.width=(s.hero.hp/s.hero.maxHp*100)+'%';$('enemyHp').style.width=(s.enemy.hp/s.enemy.maxHp*100)+'%';
 $('enemyName').textContent=s.enemy.name+' '+s.enemy.hp+'/'+s.enemy.maxHp;
 $('auto').textContent='自動戰鬥 '+(s.enabled?'ON':'OFF');$('speed').textContent='速度 ×'+s.speed;
@@ -44,6 +44,6 @@ else {$('log').textContent='對 '+s.enemy.name+' 造成 '+entry.damage+' 傷害'
 }
 $('auto').onclick=()=>game.setAuto(!game.state.enabled);
 $('speed').onclick=()=>game.setSpeed(game.state.speed===1?2:1);
-$('hit').onclick=()=>{const enabled=game.state.enabled;game.state.enabled=true;game.tick();game.state.enabled=enabled;game.emit()};
+$('hit').onclick=()=>{if(game.state.enabled){$('log').textContent='自動戰鬥中；請先關閉自動戰鬥再手動攻擊。';return;}game.state.enabled=true;game.tick();game.state.enabled=false;game.emit()};
 let elapsed=0;let previous=performance.now();function frame(now){const delta=Math.min(100,now-previous);previous=now;if(game.state.enabled){elapsed+=delta*game.state.speed;if(elapsed>=1200){elapsed=0;game.tick()}}else elapsed=0;requestAnimationFrame(frame)}requestAnimationFrame(frame);game.emit();
 </script></body></html>
