@@ -27,7 +27,14 @@ function paint(now){
  if(!art)return;
  const W=canvas.width,H=canvas.height;
  ctx.clearRect(0,0,W,H);
- sprite('battleBackground.path',0,0,W,H);
+ // Portrait composition: office 0–29%, arena 29–78%, controls live in DOM below.
+ const officeH=Math.round(H*.29), arenaH=H-officeH;
+ sprite('office.background',0,0,W,officeH);
+ const deskBob=Math.sin(now/850)*1.5;
+ sprite('office.sleepingHero',W*.29,officeH*.24+deskBob,W*.43,officeH*.67);
+ sprite('office.cat',W*.72,officeH*.52,W*.2,officeH*.33);
+ sprite('battleBackground.path',0,officeH,W,arenaH);
+ ctx.save();ctx.translate(0,officeH);ctx.scale(W/600,arenaH/420);
  const t=(now-phaseAt)/1000;
  const bob=Math.sin(now/280)*3;
  const heroX=phase==='attack'?125+Math.min(t/.18,1)*85:125;
@@ -38,6 +45,7 @@ function paint(now){
  if(phase==='attack'&&t<.35)sprite('effects.slash',heroX+95,175,195,185);
  if(now>=impactAt&&now-impactAt<280)sprite('effects.impact',enemyX-25,205,130,130);
  if(phase!=='idle'&&t>.52){phase='idle';phaseAt=now;}
+ ctx.restore();
  if(game.state.enabled&&now-lastTick>1100/game.state.speed&&now>=defeatUntil){
   lastTick=now;strike(now);
  }
