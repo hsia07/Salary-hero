@@ -27,7 +27,7 @@ jobs:
           import io, zipfile
           from pathlib import Path
           from PIL import Image
-          names=['idle-01','idle-02','idle-03','idle-04','walk-01','walk-02','attack-01','attack-02','hurt-01','hurt-02','sleep-01']
+          names=['idle-01','idle-02','walk-01','walk-02','walk-03','attack-01','attack-02','attack-03','hurt-01','hurt-02','sleep-01']
           archive=Path('/tmp/salaryman-frames.zip')
           if not archive.exists(): raise SystemExit('Missing salaryman-frames.zip')
           with zipfile.ZipFile(archive) as z:
@@ -41,7 +41,7 @@ jobs:
                   if len(data)>2_000_000: raise SystemExit(f'Oversized: {name}')
                   with Image.open(io.BytesIO(data)) as image:
                       image.load()
-                      if image.format!='WEBP' or image.mode!='RGBA' or image.size!=(256,256):
+                      if image.format!='WEBP' or image.mode!='RGBA' or image.size!=(512,512):
                           raise SystemExit(f'Invalid image format/size/alpha: {name}')
                       lo,hi=image.getchannel('A').getextrema()
                       if lo!=0 or hi!=255: raise SystemExit(f'No meaningful transparency: {name}')
