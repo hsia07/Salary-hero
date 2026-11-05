@@ -9,7 +9,7 @@ const hp=document.querySelector('#hp');
 const toggle=document.querySelector('#toggle');
 const speed=document.querySelector('#speed');
 const attack=document.querySelector('#attack');
-let art=null,active=true,phase='idle',phaseAt=0,impactAt=0,frame=0,lastTick=0;
+let art=null,active=true,phase='idle',phaseAt=0,impactAt=0,frame=0,lastTick=0,defeatUntil=0;
 const game=new BattleState({onChange:renderHud});
 function renderHud(s){
  wave.textContent=s.wave;gold.textContent=s.gold;hp.textContent=Math.round(s.hero.hp/s.hero.maxHp*100)+'%';
@@ -31,22 +31,24 @@ function paint(now){
  const t=(now-phaseAt)/1000;
  const bob=Math.sin(now/280)*3;
  const heroX=phase==='attack'?125+Math.min(t/.18,1)*85:125;
- const enemyX=phase==='hurt'?400+Math.sin(now/32)*7:400;
+ const enemyX=now>=impactAt&&now-impactAt<250?400+Math.sin(now/32)*7:400;
  const heroPose=phase==='attack'?'hero.attack':phase==='victory'?'hero.victory':phase==='hurt'?'hero.hurt':'hero.idle';
  sprite(heroPose,heroX,175+bob,145,190);
- sprite(phase==='hurt'?'enemy.hurt':phase==='victory'?'enemy.defeat':'enemy.idle',enemyX,180,155,170);
+ if(now<defeatUntil){ctx.save();ctx.globalAlpha=Math.max(0,(defeatUntil-now)/450);sprite('enemy.defeat',enemyX,180,155,170);ctx.restore();}else{sprite(now>=impactAt&&now-impactAt<250?'enemy.hurt':'enemy.idle',enemyX,180,155,170);}
  if(phase==='attack'&&t<.35)sprite('effects.slash',heroX+95,175,195,185);
  if(now>=impactAt&&now-impactAt<280)sprite('effects.impact',enemyX-25,205,130,130);
  if(phase!=='idle'&&t>.52){phase='idle';phaseAt=now;}
- if(game.state.enabled&&now-lastTick>1100/game.state.speed){
+ if(game.state.enabled&&now-lastTick>1100/game.state.speed&&now>=defeatUntil){
   lastTick=now;strike(now);
  }
 }
 function strike(now=performance.now()){
  const prev=game.state.kills;
  game.tick({manual:true});
- phase=game.state.kills>prev?'victory':'attack';
+ const defeated=game.state.kills>prev;
+ phase=defeated?'victory':'attack';
  phaseAt=now;impactAt=now+160;
+ if(defeated)defeatUntil=now+450;
 }
 toggle.onclick=()=>game.setAuto(!game.state.enabled);
 speed.onclick=()=>game.setSpeed(game.state.speed===1?2:1);
