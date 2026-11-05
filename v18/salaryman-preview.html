@@ -1,0 +1,41 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>薪水勇者 V18 · 社畜動畫驗收</title><style>
+*{box-sizing:border-box}body{margin:0;background:#120e21;color:#f6e5c7;font:15px system-ui}main{max-width:480px;margin:auto;padding:16px}h1{font-size:22px}.stage{height:min(72vh,560px);border:2px solid #a98452;border-radius:14px;background:radial-gradient(ellipse at 50% 80%,#40314e,#1a152b 70%);display:grid;place-items:center;position:relative;overflow:hidden}.stage:after{content:"";position:absolute;bottom:10%;width:58%;height:10%;background:#0b0817;border-radius:50%;filter:blur(10px)}.stage img{width:min(70%,320px);height:70%;object-fit:contain;image-rendering:auto;z-index:1;filter:drop-shadow(0 12px 12px #080512)}.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}button,input{min-height:44px}button{background:#392846;color:#fff1d0;border:1px solid #b48a50;border-radius:9px;padding:10px}button[aria-pressed=true]{background:#75532c}p{line-height:1.6}small{color:#d5bfdc}#state{color:#ffd489}input{width:100%}</style></head><body><main><h1>社畜勇者 · V18 動畫驗收</h1><p>獨立驗收頁，不依賴缺少的 13 張戰鬥素材，也不會取代 V17。</p><div class="stage"><img id="hero" alt="社畜勇者動畫"></div><div class="buttons" id="actions"></div><p id="state" role="status">檢查 11 張影格…</p><p><label>或選取 11 張本機 WebP 影格（可多選）：<input id="files" type="file" accept=".webp,image/webp" multiple></label></p><small>只讀取本機圖片進行預覽，不會上傳到任何伺服器。未部署的影格不會被假圖片取代。</small></main><script type="module">
+import {SALARYMAN_ANIMATIONS,animationFrame} from './salaryman-animation.mjs';
+const names=[...new Set(Object.values(SALARYMAN_ANIMATIONS).flatMap(x=>x.frames))];
+const urls=new Map(),local=[];
+let action='idle',started=performance.now(),raf=0;
+const status=document.querySelector('#state'),img=document.querySelector('#hero'),actions=document.querySelector('#actions');
+for(const key of Object.keys(SALARYMAN_ANIMATIONS)){
+ const b=document.createElement('button');b.textContent=({idle:'待機',walk:'走路',attack:'攻擊',hurt:'受傷',sleep:'睡覺'})[key];
+ b.onclick=()=>{action=key;started=performance.now();updateButtons();};b.dataset.action=key;actions.append(b);
+}
+function updateButtons(){for(const b of actions.children)b.setAttribute('aria-pressed',String(b.dataset.action===action));}
+function render(now){
+ const frame=animationFrame(action,now-started),url=urls.get(frame);
+ if(url&&img.dataset.frame!==frame){img.src=url;img.dataset.frame=frame;}
+ else if(!url){img.removeAttribute('src');delete img.dataset.frame;}
+ raf=requestAnimationFrame(render);
+}
+async function checkRemote(){
+ let ok=0;
+ for(const name of names){
+  const url=new URL('../art/v18/runtime/hero/frames/'+name+'.webp',import.meta.url);
+  try{
+   const response=await fetch(url,{cache:'no-store'});
+   if(response.ok&&response.headers.get('content-type')?.includes('image')){
+    const blob=await response.blob();if(blob.type.includes('image')){urls.set(name,URL.createObjectURL(blob));ok++;}
+   }
+  }catch{}
+ }
+ status.textContent='GitHub 動畫素材：'+ok+'/'+names.length+' 張。'+(ok===names.length?'可以完整預覽。':'缺少影格；可選本機檔案補齊預覽。');
+}
+document.querySelector('#files').onchange=async e=>{
+ for(const url of local)URL.revokeObjectURL(url);local.length=0;
+ for(const file of e.target.files){const name=file.name.replace(/\.webp$/i,'');if(!names.includes(name))continue;const url=URL.createObjectURL(file);local.push(url);urls.set(name,url);}
+ const ready=names.filter(n=>urls.has(n)).length;
+ status.textContent='目前可預覽：'+ready+'/'+names.length+' 張（包含本機檔案）。';
+ img.dataset.frame='';
+};
+updateButtons();render(performance.now());checkRemote();
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(raf);for(const url of urls.values())URL.revokeObjectURL(url);},{once:true});
+</script></body></html>
