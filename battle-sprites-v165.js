@@ -26,7 +26,7 @@ const style=document.createElement('style');style.textContent=`
 `;document.head.append(style);
 const chars={hero:{host:hero,action:'hero_idle',until:0},monster:{host:mob,action:'monster_idle',until:0}};
 let assetReady=false,failed=false,raf=0;
-function assign(ch,key,index){const src=file(key,index);if(ch.img)ch.img.style.visibility='hidden';if(ch.current===src||ch.failedSrc===src)return;ch.current=src;ch.img.src=src}
+function assign(ch,key,index){const src=file(key,index);if(ch.current===src||ch.failedSrc===src)return;ch.current=src;ch.img.src=src}
 function animate(type,ms){const c=chars[type.startsWith('hero')?'hero':'monster'];if(!COUNT[type])return;c.action=type;c.until=performance.now()+ms;c.frame=0;c.current=''}
 const probe=new Image();probe.onload=()=>{assetReady=true;for(const [key,ch] of Object.entries(chars)){const img=new Image();img.className='v165-sprite';img.alt='';img.setAttribute('aria-hidden','true');img.style.visibility='hidden';img.onload=()=>{img.style.visibility='visible';ch.host.classList.add('v165-sprite-ready');for(const svg of ch.host.querySelectorAll(':scope > svg'))svg.style.setProperty('display','none','important');const weapon=ch.host.querySelector('.v162-weapon');if(weapon)weapon.style.setProperty('display','none','important')};img.onerror=()=>{img.style.visibility='hidden';ch.host.classList.remove('v165-sprite-ready');failed=true;ch.failedSrc=ch.current;ch.current=''};ch.img=img;ch.host.prepend(img)}
 const idle=document.getElementById('v150Idle');if(idle){const bg=new Image();bg.onload=()=>{idle.style.backgroundImage='url("'+ROOT+'sleeping_hero_scene.png")';idle.style.backgroundSize='cover';idle.style.backgroundPosition='center'};bg.src=ROOT+'sleeping_hero_scene.png'}
