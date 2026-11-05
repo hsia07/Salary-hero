@@ -1,5 +1,6 @@
 import {BattleState} from './battle-state.mjs';
 import {preloadArt} from './art-loader.mjs';
+import {animationFrame, SALARYMAN_ANIMATIONS} from './salaryman-animation.mjs';
 const canvas=document.querySelector('#battle');
 const ctx=canvas.getContext('2d');
 const status=document.querySelector('#status');
@@ -9,6 +10,7 @@ const hp=document.querySelector('#hp');
 const toggle=document.querySelector('#toggle');
 const speed=document.querySelector('#speed');
 const attack=document.querySelector('#attack');
+let characterFrames=null;
 let art=null,active=true,phase='idle',phaseAt=0,impactAt=0,frame=0,lastTick=0,defeatUntil=0;
 const game=new BattleState({onChange:renderHud});
 function renderHud(s){
@@ -20,6 +22,23 @@ function sprite(key,x,y,w,h){
  const image=art.images.get(key);
  if(!image)throw Error('Missing preloaded sprite: '+key);
  ctx.drawImage(image,x,y,w,h);
+}
+async function loadOptionalCharacterFrames(){
+ const root=new URL('../art/v18/runtime/hero/frames/',import.meta.url);
+ const loaded=new Map();
+ const names=[...new Set(Object.values(SALARYMAN_ANIMATIONS).flatMap(animation=>animation.frames))];
+ try{
+  for(const name of names){
+   const response=await fetch(new URL(name+'.webp',root),{cache:'no-store'});
+   if(!response.ok)return null;
+   const image=await createImageBitmap(await response.blob());
+   if(!image.width||!image.height){image.close?.();return null;}
+   loaded.set(name,image);
+  }
+  return loaded;
+ }finally{
+  if(loaded.size!==names.length)for(const image of loaded.values())image.close?.();
+ }
 }
 function paint(now){
  if(!active)return;
@@ -40,7 +59,10 @@ function paint(now){
  const heroX=phase==='attack'?125+Math.min(Math.max(t,0)/.18,1)*85:125;
  const enemyX=now>=impactAt&&now-impactAt<250?400+Math.sin(now/32)*7:400;
  const heroPose=phase==='attack'?'hero.attack':phase==='victory'?'hero.victory':phase==='hurt'?'hero.hurt':'hero.idle';
- sprite(heroPose,heroX,175+bob,145,190);
+ const frameAction=phase==='attack'?'attack':phase==='hurt'?'hurt':phase==='victory'?'sleep':'idle';
+ const chosen=characterFrames?.get(animationFrame(frameAction,now-phaseAt));
+ if(chosen)ctx.drawImage(chosen,heroX,175+bob,145,190);
+ else sprite(heroPose,heroX,175+bob,145,190);
  if(now<defeatUntil){ctx.save();ctx.globalAlpha=Math.max(0,(defeatUntil-now)/450);sprite('enemy.defeat',enemyX,180,155,170);ctx.restore();}else{sprite(now>=impactAt&&now-impactAt<250?'enemy.hurt':'enemy.idle',enemyX,180,155,170);}
  if(phase==='attack'&&t<.35)sprite('effects.slash',heroX+95,175,195,185);
  if(now>=impactAt&&now-impactAt<280)sprite('effects.impact',enemyX-25,205,130,130);
@@ -66,11 +88,12 @@ document.querySelector('#equip').onchange=e=>game.equip(e.target.value);
 renderHud(game.state);
 try{
  art=await preloadArt();
- status.textContent='13 張獨立素材已載入。此頁為獨立動畫整合測試，尚未取代 V17 正式版。';
+ characterFrames=await loadOptionalCharacterFrames();
+ status.textContent=characterFrames?'已載入 13 張基礎素材與 11 張社畜動畫影格；V18 測試版。':'已載入 13 張基礎素材；社畜動畫影格尚未齊全，沿用原分層角色。';
  status.dataset.ready='true';
  frame=requestAnimationFrame(paint);
 }catch(error){
  status.textContent='無法啟動美術戰鬥：'+error.message+'。禁止使用完整母版或假角色替代。';
  toggle.disabled=speed.disabled=attack.disabled=document.querySelector('#equip').disabled=true;
 }
-window.addEventListener('pagehide',()=>{active=false;cancelAnimationFrame(frame);art?.dispose()},{once:true});
+window.addEventListener('pagehide',()=>{active=false;cancelAnimationFrame(frame);art?.dispose();for(const image of characterFrames?.values()??[])image.close?.()},{once:true});
