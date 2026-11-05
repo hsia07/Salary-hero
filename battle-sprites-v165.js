@@ -4,6 +4,8 @@ const file=(key,n)=>ROOT+key+'_'+String(n).padStart(2,'0')+'.png';
 // Some source attack frames contain two characters baked into one PNG.
 // Restrict those animations to clean frames until the atlas is re-exported.
 const SAFE_FRAMES={hero_attack:[0],monster_attack:[0],monster_hurt:[0]};
+// The shipped monster atlas contains opaque black background pixels. Do not render it.
+const DISABLED_SPRITES=new Set(['monster']);
 function init(){const stage=document.getElementById('v150Stage'),hero=document.getElementById('heroActor'),mob=document.getElementById('mobActor');if(!stage||!hero||!mob)return false;
 const style=document.createElement('style');style.textContent=`
 #v150Stage .v165-sprite{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:auto;pointer-events:none;z-index:2;filter:drop-shadow(0 6px 8px #0009)}
@@ -24,17 +26,17 @@ const style=document.createElement('style');style.textContent=`
 #home #v150Stage .v165-asset-warning{position:absolute;right:6px;bottom:5px;z-index:40;color:#f4d9a6;background:#201728cf;padding:2px 5px;border-radius:4px;font-size:9px}
 @media(prefers-reduced-motion:reduce){#home #v150Stage .v165-sprite{transition:none!important}}
 `;document.head.append(style);
-const chars={hero:{host:hero,action:'hero_idle',until:0},monster:{host:mob,action:'monster_idle',until:0}};
+const chars={hero:{host:hero,action:'hero_idle',until:0}};
 let assetReady=false,failed=false,raf=0;
 function assign(ch,key,index){const src=file(key,index);if(ch.current===src||ch.failedSrc===src)return;ch.current=src;ch.img.src=src}
-function animate(type,ms){const c=chars[type.startsWith('hero')?'hero':'monster'];if(!COUNT[type])return;c.action=type;c.until=performance.now()+ms;c.frame=0;c.current=''}
-const probe=new Image();probe.onload=()=>{assetReady=true;for(const [key,ch] of Object.entries(chars)){const img=new Image();img.className='v165-sprite';img.alt='';img.setAttribute('aria-hidden','true');img.style.visibility='hidden';img.onload=()=>{img.style.visibility='visible';ch.host.classList.add('v165-sprite-ready');for(const svg of ch.host.querySelectorAll(':scope > svg'))svg.style.setProperty('display','none','important');const weapon=ch.host.querySelector('.v162-weapon');if(weapon)weapon.style.setProperty('display','none','important')};img.onerror=()=>{img.style.visibility='hidden';ch.host.classList.remove('v165-sprite-ready');failed=true;ch.failedSrc=ch.current;ch.current=''};ch.img=img;ch.host.prepend(img)}
+function animate(type,ms){const c=chars[type.startsWith('hero')?'hero':'monster'];if(!c||!COUNT[type])return;c.action=type;c.until=performance.now()+ms;c.frame=0;c.current=''}
+const probe=new Image();probe.onload=()=>{assetReady=true;for(const [key,ch] of Object.entries(chars)){if(DISABLED_SPRITES.has(key))continue;const img=new Image();img.className='v165-sprite';img.alt='';img.setAttribute('aria-hidden','true');img.style.visibility='hidden';img.onload=()=>{img.style.visibility='visible';ch.host.classList.add('v165-sprite-ready');ch.hideLegacy?.();for(const svg of ch.host.querySelectorAll(':scope > svg'))svg.style.setProperty('display','none','important');const weapon=ch.host.querySelector('.v162-weapon');if(weapon)weapon.style.setProperty('display','none','important')};img.onerror=()=>{img.style.visibility='hidden';ch.host.classList.remove('v165-sprite-ready');failed=true;ch.failedSrc=ch.current;ch.current=''};ch.img=img;ch.host.prepend(img);const hideLegacy=()=>{if(!ch.host.classList.contains('v165-sprite-ready'))return;for(const child of Array.from(ch.host.children)){if(child===img)continue;if(child.classList.contains('v165-sprite'))continue;child.style.setProperty('visibility','hidden','important');child.style.setProperty('opacity','0','important')} };ch.hideLegacy=hideLegacy;new MutationObserver(hideLegacy).observe(ch.host,{childList:true,subtree:false});}
 const idle=document.getElementById('v150Idle');if(idle){const bg=new Image();bg.onload=()=>{idle.style.backgroundImage='url("'+ROOT+'sleeping_hero_scene.png")';idle.style.backgroundSize='cover';idle.style.backgroundPosition='center'};bg.src=ROOT+'sleeping_hero_scene.png'}
 let last=0;function draw(t){if(!document.contains(stage))return;if(t-last>110){last=t;for(const ch of Object.values(chars)){if(t>ch.until&&ch.action!== (ch===chars.hero?'hero_idle':'monster_idle')){ch.action=ch===chars.hero?'hero_idle':'monster_idle';ch.frame=0;ch.current=''}const frames=SAFE_FRAMES[ch.action],count=frames?frames.length:COUNT[ch.action],i=Math.floor(ch.frame++/(ch.action.includes('attack')?2:2))%count,frame=frames?frames[i]:i;assign(ch,ch.action,frame)}}raf=requestAnimationFrame(draw)}raf=requestAnimationFrame(draw);
-stage.dataset.spriteStatus='ready';};
+stage.dataset.spriteStatus='hero-only-safe-fallback';};
 probe.onerror=()=>{stage.dataset.spriteStatus='missing';const warn=document.createElement('span');warn.className='v165-asset-warning';warn.textContent='角色素材尚未部署 · 顯示舊版';stage.append(warn)};
 probe.src=file('hero_idle',0);
-window.addEventListener('salaryhero:combat',e=>{if(!assetReady)return;const d=e.detail||{};if(d.type==='attack'){animate('hero_attack',680);animate('monster_hurt',480);if(d.defeated)setTimeout(()=>animate('monster_hurt',500),180)}else if(d.type==='heroHurt'){animate('hero_hurt',460);animate('monster_attack',500)}else if(d.type==='heroDown'){animate('hero_down',1900);animate('monster_attack',500)}});
+window.addEventListener('salaryhero:combat',e=>{if(!assetReady)return;const d=e.detail||{};if(d.type==='attack'){animate('hero_attack',680)}else if(d.type==='heroHurt'){animate('hero_hurt',460)}else if(d.type==='heroDown'){animate('hero_down',1900)}});
 window.salaryHeroSpriteStatus=()=>({ready:assetReady,failed,actions:Object.fromEntries(Object.entries(chars).map(([k,v])=>[k,v.action]))});
 return true}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{if(!init()){let n=0,t=setInterval(()=>{if(init()||++n>25)clearInterval(t)},300)}});else if(!init()){let n=0,t=setInterval(()=>{if(init()||++n>25)clearInterval(t)},300)}
