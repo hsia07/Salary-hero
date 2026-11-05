@@ -1,0 +1,49 @@
+name: Import V18 art ZIP from GitHub Release
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing GitHub Release tag containing v18-art.zip'
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: v18-art-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Download ZIP from the specified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          mkdir -p /tmp/v18-art
+          gh release download "$RELEASE_TAG" --pattern 'v18-art.zip' --dir /tmp/v18-art
+          test -s /tmp/v18-art/v18-art.zip
+      - name: Safely import the 13 manifest assets
+        run: python3 scripts/import-v18-art.py /tmp/v18-art/v18-art.zip
+      - name: Validate files
+        run: python3 scripts/validate-v18-assets.py
+      - name: Run V18 unit tests
+        run: node --test v18/battle-state.test.mjs v18/art-loader.test.mjs
+      - name: Commit imported assets
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add art/v18/runtime/
+          if git diff --cached --quiet; then
+            echo 'No asset changes to commit.'
+          else
+            git commit -m "V18: import production art from release $RELEASE_TAG"
+            git push origin HEAD:main
+          fi
