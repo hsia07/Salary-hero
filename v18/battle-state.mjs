@@ -12,8 +12,8 @@ export class BattleState {
   equip(id) {const items={starter:{attack:12},iron:{attack:18},gold:{attack:26}};if(!items[id])throw new Error('Unknown equipment');this.state.hero.equipment=id;this.state.hero.attack=items[id].attack;this.emit();}
   setAuto(enabled) {this.state.enabled=!!enabled;this.emit();}
   setSpeed(speed) {this.state.speed=speed===2?2:1;this.emit();}
-  tick() {
-    const s=this.state;if(!s.enabled)return false;
+  tick({manual=false}={}) {
+    const s=this.state;if(!s.enabled&&!manual)return false;
     const roll=Math.max(0,Math.min(0.999999,Number(this.random())||0));
     const damage=s.hero.attack+Math.floor(roll*6);
     s.enemy.hp=Math.max(0,s.enemy.hp-damage);
