@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>薪水勇者 V18.6 獨立戰鬥驗證</title>
+<title>薪水勇者 V18.7 獨立戰鬥驗證</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#100d1c;color:#fff0d9;font-family:system-ui,-apple-system,sans-serif}
 main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{line-height:1.5}small{color:#bfb4ce}
@@ -17,25 +17,25 @@ main{max-width:520px;margin:auto;padding:14px}h1{font-size:22px;margin:8px 0}p{l
 .controls{display:flex;gap:8px;flex-wrap:wrap}button{background:#503354;color:#fff1c5;border:1px solid #e5b569;border-radius:12px;padding:12px 15px;font-weight:700;cursor:pointer;flex:1}button:active{background:#785078}
 .stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
 #log{min-height:54px;font-size:13px;color:#e7d6c7}a{color:#f3c678}
-</style></head><body><main><h1>⚔️ 薪水勇者 V18.6</h1><small>獨立戰鬥引擎驗證｜不使用含角色的整張設計稿</small>
+</style></head><body><main><h1>⚔️ 薪水勇者 V18.7</h1><small>獨立戰鬥引擎驗證｜不使用含角色的整張設計稿</small>
 <section class="panel"><div class="stats"><span id="wave">第 1 波</span><span id="gold">🪙 0</span><span id="kills">擊敗 0</span></div></section>
 <div class="arena" id="arena"><div class="window"></div><div class="floor"></div>
 <div class="unit hero" id="hero"><div class="sprite" aria-label="勇者佔位素材">🧑🏻‍🎤</div><b>勇者</b><div class="bar"><i id="heroHp" style="width:100%"></i></div></div>
 <div class="unit enemy" id="enemy"><div class="sprite" aria-label="印表機怪物佔位素材">🖨️</div><b id="enemyName">加班印表機</b><div class="bar"><i id="enemyHp" style="width:100%"></i></div></div>
 <div class="damage" id="damage">-12</div></div>
-<section class="panel"><div class="controls"><button id="auto">自動戰鬥 ON</button><button id="speed">速度 ×1</button><button id="hit">手動攻擊</button></div><p id="log" aria-live="polite">開始戰鬥。角色目前是佔位圖示，尚非正式美術。</p></section>
-<p><small>驗收重點：場景不包含靜態角色；敵人 HP 歸零會消失並生成新敵人；停止自動戰鬥後不會自動攻擊。正式精靈與場景美術尚待製作。</small></p>
+<section class="panel"><div class="controls"><button id="auto">自動戰鬥 ON</button><button id="speed">速度 ×1</button><button id="hit">手動攻擊</button><button id="equip">武器：初始劍</button></div><p id="log" aria-live="polite">開始戰鬥。角色目前是佔位圖示，尚非正式美術。</p></section>
+<p><small>驗收重點：場景不包含靜態角色；敵人 HP 歸零會消失並生成新敵人；停止自動戰鬥後不會自動攻擊。武器切換已影響真實攻擊力，但外觀仍是佔位圖示；正式精靈與場景美術尚待製作。</small></p>
 <p><a href="./v18-art-test.html?v=18.5">返回美術參考頁</a> · <a href="./?v=17.1">返回 V17 正式版</a></p></main>
 <script type="module">
 import {BattleState} from './v18/battle-state.mjs';
 const $=id=>document.getElementById(id);
-const game=new BattleState({onChange:render});
+const game=new BattleState({onChange:render});const gear=['starter','iron','gold'];const gearNames={starter:'初始劍',iron:'鐵劍',gold:'黃金劍'};
 let lastLog='';
 function render(s){
 $('wave').textContent='第 '+s.wave+' 波';$('gold').textContent='🪙 '+s.gold;$('kills').textContent='擊敗 '+s.kills;
 $('heroHp').style.width=(s.hero.hp/s.hero.maxHp*100)+'%';$('enemyHp').style.width=(s.enemy.hp/s.enemy.maxHp*100)+'%';
 $('enemyName').textContent=s.enemy.name+' '+s.enemy.hp+'/'+s.enemy.maxHp;
-$('auto').textContent='自動戰鬥 '+(s.enabled?'ON':'OFF');$('speed').textContent='速度 ×'+s.speed;
+$('equip').textContent='武器：'+gearNames[s.hero.equipment]+'（攻擊 '+s.hero.attack+'）';$('auto').textContent='自動戰鬥 '+(s.enabled?'ON':'OFF');$('speed').textContent='速度 ×'+s.speed;
 const entry=s.log[0];if(!entry)return;
 const key=JSON.stringify(s.log);if(key===lastLog)return;lastLog=key;
 if(entry.type==='defeat'){$('log').textContent='擊敗 '+entry.target+'，獲得 '+entry.reward+' 金幣！';$('enemy').classList.add('dead');setTimeout(()=>$('enemy').classList.remove('dead'),230);}
@@ -44,6 +44,7 @@ else {$('log').textContent='對 '+s.enemy.name+' 造成 '+entry.damage+' 傷害'
 }
 $('auto').onclick=()=>game.setAuto(!game.state.enabled);
 $('speed').onclick=()=>game.setSpeed(game.state.speed===1?2:1);
+$('equip').onclick=()=>{const next=(gear.indexOf(game.state.hero.equipment)+1)%gear.length;game.equip(gear[next]);};
 $('hit').onclick=()=>{if(game.state.enabled){$('log').textContent='自動戰鬥中；請先關閉自動戰鬥再手動攻擊。';return;}game.state.enabled=true;game.tick();game.state.enabled=false;game.emit()};
 let elapsed=0;let previous=performance.now();function frame(now){const delta=Math.min(100,now-previous);previous=now;if(game.state.enabled){elapsed+=delta*game.state.speed;if(elapsed>=1200){elapsed=0;game.tick()}}else elapsed=0;requestAnimationFrame(frame)}requestAnimationFrame(frame);game.emit();
 </script></body></html>
