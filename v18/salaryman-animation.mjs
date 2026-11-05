@@ -3,9 +3,9 @@
  * Deliberately independent of combat logic and the concept screenshot.
  */
 export const SALARYMAN_ANIMATIONS=Object.freeze({
- idle:{frames:['idle-01','idle-02','idle-03','idle-04'],ms:340,loop:true},
- walk:{frames:['walk-01','walk-02'],ms:180,loop:true},
- attack:{frames:['attack-01','attack-02'],ms:150,loop:false},
+ idle:{frames:['idle-01','idle-02'],ms:340,loop:true},
+ walk:{frames:['walk-01','walk-02','walk-03'],ms:180,loop:true},
+ attack:{frames:['attack-01','attack-02','attack-03'],ms:150,loop:false},
  hurt:{frames:['hurt-01','hurt-02'],ms:220,loop:false},
  sleep:{frames:['sleep-01'],ms:500,loop:true}
 });
