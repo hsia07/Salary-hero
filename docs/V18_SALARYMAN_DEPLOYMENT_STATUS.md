@@ -1,23 +1,23 @@
-# V18 社畜勇者：動畫驗收與部署狀態
+# V18 社畜勇者部署狀態（新版 512×512）
 
-## 已驗證
-- 11 張候選 WebP 在本機素材包內：idle ×4、walk ×2、attack ×2、hurt ×2、sleep ×1。
-- 每張 256×256，RGBA 透明度範圍含 0 和 255。
-- 已產生獨立離線 HTML，將全部影格內嵌，可在無網路情況下切換五種動作。
-- GitHub binary blob → tree → commit → branch ref 流程已成功用 96×96 測試圖驗證。
+## 已完成
+- 新版 11 張候選素材已在工作環境驗證：512×512 WebP、RGBA、透明度最小 0、最大 253–254。
+- 動畫狀態及測試對齊新版分布：idle 2 / walk 3 / attack 3 / hurt 2 / sleep 1。
+- GitHub Actions `.github/workflows/v18-import-salaryman-frames.yml` 已改為驗證這 11 張新版素材，透明度允許有損 WebP 的 alpha 最大值略低於 255。
+- V18 動畫驗收頁 `v18/salaryman-preview.html` 會讀取動作設定檔，不需要另外硬編碼影格名稱。
+- 先前已成功透過 Git blob/tree/commit 提交一張 **舊版 96×96 測試影格**，證明二進位提交能力。
 
-## 尚未完成（不得宣稱已完成）
-- 11 張正式 256×256 影格尚未全部推送至 GitHub；目前線上僅 1 張測試圖。
-- 角色圖片源自合成參考圖，邊緣與姿勢品質仍需人工審核。
-- 原本 13 張場景／敵人／特效素材尚未齊備，v18/layered-battle.html 仍會 fail-closed。
-- 尚未在 iPhone Safari 完成正式戰鬥實測。
+## 尚未完成
+- 新版 11 張 512×512 WebP 尚未部署 GitHub。線上 1/11 是舊測試影格，**不是新版素材**。
+- 13 張基礎場景、敵人與特效素材仍缺，`v18/layered-battle.html` 尚不能啟動。
+- 尚未進行手機 Safari 完整播放、效能與透明邊緣驗收。
+- 這些影格是從新版設計圖裁切，不等同於原生獨立繪製的 1024×1024 正式角色。
 
-## 下一個阻塞點
-需要將本機 zip 的二進位內容送到 GitHub（可用現有 GitHub Release + Actions 匯入流程，或逐張 Git blob API）。建立文字版 workflow 不等於圖片已部署。
+## 一次匯入流程
+1. 將已備妥的 11 張 512×512 WebP 打包為 `salaryman-frames.zip`，ZIP 根目錄須直接放 11 個 `idle-01.webp` 等影格，不要包資料夾。
+2. 在 GitHub repository 建立 Release，附上檔名精確為 `salaryman-frames.zip` 的資產。
+3. 於 Actions 執行 **Import V18 salaryman animation frames**，輸入 Release tag。
+4. Workflow 驗證數量、名稱、尺寸、格式、透明度並 commit 到 `art/v18/runtime/hero/frames/`。
+5. 在 `v18/salaryman-preview.html` 確認遠端顯示 11/11，再逐項驗收動畫。
 
-## 驗收規則
-1. 檢查遠端 11 個 WebP URL 全部回應 200 且 MIME 為 image/webp。
-2. 驗證 11 張 256×256 有透明 alpha；不得拿 96×96 測試圖冒充正式影格。
-3. 在手機直式動畫頁逐一播放五種動作。
-4. 完成 13 張基礎素材後，才驗證正式 V18 分層戰鬥。
-5. 不得改動 V17 正式版。
+此流程尚未端對端執行。不得把 workflow 存在視為圖片已部署。
