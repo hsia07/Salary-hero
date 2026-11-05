@@ -14,14 +14,14 @@ const css=document.createElement('style');css.textContent=`
 @media(prefers-reduced-motion:reduce){#home #v150Stage .v162-skill{animation:none!important;opacity:1}}
 `;document.head.append(css);
 const gear=document.createElement('span');gear.className='v162-gear';stage.append(gear);
-const weapon=document.createElement('div');weapon.className='v162-weapon';hero.append(weapon);
+// The authoritative hero SVG already renders equipped weapons; no duplicate overlay.
 let equipped={},lastSignature='',lastKills=null,lastHp=null,fxAt=0,weaponType='劍',rarity=0;
 const icons={劍:'<path d="M12 4L19 0L23 8L17 52L10 54L7 48Z" fill="#e6f5ff" stroke="#9ad5ed" stroke-width="3"/><path d="M0 53L27 48" stroke="#e9b66c" stroke-width="8"/><path d="M13 52L16 78" stroke="#774653" stroke-width="8"/>',法杖:'<path d="M12 22L16 80" stroke="#986a55" stroke-width="8"/><circle cx="11" cy="13" r="13" fill="#7be6ff" stroke="#f1c26c" stroke-width="5"/>',弓:'<path d="M9 3Q45 39 8 79" fill="none" stroke="#d5a25d" stroke-width="8"/><path d="M9 3L9 79" stroke="#fff0bd" stroke-width="2"/><path d="M2 44H27" stroke="#b8e6ff" stroke-width="4"/>',斧:'<path d="M14 10L16 80" stroke="#b28b67" stroke-width="8"/><path d="M14 10Q-18 1 1 45L14 37Z" fill="#d7eaff" stroke="#e4b86b" stroke-width="4"/>',槍:'<path d="M12 27L15 80" stroke="#b48c61" stroke-width="7"/><path d="M12 0L22 25L12 35L2 25Z" fill="#d6e9ff" stroke="#f2c56b" stroke-width="4"/>',匕首:'<path d="M12 15L22 0L25 25L13 46Z" fill="#e4f1ff" stroke="#c6a068" stroke-width="4"/><path d="M2 46L27 40" stroke="#dcb46c" stroke-width="6"/><path d="M15 44L17 75" stroke="#73505a" stroke-width="8"/>'};
 function read(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch{return null}}
 function sync(){const data=read(),eq=data?.equipped||{},signature=JSON.stringify(eq);if(signature===lastSignature)return;lastSignature=signature;equipped=eq;
 const items=Object.values(eq).filter(Boolean),w=eq['武器'];rarity=Math.max(0,Math.min(5,items.reduce((m,x)=>Math.max(m,Number(x.r)||0),0)));
 const name=String(w?.name||'');weaponType=/法杖|魔杖/.test(name)?'法杖':/弓|箭/.test(name)?'弓':/斧|錘|槌/.test(name)?'斧':/長槍|矛/.test(name)?'槍':/匕首/.test(name)?'匕首':'劍';
-stage.style.setProperty('--v162-rarity',COLORS[rarity]);gear.textContent=RAR[rarity]+' · '+(w?.name||'新手武器');weapon.innerHTML='<svg viewBox="0 0 30 82" aria-hidden="true">'+icons[weaponType]+'</svg>';
+stage.style.setProperty('--v162-rarity',COLORS[rarity]);gear.textContent=RAR[rarity]+' · '+(w?.name||'新手武器');
 stage.dataset.rarity=String(rarity);stage.dataset.weapon=weaponType;
 }
 function effect(){const now=performance.now();if(now-fxAt<330)return;fxAt=now;const el=document.createElement('span');el.className='v162-skill';el.textContent=weaponType==='法杖'?'✺':weaponType==='弓'?'➶':weaponType==='斧'?'✹':'⚔';stage.append(el);setTimeout(()=>el.remove(),560)}
