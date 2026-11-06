@@ -36,7 +36,7 @@ jobs:
           import io, zipfile
           from pathlib import Path
           from PIL import Image
-          names=['idle-01','idle-02','walk-01','walk-02','walk-03','attack-01','attack-02','attack-03','hurt-01','hurt-02','sleep-01']
+          names=['idle-01','idle-02','walk-01','walk-02','attack-01','attack-02','attack-03','hurt-01','hurt-02','sleep-01','sleep-02']
           archive=Path('/tmp/salaryman-frames.zip')
           if not archive.exists(): raise SystemExit('Missing salaryman-frames.zip')
           with zipfile.ZipFile(archive) as z:
