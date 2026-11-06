@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Reusable CI importer: decodes connector-committed base64 payloads into runtime art.
 // Does not fabricate missing images. Run with: node tools/v18-import-art-bundle.mjs
-import {readFile,readdir,mkdir,writeFile} from 'node:fs/promises';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join,dirname,resolve} from 'node:path';
 const root=resolve(process.cwd());
@@ -18,10 +18,13 @@ for(const item of manifest.files){
  const chunks=[];
  for(let i=0;i<parts;i++){
   const chunk=(await readFile(join(staging,id+'.'+String(i).padStart(3,'0')+'.b64'),'utf8')).trim();
-  if(!/^[A-Za-z0-9+/=]+$/.test(chunk))throw Error('Invalid base64 chunk');
+  if(!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(chunk))throw Error('Invalid base64 chunk');
+  if(i<parts-1 && chunk.includes('='))throw Error('Padding before final chunk');
   chunks.push(chunk);
  }
- const bytes=Buffer.from(chunks.join(''),'base64');
+ const encoded=chunks.join('');
+ const bytes=Buffer.from(encoded,'base64');
+ if(bytes.toString('base64')!==encoded)throw Error('Noncanonical or corrupted base64: '+path);
  if(bytes.length<32||bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WEBP')throw Error('Not WebP: '+path);
  if(createHash('sha256').update(bytes).digest('hex')!==sha256)throw Error('SHA mismatch: '+path);
  const dest=join(root,path);await mkdir(dirname(dest),{recursive:true});await writeFile(dest,bytes);
