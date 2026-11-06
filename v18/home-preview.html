@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#171327"><title>薪水勇者 V18 · 首頁場景試玩</title>
+<style>
+*{box-sizing:border-box}body{margin:0;color:#f9e5bc;background:radial-gradient(ellipse at 50% 0%,#332344,#100e1d 78%);font:15px system-ui,-apple-system,sans-serif}
+main{width:min(100%,900px);margin:auto;padding:12px 12px calc(25px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}h1{font-size:19px;margin:0;color:#ffe1a2}small,.sub{font-size:12px;color:#c5b5d2}.sub{margin:4px 0 12px}
+.stage{position:relative;aspect-ratio:1672/941;overflow:hidden;border:2px solid #c79b57;border-radius:15px;box-shadow:0 12px 40px #0008;background:#1d1830}
+.stage img{width:100%;height:100%;display:block;object-fit:cover}
+.hot{position:absolute;background:transparent;border:0;cursor:pointer;border-radius:9px;touch-action:manipulation}
+.hot:focus-visible{outline:3px solid #fff0a5;background:#ffd65c33}
+.hot:active{background:#ffe1a644}
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+button,a.btn{font:inherit;min-height:45px;color:#ffe9bd;border:1px solid #a98254;border-radius:11px;background:linear-gradient(#493450,#282239);padding:10px 6px;text-align:center;cursor:pointer;text-decoration:none}
+button.primary{background:linear-gradient(#c28c43,#77502e);border-color:#f3c87e;color:#fff}
+#feedback{border:1px solid #665271;background:#1f1a30;border-radius:12px;margin-top:12px;padding:12px;min-height:78px;line-height:1.6}
+#feedback b{color:#ffd98c}.stats{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin:12px 0;font-variant-numeric:tabular-nums}.stats span{border:1px solid #655078;background:#201a32;padding:7px 10px;border-radius:10px}
+dialog{max-width:min(92vw,420px);border:2px solid #c89a59;border-radius:15px;background:#21192e;color:#fff0cc;padding:20px;box-shadow:0 20px 70px #000c}dialog::backdrop{background:#000a}dialog h2{margin:0 0 12px}dialog p{line-height:1.6}dialog button{width:100%}
+footer{margin-top:15px;color:#bbaaca;font-size:12px;line-height:1.7}
+@media(max-width:520px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{border-radius:10px}.hot{border-radius:3px}}
+</style></head><body><main>
+<header><div><h1>薪水勇者 <small>V18 首頁場景實機預覽</small></h1><p class="sub">夜班辦公室 × 夢境冒險 · 獨立測試，不影響 V17</p></div><a class="btn" href="../index.html">V17 正式版</a></header>
+<section class="stage" aria-label="夜間辦公室場景，可點擊左側選單、中央角色及右側夢境傳送門">
+<img src="../art/v18/home-scene-concept.webp" alt="夜晚辦公室：疲倦的社畜勇者坐在電腦前，橘貓睡在桌邊，窗外有夢境城市與傳送門">
+<button class="hot" style="left:2%;top:26%;width:17%;height:9%" aria-label="開始遊戲" data-act="start"></button>
+<button class="hot" style="left:2%;top:36%;width:17%;height:8%" aria-label="繼續遊戲" data-act="continue"></button>
+<button class="hot" style="left:2%;top:45%;width:17%;height:8%" aria-label="設定" data-act="settings"></button>
+<button class="hot" style="left:2%;top:54%;width:17%;height:8%" aria-label="圖鑑" data-act="codex"></button>
+<button class="hot" style="left:2%;top:63%;width:17%;height:8%" aria-label="成就" data-act="achievements"></button>
+<button class="hot" style="left:78%;top:24%;width:20%;height:54%" aria-label="夢境出勤" data-act="dream"></button>
+<button class="hot" style="left:40%;top:36%;width:30%;height:46%" aria-label="查看社畜勇者" data-act="hero"></button>
+</section>
+<div class="stats"><span>☕ 精神值 <b id="energy">12</b>/100</span><span>💰 模擬薪資 $<b id="salary">128500</b></span><span>🌙 夢境出勤中</span></div>
+<div class="controls">
+<button class="primary" data-act="start">▶ 開始遊戲</button><button data-act="continue">繼續遊戲</button><button data-act="dream">✦ 夢境出勤</button>
+<button data-act="codex">圖鑑</button><button data-act="settings">設定</button><button data-act="achievements">成就</button>
+</div>
+<section id="feedback" role="status"><b>夜班辦公室</b><div id="message">主管終於走了。你決定趴一下……夢境的怪物卻已經開始打卡。點選場景中的角色或傳送門試試看。</div></section>
+<dialog id="modal"><h2 id="modal-title">設定</h2><div id="modal-content"></div><button id="close">關閉</button></dialog>
+<footer>這是可點擊的 V18 首頁場景概念試玩。美術圖含烘焙文字與裝飾性 UI，尚未拆成獨立正式素材；模擬薪資與精神值不會寫入 V17 存檔。首頁按鈕可互動，真正的遊戲內容請從 V17 正式版進入。</footer>
+</main>
+<script>
+const message=document.querySelector('#message'),modal=document.querySelector('#modal');
+const energy=document.querySelector('#energy'),salary=document.querySelector('#salary');
+let paused=false,coins=128500;
+const say=(s)=>message.textContent=s;
+function openPanel(title,content){document.querySelector('#modal-title').textContent=title;document.querySelector('#modal-content').innerHTML=content;modal.showModal();}
+const actions={
+ start(){say('準備開始！目前首頁是 V18 視覺預覽，點「進入正式遊戲」可遊玩既有 V17。');openPanel('開始遊戲','<p>V18 首頁場景已可互動，但完整 V18 戰鬥與正式首頁接線尚未完成。</p><p><a class="btn" href="../index.html">進入 V17 正式遊戲</a></p>')},
+ continue(){openPanel('繼續遊戲','<p>目前沒有獨立的 V18 存檔。可返回 V17 繼續既有進度。</p><p><a class="btn" href="../index.html">前往 V17</a></p>')},
+ dream(){say('傳送門亮起！夢境試玩可先查看勇者五種動作，完整場景戰鬥仍在施工。');openPanel('夢境出勤','<p>辦公室裡的你正在打瞌睡，夢境裡的勇者仍在加班。</p><p><a class="btn" href="./salaryman-preview.html">查看 11 張勇者動畫</a></p>')},
+ hero(){say('「薪水可以少一點嗎？不對……是工作可以少一點嗎？」社畜勇者抱著筆電，眼皮沉重。');energy.textContent=Math.max(0,+energy.textContent-1)},
+ codex(){openPanel('怪物圖鑑','<p>📠 影印機怪：永遠卡紙。</p><p>📧 未讀郵件怪：每次打倒都會再生。</p><p>☕ 咖啡史萊姆：唯一讓勇者有點精神的敵人。</p><p>此處為首頁互動示意，尚未接入正式圖鑑資料。</p>')},
+ settings(){openPanel('預覽設定','<p>這裡只控制本頁的模擬薪資跳動。</p><p><button id="pause" type="button">'+(paused?'恢復':'暫停')+'模擬薪資</button></p>');document.querySelector('#pause').onclick=()=>{paused=!paused;modal.close();say(paused?'模擬薪資已暫停。':'模擬薪資已恢復。')}},
+ achievements(){openPanel('社畜成就','<p>🏆 準時下班（傳說級）</p><p>🏆 一天沒有會議（神話級）</p><p>🏆 午休睡滿 30 分鐘（未解鎖）</p><p>此處為首頁演示內容。</p>')}
+};
+document.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>actions[b.dataset.act]()));
+document.querySelector('#close').onclick=()=>modal.close();
+setInterval(()=>{if(!paused){coins+=1;salary.textContent=coins.toLocaleString('en-US')}},2500);
+</script></body></html>
