@@ -17,6 +17,7 @@ if(weekStart<localStamp(p.y,p.m,1)){const prev=parts(weekStart),last=new Date(Da
 const fmt=(n,dec=0)=>'NT('zh-TW',{minimumFractionDigits:dec,maximumFractionDigits:dec});
 const weekday=['日','一','二','三','四','五','六'][p.weekday];$('#date').textContent=p.y+' 年 '+p.m+' 月 '+p.day+' 日（星期'+weekday+'）· 台灣時間 '+String(p.hour).padStart(2,'0')+':'+String(p.minute).padStart(2,'0')+':'+String(p.second).padStart(2,'0');
 $('#today').textContent=fmt(todayMs*rate,2);$('#week').textContent=fmt(weekMs*rate+previousWeekPay,2);$('#month').textContent=fmt(monthMs*rate,2);$('#forecast').textContent=fmt(totalMs*rate);$('#day').textContent=p.day+' / '+days+' 日';
+if(window.parent!==window){window.parent.postMessage({type:'salary-hero-pay',today:fmt(todayMs*rate,2),week:fmt(weekMs*rate+previousWeekPay,0),month:fmt(monthMs*rate,0),clock:String(p.hour).padStart(2,'0')+':'+String(p.minute).padStart(2,'0')+':'+String(p.second).padStart(2,'0'),status:workingDay(p.y,p.m,p.day,excluded)&&p.hour>=8&&p.hour<17?'計薪中':'非計薪時段'},location.origin)}
 $('#worked').textContent='今日已計薪 '+(todayMs/3600000).toFixed(2)+' 小時';$('#bar').style.width=Math.min(100,todayMs/dayDuration()*100)+'%';
 const on=workingDay(p.y,p.m,p.day,excluded)&&p.hour>=8&&p.hour<17&&!(Number(settings.breakMinutes)===60&&p.hour===12);$('#status').textContent=on?'🟢 上班計薪中':'🌙 非計薪時段';
 }
