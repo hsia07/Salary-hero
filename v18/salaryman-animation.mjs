@@ -2,6 +2,8 @@
  * V18 character animation sequencing. Each frame is a separate transparent image.
  * Deliberately independent of combat logic and the concept screenshot.
  */
+// Active 2/3/3/2/1 frames remain unchanged until approved 2/2/3/2/2 art is deployed.
+export const APPROVED_SALARYMAN_FRAME_PLAN=Object.freeze({idle:2,walk:2,attack:3,hurt:2,sleep:2});
 export const SALARYMAN_ANIMATIONS=Object.freeze({
  idle:{frames:['idle-01','idle-02'],ms:340,loop:true},
  walk:{frames:['walk-01','walk-02','walk-03'],ms:180,loop:true},
