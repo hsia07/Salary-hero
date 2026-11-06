@@ -3,8 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'art/v18/staging/**'
-      - 'tools/v18-import-art-bundle.mjs'
+      - 'art/v18/staging/manifest.json'
   workflow_dispatch:
 permissions:
   contents: write
