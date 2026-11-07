@@ -21,7 +21,7 @@ $('#open-chest').onclick=()=>{
  const box=$('.loot');box.classList.remove('loot-flash');void box.offsetWidth;box.classList.add('loot-flash');
  game.emit();saveBattle(true);
 };
-function render(s){$('#gold').textContent=s.gold;$('#loot-gold').textContent=s.gold;$('#kills').textContent=s.kills;$('#wave').textContent=s.wave;$('#hero-hp').style.width=100*s.hero.hp/s.hero.maxHp+'%';$('#enemy-hp').style.width=100*s.enemy.hp/s.enemy.maxHp+'%';$('#art-gold').textContent=s.gold;$('#art-actual-gold').textContent=s.gold.toLocaleString('zh-TW');$('#art-actual-wave').textContent=s.wave;$('#art-wave').textContent=s.wave;$('#report-wave').textContent=s.wave;$('#art-enemy-hp').style.width=100*s.enemy.hp/s.enemy.maxHp+'%';$('#open-chest').disabled=s.gold<50;saveBattle();}render(game.state);
+function render(s){$('#gold').textContent=s.gold;$('#loot-gold').textContent=s.gold;$('#kills').textContent=s.kills;$('#wave').textContent=s.wave;$('#hero-hp').style.width=100*s.hero.hp/s.hero.maxHp+'%';$('#enemy-hp').style.width=100*s.enemy.hp/s.enemy.maxHp+'%';$('#art-gold').textContent=s.gold;$('#art-actual-gold').textContent=s.gold.toLocaleString('zh-TW');$('#art-actual-gems').textContent='0';$('#art-actual-energy').textContent='120';$('#art-actual-wave').textContent=s.wave;$('#art-wave').textContent=s.wave;$('#report-wave').textContent=s.wave;$('#art-enemy-hp').style.width=100*s.enemy.hp/s.enemy.maxHp+'%';$('#open-chest').disabled=s.gold<50;saveBattle();}render(game.state);
 function strike(now=performance.now()){
  if(busy)return;
  busy=true;
