@@ -72,8 +72,16 @@ function payrollRender(){
  $('#clock').textContent=String(Math.floor(todayMs/3600000)).padStart(2,'0')+':'+String(Math.floor(todayMs/60000)%60).padStart(2,'0')+':'+String(Math.floor(todayMs/1000)%60).padStart(2,'0');
  $('#salary-hint').textContent='本週 '+fmt(week)+' · 本月 '+fmt(month);
  const active=eligible(p.y,p.m,p.day,excluded)&&p.h>=8&&p.h<17&&!(Number(conf.breakMinutes)===60&&p.h===12);
- $('#progress').textContent=active?'● 計薪中':p.h>=17?'✓ 今日已結算':'○ 非計薪時段';
- $('.plaque').firstChild.textContent=active?'🟢 上班中…':p.h>=17?'🏁 今日下班':'🌙 非計薪時段';
+ const scheduled=eligible(p.y,p.m,p.day,excluded);
+ const complete=scheduled&&p.h>=17;
+ const paused=scheduled&&Number(conf.breakMinutes)===60&&p.h===12;
+ const nextShift=()=>{for(let add=0;add<10;add++){const d=new Date(Date.UTC(p.y,p.m-1,p.day+add));const y=d.getUTCFullYear(),m=d.getUTCMonth()+1,day=d.getUTCDate();if(!eligible(y,m,day,add===0?excluded:new Set()))continue;if(add===0&&p.h<8)return '今日 08:00 開始';if(add===0&&p.h<17)return '今日 17:00 下班';return (d.getUTCMonth()+1)+'/'+day+' 08:00 開始'}return '等待下次班表'};
+ const status=active?'● 計薪中':paused?'Ⅱ 午休暫停':complete?'✓ 今日已結算':scheduled&&p.h<8?'☀ 等待上班':'☕ 休息日';
+ $('#progress').textContent=status;
+ $('.plaque').firstChild.textContent=active?'🟢 上班中…':paused?'☕ 午休時間':complete?'🏁 今日下班':scheduled&&p.h<8?'⏳ 等待上班':'😴 休假掛機';
+ $('#salary-hint').textContent=p.m+'/'+p.day+' · 本週 '+fmt(week)+' · 本月 '+fmt(month);
+ const next=nextShift();$('.plaque').setAttribute('title',next);
+
 }
 payrollRender();setInterval(payrollRender,1000);
 const seq={idle:['idle-01','idle-02'],attack:['attack-01','attack-02','attack-03'],sleep:['sleep-01','sleep-02']};window.addEventListener('message',event=>{if(event.origin!==location.origin||!event.data||event.data.type!=='salary-hero-pay')return;payrollRender();});
