@@ -160,4 +160,4 @@ function payrollRender(){
 refreshWorkShop();payrollRender();setInterval(payrollRender,1000);
 const seq={idle:['idle-01','idle-02'],attack:['attack-01','attack-02','attack-03'],sleep:['sleep-01','sleep-02']};window.addEventListener('message',event=>{if(event.origin!==location.origin||!event.data||event.data.type!=='salary-hero-pay')return;payrollRender();});
 function loop(now){if(auto&&!busy&&now-last>1150/speed){last=now;strike(now)}const pose=now<attackEnd?'attack':auto?'idle':'sleep';const list=seq[pose],next=list[Math.floor(now/(pose==='attack'?145:480))%list.length];if(next!==frame){frame=next;$('#hero').src='../art/v18/runtime/hero/frames/'+next+'.webp'}requestAnimationFrame(loop)}requestAnimationFrame(loop);
-</script></body></html>
+</script><script src="./encounters.js" defer></script></body></html>
