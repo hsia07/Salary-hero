@@ -44,10 +44,13 @@ function loadGame(){
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 const artMode=new URLSearchParams(location.search).get('art');
-const chibiV2Mode=artMode==='chibi-v2';
-const chibiArtPreview=artMode==='chibi'||chibiV2Mode;
+// High-resolution Q版 is now the normal V19 hero art, not a hidden opt-in.
+// A temporary ?art=legacy escape hatch exists only to troubleshoot old saves/browsers.
+const chibiV2Mode=artMode!=='legacy';
+const chibiArtPreview=chibiV2Mode;
 const CHIBI_V2_STORAGE='salary-hero-v19-local-chibi-v2-atlas';
 const CHIBI_HURT_STORAGE='salary-hero-v19-local-chibi-hurt-v1';
+let hostedAttackSprite=null,hostedHurtSprite=null;
 let hurtPreviewStart=0;
 const motionReduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
 const hurtTintCanvas=document.createElement('canvas');
@@ -110,14 +113,13 @@ const assetPaths={
  slash:'../art/v19/candidates/effects/slash.svg',
  impact:'../art/v19/candidates/effects/impact.svg'
 };
-if(chibiArtPreview){
- // Opt-in ONLY: the approved-look chibi idle cutout and five POSE animation cells
- // remain art candidates, not finished production sprites.
+if(chibiV2Mode){
  assetPaths.chibiIdle='../art/v19/candidates/characters/starter/chibi/idle-candidate.webp';
- assetPaths.chibiAttack='../art/v19/candidates/characters/starter/chibi/attack-5pose-128.avif';
- if(chibiV2Mode)assetPaths.chibiAttackV2='../art/v19/candidates/characters/starter/chibi/attack-v2-7pose-384.webp';
+ // These are REAL binaries committed to main, not 404 placeholders / 128px previews.
+ assetPaths.chibiAttackV2='../art/v19/candidates/characters/starter/chibi/attack-v2-7pose-512.png?v=5ae7bb6';
+ assetPaths.chibiHurtV1='../art/v19/candidates/characters/starter/chibi/hurt-v1-5pose-384.webp?v=5ae7bb6';
  const sub=$('.subtitle');
- if(sub)sub.textContent+=' · Q版公事包五姿勢測試（候選／外觀暫不隨裝備變化）';
+ if(sub)sub.textContent+=' · 高清 Q版七姿勢攻擊・五姿勢受傷';
 }
 function imageFrom(url){
  return new Promise((resolve,reject)=>{
@@ -183,7 +185,7 @@ function drawStage(now){
  const attacking=Boolean(fx&&typeof fx.wave==='number')&&
     (chibiV2Ready?attackFrameAt(animationMs)>=0:chibiArtPreview?animationMs<680:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
- const chibiReady=Boolean(chibiArtPreview&&images.chibiIdle&&(images.chibiAttack||chibiV2Ready));
+ const chibiReady=Boolean(chibiV2Mode&&images.chibiIdle);
  const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
  const heroX=100+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
  shadow(heroX+133,515,110,17);
@@ -204,10 +206,8 @@ function drawStage(now){
    const cell=validateAttackAtlas(images.chibiAttackV2.naturalWidth,images.chibiAttackV2.naturalHeight);
    if(cell>0)ctx.drawImage(images.chibiAttackV2,frameIndex*cell,0,cell,cell,-25,8,306,306);
    else ctx.drawImage(images.chibiIdle,-7,44,270,270);
-  }else if(attacking&&images.chibiAttack){
-   const frameIndex=Math.min(4,Math.floor(Math.max(0,animationMs)/680*5));
-   ctx.drawImage(images.chibiAttack,frameIndex*128,0,128,128,-25,8,306,306);
   }else{
+   // Missing HD atlas must never silently fall back to a blurry 128×128 AVIF.
    drawHurtTintedSprite(images.chibiIdle,0,0,images.chibiIdle.naturalWidth,
      images.chibiIdle.naturalHeight,-7,44,270,270,hurtVfx);
   }
@@ -430,8 +430,8 @@ function attack(){
  commit('attack');
 }
 async function initChibiV2Lab(){
- // The high-resolution seven-pose master is a LOCAL candidate until a binary has
- // been uploaded to the repository. Test mode can install it once without touching game saves.
+ // GitHub now serves both high-quality original sprite binaries. File inputs
+ // are optional art overrides for comparison only; local game saves are untouched.
  const lab=$('#chibi-v2-lab'),input=$('#chibi-v2-file'),message=$('#chibi-v2-status');
  if(!lab||!input||!message)return;
  lab.hidden=false;
@@ -501,31 +501,38 @@ async function initChibiV2Lab(){
      :'💥 紅白閃、48ms 停頓、局部震動及火花已觸發；尚未載入受傷姿勢圖組（不扣血）。';
    // Visual only: never call transition()/commit() or touch HP, salary or progress.
  });
- try{
-   const savedHurt=localStorage.getItem(CHIBI_HURT_STORAGE);
-   if(savedHurt)await installHurt(savedHurt,false);
- }catch(err){console.warn('還原受傷候選素材失敗',err)}
+ // If the website has real deployed art, never replace it with an outdated
+ // cached cutout from the old manual-upload demo.
+ if(!images.chibiHurtV1){
+   try{
+     const savedHurt=localStorage.getItem(CHIBI_HURT_STORAGE);
+     if(savedHurt)await installHurt(savedHurt,false);
+   }catch(err){console.warn('還原受傷候選素材失敗',err)}
+ }
   $('#chibi-v2-clear')?.addEventListener('click',()=>{
    try{localStorage.removeItem(store);localStorage.removeItem(CHIBI_HURT_STORAGE)}catch{}
-   images.chibiAttackV2=null;
-   images.chibiHurtV1=null;
+   // Reset LOCAL overrides only; keep the deployed HD binaries in active use.
+   images.chibiAttackV2=hostedAttackSprite;
+   images.chibiHurtV1=hostedHurtSprite;
    hurtPreviewStart=0;
    if(hurtInput)hurtInput.value='';
    if(hurtDemo)hurtDemo.disabled=false;
-   if(hurtMsg)hurtMsg.textContent='受傷姿勢已清除；紅閃、停頓、震動、火花仍可直接預覽。';
-   world.dataset.art='chibi-7pose-awaiting-art';
+   if(hurtMsg)hurtMsg.textContent=images.chibiHurtV1?'已還原網站內建五姿勢受傷圖片。':'圖片未載入，仍可預覽紅閃與火花。';
+   world.dataset.art=images.chibiAttackV2&&images.chibiHurtV1?'chibi-hd-ready':'chibi-hd-incomplete';
    input.value='';
-   report('已清除攻擊及受傷候選素材；遊戲進度和薪資資料不受影響。');
+   report('已清除本機覆寫，還原網站內建高解析度攻擊與受傷圖；遊戲進度和薪資資料不受影響。');
  });
  if(images.chibiAttackV2){
-   report('✓ 網站已提供七姿勢素材，可直接攻擊。');
+   report('✓ 已自動載入 7×512px 高畫質攻擊；不需上傳。下方檔案欄位僅供比較候選圖片。');
    return;
  }
  try{
-   const cached=localStorage.getItem(store);
-   if(cached){await install(cached,false);return;}
+   if(!images.chibiAttackV2){
+     const cached=localStorage.getItem(store);
+     if(cached){await install(cached,false);return;}
+   }
  }catch(error){console.warn('讀取本機美術測試圖失敗',error)}
- report('七姿勢正式圖片尚未部署在 GitHub。請先取得候選素材包並選擇其中的「chibi_attack_v2_7pose_384.webp」。');
+ report('✓ 網站已內建高解析度七姿勢攻擊。可直接點「手動攻擊」，不需要上傳檔案。');
 }
 function payRender(){
  const p=salaryAt(Date.now(),40000);
@@ -551,14 +558,32 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
  catch(error){
    if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
-   else if(k==='foreground'||k==='weaponBriefcase'||k==='chibiIdle'||k==='chibiAttack'||k==='chibiAttackV2'){
+   else if(k==='foreground'||k==='weaponBriefcase'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;
  }
 })).then(()=>{
  ready=true;lastAttack=performance.now();
- world.dataset.art=chibiV2Mode?(images.chibiIdle&&images.chibiAttackV2?'chibi-7pose':'chibi-7pose-awaiting-art'):chibiArtPreview?(images.chibiIdle&&images.chibiAttack?'chibi-5pose':'fallback'):'default';
- if(chibiV2Mode)initChibiV2Lab();
+ // Do not mislabel a missing/invalid image as fully functional.
+ const attackCell=images.chibiAttackV2?validateAttackAtlas(images.chibiAttackV2.naturalWidth,images.chibiAttackV2.naturalHeight):0;
+ const hurtCell=images.chibiHurtV1?validateHurtAtlas(images.chibiHurtV1.naturalWidth,images.chibiHurtV1.naturalHeight):0;
+ if(images.chibiAttackV2&&!attackCell)images.chibiAttackV2=null;
+ if(images.chibiHurtV1&&!hurtCell)images.chibiHurtV1=null;
+ world.dataset.art=chibiV2Mode?(images.chibiIdle&&attackCell&&hurtCell?'chibi-hd-ready':'chibi-hd-incomplete'):'legacy';
+ const artNotice=$('#chibi-art-state');
+ if(artNotice){
+   artNotice.hidden=!chibiV2Mode;
+   const ok=world.dataset.art==='chibi-hd-ready';
+   artNotice.dataset.quality=ok?'ready':'missing';
+   artNotice.textContent=ok
+     ?'✓ 高畫質主角已載入：攻擊 7×512px、受傷 5×384px（受傷時自動播放）'
+     :'⚠️ 高清角色素材載入不完整：攻擊 '+(attackCell?'✓':'✕')+'、受傷 '+(hurtCell?'✓':'✕')+'。為避免糊化，停用低解析度攻擊素材。請重整畫面或檢查部署。';
+ }
+ if(chibiV2Mode){
+   hostedAttackSprite=images.chibiAttackV2;
+   hostedHurtSprite=images.chibiHurtV1;
+   initChibiV2Lab();
+ }
  render();
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
