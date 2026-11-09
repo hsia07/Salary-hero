@@ -16,6 +16,7 @@ test('every enemy has a unique name, an actual actor, and a unique attack direct
  assert.equal(new Set(ALL_ENEMIES.map(e=>e.faction)).size,8);
  for(const e of ALL_ENEMIES){
   const m=monsterVisualFor(e.id);
+  assert.equal(monsterVisualFor(e).id,e.id,'gallery lookup via roster object fails');
   for(const property of ['anatomy','attack','hurt','defeat','element'])
    assert.ok(m[property]&&typeof m[property]==='string',e.id+' missing '+property);
  }
