@@ -42,7 +42,7 @@ def main():
      const image=new Image();image.src=src;await image.decode();
      const c=document.createElement('canvas');c.width=2;c.height=2;
      const ctx=c.getContext('2d',{willReadFrequently:true});
-     ctx.drawImage(image,0,0,2,2);
+     ctx.drawImage(image,0,0,1,1,0,0,1,1);
      results.push([image.naturalWidth,image.naturalHeight,
        ctx.getImageData(0,0,1,1).data[3]]);
    }
