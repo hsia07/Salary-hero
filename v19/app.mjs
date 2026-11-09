@@ -147,7 +147,7 @@ function drawWeapon(x,y,t){
  *  The first wave loads the paper monster SVG; all other waves receive a Q版
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
 function paintEnemy(enemy,now){
- const w=enemy.boss?198:177,h=enemy.boss?230:240;
+ const w=enemy.boss?214:enemy.tier==='elite'?194:177,h=enemy.boss?258:enemy.tier==='elite'?248:240;
  const accent=enemy.accent||'#dfa6e6';
  const sprite=enemy.sprite==='printer'?images.boss:enemy.sprite==='paper'?images.minion:null;
  ctx.save();
@@ -334,9 +334,11 @@ function drawStage(now){
    if(!enemy||alpha<=0)return;
    ctx.save();
    ctx.globalAlpha=alpha;
-   ctx.translate(enemyX+88,enemyY+121);
+   const pivotX=enemy.boss?107:enemy.tier==='elite'?97:88.5;
+   const pivotY=enemy.boss?129:enemy.tier==='elite'?124:120;
+   ctx.translate(enemyX+pivotX,enemyY+pivotY);
    ctx.rotate(Math.sin(time*1.1)*.03+(attacking&&hitWindow?.12:0));
-   ctx.translate(-88,-121);
+   ctx.translate(-pivotX,-pivotY);
    paintEnemy(enemy,now);
    ctx.restore();
  };
