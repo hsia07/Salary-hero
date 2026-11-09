@@ -37,7 +37,7 @@ const RAW=[
 ];
 export const MONSTER_ANIMATIONS=Object.freeze(Object.fromEntries(RAW.map(([id,anatomy,attack,hurt,defeat,element],index)=>
  [id,Object.freeze({id,anatomy,attack,hurt,defeat,element,index})])));
-export function monsterVisualFor(enemy){return MONSTER_ANIMATIONS[typeof enemy==='string'?enemy:enemy?.typeId]||MONSTER_ANIMATIONS['paper-gremlin'];}
+export function monsterVisualFor(enemy){return MONSTER_ANIMATIONS[typeof enemy==='string'?enemy:(enemy?.typeId||enemy?.id)]||MONSTER_ANIMATIONS['paper-gremlin'];}
 export const MONSTER_STATES=Object.freeze(['idle','attack','hurt','defeat','special']);
 export function monsterAnimationState(enemy,attackElapsedMs,result){
  if(!result)return {state:'idle',progress:0};
