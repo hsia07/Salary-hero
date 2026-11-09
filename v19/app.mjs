@@ -135,7 +135,7 @@ function drawStage(now){
  const manualHurt=!!(hurtCell&&visualHurtMs<CHIBI_HURT_TOTAL_MS);
  const hurtPoseIndex=manualHurt?hurtFrameAt(visualHurtMs):retaliationHurt?hurtFrameAt(animationMs-attackDurationMs):-1;
  const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
- const attacking=Boolean(fx&&typeof fx.wave==='number')&&(chibiV2Ready?attackFrameAt(animationMs)>=0:phase<.7);
+ const attacking=Boolean(fx&&typeof fx.wave==='number')&&(chibiV2Ready?attackFrameAt(animationMs)>=0:chibiArtPreview?animationMs<680:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
  const chibiReady=Boolean(chibiArtPreview&&images.chibiIdle&&(images.chibiAttack||chibiV2Ready));
  const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
@@ -159,7 +159,7 @@ function drawStage(now){
    if(cell>0)ctx.drawImage(images.chibiAttackV2,frameIndex*cell,0,cell,cell,-25,8,306,306);
    else ctx.drawImage(images.chibiIdle,-7,44,270,270);
   }else if(attacking&&images.chibiAttack){
-   const frameIndex=Math.min(4,Math.floor(Math.max(0,phase)/.70*5));
+   const frameIndex=Math.min(4,Math.floor(Math.max(0,animationMs)/680*5));
    ctx.drawImage(images.chibiAttack,frameIndex*128,0,128,128,-25,8,306,306);
   }else{
    ctx.drawImage(images.chibiIdle,-7,44,270,270);
