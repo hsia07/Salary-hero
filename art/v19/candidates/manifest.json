@@ -1,0 +1,136 @@
+{
+  "version": "v19-art-candidates-2026-11-09",
+  "status": "candidate-awaiting-human-review",
+  "purpose": "Separate reusable vector art candidates; NOT substitutes for the V18 WebP production assets.",
+  "reference": "art/v18/home-master.webp (style reference only, never used as runtime background)",
+  "assetRoot": "art/v19/candidates/",
+  "assetCount": 13,
+  "qualityGate": {
+    "fileExists": true,
+    "svgSource": true,
+    "visualReview": false,
+    "browserDecode": false,
+    "productionWebp": false,
+    "mobilePerformance": false
+  },
+  "assets": [
+    {
+      "group": "背景",
+      "path": "art/v19/candidates/backgrounds/office-corridor.svg",
+      "expectedProductionName": "office-corridor.webp",
+      "transparentRequired": false,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "全景辦公室走廊；無角色"
+    },
+    {
+      "group": "背景",
+      "path": "art/v19/candidates/backgrounds/office-desk.svg",
+      "expectedProductionName": "office-desk.webp",
+      "transparentRequired": false,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "辦公桌與窗景；無角色"
+    },
+    {
+      "group": "主角",
+      "path": "art/v19/candidates/hero/idle.svg",
+      "expectedProductionName": "idle.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "待機姿勢"
+    },
+    {
+      "group": "主角",
+      "path": "art/v19/candidates/hero/attack.svg",
+      "expectedProductionName": "attack.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "揮擊姿勢，額外保留技能軌跡候選"
+    },
+    {
+      "group": "主角",
+      "path": "art/v19/candidates/hero/hurt.svg",
+      "expectedProductionName": "hurt.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "受傷姿勢"
+    },
+    {
+      "group": "主角",
+      "path": "art/v19/candidates/hero/victory.svg",
+      "expectedProductionName": "victory.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "勝利姿勢"
+    },
+    {
+      "group": "主角",
+      "path": "art/v19/candidates/hero/sleeping.svg",
+      "expectedProductionName": "sleeping.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "入睡姿勢"
+    },
+    {
+      "group": "敵人",
+      "path": "art/v19/candidates/enemies/printer-idle.svg",
+      "expectedProductionName": "printer-idle.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "影印機待機"
+    },
+    {
+      "group": "敵人",
+      "path": "art/v19/candidates/enemies/printer-hurt.svg",
+      "expectedProductionName": "printer-hurt.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "影印機受傷"
+    },
+    {
+      "group": "敵人",
+      "path": "art/v19/candidates/enemies/printer-defeat.svg",
+      "expectedProductionName": "printer-defeat.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "影印機倒地"
+    },
+    {
+      "group": "特效",
+      "path": "art/v19/candidates/effects/slash.svg",
+      "expectedProductionName": "slash.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "藍色劍氣"
+    },
+    {
+      "group": "特效",
+      "path": "art/v19/candidates/effects/impact.svg",
+      "expectedProductionName": "impact.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "金紫色命中特效"
+    },
+    {
+      "group": "寵物",
+      "path": "art/v19/candidates/pets/orange-cat.svg",
+      "expectedProductionName": "orange-cat.webp",
+      "transparentRequired": true,
+      "status": "candidate-svg",
+      "review": "pending",
+      "note": "橘貓角色獨立圖"
+    }
+  ],
+  "next": "Human approval -> redraw/adjust as needed -> export individual WebP with alpha -> audit -> wire into engine."
+}
