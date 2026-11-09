@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>薪水勇者 V19｜13 張獨立素材候選驗收</title><style>
+:root{font-family:system-ui,-apple-system,sans-serif;background:#140c25;color:#fbeac8;line-height:1.5}*{box-sizing:border-box}
+body{margin:0;padding:18px 10px 50px}main{max-width:1000px;margin:auto}h1{margin:0;color:#f6cd84;font-size:25px}
+p{color:#d6c2d3}a{color:#fbd08d}small{color:#cab2ca}.note{padding:11px 13px;border:1px solid #ba975f;border-radius:12px;background:#32233b;margin:13px 0}
+#summary{display:flex;justify-content:space-around;align-items:center;gap:10px;border:1px solid #9a765b;border-radius:10px;background:#261b36;padding:10px;margin:14px 0}
+#summary b{color:#ffdb8c}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:#2d203e;border:1px solid #ad855c;border-radius:14px;overflow:hidden;min-width:0}
+.frame{display:grid;place-items:center;aspect-ratio:1/1;background:conic-gradient(#9383a0 25%,#e3dbe7 0 50%,#9383a0 0 75%,#e3dbe7 0) 0 0 / 24px 24px;overflow:hidden}
+.frame.scene{aspect-ratio:5/3}
+.frame img{display:block;width:100%;height:100%;object-fit:contain}
+.meta{padding:9px 10px}.meta strong{display:block;font-size:15px}.meta span{font-size:12px;color:#e4b771}
+.meta small{display:block;font-size:11px;margin-top:4px}.meta a{font-size:12px}
+button{border:1px solid #fbd08d;background:#5a3a62;color:#fff2d5;border-radius:8px;padding:7px 10px;cursor:pointer}
+dialog{padding:15px;width:min(95vw,720px);max-height:90dvh;overflow:auto;background:#251936;color:#ffe7c0;border:2px solid #deb874;border-radius:12px}
+dialog::backdrop{background:#000c}dialog img{width:100%;height:auto;max-height:75dvh;object-fit:contain;background:conic-gradient(#9f91af 25%,#e5dce9 0 50%,#9f91af 0 75%,#e5dce9 0) 0 0 / 24px 24px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style></head><body><main>
+<h1>⚜ 薪水勇者 · V19 美術素材候選驗收</h1>
+<p>逐張檢查背景、角色、敵人、特效與寵物；以下是「獨立 SVG 候選」，不是已通過美術審核的正式 WebP 動畫圖。</p>
+<div class="note">驗收原則：<b>禁止合成截圖作戰鬥背景</b>；每張角色／敵人／寵物／特效需有透明區；不得同時繪入多個動畫姿勢。正式 WebP 輸出、動作補間、手機效能仍待確認。</div>
+<div id="summary"><span>清單：<b id="count">13</b></span><span>載入：<b id="ok">0</b></span><span>異常：<b id="fail">0</b></span></div>
+<div class="grid" id="gallery"></div>
+<div class="note">本頁僅驗證檔案載入與粗略 alpha；不能替代人工角色一致性、與 V18 首頁美術一致度及逐格動作評審。<a href="../play.html">V19 遊戲實驗頁</a></div>
+</main><dialog id="lightbox"><button id="close">✕ 關閉</button><h2 id="name"></h2><img id="large" alt=""></dialog>
+<script type="module">
+const root='../art/v19/candidates/';
+const list=[
+['辦公室走廊','backgrounds/office-corridor.svg',false],
+['辦公桌場景','backgrounds/office-desk.svg',false],
+['勇者・待機','hero/idle.svg',true],
+['勇者・攻擊','hero/attack.svg',true],
+['勇者・受傷','hero/hurt.svg',true],
+['勇者・勝利','hero/victory.svg',true],
+['勇者・睡覺','hero/sleeping.svg',true],
+['影印機・待機','enemies/printer-idle.svg',true],
+['影印機・受傷','enemies/printer-hurt.svg',true],
+['影印機・死亡','enemies/printer-defeat.svg',true],
+['劍氣','effects/slash.svg',true],
+['命中爆炸','effects/impact.svg',true],
+['橘貓','pets/orange-cat.svg',true]
+];
+const gallery=document.querySelector('#gallery'),dlg=document.querySelector('#lightbox');
+let ok=0,fail=0;
+list.forEach(([name,path,needsAlpha])=>{
+ const url=root+path,card=document.createElement('article');card.className='card';
+ const frame=document.createElement('div');frame.className='frame'+(needsAlpha?'':' scene');
+ const img=document.createElement('img');img.alt=name;img.loading='lazy';img.src=url;
+ const meta=document.createElement('div');meta.className='meta';const title=document.createElement('strong');title.textContent=name;
+ const status=document.createElement('span');status.textContent='讀取中…';const small=document.createElement('small');small.textContent=path;
+ const link=document.createElement('a');link.href=url;link.textContent='開啟原始 SVG';link.target='_blank';link.rel='noopener';
+ const button=document.createElement('button');button.textContent='放大檢視';button.onclick=()=>{document.querySelector('#name').textContent=name;document.querySelector('#large').src=url;dlg.showModal();};
+ img.onload=()=>{
+  try {
+   const c=document.createElement('canvas');c.width=c.height=48;const cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(img,0,0,48,48);
+   const a=cx.getImageData(0,0,48,48).data;
+   let transparent=0;for(let i=3;i<a.length;i+=4)if(a[i]<240)transparent++;
+   const pass=needsAlpha?transparent>0:transparent===0;
+   status.textContent=pass?'✓ 檔案可讀取 · '+(needsAlpha?'含透明區':'背景不透明'):'⚠️ Alpha 粗檢不通過';
+   if(pass)ok++;else fail++;
+  }catch(e){status.textContent='⚠️ 無法完成透明度抽檢';fail++;}
+  document.querySelector('#ok').textContent=ok;document.querySelector('#fail').textContent=fail;
+ };
+ img.onerror=()=>{status.textContent='❌ 檔案載入失敗';fail++;document.querySelector('#fail').textContent=fail;};
+ frame.append(img);meta.append(title,status,small,link,document.createTextNode(' '),button);card.append(frame,meta);gallery.append(card);
+});
+document.querySelector('#close').onclick=()=>dlg.close();
+</script></body></html>
