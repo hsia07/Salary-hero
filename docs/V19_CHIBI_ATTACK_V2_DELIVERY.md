@@ -10,19 +10,19 @@
 - `v19/attack-timing.test.mjs`：測試七個影格時間分界、命中/揮擊窗口、錯誤圖片尺寸拒收及異常輸入；自動測試加入 `.github/workflows/v19-gameplay-ci.yml`。
 - 其他既有遊戲使用者的主入口 `/v19/play.html` **仍保持原樣**，不強制切換尚待驗收的 Q 版動畫。
 
-## 本輪已在本機產出的實際圖片（尚未提交 GitHub Binary）
+## 本輪已在本機產出的實際圖片（現已提交 GitHub Binary）
 
 | 素材 | 真實尺寸／數量 | 狀態 |
 |---|---|---|
-| 七張原生姿勢 PNG | 每張 512×512 RGBA，七張分離 | 已在本輪容器產出，技術檢查通過；角色邊緣仍待視覺驗收 |
-| PNG 無損七格圖組 | 3584×512 RGBA | 已產出，尚未推至 GitHub |
+| 七張原生姿勢 PNG | 每張 512×512 RGBA，七張分離 | 已在本輪容器產出並提交 3584×512 無損 PNG；角色邊緣仍待視覺驗收 |
+| PNG 無損七格圖組 | 3584×512 RGBA | 已產出；512px PNG 無損版已提交 GitHub，384px WebP 仍保留於本機素材包 |
 | 高畫質 WebP 七格圖組 | 2688×384 RGBA，品質 94 | 已產出，尚未推至 GitHub |
 | 實際七格 GIF 動畫預覽 | 七張不同來源姿勢 | 已產出；GIF 只是縮圖預覽，不是實際遊戲渲染格式 |
 | 自包含 HTML 互動驗收頁 | 內嵌原始 512px PNG | 已產出，使用者可直接打開／另存並逐格檢查 |
 
-**重要限制：GitHub 的文字檔與測試已提交，但本輪新高畫質圖片仍只存在本次交付的素材包中，沒有被上傳到 GitHub。** 不能宣稱公開 Pages 已自動擁有 7 格高畫質素材，亦不能把舊 128px AVIF 冒充 V2 高畫質素材。
+**2026-11-09 修正：**之前確實只有程式沒有高清圖，導致 V19 仍用 128px AVIF。現已把 **3584×512、每格 512px 的七姿勢攻擊 PNG** 真正上傳至 GitHub `main`，路徑 `art/v19/candidates/characters/starter/chibi/attack-v2-7pose-512.png`，blob SHA `718c1f02fcea8930b66029a326b646a1e625819a`。V19 已改成**預設自動載入高清素材，無須手動選檔**；GitHub Pages 的即時外網部署／Safari 實機尚待確認。舊 128px AVIF 已從遊戲程式的載入清單移除。
 
-目前測試方法：使用者從本次提供的 ZIP 取得 `chibi_attack_v2_7pose_384.webp`，開啟 `/v19/play.html?art=chibi-v2`，於「七姿勢高畫質測試」選擇該圖片。網頁先驗證長寬與透明背景，再由 Canvas 顯示真實七影格；本機選擇只影響該瀏覽器且可清除，不會變動 GitHub 預設版本。後續將正式二進位素材上傳 `art/v19/candidates/characters/starter/chibi/attack-v2-7pose-384.webp` 後，測試模式會自動改為載入 GitHub 版本。
+目前測試方法：使用者從本次提供的 ZIP 取得 `chibi_attack_v2_7pose_384.webp`，開啟 `/v19/play.html?art=chibi-v2`，於「七姿勢高畫質測試」選擇該圖片。網頁先驗證長寬與透明背景，再由 Canvas 顯示真實七影格；本機選擇只影響該瀏覽器且可清除，不會變動 GitHub 預設版本。正式高清二進位素材已上傳 `art/v19/candidates/characters/starter/chibi/attack-v2-7pose-384.webp` 後，測試模式會自動改為載入 GitHub 版本。
 
 ## 動畫節奏／技術規格
 
