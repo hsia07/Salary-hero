@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ITEMS,initial,normalize,transition,todayTW,salaryAt} from './engine.mjs';
+import {shouldRecoil} from './hurt-timing.mjs';
 
 test('each attack mutates actual enemy HP and keeps salary separate',()=>{
  const start=initial(),after=transition(start,'attack',()=>0.4);
@@ -102,4 +103,26 @@ test('rage enemy deals more retaliation damage than its base attack',()=>{
  const a=initial();a.wave=5;a.enemy=enemyFor(5);
  const b=transition(a,'attack',()=>.9);
  assert.ok(a.heroHp-b.heroHp>a.enemy.attack);
+});
+
+test('real enemy retaliation records damage for hit flash but victory never flashes',()=>{
+ const s=initial();s.heroHp=100;s.enemy={...s.enemy,hp:9999};
+ const n=transition(s,'attack',()=>.9);
+ assert.equal(n.last.type,'hit');
+ assert.equal(n.last.retaliationDamage,100-n.heroHp);
+ assert.ok(n.last.retaliationDamage>0);
+ assert.equal(shouldRecoil(100,n.heroHp,n.last),true);
+ const win=initial();win.enemy={...win.enemy,hp:1};
+ const victor=transition(win,'attack',()=>.9);
+ assert.equal(victor.last.type,'victory');
+ assert.equal(shouldRecoil(win.heroHp,victor.heroHp,victor.last),false);
+});
+test('fatal retaliation still displays pain after instant auto-respawn',()=>{
+ const s=initial();s.heroHp=1;s.enemy={...s.enemy,hp:9999};
+ const n=transition(s,'attack',()=>.9);
+ assert.equal(n.heroHp,n.maxHp);
+ assert.equal(n.last.type,'hit');
+ assert.equal(n.last.retaliationDamage,1);
+ assert.equal(n.last.respawned,true);
+ assert.equal(shouldRecoil(1,n.heroHp,n.last),true);
 });
