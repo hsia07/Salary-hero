@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "status": "awaiting_individually_approved_illustrated_sprite_sheets",
+  "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
+  "monsters": {},
+  "note": "No monsters are currently approved for production. Each entry must include independently drawn idle, attack, hurt, defeat (and elite/boss special) sprite sheets. Unapproved PNGs and poster mockups must never be listed."
+}
