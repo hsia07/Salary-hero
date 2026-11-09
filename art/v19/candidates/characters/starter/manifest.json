@@ -3,7 +3,7 @@
   "character": "A - default starter",
   "nameTemplate": "平凡社畜・{playerName}",
   "specification": "docs/V19_CANONICAL_HERO_ART.md",
-  "status": "Idle and five-pose attack candidates uploaded; not yet human-approved or promoted to official runtime",
+  "status": "Reference + attack preview on GitHub; 5 real illustrated hurt poses created and locally verified; production binary NOT pushed to GitHub, visual approval pending",
   "approved": false,
   "date": "2026-11-09",
   "artTarget": {
@@ -111,8 +111,31 @@
     {
       "id": "hurt",
       "path": null,
-      "status": "not-produced",
-      "approved": false
+      "status": "FIVE_INDEPENDENT_HURT_POSES_GENERATED_LOCALLY__TECHNICAL_QA_PASS__NOT_GITHUB_BINARY__OWNER_ART_REVIEW_PENDING",
+      "approved": false,
+      "localDelivery": "salary_hero_chibi_hurt_v1_complete.zip",
+      "atlasName": "hurt_5pose_384.webp",
+      "highResAtlasName": "hurt_5pose_512_lossless.png",
+      "frameNames": [
+        "hurt-00.png",
+        "hurt-01.png",
+        "hurt-02.png",
+        "hurt-03.png",
+        "hurt-04.png"
+      ],
+      "cellSizePx": [
+        512,
+        512
+      ],
+      "atlasPx": [
+        1920,
+        384
+      ],
+      "frameCount": 5,
+      "totalDurationMs": 550,
+      "qaSummary": "Each frame RGBA 512×512, transparency 0–255, feet baseline spread 8px; neighbor pixel differences 28.19%-37.45%; Chromium 390px mobile simulation PASSED using self-contained preview; GitHub Pages and iPhone Safari not tested.",
+      "source": "Five distinct illustrated poses from generated transparent sprite sheet, cropped and normalized to shared ground anchor; no one-image pose transforms.",
+      "githubBinaryCommitted": false
     },
     {
       "id": "victory",
@@ -189,11 +212,11 @@
     "remarks": "Cutout made from character concept sheet, source art has stray purple outline fragments; verify cleaned sprite before production"
   },
   "nextEngineeringTasks": [
-    "Run automatic per-frame AVIF raster, alpha and visual difference QA.",
-    "Integrate five chibi poses with opt-in live V19 combat preview; keep default unaffected.",
-    "Check briefcase/feet anchor consistency and leftover source-sheet purple edging on mobile.",
-    "Re-draw and clean independent source frames in production grade; source cutouts are engineering candidates.",
-    "Continue with independent hurt, victory, walk and sleep poses after attack animation review."
+    "Obtain human visual approval for hurt edges, character resemblance and pain movement.",
+    "Upload original hurt PNG/WebP binaries to GitHub candidate directory; current repo contains only loader and metadata.",
+    "Test 390px mobile preview in actual V19 gameplay and iPhone Safari, including ×1/×2 speed.",
+    "Fix any lingering attack-to-hurt timing/weapon anchoring issues after QA.",
+    "Continue victory/sleep independently after hurt approved."
   ],
   "inGameRequirements": {
     "style": "High-detail fantasy RPG chibi / Q版; mature adult office uncle NOT a teenage boy",
