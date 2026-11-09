@@ -74,12 +74,12 @@ test('24 monster identities with deterministic rotating types and bosses every 4
 });
 test('shield enemy actually mitigates damage',()=>{
  const a=initial();
- a.enemy={...enemyFor(1),trait:'guard'};
+ a.wave=2;a.enemy=enemyFor(2); // wave 2 is the guarded file crab
  const b=transition(a,'attack',()=>.9);
  assert.equal(a.enemy.hp-b.enemy.hp,Math.round(18*.75));
 });
 test('healing enemy actually restores HP between turns',()=>{
- const a=initial();a.enemy={...enemyFor(1),trait:'leech'};
+ const a=initial();a.wave=10;a.enemy=enemyFor(10); // coffee mimic has real leech trait
  const b=transition(a,'attack',()=>.9);
  assert.ok(b.enemy.hp>a.enemy.hp-18);
  assert.ok(b.enemy.hp<=a.enemy.maxHp);
@@ -96,4 +96,10 @@ test('weekly salary returns a finite amount on scheduled workday',()=>{
  assert.ok(Number.isFinite(p.today)&&p.today>0);
  assert.ok(Number.isFinite(p.week)&&p.week>=p.today);
  assert.ok(Number.isFinite(p.month)&&p.month>=p.today);
+});
+
+test('rage enemy deals more retaliation damage than its base attack',()=>{
+ const a=initial();a.wave=5;a.enemy=enemyFor(5);
+ const b=transition(a,'attack',()=>.9);
+ assert.ok(a.heroHp-b.heroHp>a.enemy.attack);
 });
