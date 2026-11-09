@@ -45,9 +45,27 @@ export const BOSSES=Object.freeze([
  {id:'overtime-reaper',name:'週末收割者',icon:'💀',family:'首領／幽靈',trait:'rage',traitText:'終極加班令',accent:'#ef91aa'},
  {id:'meeting-hydra',name:'八頭會議魔龍',icon:'🐲',family:'首領／魔獸',trait:'guard',traitText:'議程護盾',accent:'#e5a6fb'}
 ]);
-export const ALL_ENEMIES=Object.freeze([...COMMON_ENEMIES,...BOSSES]);
-export function enemyDesignFor(wave){
+/** Elite encounters are a separate enemy species pool, not palette-swapped commons.
+ *  Every four floors: common, common, elite, boss. */
+export const ELITE_ENEMIES=Object.freeze([
+ {id:'audit-knight',name:'退件審判騎士',icon:'🛡️',family:'菁英／審核機兵',trait:'guard',traitText:'精鋼文件盾，承受傷害降低 25%',accent:'#ffc768',shape:'knight'},
+ {id:'espresso-demon',name:'三倍濃縮咖啡魔',icon:'☕',family:'菁英／咖啡惡魔',trait:'rage',traitText:'咖啡因暴走，反擊更猛烈',accent:'#ff956c',shape:'beast'},
+ {id:'deadline-hunter',name:'死線獵人',icon:'⏳',family:'菁英／時間獵手',trait:'rage',traitText:'時間追獵，反擊更猛烈',accent:'#c6a3ff',shape:'ghost'},
+ {id:'shredder-mantis',name:'碎紙螳螂隊長',icon:'✂️',family:'菁英／刀刃機甲',trait:'guard',traitText:'刀刃裝甲，承受傷害降低 25%',accent:'#8ce5e0',shape:'insect'},
+ {id:'presentation-siren',name:'簡報催眠妖姬',icon:'📊',family:'菁英／幻術魔物',trait:'leech',traitText:'吸走鬥志，持續回復生命',accent:'#ff9bd2',shape:'ghost'},
+ {id:'overtime-hound',name:'加班地獄犬',icon:'🐺',family:'菁英／異界獵犬',trait:'rage',traitText:'加班狂吠，反擊更猛烈',accent:'#ff866e',shape:'beast'},
+ {id:'server-lich',name:'伺服器巫妖',icon:'💾',family:'菁英／資料亡靈',trait:'leech',traitText:'記憶回收，持續回復生命',accent:'#9affb8',shape:'ghost'},
+ {id:'clockwork-samurai',name:'打卡機武士',icon:'⚔️',family:'菁英／自動機武者',trait:'guard',traitText:'機械護甲，承受傷害降低 25%',accent:'#f7d18a',shape:'knight'}
+]);
+export const ENEMY_TIERS=Object.freeze({normal:'普通',elite:'菁英',boss:'首領'});
+export const ALL_ENEMIES=Object.freeze([...COMMON_ENEMIES,...ELITE_ENEMIES,...BOSSES]);
+export function tierForWave(wave){
  const w=Math.max(1,Math.floor(Number(wave)||1));
- return w%4===0?BOSSES[(Math.floor(w/4)-1)%BOSSES.length]:
+ return w%4===0?'boss':w%4===3?'elite':'normal';
+}
+export function enemyDesignFor(wave){
+ const w=Math.max(1,Math.floor(Number(wave)||1)),tier=tierForWave(w);
+ return tier==='boss'?BOSSES[(Math.floor(w/4)-1)%BOSSES.length]:
+   tier==='elite'?ELITE_ENEMIES[Math.floor((w-3)/4)%ELITE_ENEMIES.length]:
    COMMON_ENEMIES[((w-1)*7+Math.floor((w-1)/4))%COMMON_ENEMIES.length];
 }
