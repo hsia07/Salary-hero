@@ -1,6 +1,6 @@
 /** Salary Hero V19: expansion catalog, data only. Art shown as placeholder until individually approved. */
 export const HERO_STYLES=Object.freeze([
- {id:'starter',name:'平凡社畜',family:'男性職員',icon:'👨🏻‍💼',description:'瘦身形、黑色短髮、乾淨的日本上班族；初始造型'},
+ {id:'starter',name:'平凡社畜',family:'男性職員',icon:'👨🏻‍💼',description:'偏瘦、有點邋遢的日本大叔；亂黑髮、眼下疲憊、襯衫鬆垮與歪領帶；初始造型'},
  {id:'office-lady',name:'東京事務員',family:'女性職員',icon:'👩🏻‍💼',description:'俐落黑髮、深色套裝、平底鞋與滿手文件'},
  {id:'night-shift',name:'爆肝加班族',family:'社畜變體',icon:'🥱',description:'鬍渣、黑眼圈、鬆領帶、披毯式紅披風；後期解鎖方向'},
  {id:'suit-executive',name:'銀髮主管',family:'男性職員',icon:'🧑🏻‍💼',description:'冷靜、銀灰短髮、極整齊的細條紋西裝'},
