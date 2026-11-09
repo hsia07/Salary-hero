@@ -1,5 +1,5 @@
 /* Salary Hero V19 — isolated, deterministic game rules. No UI or screenshot dependency. */
-import {enemyDesignFor,ALL_ENEMIES,HERO_STYLES} from './roster.mjs';
+import {enemyDesignFor,tierForWave,ALL_ENEMIES,HERO_STYLES} from './roster.mjs';
 import {SKINS,SKIN_EVENTS,skinById,drawPool,pickSkin,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -25,11 +25,11 @@ export function todayTW(now=Date.now()){
 }
 export function enemyFor(wave){
  const n=Math.max(1,Math.floor(Number(wave)||1)),design=enemyDesignFor(n);
- const boss=n%4===0,scale=Math.floor((n-1)/4);
- const maxHp=boss?145+scale*48:44+n*10;
- return {id:n,typeId:design.id,boss,name:design.name,icon:design.icon,family:design.family,
-   sprite:design.sprite||null,accent:design.accent,trait:design.trait,traitText:design.traitText,
-   hp:maxHp,maxHp,attack:boss?10+scale*2:3+Math.floor(n/3)};
+ const tier=tierForWave(n),boss=tier==='boss',elite=tier==='elite',scale=Math.floor((n-1)/4);
+ const maxHp=boss?145+scale*48:elite?Math.round((44+n*10)*1.65):44+n*10;
+ return {id:n,typeId:design.id,tier,boss,elite,name:design.name,icon:design.icon,family:design.family,
+   sprite:design.sprite||null,shape:design.shape||null,accent:design.accent,trait:design.trait,traitText:design.traitText,
+   hp:maxHp,maxHp,attack:boss?10+scale*2:elite?7+Math.floor(n/3):3+Math.floor(n/3)};
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
@@ -73,9 +73,9 @@ function awardXP(s,amount){
  s.xp+=amount;
  while(s.xp>=50+s.level*30){s.xp-=50+s.level*30;s.level++;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);notice(s,'✨ 升到 Lv.'+s.level+'，生命上限增加！');}
 }
-function lootRoll(s,rng){
+function lootRoll(s,rng,guaranteed=false){
  const chance=Math.max(0,Math.min(0.999999,Number(rng())||0));
- if(chance<.23 || s.cleared%4===0){
+ if(guaranteed || chance<.23 || s.cleared%4===0){
    const id=s.cleared>=16&&chance<.025?'excalibur':s.cleared>=6&&chance<.10?'notice':'laptop';
    s.pendingDrops.push(id);notice(s,'🎁 敵人掉落 '+ITEMS.find(it=>it.id===id).name+'！');
  }
@@ -154,9 +154,10 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.last={type:'hit',damage,crit,boss:s.enemy.boss};
    notice(s,(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
    if(s.enemy.hp===0){
-     const dead=s.enemy,boss=dead.boss,reward=dead.boss?70+s.wave*9:12+s.wave*4;
+     const dead=s.enemy,boss=dead.boss,elite=dead.tier==='elite';
+     const reward=boss?70+s.wave*9:elite?36+s.wave*7:12+s.wave*4;
      if(!s.defeatedTypes.includes(dead.typeId))s.defeatedTypes.push(dead.typeId);
-     s.gold+=reward;s.cleared++;awardXP(s,boss?75:12+s.wave*2);
+     s.gold+=reward;s.cleared++;awardXP(s,boss?75:elite?38+s.wave*4:12+s.wave*2);
      const today=todayTW(now);
      if(s.activityDaily.day!==today)s.activityDaily={day:today,wins:0,bosses:0};
      s.activityDaily.wins++;
@@ -166,8 +167,9 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        s.heroHp=s.maxHp;
        notice(s,'🏆 首領擊敗！生命回滿，獲得寶箱、寶石與 1 張造型券。');
      }
-     lootRoll(s,rng);s.wave++;s.enemy=enemyFor(s.wave);
-     s.last={type:'victory',damage,crit,boss,gold:reward,newWave:s.wave};
+     if(elite){s.gems+=1;notice(s,'💠 菁英擊敗！獲得額外 1 顆寶石，必定掉落裝備。');}
+     lootRoll(s,rng,elite);s.wave++;s.enemy=enemyFor(s.wave);
+     s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave};
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
    }else{
      const retaliation=s.enemy.attack+(s.enemy.trait==='rage'?Math.max(2,Math.floor(s.wave/3)):0);
