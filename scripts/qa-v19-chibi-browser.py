@@ -15,11 +15,13 @@ def main():
         errors=[]
         page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(URL+'/v19/play.html?art=chibi',wait_until='domcontentloaded')
+        page.wait_for_function("document.querySelector('#name-dialog')?.open || document.querySelector('#attack')?.disabled === false",timeout=20000)
         name=page.locator('#name-dialog[open]')
         if name.count():
             page.locator('#player-name-input').fill('動畫驗收')
             page.locator('#name-form button').click()
         page.wait_for_function("document.querySelector('#attack')?.disabled === false",timeout=20000)
+        page.wait_for_function("document.querySelector('#world')?.dataset?.art === 'chibi-5pose'",timeout=20000)
         if 'Q版真姿勢測試' not in page.locator('.subtitle').inner_text():
             raise AssertionError('Chibi opt-in flag was not activated')
         if page.evaluate('document.documentElement.scrollWidth > window.innerWidth + 3'):
