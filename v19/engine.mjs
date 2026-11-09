@@ -27,7 +27,7 @@ export function enemyFor(wave){
  const n=Math.max(1,Math.floor(Number(wave)||1)),design=enemyDesignFor(n);
  const tier=tierForWave(n),boss=tier==='boss',elite=tier==='elite',scale=Math.floor((n-1)/4);
  const maxHp=boss?175+scale*75:elite?Math.round((44+n*10)*1.65):44+n*10;
- return {id:n,typeId:design.id,tier,boss,elite,name:design.name,icon:design.icon,family:design.family,
+ return {id:n,typeId:design.id,tier,boss,elite,name:design.name,icon:design.icon,family:design.family,faction:design.faction,
    sprite:design.sprite||null,shape:design.shape||null,accent:design.accent,trait:design.trait,traitText:design.traitText,
    hp:maxHp,maxHp,turns:0,attack:boss?10+scale*2:elite?7+Math.floor(n/3):3+Math.floor(n/3)};
 }
