@@ -171,13 +171,17 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
    }else{
      const retaliation=s.enemy.attack+(s.enemy.trait==='rage'?Math.max(2,Math.floor(s.wave/3)):0);
+     const hpBeforeRetaliation=s.heroHp;
      s.heroHp=Math.max(0,s.heroHp-retaliation);
+     // Persist the actual HP lost within this attack result. If the hero dies and
+     // instantly respawns, comparing only before/after HP would miss the injury.
+     s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
      if(s.enemy.trait==='leech'){
        const healed=Math.min(s.enemy.maxHp-s.enemy.hp,Math.max(2,Math.ceil(s.enemy.maxHp*.06)));
        s.enemy.hp+=healed;
        if(healed>0)notice(s,'🩹 '+s.enemy.name+' 回復 '+healed+' HP！');
      }
-     if(!s.heroHp){s.heroHp=s.maxHp;const loss=Math.min(s.gold,10);s.gold-=loss;notice(s,'💫 勇者被打倒，自動復活，損失 '+loss+' 金幣。');}
+     if(!s.heroHp){s.last.respawned=true;s.heroHp=s.maxHp;const loss=Math.min(s.gold,10);s.gold-=loss;notice(s,'💫 勇者被打倒，自動復活，損失 '+loss+' 金幣。');}
    }
    break;
  }
