@@ -37,3 +37,19 @@
 3. 檔案先放 `art/v19/candidates/`，通過尺寸、透明度、視覺驗收及遊戲實際載入測試後，才能移入 runtime。
 4. GitHub 提交成功 ≠ 瀏覽器驗收成功。每張素材單獨標記：已生成、已提交、已通過靜態檢查、已通過實機驗收。
 5. 不得將任何 UI 示意海報上的「已入庫」「已完成」或數字作為工程成果依據。
+
+## 2026-11-09 — 五種主角動作候選檔（已上傳）
+
+| 動作 | GitHub SVG | 宣告尺寸 | 實際轉檔驗證 |
+|---|---|---|---|
+| 待機 | `art/v19/candidates/hero/idle.svg` | 512 × 512 | 待 CI |
+| 攻擊 | `art/v19/candidates/hero/attack.svg` | 512 × 512 | 待 CI |
+| 受傷 | `art/v19/candidates/hero/hurt.svg` | 512 × 512 | 待 CI |
+| 勝利 | `art/v19/candidates/hero/victory.svg` | 512 × 512 | 待 CI |
+| 睡覺 | `art/v19/candidates/hero/sleep.svg` | 512 × 512 | 待 CI |
+
+上傳後對這 5 個檔案完成讀回核對、SVG 標籤結構、引用資源完整性、512×512 尺寸宣告、不含全畫布不透明背景的靜態檢查，均未發現錯誤。檔案 SHA 彼此不同，避免五個動作誤用同一張圖。
+
+**重要限制：靜態檢查不是實際光柵解析度或視覺審查。** GitHub Actions `.github/workflows/v19-render-hero-assets.yml` 與 `scripts/build-v19-hero-assets.py` 才負責實際轉出 WebP、確認 512×512、alpha 透明度、邊界裁切與重新解碼；成功之前不得宣稱 WebP 已備份。驗收頁：`v19/art-qa.html`，可直接在瀏覽器中驗證實際繪製像素。V19 `app.mjs` 已改為讀取五個獨立 SVG 檔，動態切換不同動作。
+
+正式缺失的 13 張 WebP **仍未補齊**；這五張只是 V19 候選替代素材，不等於 V18 正式驗收通過。
