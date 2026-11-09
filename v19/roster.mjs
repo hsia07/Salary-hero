@@ -37,25 +37,25 @@ export const COMMON_ENEMIES=Object.freeze([
 ]);
 export const BOSSES=Object.freeze([
  {id:'printer-overlord',name:'總務老闆・萬頁影印魔王',icon:'🖨️',family:'首領／機械',trait:'guard',traitText:'厚重護甲',sprite:'printer',accent:'#df9b9b',faction:'office'},
- {id:'hr-queen',name:'補給老闆・無底餐車大王',icon:'👑',family:'首領／魔法',trait:'leech',traitText:'吸取工作精力',accent:'#ffc77d',faction:'pantry'},
- {id:'deadline-dragon',name:'齊天老闆・加班大聖',icon:'🐉',family:'首領／龍族',trait:'rage',traitText:'截止日前暴走',accent:'#d28bfb',faction:'myth'},
- {id:'attendance-titan',name:'機房老闆・考勤鋼鐵巨神',icon:'⏳',family:'首領／機械',trait:'guard',traitText:'古老鋼鐵身軀',accent:'#77d4e4',faction:'mecha'},
- {id:'office-ai',name:'主機老闆・無情考績母腦',icon:'🧠',family:'首領／人工智慧',trait:'rage',traitText:'績效暴走',accent:'#92bafa',faction:'digital'},
- {id:'alien-manager',name:'銀河老闆・宇宙區域總經理',icon:'🛸',family:'首領／外星',trait:'leech',traitText:'汲取工作能量',accent:'#b5ed9b',faction:'alien'},
- {id:'overtime-reaper',name:'亡者老闆・週末收割者',icon:'💀',family:'首領／幽靈',trait:'rage',traitText:'終極加班令',accent:'#ef91aa',faction:'nether'},
+ {id:'hr-queen',name:'後勤董事長・無底餐車大王',icon:'👑',family:'首領／魔法',trait:'leech',traitText:'吸取工作精力',accent:'#ffc77d',faction:'pantry'},
+ {id:'deadline-dragon',name:'齊天集團創辦人・加班大聖',icon:'🐉',family:'首領／龍族',trait:'rage',traitText:'截止日前暴走',accent:'#d28bfb',faction:'myth'},
+ {id:'attendance-titan',name:'機房執行長・考勤鋼鐵巨神',icon:'⏳',family:'首領／機械',trait:'guard',traitText:'古老鋼鐵身軀',accent:'#77d4e4',faction:'mecha'},
+ {id:'office-ai',name:'AI 董事會主席・無情考績母腦',icon:'🧠',family:'首領／人工智慧',trait:'rage',traitText:'績效暴走',accent:'#92bafa',faction:'digital'},
+ {id:'alien-manager',name:'銀河企業總裁・宇宙區域總經理',icon:'🛸',family:'首領／外星',trait:'leech',traitText:'汲取工作能量',accent:'#b5ed9b',faction:'alien'},
+ {id:'overtime-reaper',name:'亡者社長・週末收割者',icon:'💀',family:'首領／幽靈',trait:'rage',traitText:'終極加班令',accent:'#ef91aa',faction:'nether'},
  {id:'meeting-hydra',name:'東海老闆・龍王總裁',icon:'🐲',family:'首領／魔獸',trait:'guard',traitText:'議程護盾',accent:'#e5a6fb',faction:'dragon'}
 ]);
 /** Elite encounters are a separate enemy species pool, not palette-swapped commons.
  *  Every four floors: common, common, elite, boss. */
 export const ELITE_ENEMIES=Object.freeze([
  {id:'audit-knight',name:'行政主管・紅筆審核官',icon:'🛡️',family:'菁英／審核機兵',trait:'guard',traitText:'精鋼文件盾，承受傷害降低 25%',accent:'#ffc768',shape:'knight',faction:'office'},
- {id:'espresso-demon',name:'後勤主管・三倍濃縮督導',icon:'☕',family:'菁英／咖啡惡魔',trait:'rage',traitText:'咖啡因暴走，反擊更猛烈',accent:'#ff956c',shape:'beast',faction:'pantry'},
- {id:'deadline-hunter',name:'天庭主管・二郎稽核使',icon:'⏳',family:'菁英／時間獵手',trait:'rage',traitText:'時間追獵，反擊更猛烈',accent:'#c6a3ff',shape:'ghost',faction:'myth'},
- {id:'shredder-mantis',name:'製程主管・碎紙螳螂隊長',icon:'✂️',family:'菁英／刀刃機甲',trait:'guard',traitText:'刀刃裝甲，承受傷害降低 25%',accent:'#8ce5e0',shape:'insect',faction:'mecha'},
- {id:'presentation-siren',name:'星區主管・天狼業務官',icon:'📊',family:'菁英／幻術魔物',trait:'leech',traitText:'吸走鬥志，持續回復生命',accent:'#ff9bd2',shape:'ghost',faction:'alien'},
- {id:'overtime-hound',name:'冥府主管・夜班收魂隊長',icon:'🐺',family:'菁英／異界獵犬',trait:'rage',traitText:'加班狂吠，反擊更猛烈',accent:'#ff866e',shape:'beast',faction:'nether'},
+ {id:'espresso-demon',name:'後勤課長・三倍濃縮督導',icon:'☕',family:'菁英／咖啡惡魔',trait:'rage',traitText:'咖啡因暴走，反擊更猛烈',accent:'#ff956c',shape:'beast',faction:'pantry'},
+ {id:'deadline-hunter',name:'天庭監察使・二郎稽核官',icon:'⏳',family:'菁英／時間獵手',trait:'rage',traitText:'時間追獵，反擊更猛烈',accent:'#c6a3ff',shape:'ghost',faction:'myth'},
+ {id:'shredder-mantis',name:'製程組長・碎紙螳螂隊長',icon:'✂️',family:'菁英／刀刃機甲',trait:'guard',traitText:'刀刃裝甲，承受傷害降低 25%',accent:'#8ce5e0',shape:'insect',faction:'mecha'},
+ {id:'presentation-siren',name:'星區經理・天狼業務官',icon:'📊',family:'菁英／幻術魔物',trait:'leech',traitText:'吸走鬥志，持續回復生命',accent:'#ff9bd2',shape:'ghost',faction:'alien'},
+ {id:'overtime-hound',name:'冥府夜班主任・收魂隊長',icon:'🐺',family:'菁英／異界獵犬',trait:'rage',traitText:'加班狂吠，反擊更猛烈',accent:'#ff866e',shape:'beast',faction:'nether'},
  {id:'server-lich',name:'資安主管・伺服器巫妖',icon:'💾',family:'菁英／資料亡靈',trait:'leech',traitText:'記憶回收，持續回復生命',accent:'#9affb8',shape:'ghost',faction:'digital'},
- {id:'clockwork-samurai',name:'巡海主管・夜叉監督官',icon:'⚔️',family:'菁英／自動機武者',trait:'guard',traitText:'機械護甲，承受傷害降低 25%',accent:'#f7d18a',shape:'knight',faction:'dragon'}
+ {id:'clockwork-samurai',name:'巡海監督官・夜叉將軍',icon:'⚔️',family:'菁英／自動機武者',trait:'guard',traitText:'機械護甲，承受傷害降低 25%',accent:'#f7d18a',shape:'knight',faction:'dragon'}
 ]);
 export const ENEMY_TIERS=Object.freeze({normal:'普通',elite:'菁英',boss:'首領'});
 export const ALL_ENEMIES=Object.freeze([...COMMON_ENEMIES,...ELITE_ENEMIES,...BOSSES]);
