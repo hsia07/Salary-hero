@@ -75,6 +75,12 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <p>只有此測試模式顯示。從本機選擇 <code>chibi_attack_v2_7pose_384.webp</code>（或 512px PNG），遊戲便會使用七張真正不同的攻擊姿勢，不更動薪資與遊戲進度。</p>
 <label for="chibi-v2-file">選擇七格攻擊精靈：</label>
 <input id="chibi-v2-file" type="file" accept="image/webp,image/png" />
+<div class="chibi-hurt-upload">
+<label for="chibi-hurt-file">受傷動畫（選擇素材包中的 hurt_5pose_384.webp）：</label>
+<input id="chibi-hurt-file" type="file" accept="image/webp,image/png" />
+<button id="chibi-hurt-demo" type="button" disabled>🩹 預覽受傷姿勢（不扣血）</button>
+<p id="chibi-hurt-status" role="status">受傷影格尚未載入，不會覆蓋正式角色。</p>
+</div>
 <button id="chibi-v2-clear" type="button">清除本機美術快取</button>
 <p id="chibi-v2-status" role="status">載入中……</p>
 </section>
