@@ -494,13 +494,15 @@ async function initChibiV2Lab(){
      await installHurt(url,true);
    }catch(err){hurtMsg.textContent='❌ '+String(err.message||err)}
  });
- if(hurtDemo)hurtDemo.addEventListener('click',()=>{
+ const previewHurt=()=>{
    hurtPreviewStart=performance.now();
    if(hurtMsg)hurtMsg.textContent=images.chibiHurtV1
-     ?'💥 五姿勢受傷＋角色紅白閃、48ms 停頓、局部震動及命中火花（不扣血）'
-     :'💥 紅白閃、48ms 停頓、局部震動及火花已觸發；尚未載入受傷姿勢圖組（不扣血）。';
+     ?'💥 正在播放五姿勢受傷＋紅白閃、48ms 停頓與局部火花（不扣血）'
+     :'⚠️ 受傷圖組未載入：僅播放受擊特效，人物姿勢無法切換。';
    // Visual only: never call transition()/commit() or touch HP, salary or progress.
- });
+ };
+ if(hurtDemo)hurtDemo.addEventListener('click',previewHurt);
+ $('#hurt-demo-quick')?.addEventListener('click',previewHurt);
  // If the website has real deployed art, never replace it with an outdated
  // cached cutout from the old manual-upload demo.
  if(!images.chibiHurtV1){
