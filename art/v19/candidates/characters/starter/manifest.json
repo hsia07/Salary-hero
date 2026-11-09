@@ -3,7 +3,7 @@
   "character": "A - default starter",
   "nameTemplate": "平凡社畜・{playerName}",
   "specification": "docs/V19_CANONICAL_HERO_ART.md",
-  "status": "Reference + attack preview on GitHub; 5 real illustrated hurt poses created and locally verified; production binary NOT pushed to GitHub, visual approval pending",
+  "status": "Actual 7×512 HD attack + 5×384 hurt binaries committed and selected by DEFAULT V19 renderer; candidate art pending mobile Safari/owner approval.",
   "approved": false,
   "date": "2026-11-09",
   "artTarget": {
@@ -59,59 +59,73 @@
     },
     {
       "id": "attack",
-      "path": "art/v19/candidates/characters/starter/chibi/attack-5pose-128.avif",
-      "status": "FIVE_DISTINCT_POSES_AS_TRANSPARENT_ATLAS__TECHNICAL_QA_IN_PROGRESS__OWNER_ART_QA_PENDING",
+      "path": "art/v19/candidates/characters/starter/chibi/attack-v2-7pose-512.png",
+      "status": "HD_BINARY_COMMITTED__7_DISTINCT_POSES__NOT_YET_OWNER_ART_APPROVED",
       "approved": false,
       "pixels": [
-        640,
-        128
+        3584,
+        512
       ],
-      "frames": 5,
+      "frames": 7,
       "frameSizePx": [
-        128,
-        128
+        512,
+        512
       ],
       "frameRects": [
         {
           "x": 0,
           "y": 0,
-          "w": 128,
-          "h": 128
-        },
-        {
-          "x": 128,
-          "y": 0,
-          "w": 128,
-          "h": 128
-        },
-        {
-          "x": 256,
-          "y": 0,
-          "w": 128,
-          "h": 128
-        },
-        {
-          "x": 384,
-          "y": 0,
-          "w": 128,
-          "h": 128
+          "w": 512,
+          "h": 512
         },
         {
           "x": 512,
           "y": 0,
-          "w": 128,
-          "h": 128
+          "w": 512,
+          "h": 512
+        },
+        {
+          "x": 1024,
+          "y": 0,
+          "w": 512,
+          "h": 512
+        },
+        {
+          "x": 1536,
+          "y": 0,
+          "w": 512,
+          "h": 512
+        },
+        {
+          "x": 2048,
+          "y": 0,
+          "w": 512,
+          "h": 512
+        },
+        {
+          "x": 2560,
+          "y": 0,
+          "w": 512,
+          "h": 512
+        },
+        {
+          "x": 3072,
+          "y": 0,
+          "w": 512,
+          "h": 512
         }
       ],
       "origin": "Cropped and matted from independently illustrated five attack poses in existing AI art sheet, not a new hand-painted original animation",
       "footAnchorPixelY": 117,
-      "githubBlobSha": "38ba97f507adc43680c70536c2149b652d537254",
-      "notes": "Arms, legs and briefcase change across frames; a few source-colored outlines and line-art imperfections still remain. This is an opt-in runtime preview only."
+      "githubBlobSha": "718c1f02fcea8930b66029a326b646a1e625819a",
+      "notes": "Arms, legs and briefcase change across frames; a few source-colored outlines and line-art imperfections still remain. This is an opt-in runtime preview only.",
+      "runtimeDefault": true,
+      "note": "The actual high-definition PNG atlas is now in GitHub main. No longer loads legacy 128px AVIF. Visually accepted animation direction but final art not formally approved."
     },
     {
       "id": "hurt",
-      "path": null,
-      "status": "FIVE_INDEPENDENT_HURT_POSES_GENERATED_LOCALLY__TECHNICAL_QA_PASS__NOT_GITHUB_BINARY__OWNER_ART_REVIEW_PENDING",
+      "path": "art/v19/candidates/characters/starter/chibi/hurt-v1-5pose-384.webp",
+      "status": "HD_BINARY_COMMITTED__5_DISTINCT_POSES__NOT_YET_OWNER_ART_APPROVED",
       "approved": false,
       "localDelivery": "salary_hero_chibi_hurt_v1_complete.zip",
       "atlasName": "hurt_5pose_384.webp",
@@ -135,7 +149,19 @@
       "totalDurationMs": 550,
       "qaSummary": "Each frame RGBA 512×512, transparency 0–255, feet baseline spread 8px; neighbor pixel differences 28.19%-37.45%; Chromium 390px mobile simulation PASSED using self-contained preview; GitHub Pages and iPhone Safari not tested.",
       "source": "Five distinct illustrated poses from generated transparent sprite sheet, cropped and normalized to shared ground anchor; no one-image pose transforms.",
-      "githubBinaryCommitted": false
+      "githubBinaryCommitted": true,
+      "frames": 5,
+      "pixels": [
+        1920,
+        384
+      ],
+      "frameSizePx": [
+        384,
+        384
+      ],
+      "githubBlobSha": "094f8e0e1eb22642d6e383cfbbd6c963e35c96fb",
+      "runtimeDefault": true,
+      "note": "Actual transparent 5-pose WebP committed; triggered on real enemy retaliation + safe demo, with red/white flash and sparks."
     },
     {
       "id": "victory",
@@ -212,11 +238,10 @@
     "remarks": "Cutout made from character concept sheet, source art has stray purple outline fragments; verify cleaned sprite before production"
   },
   "nextEngineeringTasks": [
-    "Obtain human visual approval for hurt edges, character resemblance and pain movement.",
-    "Upload original hurt PNG/WebP binaries to GitHub candidate directory; current repo contains only loader and metadata.",
-    "Test 390px mobile preview in actual V19 gameplay and iPhone Safari, including ×1/×2 speed.",
-    "Fix any lingering attack-to-hurt timing/weapon anchoring issues after QA.",
-    "Continue victory/sleep independently after hurt approved."
+    "Verify public GitHub Pages receives exact binary art files (commit SHA and HTTP 200).",
+    "Run real Safari mobile gameplay: auto/manual attack, injury frame sequence, 1×/2× speed.",
+    "Compare attack and hurt character sizes/camera anchor continuity; adjust to user approval.",
+    "Only after validated: promote approved sprite files into production runtime path."
   ],
   "inGameRequirements": {
     "style": "High-detail fantasy RPG chibi / Q版; mature adult office uncle NOT a teenage boy",
