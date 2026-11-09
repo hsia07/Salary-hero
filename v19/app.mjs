@@ -5,6 +5,7 @@ import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
+import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
 const LOGICAL_WIDTH=720,LOGICAL_HEIGHT=620;
@@ -48,6 +49,52 @@ const chibiArtPreview=artMode==='chibi'||chibiV2Mode;
 const CHIBI_V2_STORAGE='salary-hero-v19-local-chibi-v2-atlas';
 const CHIBI_HURT_STORAGE='salary-hero-v19-local-chibi-hurt-v1';
 let hurtPreviewStart=0;
+const motionReduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
+const hurtTintCanvas=document.createElement('canvas');
+const hurtTintCtx=hurtTintCanvas.getContext('2d');
+/** Tint is composited on an isolated transparent sprite, never over the scene or HUD. */
+function drawHurtTintedSprite(image,sx,sy,sw,sh,dx,dy,dw,dh,effect){
+ if(!effect?.active||effect.flashAlpha<.01||!hurtTintCtx){
+   ctx.drawImage(image,sx,sy,sw,sh,dx,dy,dw,dh);return;
+ }
+ if(hurtTintCanvas.width!==sw||hurtTintCanvas.height!==sh){
+   hurtTintCanvas.width=sw;hurtTintCanvas.height=sh;
+ }
+ hurtTintCtx.clearRect(0,0,sw,sh);
+ hurtTintCtx.drawImage(image,sx,sy,sw,sh,0,0,sw,sh);
+ hurtTintCtx.save();
+ hurtTintCtx.globalCompositeOperation='source-atop';
+ hurtTintCtx.globalAlpha=effect.flashAlpha;
+ hurtTintCtx.fillStyle=effect.flashColor;
+ hurtTintCtx.fillRect(0,0,sw,sh);
+ hurtTintCtx.restore();
+ ctx.drawImage(hurtTintCanvas,dx,dy,dw,dh);
+}
+/** Small red-orange starburst at the hero's shoulder, never full-screen. */
+function drawHurtSparks(x,y,effect){
+ if(!effect.active||effect.sparkAlpha<=.01)return;
+ const t=effect.sparkProgress;
+ ctx.save();
+ ctx.translate(x,y);
+ ctx.globalAlpha=effect.sparkAlpha;
+ const radius=11+t*24;
+ const halo=ctx.createRadialGradient(0,0,1,0,0,radius*1.65);
+ halo.addColorStop(0,'#fff8db');halo.addColorStop(.17,'#ffeaaa');
+ halo.addColorStop(.42,'#ff7051a0');halo.addColorStop(1,'#ff353000');
+ ctx.fillStyle=halo;
+ ctx.beginPath();ctx.arc(0,0,radius*1.65,0,Math.PI*2);ctx.fill();
+ for(let i=0;i<HIT_SPARK_COUNT;i++){
+   const angle=i*Math.PI*2/HIT_SPARK_COUNT+.16;
+   const near=7+t*5,far=17+t*(18+(i%3)*8);
+   ctx.strokeStyle=i%3===0?'#fff5d2':i%2===0?'#ffb15c':'#ff505a';
+   ctx.lineWidth=i%3===0?4:2.6;ctx.lineCap='round';
+   ctx.beginPath();
+   ctx.moveTo(Math.cos(angle)*near,Math.sin(angle)*near);
+   ctx.lineTo(Math.cos(angle)*far,Math.sin(angle)*far);
+   ctx.stroke();
+ }
+ ctx.restore();
+}
 const assetPaths={
  bg:'../art/v19/runtime/backgrounds/office-night.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
@@ -126,33 +173,32 @@ function drawStage(now){
  ctx.fillStyle='#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
  const phase=fx?Math.min((now-fx.start)/1000,2):3;
  const animationMs=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
- const attackDurationMs=(chibiV2Mode&&images.chibiAttackV2)?CHIBI_ATTACK_V2_TOTAL_MS:680;
+ const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
+ const attackDurationMs=chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680;
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
- const retaliationHurt=!!(hurtCell&&fx?.retaliation&&animationMs>=attackDurationMs&&
-      hurtFrameAt(animationMs-attackDurationMs)>=0);
- const visualHurtMs=hurtPreviewStart>0?now-hurtPreviewStart:Infinity;
- const manualHurt=!!(hurtCell&&visualHurtMs<CHIBI_HURT_TOTAL_MS);
- const hurtPoseIndex=manualHurt?hurtFrameAt(visualHurtMs):retaliationHurt?hurtFrameAt(animationMs-attackDurationMs):-1;
- const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
- const attacking=Boolean(fx&&typeof fx.wave==='number')&&(chibiV2Ready?attackFrameAt(animationMs)>=0:chibiArtPreview?animationMs<680:phase<.7);
+ const hurtVfx=hurtPlaybackAt(now,fx?.start??now,state.speed,attackDurationMs,
+   !!fx?.retaliation,hurtPreviewStart,{reducedMotion:motionReduced});
+ const hurtPoseIndex=hurtVfx.active&&hurtCell?hurtVfx.frame:-1;
+ const attacking=Boolean(fx&&typeof fx.wave==='number')&&
+    (chibiV2Ready?attackFrameAt(animationMs)>=0:chibiArtPreview?animationMs<680:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
  const chibiReady=Boolean(chibiArtPreview&&images.chibiIdle&&(images.chibiAttack||chibiV2Ready));
  const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
  const heroX=100+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
  shadow(heroX+133,515,110,17);
- ctx.save();ctx.translate(heroX+120,heroY+148);
+ ctx.save();ctx.translate(heroX+120+hurtVfx.shakeX,heroY+148+hurtVfx.shakeY);
  ctx.rotate(chibiReady?0:(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018));
  ctx.translate(-120,-148);
- const pose=attacking
-   ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:phase>.53&&phase<.75?images.heroHurt:images.heroAttack)
-   :(!state.auto?images.heroSleep:images.hero);
+ const pose=hurtVfx.active?images.heroHurt:(attacking
+   ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:images.heroAttack)
+   :(!state.auto?images.heroSleep:images.hero));
  if(chibiReady){
   // The new V2 sprites never stretch, ghost/cross-fade or translate the whole character.
   // Original art was 7 genuinely different limb/briefcase poses; target dimensions are square.
   if(hurtPoseIndex>=0&&hurtCell){
    // These five drawings change arms, head, legs, expression and briefcase position.
-   ctx.drawImage(hurtAtlas,hurtPoseIndex*hurtCell,0,hurtCell,hurtCell,-25,8,306,306);
+   drawHurtTintedSprite(hurtAtlas,hurtPoseIndex*hurtCell,0,hurtCell,hurtCell,-25,8,306,306,hurtVfx);
   }else if(attacking&&chibiV2Ready){
    const frameIndex=attackFrameAt(animationMs);
    const cell=validateAttackAtlas(images.chibiAttackV2.naturalWidth,images.chibiAttackV2.naturalHeight);
@@ -162,10 +208,11 @@ function drawStage(now){
    const frameIndex=Math.min(4,Math.floor(Math.max(0,animationMs)/680*5));
    ctx.drawImage(images.chibiAttack,frameIndex*128,0,128,128,-25,8,306,306);
   }else{
-   ctx.drawImage(images.chibiIdle,-7,44,270,270);
+   drawHurtTintedSprite(images.chibiIdle,0,0,images.chibiIdle.naturalWidth,
+     images.chibiIdle.naturalHeight,-7,44,270,270,hurtVfx);
   }
  }else{
-  ctx.drawImage(pose,0,0,236,306);
+  drawHurtTintedSprite(pose,0,0,pose.naturalWidth,pose.naturalHeight,0,0,236,306,hurtVfx);
  }
  // Engineering preview only: nondefault outfits have no approved animation sprites yet.
  if(state.activeSkin!=='starter'){
@@ -177,7 +224,18 @@ function drawStage(now){
  }
  ctx.restore();
  glow(heroX+162,heroY+163,state.equipped==='excalibur'?105:46,state.equipped==='excalibur'?'#73ddff50':'#ffd28b25');
- if(!chibiReady)drawWeapon(heroX+188,heroY+222,phase);
+ if(!chibiReady&&!hurtVfx.active)drawWeapon(heroX+188,heroY+222,phase);
+ if(hurtVfx.active){
+   drawHurtSparks(heroX+159,heroY+136,hurtVfx);
+   if(hurtVfx.source==='retaliation'&&fx?.retaliationDamage>0){
+     ctx.save();ctx.globalAlpha=Math.min(1,Math.max(0,(HIT_FEEDBACK_MS-(animationMs-attackDurationMs))/240));
+     ctx.textAlign='center';ctx.font='900 28px system-ui';
+     ctx.lineWidth=5;ctx.strokeStyle='#34111d';ctx.fillStyle='#ff8f83';
+     ctx.strokeText('-'+fx.retaliationDamage,heroX+142,heroY+28);
+     ctx.fillText('-'+fx.retaliationDamage,heroX+142,heroY+28);
+     ctx.restore();
+   }
+ }
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const victory=fx?.result?.type==='victory'&&phase<.95;
@@ -362,12 +420,12 @@ world.addEventListener('pointerup',e=>{
 });
 function attackCooldownMs(){
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
- return base+(fx?.retaliation&&chibiV2Mode&&images.chibiHurtV1?CHIBI_HURT_TOTAL_MS:0);
+ return base+(fx?.retaliation?HIT_FEEDBACK_MS:0);
 }
 function attack(){
  if(!ready)return;
  const now=performance.now();
- if(hurtPreviewStart&&now-hurtPreviewStart<CHIBI_HURT_TOTAL_MS)return;
+ if(hurtPreviewStart&&now-hurtPreviewStart<HIT_FEEDBACK_MS)return;
  if(fx&&now-fx.start<attackCooldownMs()/state.speed)return;
  commit('attack');
 }
@@ -477,7 +535,7 @@ function payRender(){
 }
 function frame(now){
  if(!document.hidden&&ready){
-  if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=CHIBI_HURT_TOTAL_MS)
+  if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=HIT_FEEDBACK_MS)
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
   drawStage(now);
  }
