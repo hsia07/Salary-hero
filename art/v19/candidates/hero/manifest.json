@@ -8,7 +8,7 @@
     "unit": "SVG declared pixels"
   },
   "production_approved": false,
-  "notes": "SVG static validation and GitHub readback passed; alpha, clipping, actual raster dimensions and WebP export require GitHub Actions / browser QA. This is not a formal replacement for 13 missing V18 WebP assets.",
+  "notes": "REJECTED FOR ART STYLE. These five SVGs are technical illustration candidates only. Passing SVG/Canvas/alpha tests MUST NOT be interpreted as art acceptance; never promote or use as official character assets.",
   "pose_entries": [
     {
       "id": "idle",
@@ -19,7 +19,9 @@
       "alpha_background": "transparent-svg",
       "status": "static_preflight_passed",
       "raster_qa": "pending",
-      "runtime_referenced": true
+      "runtime_referenced": true,
+      "visual_status": "rejected-not-canonical",
+      "production_approved": false
     },
     {
       "id": "attack",
@@ -30,7 +32,9 @@
       "alpha_background": "transparent-svg",
       "status": "static_preflight_passed",
       "raster_qa": "pending",
-      "runtime_referenced": true
+      "runtime_referenced": true,
+      "visual_status": "rejected-not-canonical",
+      "production_approved": false
     },
     {
       "id": "hurt",
@@ -41,7 +45,9 @@
       "alpha_background": "transparent-svg",
       "status": "static_preflight_passed",
       "raster_qa": "pending",
-      "runtime_referenced": true
+      "runtime_referenced": true,
+      "visual_status": "rejected-not-canonical",
+      "production_approved": false
     },
     {
       "id": "victory",
@@ -52,7 +58,9 @@
       "alpha_background": "transparent-svg",
       "status": "static_preflight_passed",
       "raster_qa": "pending",
-      "runtime_referenced": true
+      "runtime_referenced": true,
+      "visual_status": "rejected-not-canonical",
+      "production_approved": false
     },
     {
       "id": "sleep",
@@ -63,7 +71,11 @@
       "alpha_background": "transparent-svg",
       "status": "static_preflight_passed",
       "raster_qa": "pending",
-      "runtime_referenced": true
+      "runtime_referenced": true,
+      "visual_status": "rejected-not-canonical",
+      "production_approved": false
     }
-  ]
+  ],
+  "visual_status": "rejected",
+  "visual_rejection_reason": "Wrong youthful flat chibi hero. Canonical Xia is an unshaven, exhausted middle-aged office worker with messy brown hair, visible beard stubble, dark under-eyes, drooping blue-gray eyes, wrinkled white office shirt, loose red tie, employee ID, briefcase and coffee. Not a teenage knight, gold armor or glowing sword."
 }
