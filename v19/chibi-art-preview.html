@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>薪水勇者 V19｜Q 版主角獨立精靈驗收</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#100d20;color:#f9e3c3;font:15px/1.65 system-ui,"Noto Sans TC",sans-serif}
+main{max-width:720px;margin:auto;padding:18px 14px 38px}.heading{font-weight:900;font-size:24px;color:#ffdfa2;text-shadow:0 2px 2px #563856}
+.sub{font-size:13px;color:#e2c3cd}.stage{position:relative;margin:14px 0 18px;background:#1a1527;border:2px solid #e0a86e;border-radius:14px;box-shadow:0 14px 32px #03020bb0;overflow:hidden}
+canvas{display:block;width:100%;height:auto;image-rendering:auto}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:10px 0}
+button{color:#ffedcf;background:linear-gradient(#785273,#43304d);border:1px solid #e9bb7c;border-radius:9px;padding:10px 13px;font:700 14px system-ui;cursor:pointer}
+button[aria-pressed=true]{color:#261b2f;background:linear-gradient(#ffdc9d,#bb8767)}
+label{font-size:13px}input[type=range]{width:155px;accent-color:#f1c78c}
+.detail{padding:14px 16px;border:1px solid #be9770;border-radius:11px;background:linear-gradient(155deg,#34283d,#211a31)}
+.detail b{color:#ffdd9d}.qa{font-size:13px;color:#d3bbc8}.qa strong{color:#ffd49b}
+a{color:#f9d49b}small{color:#d6bcba}#load-state{color:#fcdca9}
+</style></head><body><main>
+<div class="heading">《薪水勇者》V19 · Q 版主角驗收</div>
+<p class="sub">真正獨立的透明 WebP 待機候選素材，與背景分層繪製；這裡<strong>沒有攻擊／受傷／勝利動畫</strong>，不會以單張圖片平移冒充逐格動作。</p>
+<div class="stage"><canvas id="stage" width="720" height="620" aria-label="Q 版主角在辦公室裡的實際繪製比例"></canvas></div>
+<div class="controls" role="group" aria-label="檢查背景">
+<button type="button" data-background="office" aria-pressed="true">辦公室</button>
+<button type="button" data-background="checker" aria-pressed="false">透明棋盤格</button>
+<button type="button" data-background="solid" aria-pressed="false">純色去背檢查</button>
+</div>
+<div class="controls"><label for="scale">角色顯示尺寸</label><input type="range" id="scale" min="170" max="340" step="5" value="280"/><output id="scale-text">280 px</output></div>
+<div id="load-state" role="status">正在檢查實際角色圖片載入……</div>
+<div class="detail">
+ <b>美術交付狀態：第一張獨立 Q 版待機候選</b>
+ <p>外型：35–45 歲偏瘦日本社畜大叔、黑亂短髮、可見鬍渣、黑眼圈、微皺襯衫、鬆暗紅領帶、員工證、公事包。</p>
+ <p>來源是從 AI 角色設定圖中提取和清理的**單一人物**，不是原生逐格製作；裁切邊緣與美術一致性仍待驗收。此圖未被標記為正式 runtime。</p>
+ <p class="qa"><strong>檢查重點：</strong>手機實際比例／邊緣殘色／角色是否過於幼齡／腳底是否對齊。攻擊、受傷、勝利、睡覺仍需要各自重新繪製的肢體姿勢。</p>
+ <small>遊戲本體：<a href="./play.html">返回 V19 戰鬥</a>　｜　原檔：<a href="../art/v19/candidates/characters/starter/chibi/idle-candidate.webp">WebP 384×384</a></small>
+</div>
+</main>
+<script type="module">
+const c=document.getElementById('stage'),ctx=c.getContext('2d');
+const stageBack=new Image(),hero=new Image();
+let backMode='office',height=280,ready=false,bgReady=false;
+const state=document.getElementById('load-state');
+function checker(){for(let y=0;y<620;y+=30){for(let x=0;x<720;x+=30){ctx.fillStyle=(x/30+y/30)%2?'#dfdfdf':'#95999e';ctx.fillRect(x,y,30,30)}}}
+function draw(){
+ ctx.clearRect(0,0,720,620);
+ if(backMode==='checker')checker();else if(backMode==='solid'){ctx.fillStyle='#13aa78';ctx.fillRect(0,0,720,620)}
+ else if(bgReady){ctx.drawImage(stageBack,0,0,720,620);ctx.fillStyle='#1b10384a';ctx.fillRect(0,0,720,620)}
+ else {ctx.fillStyle='#251935';ctx.fillRect(0,0,720,620)}
+ const width=height;const cx=358,ground=517;
+ ctx.save();ctx.fillStyle='#170b2b9c';ctx.beginPath();ctx.ellipse(cx,ground+4,height*.23,13,0,0,Math.PI*2);ctx.fill();ctx.restore();
+ if(ready){
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.drawImage(hero,cx-width*.5,ground-height,width,height);
+ }else{
+  ctx.fillStyle='#ffdbab';ctx.textAlign='center';ctx.font='22px system-ui';
+  ctx.fillText('角色素材尚未載入',360,290);
+ }
+}
+stageBack.onload=()=>{bgReady=true;draw()};
+stageBack.onerror=()=>{bgReady=false;draw()};
+stageBack.src='../art/v19/runtime/backgrounds/office-night.svg';
+hero.onload=async()=>{
+ ready=true;
+ const ratio=Math.max(1,Math.round(window.devicePixelRatio||1));
+ const off=document.createElement('canvas');off.width=384;off.height=384;
+ const o=off.getContext('2d',{willReadFrequently:true});o.drawImage(hero,0,0,384,384);
+ const alpha=o.getImageData(0,0,384,384).data;let low=255,high=0;
+ for(let i=3;i<alpha.length;i+=4){low=Math.min(low,alpha[i]);high=Math.max(high,alpha[i])}
+ state.textContent='載入成功：'+hero.naturalWidth+'×'+hero.naturalHeight+'；Alpha '+low+'–'+high+'；本頁角色為單幀候選（非正式動畫）';
+ if(hero.naturalWidth!==384||hero.naturalHeight!==384||low!==0||high<250)state.textContent+='／技術驗收待修正';
+ draw();
+};
+hero.onerror=()=>{state.textContent='載入失敗：請檢查 Github Pages 部署或檔案路徑';draw()};
+hero.src='../art/v19/candidates/characters/starter/chibi/idle-candidate.webp';
+document.querySelectorAll('[data-background]').forEach(button=>button.addEventListener('click',()=>{
+ backMode=button.dataset.background;document.querySelectorAll('[data-background]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));draw();
+}));
+document.getElementById('scale').addEventListener('input',ev=>{
+ height=Number(ev.target.value);document.getElementById('scale-text').textContent=height+' px';draw();
+});
+draw();
+</script></body></html>
