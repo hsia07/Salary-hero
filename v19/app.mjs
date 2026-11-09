@@ -1,6 +1,6 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName} from './engine.mjs';
-import {HERO_STYLES,ALL_ENEMIES} from './roster.mjs';
+import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
@@ -183,12 +183,53 @@ function paintEnemy(enemy,now){
    ctx.arc(w*.69,h*.52,6,0,Math.PI*2);ctx.fill();
    ctx.strokeStyle='#f4b2be';ctx.lineWidth=5;ctx.beginPath();
    ctx.arc(w*.52,h*.66,18,.05,Math.PI-.05);ctx.stroke();
+   // Elite monsters also get distinct silhouettes, not just a differently colored body.
+   const shape=enemy.shape;
+   if(shape==='knight'){
+     ctx.fillStyle='#b7a3a9';ctx.strokeStyle=accent;ctx.lineWidth=5;
+     ctx.beginPath();ctx.moveTo(w*.26,h*.31);ctx.lineTo(w*.33,h*.16);
+     ctx.lineTo(w*.68,h*.16);ctx.lineTo(w*.78,h*.31);ctx.closePath();ctx.fill();ctx.stroke();
+     ctx.fillStyle='#3b2c4f';ctx.fillRect(w*.30,h*.37,w*.44,h*.085);
+   }else if(shape==='beast'){
+     ctx.fillStyle='#41304a';ctx.strokeStyle=accent;ctx.lineWidth=5;
+     for(const side of [-1,1]){
+       ctx.beginPath();const x=w*(.5+side*.33);
+       ctx.moveTo(x,h*.34);ctx.lineTo(x+side*w*.08,h*.04);
+       ctx.lineTo(x-side*w*.11,h*.19);ctx.closePath();ctx.fill();ctx.stroke();
+     }
+   }else if(shape==='ghost'){
+     ctx.strokeStyle=accent;ctx.lineWidth=6;ctx.beginPath();
+     ctx.moveTo(w*.24,h*.30);ctx.quadraticCurveTo(w*.12,h*.07,w*.27,h*.05);
+     ctx.moveTo(w*.76,h*.30);ctx.quadraticCurveTo(w*.88,h*.07,w*.73,h*.05);ctx.stroke();
+     ctx.fillStyle='#e4b4f9';ctx.beginPath();
+     ctx.moveTo(w*.50,h*.12);ctx.lineTo(w*.58,h*.23);ctx.lineTo(w*.50,h*.34);
+     ctx.lineTo(w*.42,h*.23);ctx.closePath();ctx.fill();
+   }else if(shape==='insect'){
+     ctx.strokeStyle=accent;ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();
+     ctx.moveTo(w*.31,h*.28);ctx.lineTo(w*.13,h*.09);ctx.lineTo(w*.03,h*.19);
+     ctx.moveTo(w*.69,h*.28);ctx.lineTo(w*.87,h*.09);ctx.lineTo(w*.97,h*.19);ctx.stroke();
+     ctx.lineWidth=4;for(let i=0;i<3;i++){
+       ctx.beginPath();ctx.moveTo(w*.22,h*(.60+i*.09));
+       ctx.lineTo(w*.78,h*(.60+i*.09));ctx.stroke();
+     }
+   }
    // The roster's emoji is a badge on the monster, not its only body.
    ctx.font=(enemy.boss?43:37)+'px "Apple Color Emoji","Segoe UI Emoji",system-ui';
    ctx.textAlign='center';ctx.textBaseline='middle';
    ctx.fillText(enemy.icon||'✦',w*.52,h*.32);
  }
  ctx.restore();
+ if(enemy.tier==='elite'||enemy.tier==='boss'){
+   ctx.save();ctx.strokeStyle=enemy.tier==='elite'?'#ffe3a0':accent;
+   ctx.lineWidth=enemy.tier==='elite'?5:7;
+   ctx.globalAlpha=.58+Math.sin(now/260)*.14;
+   ctx.shadowColor=accent;ctx.shadowBlur=17;
+   ctx.beginPath();ctx.ellipse(w*.50,h*.53,w*.56,h*.47,0,0,Math.PI*2);ctx.stroke();
+   ctx.fillStyle=accent;ctx.textAlign='center';ctx.textBaseline='middle';
+   ctx.font=enemy.tier==='boss'?'bold 38px system-ui':'bold 28px system-ui';
+   ctx.fillText(enemy.tier==='boss'?'♛':'✦',w*.5,enemy.tier==='boss'?-13:5);
+   ctx.restore();
+ }
  if(enemy.trait==='guard'){
    ctx.save();ctx.globalAlpha=.33+.12*Math.sin(now/420);ctx.strokeStyle=accent;
    ctx.lineWidth=6;ctx.beginPath();ctx.ellipse(w/2,h/2,w*.50,h*.49,0,0,Math.PI*2);ctx.stroke();ctx.restore();
@@ -340,13 +381,18 @@ function drawStage(now){
 function render(){
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
- $('#wave').textContent='第 '+state.wave+' 關 · '+(state.enemy.boss?'首領戰':'辦公室走廊');
- $('#wave').classList.toggle('boss',state.enemy.boss);
+ const enemyTier=state.enemy.tier||'normal';
+ $('#wave').textContent='第 '+state.wave+' 關 · '+(enemyTier==='boss'?'👑 Boss 戰':enemyTier==='elite'?'✦ 菁英挑戰':'普通戰鬥');
+ $('#wave').classList.toggle('boss',enemyTier==='boss');
+ $('#wave').classList.toggle('elite',enemyTier==='elite');
+ world.dataset.enemyTier=enemyTier;
+ document.querySelector('.enemy-meter')?.classList.toggle('elite',enemyTier==='elite');
+ document.querySelector('.enemy-meter')?.classList.toggle('boss',enemyTier==='boss');
  $('#level').textContent='Lv.'+state.level+' '+playerTitle(state);
  $('#hero-hp-text').textContent=Math.ceil(state.heroHp)+'/'+Math.ceil(state.maxHp);
  $('#hero-hp-fill').style.width=(state.heroHp/state.maxHp*100)+'%';
  $('#enemy-hp-fill').style.width=(state.enemy.hp/state.enemy.maxHp*100)+'%';
- $('#enemy-name').textContent=state.enemy.name;
+ $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+state.enemy.name;
  const trait=$('#enemy-trait');if(trait)trait.textContent=state.enemy.family+' · '+state.enemy.traitText;
  $('#game-log').textContent=state.log[0]||'冒險中';
  $('#auto').textContent='🤖 自動 '+(state.auto?'ON':'OFF');
@@ -385,7 +431,7 @@ function renderPanel(type){
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
-  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · 每四關為首領戰，勝利回滿血</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
+  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · 普通→普通→菁英→Boss，Boss 勝利回滿血</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
   +btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
@@ -405,11 +451,13 @@ function renderPanel(type){
   body.innerHTML+='<p>累積奇遇完成：'+state.encounterHistory.length+' 次</p>'+state.encounterHistory.slice(0,4).map(x=>'<div class="item"><span>'+x.day+'</span><small>'+ENCOUNTERS.find(e=>e.id===x.id)?.name+'</small></div>').join('');
  }else if(type==='collection'){
   const defeated=state.defeatedTypes||[];
-  body.innerHTML='<p>目前已發現 '+defeated.length+'/'+ALL_ENEMIES.length+' 種敵人（含 8 種首領）。每四關一場首領戰；未擊敗前顯示剪影。部分敵人戰場圖示仍是暫用圖示，尚未有合格正式精靈。</p>'
-    +ALL_ENEMIES.map(e=>{
-      const known=defeated.includes(e.id);
-      return '<div class="item '+(known?'':'muted')+'"><span class="symbol">'+(known?e.icon:'◼️')+'</span><div class="detail"><strong>'+(known?escapeHTML(e.name):'??? 未發現敵人')+'</strong><small>'+(known?escapeHTML(e.family+' · '+e.traitText):'擊敗後解鎖資料')+'</small></div></div>';
-    }).join('')
+  const groups=[['👾 普通怪',COMMON_ENEMIES],['✦ 菁英怪',ELITE_ENEMIES],['👑 Boss',BOSSES]];
+  body.innerHTML='<p>圖鑑進度 '+defeated.length+'/'+ALL_ENEMIES.length+' 種（普通 16、菁英 8、Boss 8）。四關一循環：普通→普通→菁英→Boss。未知種族保留剪影；部分專屬美術仍在製作。</p>'
+    +groups.map(([heading,monsters])=>'<h3>'+heading+'　'+monsters.filter(e=>defeated.includes(e.id)).length+'/'+monsters.length+'</h3>'
+      +monsters.map(e=>{
+        const known=defeated.includes(e.id);
+        return '<div class="item '+(known?'':'muted')+'"><span class="symbol">'+(known?e.icon:'◼️')+'</span><div class="detail"><strong>'+(known?escapeHTML(e.name):'??? 未發現敵人')+'</strong><small>'+(known?escapeHTML(e.family+' · '+e.traitText):'擊敗後解鎖資料')+'</small></div></div>';
+      }).join('')).join('')
     +'<h3>📦 裝備收藏</h3>'+ITEMS.map(it=>'<div class="item '+(!state.owned.includes(it.id)?'muted':'')+'"><span class="symbol">'+(state.owned.includes(it.id)?it.icon:'◼️')+'</span><div class="detail"><strong>'+(state.owned.includes(it.id)?it.name:'??? 尚未取得')+'</strong><small>'+it.tier+'裝備</small></div></div>').join('');
  }else if(type==='salary'){
   const p=salaryAt();
