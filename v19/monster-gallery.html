@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>薪水勇者｜32 怪物動作審圖室</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:#150f25;color:#f8e8cb}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#3e244a 0,#150f25 70%);min-height:100vh}
+main{max-width:1020px;margin:auto;padding:16px 14px 70px}h1{margin:5px 0 8px;font-size:clamp(24px,6vw,35px);color:#ffdc99}
+p{line-height:1.55;color:#d9c5d4;margin:7px 0 15px}.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+a{color:#ffe2a5}.small{font-size:12px;color:#e5bed3}.panel{border:1px solid #b98a72;background:#21182fcf;border-radius:18px;overflow:hidden}
+.stage{position:relative;background:radial-gradient(ellipse at 60% 35%,#565179 0,#302344 48%,#171427 100%)}
+#preview{display:block;width:100%;aspect-ratio:720/420;height:auto}
+.info{position:absolute;left:14px;top:13px;pointer-events:none;text-shadow:0 2px 6px #000}
+.info strong{font-size:clamp(16px,4vw,22px);display:block;color:#ffdfab}.info small{color:#dac5f5}
+.controls,.filters{display:flex;flex-wrap:wrap;gap:7px;padding:12px}
+button{border:1px solid #bc9a7b;border-radius:10px;padding:8px 11px;font:700 13px system-ui;background:#483048;color:#fff0d9;cursor:pointer}
+button[aria-pressed=true]{background:#bc745a;border-color:#ffe3a7;color:#1a1223}
+.filters{padding:12px 0}#roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:9px;margin-top:11px}
+.monster{background:#2b2035;border:1px solid #765a72;border-radius:12px;padding:6px;min-width:0;text-align:left}
+.monster[aria-pressed=true]{border-color:#ffe2a7;box-shadow:0 0 0 1px #dca96b}
+.monster canvas{width:100%;height:auto;aspect-ratio:1;display:block;background:radial-gradient(circle,#48364d,#1c172d);border-radius:8px}
+.monster strong{font-size:12px;display:block;margin:5px 2px 2px;line-height:1.4;min-height:33px}
+.monster small{font-size:11px;color:#d0b9d4;margin:0 2px 3px;display:block}
+.status{padding:4px 12px 13px;color:#e2bad1;font-size:12px}
+</style></head><body><main>
+<div class="top"><div><h1>⚔️ 怪物動作審圖室</h1><p>32 種敵人 × 8 陣營。直接點選怪物，檢查待機、攻擊、受擊、死亡與特殊技能。</p></div>
+<a href="./play.html">返回遊戲 ↗</a></div>
+<div class="panel">
+<div class="stage"><canvas id="preview" width="720" height="420"></canvas>
+<div class="info"><strong id="monster-name">怪物載入中</strong><small id="monster-detail">選一隻怪物觀看動作</small></div></div>
+<div class="controls" id="states" aria-label="動畫動作"></div>
+<div class="status">第一輪可玩版動作：每隻具備獨立輪廓、攻擊樣式、受傷與退場效果。正式逐格手繪美術仍在製作中。</div>
+</div>
+<div class="filters" id="filters" aria-label="怪物陣營篩選"></div>
+<div id="roster" aria-label="32 隻怪物"></div>
+</main>
+<script type="module">
+import {COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
+import {drawMonsterActor,drawMonsterVfx,monsterVisualFor} from './monster-motion.mjs';
+const mons=[...COMMON_ENEMIES.map(e=>({...e,tier:'normal',boss:false})),...ELITE_ENEMIES.map(e=>({...e,tier:'elite',boss:false})),...BOSSES.map(e=>({...e,tier:'boss',boss:true}))];
+const factions={all:'全部',office:'辦公室',pantry:'餐飲補給',mecha:'機械',alien:'外星',digital:'AI 數據',nether:'冥府',myth:'西遊記',dragon:'龍宮'};
+const actions={idle:'待機',attack:'攻擊',hurt:'受擊',defeat:'死亡',special:'特殊技能'};
+let selected=mons[0],current='idle',started=performance.now(),faction='all';
+const preview=document.querySelector('#preview'),ctx=preview.getContext('2d');
+function button(label,pressed,handler){const el=document.createElement('button');el.textContent=label;el.setAttribute('aria-pressed',String(pressed));el.onclick=handler;return el;}
+function paintFilters(){
+ const host=document.querySelector('#filters');host.replaceChildren();
+ for(const [id,name] of Object.entries(factions))host.append(button(name,id===faction,()=>{faction=id;paintFilters();paintCards();}));
+}
+function paintCards(){
+ const host=document.querySelector('#roster');host.replaceChildren();
+ for(const mon of mons.filter(x=>faction==='all'||x.faction===faction)){
+  const b=document.createElement('button');b.className='monster';b.setAttribute('aria-pressed',String(mon.id===selected.id));
+  const canv=document.createElement('canvas');canv.width=180;canv.height=180;
+  b.append(canv);const t=document.createElement('strong');t.textContent=mon.name;b.append(t);
+  const small=document.createElement('small');small.textContent=(mon.tier==='boss'?'👑 Boss':mon.tier==='elite'?'✦ 菁英':'普通')+' · '+factions[mon.faction];
+  b.append(small);b.onclick=()=>{selected=mon;started=performance.now();paintCards();updateLabel();};
+  const c=canv.getContext('2d');c.save();c.scale(.77,.70);c.translate(17,5);drawMonsterActor(c,mon,1234,{state:'idle',progress:0});c.restore();
+  host.append(b);
+ }
+}
+function paintStates(){const host=document.querySelector('#states');host.replaceChildren();for(const [id,name] of Object.entries(actions))host.append(button(name,id===current,()=>{current=id;started=performance.now();paintStates();}));}
+function updateLabel(){document.querySelector('#monster-name').textContent=selected.name;const m=monsterVisualFor(selected);document.querySelector('#monster-detail').textContent=factions[selected.faction]+' · '+(selected.tier==='boss'?'Boss':selected.tier==='elite'?'菁英':'普通')+' · '+m.attack+' / '+m.element;}
+function draw(now){
+ const duration=current==='idle'?1300:current==='defeat'?900:current==='hurt'?650:current==='special'?1180:1000;
+ const p=current==='idle'?0:Math.min(1,((now-started)% (duration+320))/duration);
+ const effectState=p>=1?'idle':current;
+ ctx.clearRect(0,0,720,420);
+ const shade=ctx.createLinearGradient(0,0,0,420);shade.addColorStop(0,'#494166');shade.addColorStop(1,'#20192f');ctx.fillStyle=shade;ctx.fillRect(0,0,720,420);
+ ctx.fillStyle='#63445b';ctx.beginPath();ctx.ellipse(364,365,333,65,0,0,Math.PI*2);ctx.fill();
+ ctx.save();ctx.globalAlpha=.45;ctx.fillStyle='#171128';ctx.beginPath();ctx.ellipse(530,354,104,15,0,0,Math.PI*2);ctx.fill();ctx.restore();
+ ctx.save();ctx.translate(410,94);ctx.scale(1.12,1.12);
+ drawMonsterActor(ctx,selected,now,{state:effectState,progress:p});ctx.restore();
+ if(effectState!=='idle')drawMonsterVfx(ctx,selected,effectState,p,{enemyX:410,enemyY:94,heroX:132,heroY:255,now});
+ // Sparring target intentionally abstract, not a second character.
+ ctx.save();ctx.lineWidth=6;ctx.strokeStyle='#d3b07b';ctx.fillStyle='#3d2c46';
+ ctx.beginPath();ctx.arc(159,279,54,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.beginPath();ctx.moveTo(130,279);ctx.lineTo(188,279);ctx.moveTo(159,251);ctx.lineTo(159,306);ctx.stroke();
+ ctx.fillStyle='#ffd49a';ctx.textAlign='center';ctx.font='13px system-ui';ctx.fillText('訓練目標',159,347);ctx.restore();
+ requestAnimationFrame(draw);
+}
+paintStates();paintFilters();paintCards();updateLabel();requestAnimationFrame(draw);
+</script></body></html>
