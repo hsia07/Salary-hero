@@ -6,6 +6,9 @@ on:
     paths:
       - "art/v19/candidates/hero/*.svg"
       - "scripts/build-v19-hero-assets.py"
+      - "v19/app.mjs"
+      - "v19/engine.mjs"
+      - "v19/engine.test.mjs"
       - ".github/workflows/v19-render-hero-assets.yml"
   workflow_dispatch:
 
@@ -29,6 +32,11 @@ jobs:
           python-version: "3.12"
       - name: Install raster and alpha validation dependencies
         run: python -m pip install --disable-pip-version-check "Pillow>=11,<13" "CairoSVG>=2.7,<3"
+      - name: Check JavaScript syntax and actual gameplay state transitions
+        run: |
+          node --check v19/app.mjs
+          node --check v19/engine.mjs
+          node --test v19/engine.test.mjs
       - name: Render 5 independent sprites and reject invalid sizes, alpha or clipping
         run: python scripts/build-v19-hero-assets.py
       - name: Commit only validated candidate sprites and technical report
