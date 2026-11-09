@@ -444,7 +444,7 @@ async function initChibiV2Lab(){
    // Rendering should only use atlases with an actual transparent perimeter.
    const testCanvas=document.createElement('canvas');testCanvas.width=3;testCanvas.height=3;
    const t=testCanvas.getContext('2d',{willReadFrequently:true});
-   t.drawImage(image,0,0,3,3);
+   t.drawImage(image,0,0,1,1,0,0,1,1);
    if(t.getImageData(0,0,1,1).data[3]>3)throw new Error('圖片左上角不透明，可能是整張展示圖而不是透明素材。');
    images.chibiAttackV2=image;
    world.dataset.art='chibi-7pose';
@@ -473,7 +473,7 @@ async function initChibiV2Lab(){
    if(!cell)throw new Error('受傷圖組尺寸不正確：請使用 2560×512 PNG 或 1920×384 WebP，實際為 '+img.naturalWidth+'×'+img.naturalHeight);
    const check=document.createElement('canvas');check.width=2;check.height=2;
    const cx=check.getContext('2d',{willReadFrequently:true});
-   cx.drawImage(img,0,0,2,2);
+   cx.drawImage(img,0,0,1,1,0,0,1,1);
    if(cx.getImageData(0,0,1,1).data[3]>3)throw new Error('圖片左上角不透明，無法當透明精靈。');
    images.chibiHurtV1=img;
    if(hurtDemo)hurtDemo.disabled=false;
