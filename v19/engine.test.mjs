@@ -39,7 +39,7 @@ test('all equipment candidates have unique IDs',()=>assert.equal(new Set(ITEMS.m
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,BOSSES} from './roster.mjs';
 import {enemyFor,playerTitle,cleanPlayerName} from './engine.mjs';
 
-test('nicknames use the player's choice and persist into the role prefix',()=>{
+test('nicknames use the chosen name and persist into the role prefix',()=>{
  const named=transition(initial(),{type:'setName',value:'小行星'});
  assert.equal(named.playerName,'小行星');
  assert.equal(playerTitle(named),'平凡社畜・小行星');
