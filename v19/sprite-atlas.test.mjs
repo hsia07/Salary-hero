@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {ALL_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
-import {validateMonsterAtlasRecord,validateMonsterAtlasManifest,validateSpritePixels,
+import {validateMonsterAtlasRecord,validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,
  spriteFrameIndex,drawMonsterAtlasFrame,selectMonsterAtlasAction,MIN_MONSTER_FRAMES} from './sprite-atlas.mjs';
 const sample=(id='paper-gremlin',tier='normal')=>{
  const states={};
@@ -38,6 +38,21 @@ test('runtime image must decode real atlas pixels before playing',()=>{
  assert.equal(validateSpritePixels(img,r).ok,true);
  assert.equal(drawMonsterAtlasFrame({drawImage:(...args)=>calls.push(args)},img,r,8,11,111,222,380),true);
  assert.equal(calls.length,1);assert.equal(calls[0][1],1536);
+});
+test('pixel QA rejects duplicated or translated still frames',()=>{
+ const r={cell:512,frames:5,durations:Array(5).fill(100)};
+ const fakeImage={naturalWidth:2560,naturalHeight:512};
+ // Mock five equally painted frames, representing a copied pose.
+ const data=new Uint8ClampedArray(96*96*4);
+ for(let y=12;y<84;y++)for(let x=14;x<82;x++){
+  const p=(y*96+x)*4;data[p]=190;data[p+1]=140;data[p+2]=110;data[p+3]=255;
+ }
+ const factory=()=>({getContext:()=>({
+  clearRect:()=>{},drawImage:()=>{},getImageData:()=>({data})
+ })});
+ const errors=inspectAtlasFrameArt(fakeImage,r,'attack',factory);
+ assert.ok(errors.some(e=>e.includes('duplicated or rigidly translated')));
+ assert.ok(!errors.some(e=>e.includes('blank/tiny')));
 });
 test('retaliation and hurt timing are sequenced after hero contact',()=>{
  assert.equal(selectMonsterAtlasAction({type:'hit',retaliationDamage:4},300).state,'idle');
