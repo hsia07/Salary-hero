@@ -37,7 +37,7 @@ test('Taiwan payroll does not generate Sunday salary',()=>{
 });
 test('all equipment candidates have unique IDs',()=>assert.equal(new Set(ITEMS.map(x=>x.id)).size,ITEMS.length));
 
-import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,BOSSES} from './roster.mjs';
+import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES,tierForWave} from './roster.mjs';
 import {enemyFor,playerTitle,cleanPlayerName} from './engine.mjs';
 
 test('nicknames use the chosen name and persist into the role prefix',()=>{
@@ -65,13 +65,39 @@ test('style favorites change save state without falsely equipping unapproved art
  assert.deepEqual(transition(s,{type:'toggleFavoriteStyle',id:'alien'}).styleWishlist,[]);
  assert.equal(s.equipped,'briefcase');
 });
-test('24 monster identities with deterministic rotating types and bosses every 4 waves',()=>{
- assert.equal(COMMON_ENEMIES.length,16);assert.equal(BOSSES.length,8);
- assert.equal(new Set(ALL_ENEMIES.map(e=>e.id)).size,24);
- assert.equal(new Set(ALL_ENEMIES.map(e=>e.name)).size,24);
- const seen=new Set(Array.from({length:100},(_,n)=>enemyFor(n+1).typeId));
- assert.equal(seen.size,24);
- for(let i=1;i<=80;i++)assert.equal(enemyFor(i).boss,i%4===0);
+test('32 unique monster species: 16 normal, 8 elite, 8 bosses on four-floor cadence',()=>{
+ assert.equal(COMMON_ENEMIES.length,16);assert.equal(ELITE_ENEMIES.length,8);assert.equal(BOSSES.length,8);
+ assert.equal(new Set(ALL_ENEMIES.map(e=>e.id)).size,32);
+ assert.equal(new Set(ALL_ENEMIES.map(e=>e.name)).size,32);
+ const seen=new Set(Array.from({length:128},(_,n)=>enemyFor(n+1).typeId));
+ assert.equal(seen.size,32);
+ const order=['normal','normal','elite','boss'];
+ for(let i=1;i<=128;i++){
+   const expected=order[(i-1)%4],e=enemyFor(i);
+   assert.equal(tierForWave(i),expected);
+   assert.equal(e.tier,expected);
+   assert.equal(e.boss,expected==='boss');
+   assert.equal(e.elite,expected==='elite');
+ }
+});
+test('elite monster is stronger, gives a guaranteed equipment drop and one gem',()=>{
+ const elite=enemyFor(3),basic=enemyFor(2);
+ assert.ok(elite.hp>basic.hp);assert.ok(elite.attack>basic.attack);
+ const s=initial();s.wave=3;s.enemy={...elite,hp:1};s.gems=0;
+ const win=transition(s,'attack',()=>.99);
+ assert.equal(win.wave,4);assert.equal(win.enemy.tier,'boss');
+ assert.equal(win.last.elite,true);assert.equal(win.last.tier,'elite');
+ assert.equal(win.gems,1);assert.equal(win.pendingDrops.length,1);
+ assert.ok(win.gold>12+3*4);
+ assert.ok(win.defeatedTypes.includes(elite.typeId));
+});
+test('existing V19 save retains character/progress while adding elite metadata',()=>{
+ const legacy=initial();legacy.wave=3;legacy.gold=246;legacy.playerName='社畜';
+ legacy.enemy={...enemyFor(3),tier:undefined,elite:undefined,hp:20};
+ const saved=normalize(JSON.parse(JSON.stringify(legacy)));
+ assert.equal(saved.gold,246);assert.equal(saved.playerName,'社畜');
+ assert.equal(saved.wave,3);assert.equal(saved.enemy.hp,20);
+ assert.equal(saved.enemy.tier,'elite');assert.equal(saved.enemy.elite,true);
 });
 test('shield enemy actually mitigates damage',()=>{
  const a=initial();
