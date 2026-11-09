@@ -10,7 +10,7 @@
       "name": "平凡社畜・{playerName}",
       "role": "starter",
       "available": false,
-      "visualStatus": "canonical-v2-locked-awaiting-single-character-art",
+      "visualStatus": "V2 appearance baseline accepted; CHIBI runtime sprite unproduced",
       "unlockRule": "available-at-start-after-assets-pass",
       "appearance": {
         "body": "noticeably slim, lean arms/legs and narrow-to-natural shoulders; never bulky or chubby",
@@ -30,7 +30,11 @@
           "coffee cup",
           "laptop"
         ],
-        "style": "polished cinematic Japanese fantasy RPG quality, warm gold/indigo-violet light while character remains a plain tired Japanese salaryman uncle; absolutely no default armor, sword, heroic young-knight silhouette"
+        "style": "polished cinematic Japanese fantasy RPG quality, warm gold/indigo-violet light while character remains a plain tired Japanese salaryman uncle; absolutely no default armor, sword, heroic young-knight silhouette",
+        "inGameFormat": "HIGH DETAIL CHIBI RPG sprite (roughly 2.5-3.2 heads tall), 3/4 view, slim silhouette even with a larger head",
+        "referenceFormat": "Accepted 512x1024 adult full-body appearance reference ONLY; not game sprite / not animation",
+        "animationRule": "Independent body/limb drawings for idle walk attack hurt victory sleep. Transforming a single full-body reference PNG does not count.",
+        "mandatoryFace": "Clearly 35-45 year old Japanese salaryman; short black messy hair, visible stubble, dark circles and sleepy eyes must survive the chibi reduction."
       },
       "artRoot": "art/v19/candidates/characters/starter/",
       "approvedAssetPaths": [],
@@ -86,7 +90,7 @@
     "needCropCheck": true,
     "needBrowserPlayback": true
   },
-  "note": "Canonical starter A is now V2: slim, slightly scruffy black-haired Japanese office-worker uncle, 35-45 with visible short stubble, tired eyes, wrinkled shirt and loose tie. No approved independent character sprite yet; old flat SVGs visually rejected. B is a more severely burnout unlockable version, not where all A's mature fatigue goes.",
+  "note": "Canonical A portrait proportions are NOT in-game proportions. Game uses polished Q版 chibi with visible Japanese office uncle age, slim silhouette and independent pose animation. Do not falsely mark reference PNG animation as approved.",
   "conceptCatalog": {
     "module": "v19/roster.mjs",
     "styleCount": 16,
