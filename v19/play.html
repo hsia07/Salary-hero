@@ -15,10 +15,10 @@
 #world{display:block;width:100%;height:auto;aspect-ratio:720/620;background:linear-gradient(#41385d,#201630);touch-action:manipulation}
 .stage-head{position:absolute;top:10px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:center;gap:9px;pointer-events:none}
 .stage-head span{padding:6px 10px;background:#24162de8;color:#ffe3a3;border:1px solid #e1b675;border-radius:8px;font-size:12px;font-weight:800;box-shadow:0 3px 12px #0007}
-.stage-head .boss{background:#5f253cea;border-color:#ffb09b}
+.stage-head .boss{background:#5f253cea;border-color:#ffb09b}.stage-head .elite{background:#6a4222e8;border-color:#ffdf9b;color:#fff0c4;box-shadow:0 0 18px #ffd47d66}
 .bars{position:absolute;bottom:6px;left:8px;right:8px;display:grid;grid-template-columns:1fr 1fr;gap:14px;pointer-events:none}
 .bars article{font-size:11px;font-weight:800;text-shadow:0 2px #000}.bars article:last-child{text-align:right}
-.meter{border:1px solid #e2b67b;background:#2c182c;height:9px;border-radius:12px;overflow:hidden;margin-top:4px;box-shadow:0 2px 4px #0008}.meter i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#d94b74,#ffa76f);transition:width .22s}.enemy-meter i{background:linear-gradient(90deg,#75baff,#b374ef)}
+.meter{border:1px solid #e2b67b;background:#2c182c;height:9px;border-radius:12px;overflow:hidden;margin-top:4px;box-shadow:0 2px 4px #0008}.meter i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#d94b74,#ffa76f);transition:width .22s}.enemy-meter i{background:linear-gradient(90deg,#75baff,#b374ef)}.enemy-meter.elite i{background:linear-gradient(90deg,#eab468,#ffdd87)}.enemy-meter.boss i{background:linear-gradient(90deg,#fb6c8b,#d86eeb)}
 .log{min-height:29px;display:flex;align-items:center;justify-content:center;padding:5px 9px;text-align:center;font-size:12px;color:#ffe7af;background:#25152e;border-bottom:1px solid #745074;line-height:1.45}
 .controls{padding:10px 10px 8px;display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:7px}
 .controls button,.mini-actions button{color:#fff1c9;border:2px solid #d6ac69;border-radius:10px;background:linear-gradient(#70455d,#38233f);padding:10px 4px;font-weight:850;font-size:13px;box-shadow:0 3px 0 #160d24}
@@ -111,4 +111,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=enemies-visible-2d04b2c-20261109"></script></body></html>
+<script type="module" src="./app.mjs?v=elite-tiers-20261109-1"></script></body></html>
