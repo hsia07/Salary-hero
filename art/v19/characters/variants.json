@@ -10,7 +10,7 @@
       "name": "平凡社畜・{playerName}",
       "role": "starter",
       "available": false,
-      "visualStatus": "V2 appearance baseline accepted; CHIBI runtime sprite unproduced",
+      "visualStatus": "chibi-idle-cutout-candidate-submitted; not art approved, other action frames not supplied",
       "unlockRule": "available-at-start-after-assets-pass",
       "appearance": {
         "body": "noticeably slim, lean arms/legs and narrow-to-natural shoulders; never bulky or chubby",
@@ -41,7 +41,8 @@
       "displayNameTemplate": "平凡社畜・{playerName}",
       "nameSource": "User-defined nickname saved in v19 engine state. '夏' is not hardcoded.",
       "artSpecification": "docs/V19_CANONICAL_HERO_ART.md",
-      "candidateSpriteAsset": null
+      "candidateSpriteAsset": "art/v19/candidates/characters/starter/chibi/idle-candidate.webp",
+      "animationStatus": "no independent approved walk/attack/hurt/victory/sleep frames"
     },
     {
       "id": "B",
@@ -90,7 +91,7 @@
     "needCropCheck": true,
     "needBrowserPlayback": true
   },
-  "note": "Canonical A portrait proportions are NOT in-game proportions. Game uses polished Q版 chibi with visible Japanese office uncle age, slim silhouette and independent pose animation. Do not falsely mark reference PNG animation as approved.",
+  "note": "V2 slim scruffy 35–45 Japanese salaryman. Adult long-form reference approved; independent chibi idle 384×384 WebP cutout candidate now on GitHub, NOT production-approved, and NOT a real idle cycle. Avoid falsely saying attack/walk/hurt/victory animations exist.",
   "conceptCatalog": {
     "module": "v19/roster.mjs",
     "styleCount": 16,
