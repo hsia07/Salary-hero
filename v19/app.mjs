@@ -62,7 +62,7 @@ if(chibiArtPreview){
  assetPaths.chibiIdle='../art/v19/candidates/characters/starter/chibi/idle-candidate.webp';
  assetPaths.chibiAttack='../art/v19/candidates/characters/starter/chibi/attack-5pose-128.avif';
  const sub=$('.subtitle');
- if(sub)sub.textContent+=' · Q版真姿勢測試（美術候選）';
+ if(sub)sub.textContent+=' · Q版公事包五姿勢測試（候選／外觀暫不隨裝備變化）';
 }
 function imageFrom(url){
  return new Promise((resolve,reject)=>{
@@ -118,7 +118,7 @@ function drawStage(now){
  ctx.fillStyle='#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
  const phase=fx?Math.min((now-fx.start)/1000,2):3,attacking=fx&&phase<.7;
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
- const chibiReady=chibiArtPreview&&images.chibiIdle&&images.chibiAttack&&state.equipped==='briefcase';
+ const chibiReady=chibiArtPreview&&images.chibiIdle&&images.chibiAttack;
  const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
  const heroX=100+lunge,heroY=227+Math.sin(time*3.2)*4;
  shadow(heroX+133,515,110,17);
@@ -359,7 +359,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    }else throw error;
  }
 })).then(()=>{
- ready=true;lastAttack=performance.now();render();
+ ready=true;lastAttack=performance.now();world.dataset.art=chibiArtPreview?(images.chibiIdle&&images.chibiAttack?'chibi-5pose':'fallback'):'default';render();
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
  console.error(err);render();
