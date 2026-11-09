@@ -3,6 +3,7 @@ import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transiti
 import {HERO_STYLES,ALL_ENEMIES} from './roster.mjs';
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
+import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
 const LOGICAL_WIDTH=720,LOGICAL_HEIGHT=620;
@@ -40,7 +41,10 @@ function loadGame(){
 }
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
-const chibiArtPreview=new URLSearchParams(location.search).get('art')==='chibi';
+const artMode=new URLSearchParams(location.search).get('art');
+const chibiV2Mode=artMode==='chibi-v2';
+const chibiArtPreview=artMode==='chibi'||chibiV2Mode;
+const CHIBI_V2_STORAGE='salary-hero-v19-local-chibi-v2-atlas';
 const assetPaths={
  bg:'../art/v19/runtime/backgrounds/office-night.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
@@ -61,12 +65,13 @@ if(chibiArtPreview){
  // remain art candidates, not finished production sprites.
  assetPaths.chibiIdle='../art/v19/candidates/characters/starter/chibi/idle-candidate.webp';
  assetPaths.chibiAttack='../art/v19/candidates/characters/starter/chibi/attack-5pose-128.avif';
+ if(chibiV2Mode)assetPaths.chibiAttackV2='../art/v19/candidates/characters/starter/chibi/attack-v2-7pose-384.webp';
  const sub=$('.subtitle');
  if(sub)sub.textContent+=' · Q版公事包五姿勢測試（候選／外觀暫不隨裝備變化）';
 }
 function imageFrom(url){
  return new Promise((resolve,reject)=>{
-  const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('無法載入 '+url));img.src=new URL(url,import.meta.url).href;
+  const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('無法載入 '+url));img.src=url.startsWith('data:')?url:new URL(url,import.meta.url).href;
  });
 }
 function drawImageCover(img,offset){
@@ -116,11 +121,14 @@ function drawStage(now){
  for(let i=0;i<14;i++){const x=(i*113+Math.sin(time*.3+i)*13)%W,y=(i*79+Math.sin(time*.8+i)*14)%(H-60);glow(x,y,7+i%4*4,i%3?'#ffc4703b':'#aa8bff48');}
  glow(126,88,135,'#ffd58a34');glow(614,165,175,'#a575ff35');
  ctx.fillStyle='#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
- const phase=fx?Math.min((now-fx.start)/1000,2):3,attacking=fx&&phase<.7;
+ const phase=fx?Math.min((now-fx.start)/1000,2):3;
+ const animationMs=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
+ const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
+ const attacking=Boolean(fx)&&(chibiV2Ready?attackFrameAt(animationMs)>=0:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
- const chibiReady=chibiArtPreview&&images.chibiIdle&&images.chibiAttack;
+ const chibiReady=Boolean(chibiArtPreview&&images.chibiIdle&&(images.chibiAttack||chibiV2Ready));
  const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
- const heroX=100+lunge,heroY=227+Math.sin(time*3.2)*4;
+ const heroX=100+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
  shadow(heroX+133,515,110,17);
  ctx.save();ctx.translate(heroX+120,heroY+148);
  ctx.rotate(chibiReady?0:(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018));
@@ -129,11 +137,19 @@ function drawStage(now){
    ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:phase>.53&&phase<.75?images.heroHurt:images.heroAttack)
    :(!state.auto?images.heroSleep:images.hero);
  if(chibiReady){
-  // 5 actual drawings: raise, wind-up, swing, step-impact, recover.
-  // Source strip = 5×128 transparent AVIF; all frames share a common ground line.
-  const frameIndex=attacking?Math.min(4,Math.floor(Math.max(0,phase)/.70*5)):0;
-  if(attacking)ctx.drawImage(images.chibiAttack,frameIndex*128,0,128,128,-8,18,260,306);
-  else ctx.drawImage(images.chibiIdle,-7,49,270,270);
+  // The new V2 sprites never stretch, ghost/cross-fade or translate the whole character.
+  // Original art was 7 genuinely different limb/briefcase poses; target dimensions are square.
+  if(attacking&&chibiV2Ready){
+   const frameIndex=attackFrameAt(animationMs);
+   const cell=validateAttackAtlas(images.chibiAttackV2.naturalWidth,images.chibiAttackV2.naturalHeight);
+   if(cell>0)ctx.drawImage(images.chibiAttackV2,frameIndex*cell,0,cell,cell,-25,8,306,306);
+   else ctx.drawImage(images.chibiIdle,-7,44,270,270);
+  }else if(attacking&&images.chibiAttack){
+   const frameIndex=Math.min(4,Math.floor(Math.max(0,phase)/.70*5));
+   ctx.drawImage(images.chibiAttack,frameIndex*128,0,128,128,-25,8,306,306);
+  }else{
+   ctx.drawImage(images.chibiIdle,-7,44,270,270);
+  }
  }else{
   ctx.drawImage(pose,0,0,236,306);
  }
@@ -153,26 +169,29 @@ function drawStage(now){
  const victory=fx?.result?.type==='victory'&&phase<.95;
  const victim=victory&&phase<.69?fx.oldEnemy:state.enemy;
  const opacity=victory?(phase<.69?Math.max(0,1-Math.max(0,phase-.31)*2.6):Math.min(1,(phase-.69)*5)):1;
- const enemyX=474+Math.sin(time*1.75)*4+(attacking&&phase>.25&&phase<.6?Math.sin(now/22)*11:0);
+ const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
+ const enemyX=474+Math.sin(time*1.75)*4+(attacking&&hitWindow?Math.sin(now/22)*11:0);
  const enemyY=260+Math.sin(time*2)*7;
  shadow(enemyX+75,525,victim.boss?100:84,17);
- ctx.save();ctx.globalAlpha=opacity;ctx.translate(enemyX+88,enemyY+121);ctx.rotate(Math.sin(time*1.1)*.03+(attacking&&phase>.3&&phase<.53?.12:0));ctx.translate(-88,-121);
+ ctx.save();ctx.globalAlpha=opacity;ctx.translate(enemyX+88,enemyY+121);ctx.rotate(Math.sin(time*1.1)*.03+(attacking&&hitWindow?.12:0));ctx.translate(-88,-121);
  paintEnemy(victim,now);
  ctx.restore();
  if(victory&&phase>.7&&phase<1.2){
   const fade=Math.min(1,(phase-.7)*3);ctx.save();ctx.globalAlpha=fade;
   ctx.translate(enemyX,enemyY);paintEnemy(state.enemy,now);ctx.restore();
  }
- if(attacking&&phase>.17&&phase<.55){
-   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,(.55-phase)*3.2));ctx.translate(343,287);ctx.rotate(-.2);
+ const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
+ const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
+ if(slashActive){
+   ctx.save();ctx.globalAlpha=chibiV2Ready?Math.max(0,1-(animationMs-345)/205):Math.max(0,Math.min(1,(.55-phase)*3.2));ctx.translate(343,287);ctx.rotate(-.2);
    ctx.drawImage(images.slash,-85,-80,286,240);ctx.restore();
  }
- if(attacking&&phase>.27&&phase<.68){
-   const strength=Math.max(0,Math.min(1,(.68-phase)*4));ctx.save();ctx.globalAlpha=strength;
+ if(impactActive){
+   const strength=chibiV2Ready?Math.max(0,1-(animationMs-405)/195):Math.max(0,Math.min(1,(.68-phase)*4));ctx.save();ctx.globalAlpha=strength;
    ctx.drawImage(images.impact,enemyX+18,enemyY+38,156,156);ctx.restore();
  }
- if(attacking&&phase>.17&&phase<.55){
-   const alpha=(.55-phase)/.38;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#aafaff';ctx.shadowColor='#55dbff';ctx.shadowBlur=25;ctx.lineWidth=20;
+ if(slashActive){
+   const alpha=chibiV2Ready?Math.max(0,1-(animationMs-345)/205):(.55-phase)/.38;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#aafaff';ctx.shadowColor='#55dbff';ctx.shadowBlur=25;ctx.lineWidth=20;
    ctx.beginPath();ctx.arc(395,370,110,-1.4,1.3);ctx.stroke();ctx.lineWidth=6;ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(400,366,124,-1.4,1.3);ctx.stroke();ctx.restore();
  }
  if(fx&&(fx.result?.type==='hit'||fx.result?.type==='victory')&&phase<1.05){
@@ -328,7 +347,7 @@ world.addEventListener('pointerup',e=>{
 function attack(){
  if(!ready)return;
  const now=performance.now();
- if(fx&&now-fx.start<680/state.speed)return;
+ if(fx&&now-fx.start<(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680)/state.speed)return;
  commit('attack');
 }
 function payRender(){
@@ -341,7 +360,7 @@ function payRender(){
 }
 function frame(now){
  if(!document.hidden&&ready){
-  if(state.auto&&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=680/state.speed))attack();
+  if(state.auto&&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680)/state.speed))attack();
   drawStage(now);
  }
  requestAnimationFrame(frame);
@@ -354,12 +373,15 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
  catch(error){
    if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
-   else if(k==='foreground'||k==='weaponBriefcase'||k==='chibiIdle'||k==='chibiAttack'){
+   else if(k==='foreground'||k==='weaponBriefcase'||k==='chibiIdle'||k==='chibiAttack'||k==='chibiAttackV2'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;
  }
 })).then(()=>{
- ready=true;lastAttack=performance.now();world.dataset.art=chibiArtPreview?(images.chibiIdle&&images.chibiAttack?'chibi-5pose':'fallback'):'default';render();
+ ready=true;lastAttack=performance.now();
+ world.dataset.art=chibiV2Mode?(images.chibiIdle&&images.chibiAttackV2?'chibi-7pose':'chibi-7pose-awaiting-art'):chibiArtPreview?(images.chibiIdle&&images.chibiAttack?'chibi-5pose':'fallback'):'default';
+ if(chibiV2Mode)initChibiV2Lab();
+ render();
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
  console.error(err);render();
