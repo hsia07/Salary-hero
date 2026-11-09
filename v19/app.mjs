@@ -124,7 +124,7 @@ function drawStage(now){
  const phase=fx?Math.min((now-fx.start)/1000,2):3;
  const animationMs=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
- const attacking=Boolean(fx)&&(chibiV2Ready?attackFrameAt(animationMs)>=0:phase<.7);
+ const attacking=Boolean(fx&&typeof fx.wave==='number')&&(chibiV2Ready?attackFrameAt(animationMs)>=0:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
  const chibiReady=Boolean(chibiArtPreview&&images.chibiIdle&&(images.chibiAttack||chibiV2Ready));
  const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
@@ -349,6 +349,59 @@ function attack(){
  const now=performance.now();
  if(fx&&now-fx.start<(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680)/state.speed)return;
  commit('attack');
+}
+async function initChibiV2Lab(){
+ // The high-resolution seven-pose master is a LOCAL candidate until a binary has
+ // been uploaded to the repository. Test mode can install it once without touching game saves.
+ const lab=$('#chibi-v2-lab'),input=$('#chibi-v2-file'),message=$('#chibi-v2-status');
+ if(!lab||!input||!message)return;
+ lab.hidden=false;
+ const store=CHIBI_V2_STORAGE;
+ const report=text=>{message.textContent=text};
+ async function install(dataUrl,persist){
+   const image=await imageFrom(dataUrl);
+   const cell=validateAttackAtlas(image.naturalWidth,image.naturalHeight);
+   if(!cell)throw new Error('需要 7×512 的 PNG，或 7×384 的 WebP；實際尺寸為 '+image.naturalWidth+'×'+image.naturalHeight);
+   // Rendering should only use atlases with an actual transparent perimeter.
+   const testCanvas=document.createElement('canvas');testCanvas.width=3;testCanvas.height=3;
+   const t=testCanvas.getContext('2d',{willReadFrequently:true});
+   t.drawImage(image,0,0,3,3);
+   if(t.getImageData(0,0,1,1).data[3]>3)throw new Error('圖片左上角不透明，可能是整張展示圖而不是透明素材。');
+   images.chibiAttackV2=image;
+   world.dataset.art='chibi-7pose';
+   if(persist){
+     try{localStorage.setItem(store,dataUrl);}
+     catch(err){console.warn('這個瀏覽器無法長期保存美術測試圖；本次仍可使用',err);}
+   }
+   report('✓ 已啟用七姿勢動畫：'+(image.naturalWidth)+'×'+image.naturalHeight+'、每格 '+cell+' px。按「手動攻擊」即可檢查。');
+ }
+ input.addEventListener('change',async()=>{
+  const file=input.files?.[0];if(!file)return;
+  if(file.size>5000000){report('檔案過大。請選擇高品質 384px WebP，或小於 5MB 的 512px PNG。');return;}
+  report('正在解碼 '+file.name+'……');
+  try{
+    const dataUrl=await new Promise((resolve,reject)=>{
+      const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsDataURL(file);
+    });
+    await install(dataUrl,true);
+  }catch(error){report('❌ '+String(error.message||error));}
+ });
+ $('#chibi-v2-clear')?.addEventListener('click',()=>{
+   try{localStorage.removeItem(store)}catch{}
+   images.chibiAttackV2=null;
+   world.dataset.art='chibi-7pose-awaiting-art';
+   input.value='';
+   report('已清除七姿勢測試圖；遊戲進度和薪資資料不受影響。');
+ });
+ if(images.chibiAttackV2){
+   report('✓ 網站已提供七姿勢素材，可直接攻擊。');
+   return;
+ }
+ try{
+   const cached=localStorage.getItem(store);
+   if(cached){await install(cached,false);return;}
+ }catch(error){console.warn('讀取本機美術測試圖失敗',error)}
+ report('七姿勢正式圖片尚未部署在 GitHub。請先取得候選素材包並選擇其中的「chibi_attack_v2_7pose_384.webp」。');
 }
 function payRender(){
  const p=salaryAt(Date.now(),40000);
