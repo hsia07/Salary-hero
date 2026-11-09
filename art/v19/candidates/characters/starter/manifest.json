@@ -3,7 +3,7 @@
   "character": "A - default starter",
   "nameTemplate": "平凡社畜・{playerName}",
   "specification": "docs/V19_CANONICAL_HERO_ART.md",
-  "status": "concept-spec-locked__standalone-sprite-NOT-delivered",
+  "status": "V2 CHARACTER LOOK ACCEPTED AS BASELINE; source cutout local, not yet uploaded to GitHub or integrated",
   "approved": false,
   "date": "2026-11-09",
   "artTarget": {
@@ -33,7 +33,7 @@
     {
       "id": "reference",
       "path": null,
-      "status": "not-produced",
+      "status": "appearance-reference-locally-available-not-committed",
       "approved": false
     },
     {
@@ -106,5 +106,39 @@
     "approved for art style by project owner",
     "game load and iOS Safari preview verified"
   ],
-  "note": "The two failed renders were NOT committed to GitHub assets. A proper sprite file is not yet available. Do not promote old rejected v19/candidates/hero SVG placeholders."
+  "note": "V2 APPEARANCE BASELINE HAS USER ACCEPTANCE, BUT ART IS A CUTOUT CANDIDATE AND IS NOT UPLOADED IN THIS GITHUB REPO. DO NOT TREAT THE ARRAY OF OLD SVG PLACEHOLDERS AS APPROVED.",
+  "appearanceApproval": {
+    "status": "accepted-as-current-reference",
+    "source": "user response 2026-11-09: 已經不太需要調整了",
+    "approvedFor": "baseline face, age, stubble, black hair, body and outfit",
+    "notApprovedFor": "final cleaned sprite edges, animated poses, production runtime"
+  },
+  "localCutout": {
+    "pathInCurrentWorkspace": "/mnt/data/salary_hero_starter_art_candidate.png",
+    "fileName": "salary_hero_starter_art_candidate.png",
+    "sha256": "75820265f1780ef76d8aaac78651cee813171847122eb56c28f57fddede52467",
+    "decodedSizePx": [
+      512,
+      1024
+    ],
+    "alphaRange": [
+      0,
+      255
+    ],
+    "alphaContentBBox": [
+      127,
+      70,
+      397,
+      965
+    ],
+    "gitHubCommitted": false,
+    "remarks": "Cutout made from character concept sheet, source art has stray purple outline fragments; verify cleaned sprite before production"
+  },
+  "nextEngineeringTasks": [
+    "Clean stray edge contamination without changing accepted identity.",
+    "Maintain actual human aspect ratio at render time, no stretching 512×1024 image into square sprite proportions.",
+    "Create independent idle and attack frames matched to same feet anchor.",
+    "Add actual binary asset to repository before enabling new runtime path.",
+    "Run PNG/WebP decoding, alpha bbox, mobile gameplay and owner visual QA."
+  ]
 }
