@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>薪水勇者 V19 · 真正五姿勢公事包攻擊驗收</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#ffebcb;background:#150d27}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#4d3455,#130d24)}main{width:min(100%,720px);margin:auto;padding:18px 12px 35px}h1{font-size:clamp(20px,5vw,27px);color:#ffe1a2;margin:0 0 7px}p{font-size:13px;line-height:1.75;color:#decbd2}.stage{border:2px solid #ebbc7e;box-shadow:0 11px 30px #0a071c;border-radius:14px;overflow:hidden;position:relative}#scene{width:100%;height:auto;display:block;aspect-ratio:720/620}#overlay{position:absolute;top:9px;left:9px;color:#ffe6af;background:#24152cba;border:1px solid #d9a16d;border-radius:8px;padding:5px 8px;font-weight:700;font-size:12px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin:11px 0}.actions button{color:#ffebc9;background:linear-gradient(#7f5467,#402848);padding:10px 13px;border:2px solid #dbae72;border-radius:9px;font-weight:750;cursor:pointer}.actions button[aria-pressed=true]{background:linear-gradient(#bd9166,#7d4564)}.note{background:#2d203e;border:1px solid #bc886d;border-radius:11px;padding:13px 15px}.note strong{color:#ffe4a4}.detail{font-size:12px}a{color:#f8d38e}#status{color:#bceacf;font-size:12px}button:focus-visible{outline:3px solid #ffe6b0}small{display:block;color:#c7b4c7;margin:8px 0}
+</style></head><body><main>
+<h1>《薪水勇者》｜公事包攻擊實際動畫驗收</h1>
+<p>5 張<strong>不同手臂、腿部與公事包姿勢</strong>的 Q 版主角影格；不是整張立繪的平移／旋轉。素材仍是從角色原畫提取的候選版本，尚未正式美術核准。</p>
+<div class="stage"><canvas id="scene" width="720" height="620" aria-label="獨立 Q 版主角攻擊動畫與透明背景驗收"></canvas><div id="overlay">待機</div></div>
+<div class="actions">
+<button id="play">⚔️ 播放攻擊</button><button id="auto" aria-pressed="false">🔁 連續播放：關</button><button id="prev">◀ 上一幀</button><button id="next">下一幀 ▶</button>
+</div>
+<div class="actions"><button data-background="office" aria-pressed="true">🏢 辦公室</button><button data-background="checker">▦ 棋盤格</button><button data-background="solid">🟢 純色背景</button></div>
+<p id="status" role="status">載入透明 AVIF 影格與待機 WebP 中……</p>
+<div class="note"><strong>交付紀錄</strong>
+<p>已上傳：五姿勢 AVIF 圖組（640×128，每格 128×128）；舊的 Q 版待機 WebP（384×384）。本頁在 Canvas 以不同來源影格繪製，不修改原本存檔與遊戲進度。</p>
+<p class="detail">技術驗收：尺寸、透明度、角色留白、五影格差異；藝術驗收尚待確認紫邊、臉部一致性與動作節奏。受傷／勝利／睡覺的正式不同姿勢尚未交付。</p>
+<a href="./play.html?art=chibi">在真正 V19 戰鬥裡試玩這套 Q 版候選動畫</a>
+<small>此連結是可選的 Q 版測試模式；預設遊戲畫面仍保留原設定。其他武器裝備會使用既有工程素材，直至對應造型完成。</small>
+</div></main>
+<script type="module">
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),overlay=document.getElementById('overlay'),status=document.getElementById('status');
+const idle=new Image(),attack=new Image(),back=new Image();
+let idleReady=false,attackReady=false,backReady=false,background='office',frame=-1,loop=false,startedAt=0,lastT=0;
+const frameDuration=128,totalFrames=5;
+const pathRoot='../art/v19/candidates/characters/starter/chibi/';
+idle.onload=()=>{idleReady=true;report();draw(performance.now())};
+idle.onerror=()=>{status.textContent='待機 WebP 載入失敗：請檢查 Pages 部署';report()};
+attack.onload=()=>{attackReady=true;report();draw(performance.now())};
+attack.onerror=()=>{status.textContent='攻擊 AVIF 載入失敗（瀏覽器可能不支援 AVIF，請更新 Safari）'};
+back.onload=()=>{backReady=true;draw(performance.now())};back.onerror=()=>{backReady=false;draw(performance.now())};
+idle.src=pathRoot+'idle-candidate.webp';
+attack.src=pathRoot+'attack-5pose-128.avif';
+back.src='../art/v19/runtime/backgrounds/office-night.svg';
+function report(){if(!idleReady||!attackReady)return;const dims=attack.naturalWidth===640&&attack.naturalHeight===128&&idle.naturalWidth===384&&idle.naturalHeight===384;
+status.textContent=dims?'✓ 解碼成功：待機 384×384；攻擊 640×128（5 格）。請人工檢查細節。':'⚠ 圖片實際尺寸不符，請不要升入正式素材！';
+}
+function paintBackground(){if(background==='checker'){for(let y=0;y<620;y+=32)for(let x=0;x<720;x+=32){ctx.fillStyle=((x+y)/32)%2?'#a3a0b1':'#666079';ctx.fillRect(x,y,32,32)}}
+else if(background==='solid'){ctx.fillStyle='#17b387';ctx.fillRect(0,0,720,620)}
+else if(backReady){ctx.drawImage(back,0,0,720,620);ctx.fillStyle='#160c2c55';ctx.fillRect(0,0,720,620)}
+else{const g=ctx.createLinearGradient(0,0,0,620);g.addColorStop(0,'#625278');g.addColorStop(1,'#261931');ctx.fillStyle=g;ctx.fillRect(0,0,720,620)}}
+function draw(now){
+paintBackground();
+ctx.fillStyle='#100a25a1';ctx.beginPath();ctx.ellipse(350,517,103,17,0,0,2*Math.PI);ctx.fill();
+const x=231,y=211;
+if(frame>=0&&attackReady){ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ ctx.drawImage(attack,frame*128,0,128,128,x-8,y+18,260,306);
+ overlay.textContent=['① 起手','② 蓄力','③ 前揮','④ 跨步重擊','⑤ 收勢'][frame];
+}else if(idleReady){ctx.drawImage(idle,x-7,y+49,270,270);overlay.textContent='待機（Q 版外型基準）';}
+else {overlay.textContent='載入中';}
+}
+function play(){if(!attackReady)return;frame=0;startedAt=performance.now();lastT=0;draw(startedAt)}
+document.getElementById('play').onclick=play;
+document.getElementById('auto').onclick=e=>{loop=!loop;e.currentTarget.setAttribute('aria-pressed',String(loop));e.currentTarget.textContent='🔁 連續播放：'+(loop?'開':'關');if(loop)play()};
+document.getElementById('prev').onclick=()=>{frame=frame<0?4:(frame+4)%5;startedAt=0;loop=false;document.getElementById('auto').setAttribute('aria-pressed','false');draw(performance.now())};
+document.getElementById('next').onclick=()=>{frame=(frame+1)%5;startedAt=0;loop=false;document.getElementById('auto').setAttribute('aria-pressed','false');draw(performance.now())};
+document.querySelectorAll('[data-background]').forEach(b=>b.onclick=()=>{background=b.dataset.background;document.querySelectorAll('[data-background]').forEach(a=>a.setAttribute('aria-pressed',String(a===b)));draw(performance.now())});
+function update(t){if(startedAt>0&&attackReady){const elapsed=t-startedAt,index=Math.min(4,Math.floor(elapsed/frameDuration));if(index!==frame){frame=index;draw(t)}
+ if(elapsed>=totalFrames*frameDuration){if(loop){startedAt=t;frame=0;draw(t)}else{startedAt=0;frame=-1;draw(t)}}}
+ requestAnimationFrame(update);
+}
+requestAnimationFrame(update);
+</script></body></html>
