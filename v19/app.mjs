@@ -360,6 +360,13 @@ function drawStage(now){
  if(fx&&(fx.result?.type==='hit'||fx.result?.type==='victory')&&phase<1.05&&(!chibiV2Ready||animationMs>=405)){
   const y=335-phase*80;ctx.save();ctx.globalAlpha=Math.min(1,(1.05-phase)*3);ctx.font='900 43px system-ui';ctx.textAlign='center';ctx.lineWidth=6;ctx.strokeStyle='#2d163c';ctx.strokeText('-'+fx.result.damage,546,y);ctx.fillStyle=fx.result.crit?'#fff3a9':'#ff8a9e';ctx.fillText('-'+fx.result.damage,546,y);ctx.restore();
  }
+ if(hurtVfx.active&&fx?.result?.enemySkill){
+   ctx.save();ctx.globalAlpha=Math.min(1,hurtVfx.flashAlpha+.4);
+   ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 25px system-ui';
+   ctx.strokeStyle='#2b1232';ctx.lineWidth=5;ctx.fillStyle='#ffde97';
+   ctx.strokeText(fx.result.enemySkill,548,212);
+   ctx.fillText(fx.result.enemySkill,548,212);ctx.restore();
+ }
  if(victory&&phase<1.35){ctx.save();ctx.globalAlpha=Math.min(1,(1.35-phase)*2);ctx.textAlign='center';ctx.font='bold 32px system-ui';ctx.fillStyle='#ffdb88';ctx.strokeStyle='#32132e';ctx.lineWidth=5;ctx.strokeText('勝利！ +'+fx.result.gold+' 🪙',365,170);ctx.fillText('勝利！ +'+fx.result.gold+' 🪙',365,170);ctx.restore();}
  // Art is rendered in physical layers: background, moving actors, combat FX,
  // independent cherry blossom / gilded foreground, then free-floating lights.
@@ -393,7 +400,12 @@ function render(){
  $('#hero-hp-fill').style.width=(state.heroHp/state.maxHp*100)+'%';
  $('#enemy-hp-fill').style.width=(state.enemy.hp/state.enemy.maxHp*100)+'%';
  $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+state.enemy.name;
- const trait=$('#enemy-trait');if(trait)trait.textContent=state.enemy.family+' · '+state.enemy.traitText;
+ const trait=$('#enemy-trait');
+ if(trait){
+   const skillCharge=enemyTier==='elite'?' · 反制 '+(state.enemy.turns||0)%3+'/3':
+     enemyTier==='boss'?' · 狂暴 '+(state.enemy.turns||0)%4+'/4':'';
+   trait.textContent=state.enemy.family+' · '+state.enemy.traitText+skillCharge;
+ }
  $('#game-log').textContent=state.log[0]||'冒險中';
  $('#auto').textContent='🤖 自動 '+(state.auto?'ON':'OFF');
  $('#auto').setAttribute('aria-pressed',String(state.auto));
