@@ -317,7 +317,7 @@ function commit(action){
  if(action==='attack'){
    fx={start:performance.now(),result:state.last,oldEnemy,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
-      retaliationDamage:Math.max(0,oldHeroHp-state.heroHp)};
+      retaliationDamage:Math.max(0,Number(state.last?.retaliationDamage??(oldHeroHp-state.heroHp)))};
    lastAttack=performance.now();
  }else if(state.last?.type==='heal'||state.last?.type==='chest')fx={start:performance.now(),result:state.last,oldEnemy};
  save();render();
