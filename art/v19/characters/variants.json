@@ -10,7 +10,7 @@
       "name": "平凡社畜・{playerName}",
       "role": "starter",
       "available": false,
-      "visualStatus": "chibi-idle-cutout-candidate-submitted; not art approved, other action frames not supplied",
+      "visualStatus": "chibi idle candidate plus five illustrated independent attack poses uploaded; not final art-approved, no hurt/victory/walk/sleep",
       "unlockRule": "available-at-start-after-assets-pass",
       "appearance": {
         "body": "noticeably slim, lean arms/legs and narrow-to-natural shoulders; never bulky or chubby",
@@ -42,7 +42,21 @@
       "nameSource": "User-defined nickname saved in v19 engine state. '夏' is not hardcoded.",
       "artSpecification": "docs/V19_CANONICAL_HERO_ART.md",
       "candidateSpriteAsset": "art/v19/candidates/characters/starter/chibi/idle-candidate.webp",
-      "animationStatus": "no independent approved walk/attack/hurt/victory/sleep frames"
+      "animationStatus": "no independent approved walk/attack/hurt/victory/sleep frames",
+      "candidateAttackAtlas": {
+        "path": "art/v19/candidates/characters/starter/chibi/attack-5pose-128.avif",
+        "width": 640,
+        "height": 128,
+        "frameSize": [
+          128,
+          128
+        ],
+        "frameCount": 5,
+        "origin": "five distinctly posed source drawings isolated from existing art board",
+        "runtimeMode": "V19 ?art=chibi only",
+        "visualApproval": "pending",
+        "noClaimToOtherMotions": true
+      }
     },
     {
       "id": "B",
@@ -91,7 +105,7 @@
     "needCropCheck": true,
     "needBrowserPlayback": true
   },
-  "note": "V2 slim scruffy 35–45 Japanese salaryman. Adult long-form reference approved; independent chibi idle 384×384 WebP cutout candidate now on GitHub, NOT production-approved, and NOT a real idle cycle. Avoid falsely saying attack/walk/hurt/victory animations exist.",
+  "note": "Official hero A is slim scruffy middle-aged Japanese salaryman Q版. Playable V19 has OPT-IN 5-pose chibi attack demonstration (?art=chibi) with no progress reset; other motions still unproduced. Old sprite art remains default until QA and approval.",
   "conceptCatalog": {
     "module": "v19/roster.mjs",
     "styleCount": 16,
