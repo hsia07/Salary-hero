@@ -1,0 +1,36 @@
+name: V19 Gameplay and Cosmetic Regression Tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - "v19/engine.mjs"
+      - "v19/roster.mjs"
+      - "v19/skins.mjs"
+      - "v19/skin-ui.mjs"
+      - "v19/app.mjs"
+      - "v19/play.html"
+      - "v19/engine.test.mjs"
+      - "v19/skins.test.mjs"
+      - ".github/workflows/v19-gameplay-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gameplay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax check of dynamic game modules
+        run: |
+          node --check v19/engine.mjs
+          node --check v19/roster.mjs
+          node --check v19/skins.mjs
+          node --check v19/skin-ui.mjs
+          node --check v19/app.mjs
+      - name: Run all engine and cosmetics rules tests
+        run: node --test v19/engine.test.mjs v19/skins.test.mjs
