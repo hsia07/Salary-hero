@@ -4,6 +4,7 @@ import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './ros
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
+import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 const $=s=>document.querySelector(s);
@@ -146,97 +147,9 @@ function drawWeapon(x,y,t){
 /** A drawable body is mandatory for EVERY wave, including emoji-only roster entries.
  *  The first wave loads the paper monster SVG; all other waves receive a Q版
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
-function paintEnemy(enemy,now){
- const w=enemy.boss?214:enemy.tier==='elite'?194:177,h=enemy.boss?258:enemy.tier==='elite'?248:240;
- const accent=enemy.accent||'#dfa6e6';
- const sprite=enemy.sprite==='printer'?images.boss:enemy.sprite==='paper'?images.minion:null;
- ctx.save();
- // Strong contrasting rim light prevents pale paper monsters vanishing against
- // the bright moon/window of the nighttime office scene.
- ctx.shadowColor='#130b24';
- ctx.shadowBlur=25;
- ctx.shadowOffsetY=8;
- if(sprite?.complete&&sprite.naturalWidth>0){
-   ctx.drawImage(sprite,0,0,w,h);
- }else{
-   // No reliance on emoji font availability (notably iOS Safari canvas).
-   // A rounded, hand-drawn Q monster remains visible on every platform.
-   ctx.fillStyle='#49324f';ctx.strokeStyle=accent;ctx.lineWidth=6;
-   ctx.beginPath();
-   ctx.moveTo(w*.16,h*.76);
-   ctx.bezierCurveTo(-w*.01,h*.55,w*.11,h*.22,w*.33,h*.22);
-   ctx.quadraticCurveTo(w*.49,-h*.025,w*.62,h*.21);
-   ctx.bezierCurveTo(w*.91,h*.15,w*1.07,h*.57,w*.85,h*.78);
-   ctx.quadraticCurveTo(w*.75,h*.96,w*.50,h*.90);
-   ctx.quadraticCurveTo(w*.28,h*.98,w*.16,h*.76);
-   ctx.closePath();ctx.fill();ctx.stroke();
-   // Dark horns, little paws, eyes and expression read even on small screens.
-   ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-   ctx.strokeStyle=accent;ctx.lineWidth=10;ctx.lineCap='round';
-   ctx.beginPath();ctx.moveTo(w*.21,h*.65);ctx.lineTo(w*.05,h*.77);
-   ctx.moveTo(w*.79,h*.65);ctx.lineTo(w*.95,h*.77);ctx.stroke();
-   ctx.fillStyle='#fff5dc';ctx.beginPath();
-   ctx.ellipse(w*.36,h*.50,13,17,-.14,0,Math.PI*2);
-   ctx.ellipse(w*.66,h*.50,13,17,.14,0,Math.PI*2);ctx.fill();
-   ctx.fillStyle='#21132a';ctx.beginPath();
-   ctx.arc(w*.39,h*.52,6,0,Math.PI*2);
-   ctx.arc(w*.69,h*.52,6,0,Math.PI*2);ctx.fill();
-   ctx.strokeStyle='#f4b2be';ctx.lineWidth=5;ctx.beginPath();
-   ctx.arc(w*.52,h*.66,18,.05,Math.PI-.05);ctx.stroke();
-   // Elite monsters also get distinct silhouettes, not just a differently colored body.
-   const shape=enemy.shape;
-   if(shape==='knight'){
-     ctx.fillStyle='#b7a3a9';ctx.strokeStyle=accent;ctx.lineWidth=5;
-     ctx.beginPath();ctx.moveTo(w*.26,h*.31);ctx.lineTo(w*.33,h*.16);
-     ctx.lineTo(w*.68,h*.16);ctx.lineTo(w*.78,h*.31);ctx.closePath();ctx.fill();ctx.stroke();
-     ctx.fillStyle='#3b2c4f';ctx.fillRect(w*.30,h*.37,w*.44,h*.085);
-   }else if(shape==='beast'){
-     ctx.fillStyle='#41304a';ctx.strokeStyle=accent;ctx.lineWidth=5;
-     for(const side of [-1,1]){
-       ctx.beginPath();const x=w*(.5+side*.33);
-       ctx.moveTo(x,h*.34);ctx.lineTo(x+side*w*.08,h*.04);
-       ctx.lineTo(x-side*w*.11,h*.19);ctx.closePath();ctx.fill();ctx.stroke();
-     }
-   }else if(shape==='ghost'){
-     ctx.strokeStyle=accent;ctx.lineWidth=6;ctx.beginPath();
-     ctx.moveTo(w*.24,h*.30);ctx.quadraticCurveTo(w*.12,h*.07,w*.27,h*.05);
-     ctx.moveTo(w*.76,h*.30);ctx.quadraticCurveTo(w*.88,h*.07,w*.73,h*.05);ctx.stroke();
-     ctx.fillStyle='#e4b4f9';ctx.beginPath();
-     ctx.moveTo(w*.50,h*.12);ctx.lineTo(w*.58,h*.23);ctx.lineTo(w*.50,h*.34);
-     ctx.lineTo(w*.42,h*.23);ctx.closePath();ctx.fill();
-   }else if(shape==='insect'){
-     ctx.strokeStyle=accent;ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();
-     ctx.moveTo(w*.31,h*.28);ctx.lineTo(w*.13,h*.09);ctx.lineTo(w*.03,h*.19);
-     ctx.moveTo(w*.69,h*.28);ctx.lineTo(w*.87,h*.09);ctx.lineTo(w*.97,h*.19);ctx.stroke();
-     ctx.lineWidth=4;for(let i=0;i<3;i++){
-       ctx.beginPath();ctx.moveTo(w*.22,h*(.60+i*.09));
-       ctx.lineTo(w*.78,h*(.60+i*.09));ctx.stroke();
-     }
-   }
-   // The roster's emoji is a badge on the monster, not its only body.
-   ctx.font=(enemy.boss?43:37)+'px "Apple Color Emoji","Segoe UI Emoji",system-ui';
-   ctx.textAlign='center';ctx.textBaseline='middle';
-   ctx.fillText(enemy.icon||'✦',w*.52,h*.32);
- }
- ctx.restore();
- if(enemy.tier==='elite'||enemy.tier==='boss'){
-   ctx.save();ctx.strokeStyle=enemy.tier==='elite'?'#ffe3a0':accent;
-   ctx.lineWidth=enemy.tier==='elite'?5:7;
-   ctx.globalAlpha=.58+Math.sin(now/260)*.14;
-   ctx.shadowColor=accent;ctx.shadowBlur=17;
-   ctx.beginPath();ctx.ellipse(w*.50,h*.53,w*.56,h*.47,0,0,Math.PI*2);ctx.stroke();
-   ctx.fillStyle=accent;ctx.textAlign='center';ctx.textBaseline='middle';
-   ctx.font=enemy.tier==='boss'?'bold 38px system-ui':'bold 28px system-ui';
-   ctx.fillText(enemy.tier==='boss'?'♛':'✦',w*.5,enemy.tier==='boss'?-13:5);
-   ctx.restore();
- }
- if(enemy.trait==='guard'){
-   ctx.save();ctx.globalAlpha=.33+.12*Math.sin(now/420);ctx.strokeStyle=accent;
-   ctx.lineWidth=6;ctx.beginPath();ctx.ellipse(w/2,h/2,w*.50,h*.49,0,0,Math.PI*2);ctx.stroke();ctx.restore();
- }
- if(enemy.trait==='leech'){
-   ctx.save();ctx.globalAlpha=.30+.20*Math.sin(now/400);glow(w/2,h*.46,85,accent+'55');ctx.restore();
- }
+// 32 real monster actors: per-species anatomy/poses, not shared emoji bodies.
+function paintEnemy(enemy,now,visual={state:'idle',progress:0}){
+ drawMonsterActor(ctx,enemy,now,visual);
 }
 function drawStage(now){
  if(!ready)return;
@@ -322,29 +235,38 @@ function drawStage(now){
  }
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
- const victory=fx?.result?.type==='victory'&&phase<.95;
+ const victory=fx?.result?.type==='victory'&&animationMs<1050;
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const enemyX=458+Math.sin(time*1.75)*4+(attacking&&hitWindow?Math.sin(now/22)*7:0);
  const enemyY=248+Math.sin(time*2)*5;
- // Crossfade the defeated monster with the next wave WITHOUT a single empty
- // frame: the sum of both alphas always stays >= 1 in the transition.
- const fadingOld=victory?Math.max(0,Math.min(1,(.78-phase)/.59)):0;
- const enteringNew=victory?Math.max(0,Math.min(1,(phase-.19)/.59)):1;
- const drawEnemy=(enemy,alpha)=>{
+ // The defeated actor plays its own disintegration, while the next species
+ // materializes in the SAME slot with no empty frame between waves.
+ const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-570)/260)):1;
+ const fadingOld=victory?1-enteringNew:0;
+ const oldVisual=victory?monsterAnimationState(fx.oldEnemy,animationMs,fx.result):null;
+ const currentVisual=!victory&&fx?.result?.type==='hit'
+   ?monsterAnimationState(state.enemy,animationMs,
+     {...fx.result,retaliationDamage:fx.retaliationDamage||0}):{state:'idle',progress:0};
+ const drawEnemy=(enemy,alpha,visual)=>{
    if(!enemy||alpha<=0)return;
-   ctx.save();
-   ctx.globalAlpha=alpha;
    const pivotX=enemy.boss?107:enemy.tier==='elite'?97:88.5;
    const pivotY=enemy.boss?129:enemy.tier==='elite'?124:120;
+   ctx.save();ctx.globalAlpha=alpha;
    ctx.translate(enemyX+pivotX,enemyY+pivotY);
-   ctx.rotate(Math.sin(time*1.1)*.03+(attacking&&hitWindow?.12:0));
+   ctx.rotate(Math.sin(time*1.1)*.018);
    ctx.translate(-pivotX,-pivotY);
-   paintEnemy(enemy,now);
+   paintEnemy(enemy,now,visual);
    ctx.restore();
+   if(visual?.state!=='idle'&&visual?.state){
+     ctx.save();ctx.globalAlpha=alpha;
+     drawMonsterVfx(ctx,enemy,visual.state,visual.progress,
+       {enemyX,enemyY,heroX:heroX+70,heroY:heroY+110,now});
+     ctx.restore();
+   }
  };
  shadow(enemyX+90,525,state.enemy.boss?100:84,17);
- if(victory)drawEnemy(fx.oldEnemy,fadingOld);
- drawEnemy(state.enemy,enteringNew);
+ if(victory)drawEnemy(fx.oldEnemy,fadingOld,oldVisual);
+ drawEnemy(state.enemy,enteringNew,currentVisual);
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
  if(slashActive){
