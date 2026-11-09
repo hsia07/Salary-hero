@@ -495,9 +495,11 @@ async function initChibiV2Lab(){
    }catch(err){hurtMsg.textContent='❌ '+String(err.message||err)}
  });
  if(hurtDemo)hurtDemo.addEventListener('click',()=>{
-   if(!images.chibiHurtV1)return;
    hurtPreviewStart=performance.now();
-   // Visual only: do not issue a battle transition or change user stats.
+   if(hurtMsg)hurtMsg.textContent=images.chibiHurtV1
+     ?'💥 五姿勢受傷＋角色紅白閃、48ms 停頓、局部震動及命中火花（不扣血）'
+     :'💥 紅白閃、48ms 停頓、局部震動及火花已觸發；尚未載入受傷姿勢圖組（不扣血）。';
+   // Visual only: never call transition()/commit() or touch HP, salary or progress.
  });
  try{
    const savedHurt=localStorage.getItem(CHIBI_HURT_STORAGE);
@@ -509,8 +511,8 @@ async function initChibiV2Lab(){
    images.chibiHurtV1=null;
    hurtPreviewStart=0;
    if(hurtInput)hurtInput.value='';
-   if(hurtDemo)hurtDemo.disabled=true;
-   if(hurtMsg)hurtMsg.textContent='受傷五姿勢圖片已從本機清除。';
+   if(hurtDemo)hurtDemo.disabled=false;
+   if(hurtMsg)hurtMsg.textContent='受傷姿勢已清除；紅閃、停頓、震動、火花仍可直接預覽。';
    world.dataset.art='chibi-7pose-awaiting-art';
    input.value='';
    report('已清除攻擊及受傷候選素材；遊戲進度和薪資資料不受影響。');
