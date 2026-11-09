@@ -1,0 +1,69 @@
+{
+  "project": "Salary Hero",
+  "batch": "v19-hero-poses-001",
+  "format": "svg-candidate",
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "unit": "SVG declared pixels"
+  },
+  "production_approved": false,
+  "notes": "SVG static validation and GitHub readback passed; alpha, clipping, actual raster dimensions and WebP export require GitHub Actions / browser QA. This is not a formal replacement for 13 missing V18 WebP assets.",
+  "pose_entries": [
+    {
+      "id": "idle",
+      "path": "art/v19/candidates/hero/idle.svg",
+      "sha": "dc38e3a4c6bd842ab1f0b9ee4b3bb042f6cb04b9",
+      "declared_width": 512,
+      "declared_height": 512,
+      "alpha_background": "transparent-svg",
+      "status": "static_preflight_passed",
+      "raster_qa": "pending",
+      "runtime_referenced": true
+    },
+    {
+      "id": "attack",
+      "path": "art/v19/candidates/hero/attack.svg",
+      "sha": "36a3e63c4c5de8cba2bdc09454dbbbc325ae15eb",
+      "declared_width": 512,
+      "declared_height": 512,
+      "alpha_background": "transparent-svg",
+      "status": "static_preflight_passed",
+      "raster_qa": "pending",
+      "runtime_referenced": true
+    },
+    {
+      "id": "hurt",
+      "path": "art/v19/candidates/hero/hurt.svg",
+      "sha": "fee84803f9de63e80de06cf6eb9f75290a9a4b24",
+      "declared_width": 512,
+      "declared_height": 512,
+      "alpha_background": "transparent-svg",
+      "status": "static_preflight_passed",
+      "raster_qa": "pending",
+      "runtime_referenced": true
+    },
+    {
+      "id": "victory",
+      "path": "art/v19/candidates/hero/victory.svg",
+      "sha": "f26b2df638f6cf020864f6f1b5b05095485bf981",
+      "declared_width": 512,
+      "declared_height": 512,
+      "alpha_background": "transparent-svg",
+      "status": "static_preflight_passed",
+      "raster_qa": "pending",
+      "runtime_referenced": true
+    },
+    {
+      "id": "sleep",
+      "path": "art/v19/candidates/hero/sleep.svg",
+      "sha": "85bbdd52472eba99db28f346143c58b041b1eed7",
+      "declared_width": 512,
+      "declared_height": 512,
+      "alpha_background": "transparent-svg",
+      "status": "static_preflight_passed",
+      "raster_qa": "pending",
+      "runtime_referenced": true
+    }
+  ]
+}
