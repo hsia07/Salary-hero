@@ -72,7 +72,7 @@ function drawWeapon(x,y,t){
  ctx.save();ctx.translate(x,y);ctx.rotate((t<.3?.3:-.15)+Math.sin(performance.now()/510)*.08);
  ctx.shadowBlur=item.id==='excalibur'?28:item.id==='notice'?18:8;
  ctx.shadowColor=item.id==='excalibur'?'#77f5ff':item.id==='notice'?'#ffe787':'#d9a9ff';
- if(item.id==='briefcase'){ctx.drawImage(images.weaponBriefcase,-43,-20,79,85);}
+ if(item.id==='briefcase'&&images.weaponBriefcase){ctx.drawImage(images.weaponBriefcase,-43,-20,79,85);}
  else if(item.id==='excalibur'){ctx.drawImage(images.weapon,-32,-88,85,100);}
  else {ctx.font='bold 53px system-ui';ctx.textAlign='center';ctx.fillText(item.icon,0,5);}
  ctx.restore();
@@ -162,7 +162,7 @@ function drawStage(now){
  // independent cherry blossom / gilded foreground, then free-floating lights.
  ctx.save();
  ctx.globalAlpha=.94;
- ctx.drawImage(images.foreground,Math.cos(time*.30)*4,0,W,H);
+ if(images.foreground)ctx.drawImage(images.foreground,Math.cos(time*.30)*4,0,W,H);
  ctx.restore();
  for(let i=0;i<18;i++){
   const speed=10+(i%4)*7;
@@ -329,7 +329,15 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)lastAttack
 window.addEventListener('pagehide',save);
 render();payRender();setInterval(payRender,1000);requestAnimationFrame(frame);
 if(!state.playerName)openNameEditor();
-Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{images[k]=await imageFrom(url)})).then(()=>{
+Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
+ try{images[k]=await imageFrom(url);}
+ catch(error){
+   if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
+   else if(k==='foreground'||k==='weaponBriefcase'){
+     images[k]=null;console.warn('Optional decorative layer skipped:',k,error);
+   }else throw error;
+ }
+})).then(()=>{
  ready=true;lastAttack=performance.now();render();
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
