@@ -19,6 +19,7 @@
 .bars{position:absolute;bottom:6px;left:8px;right:8px;display:grid;grid-template-columns:1fr 1fr;gap:14px;pointer-events:none}
 .bars article{font-size:11px;font-weight:800;text-shadow:0 2px #000}.bars article:last-child{text-align:right}
 .meter{border:1px solid #e2b67b;background:#2c182c;height:9px;border-radius:12px;overflow:hidden;margin-top:4px;box-shadow:0 2px 4px #0008}.meter i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#d94b74,#ffa76f);transition:width .22s}.enemy-meter i{background:linear-gradient(90deg,#75baff,#b374ef)}.enemy-meter.elite i{background:linear-gradient(90deg,#eab468,#ffdd87)}.enemy-meter.boss i{background:linear-gradient(90deg,#fb6c8b,#d86eeb)}
+.monster-art-status{padding:8px 12px;text-align:center;background:#382337;color:#ffdeb9;font-size:11px;line-height:1.5;border-bottom:1px solid #80616b}
 .log{min-height:29px;display:flex;align-items:center;justify-content:center;padding:5px 9px;text-align:center;font-size:12px;color:#ffe7af;background:#25152e;border-bottom:1px solid #745074;line-height:1.45}
 .controls{padding:10px 10px 8px;display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:7px}
 .controls button,.mini-actions button{color:#fff1c9;border:2px solid #d6ac69;border-radius:10px;background:linear-gradient(#70455d,#38233f);padding:10px 4px;font-weight:850;font-size:13px;box-shadow:0 3px 0 #160d24}
@@ -80,6 +81,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
 <div class="chibi-art-state" id="chibi-art-state" role="status" hidden>正在檢查 Q 版高畫質主角……</div>
+<div class="monster-art-status" id="monster-art-status" role="status">⚠️ 怪物正式逐格美術：0/32。現有怪物為未核准的工程替身。</div>
 <div class="chibi-quick-preview">
 <button id="hurt-demo-quick" type="button">💥 試播受擊動畫（不扣血）</button>
 <details class="art-advanced"><summary>素材檢查／進階測試</summary>
@@ -101,7 +103,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
 <nav class="tabs" aria-label="遊戲功能"><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
-<div class="footnote"><a href="./monster-gallery.html">🎨 32 隻怪物動畫審圖室（可切換攻擊／受傷／死亡）</a></div>
+<div class="footnote">怪物獨立畫稿尚未驗收，暫停把程序動作展示為「正式動畫」。</div>
 <div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
@@ -112,4 +114,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=monster32-rework-20261109-b1"></script></body></html>
+<script type="module" src="./app.mjs?v=monster-frame-gate-20261109-1"></script></body></html>
