@@ -5,6 +5,10 @@ import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
+const LOGICAL_WIDTH=720,LOGICAL_HEIGHT=620;
+const PIXEL_SCALE=Math.max(1,Math.min(2,Math.ceil(window.devicePixelRatio||1)));
+world.width=LOGICAL_WIDTH*PIXEL_SCALE;
+world.height=LOGICAL_HEIGHT*PIXEL_SCALE;
 const panel=$('#panel'),body=$('#panel-content');
 const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.warn('存檔失敗',e)}};
 const format=n=>Number(n||0).toLocaleString('zh-TW');
@@ -57,7 +61,7 @@ function imageFrom(url){
  });
 }
 function drawImageCover(img,offset){
- const W=world.width,H=world.height,ratio=Math.max(W/img.width,H/img.height),w=img.width*ratio,h=img.height*ratio;
+ const W=LOGICAL_WIDTH,H=LOGICAL_HEIGHT,ratio=Math.max(W/img.width,H/img.height),w=img.width*ratio,h=img.height*ratio;
  ctx.drawImage(img,(W-w)/2+offset,(H-h)/2-25,w,h);
 }
 function circle(x,y,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
@@ -94,7 +98,8 @@ function paintEnemy(enemy,now){
 }
 function drawStage(now){
  if(!ready)return;
- const W=world.width,H=world.height,time=now/1000,bgShift=Math.sin(time*.35)*10;
+ const W=LOGICAL_WIDTH,H=LOGICAL_HEIGHT,time=now/1000,bgShift=Math.sin(time*.35)*10;
+ ctx.setTransform(PIXEL_SCALE,0,0,PIXEL_SCALE,0,0);
  ctx.clearRect(0,0,W,H);
  drawImageCover(images.bg,bgShift);
  const dim=ctx.createLinearGradient(0,0,0,H);dim.addColorStop(0,'#120b2919');dim.addColorStop(.65,'#160e254d');dim.addColorStop(1,'#120b27de');ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
