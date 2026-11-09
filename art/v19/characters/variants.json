@@ -10,30 +10,35 @@
       "name": "平凡社畜・{playerName}",
       "role": "starter",
       "available": false,
-      "visualStatus": "awaiting-art-production",
+      "visualStatus": "spec-v1-locked-awaiting-single-character-art",
       "unlockRule": "available-at-start-after-assets-pass",
       "appearance": {
-        "body": "slim",
-        "hair": "short black, slightly tousled",
-        "ageImpression": "adult Japanese office worker",
-        "face": "light under-eye shadows, clean-shaven",
+        "body": "slim adult male, subtly tall visual impression; 3.5-4.5 heads in gameplay stylization",
+        "hair": "black to blue-black, messy short-medium layers, fringe falling over forehead, NEVER BROWN",
+        "ageImpression": "25-35, adult tired yet handsome Japanese salaryman; scruffy but charming",
+        "face": "slim adult facial structure, sleepy half-lidded eyes, slight under-eye shadows, subtle clearly visible chin and upper-lip stubble, not heavy beard",
         "outfit": [
-          "white office shirt",
-          "loose red tie",
-          "dark suit trousers",
-          "leather shoes",
-          "employee badge"
+          "slightly rumpled off-white office shirt",
+          "loosely knotted dark red tie",
+          "slim dark tailored office trousers",
+          "black leather office shoes",
+          "employee ID badge with lanyard"
         ],
+        "pose": "asymmetric relaxed half-slouch holding worn office briefcase",
         "props": [
-          "briefcase",
+          "worn office briefcase",
           "coffee cup",
           "laptop"
-        ]
+        ],
+        "style": "cinematic high-quality Japanese fantasy RPG art, warm gold and indigo-violet light, layered fabric highlights, NOT flat/cartoon infant design",
+        "inspiration": "elegant bohemian, languid handsome anime adult; original character, not direct copy of Dazai Osamu from Bungo Stray Dogs"
       },
       "artRoot": "art/v19/candidates/characters/starter/",
       "approvedAssetPaths": [],
       "displayNameTemplate": "平凡社畜・{playerName}",
-      "nameSource": "User-defined nickname saved in v19 engine state. '夏' is not hardcoded."
+      "nameSource": "User-defined nickname saved in v19 engine state. '夏' is not hardcoded.",
+      "artSpecification": "docs/V19_CANONICAL_HERO_ART.md",
+      "candidateSpriteAsset": null
     },
     {
       "id": "B",
@@ -82,7 +87,7 @@
     "needCropCheck": true,
     "needBrowserPlayback": true
   },
-  "note": "Descriptions and paths are plans; no approved sprite assets exist for either variant yet. Old flat SVGs are not the approved B design.",
+  "note": "Canonical hero A specification V1 locked; no production-qualified transparent sprites. Prior generated full RPG menu screenshots are concept images only and must not be integrated as character sprites. Existing SVG placeholders remain visually rejected.",
   "conceptCatalog": {
     "module": "v19/roster.mjs",
     "styleCount": 16,
