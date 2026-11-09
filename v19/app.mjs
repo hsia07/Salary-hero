@@ -34,7 +34,11 @@ let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 const assetPaths={
  bg:'../art/enchanted-office.svg',
- hero:'../art/hero-idle.svg',
+ hero:'../art/v19/candidates/hero/idle.svg',
+ heroAttack:'../art/v19/candidates/hero/attack.svg',
+ heroHurt:'../art/v19/candidates/hero/hurt.svg',
+ heroVictory:'../art/v19/candidates/hero/victory.svg',
+ heroSleep:'../art/v19/candidates/hero/sleep.svg',
  minion:'../art/paper-minion.svg',
  boss:'../art/printer-boss.svg',
  weapon:'../art/equipment-weapon.svg',
@@ -77,7 +81,10 @@ function drawStage(now){
  const heroX=100+lunge,heroY=227+Math.sin(time*3.2)*4;
  shadow(heroX+133,515,110,17);
  ctx.save();ctx.translate(heroX+120,heroY+148);ctx.rotate(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018);ctx.translate(-120,-148);
- ctx.drawImage(images.hero,0,0,236,306);
+ const pose=attacking
+   ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:phase>.53&&phase<.75?images.heroHurt:images.heroAttack)
+   :(!state.auto?images.heroSleep:images.hero);
+ ctx.drawImage(pose,0,0,236,306);
  ctx.restore();
  glow(heroX+162,heroY+163,state.equipped==='excalibur'?105:46,state.equipped==='excalibur'?'#73ddff50':'#ffd28b25');
  drawWeapon(heroX+188,heroY+222,phase);
