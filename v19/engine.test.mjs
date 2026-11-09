@@ -91,6 +91,28 @@ test('elite monster is stronger, gives a guaranteed equipment drop and one gem',
  assert.ok(win.gold>12+3*4);
  assert.ok(win.defeatedTypes.includes(elite.typeId));
 });
+test('elite skill hits every third counterattack and survives save cycles',()=>{
+ let s=initial();s.wave=3;s.enemy=enemyFor(3);
+ for(let n=1;n<=3;n++){
+   s=transition(s,'attack',()=>.9);
+   assert.equal(s.enemy.turns,n);
+   assert.equal(Boolean(s.last.enemySkill),n===3);
+ }
+ assert.equal(s.last.enemySkill,'菁英反制');
+ assert.ok(s.last.retaliationDamage>s.enemy.attack);
+ assert.equal(normalize(JSON.parse(JSON.stringify(s))).enemy.turns,3);
+});
+test('boss skill activates every fourth retaliation and remains stronger than previous elite',()=>{
+ for(let w=4;w<=128;w+=4){
+   assert.ok(enemyFor(w).maxHp>enemyFor(w-1).maxHp,'boss wave '+w+' is tougher than elite');
+ }
+ let s=initial();s.wave=4;s.enemy=enemyFor(4);
+ for(let n=1;n<=4;n++){
+   s=transition(s,'attack',()=>.9);
+   assert.equal(Boolean(s.last.enemySkill),n===4);
+ }
+ assert.equal(s.last.enemySkill,'首領狂暴');
+});
 test('existing V19 save retains character/progress while adding elite metadata',()=>{
  const legacy=initial();legacy.wave=3;legacy.gold=246;legacy.playerName='社畜';
  legacy.enemy={...enemyFor(3),tier:undefined,elite:undefined,hp:20};
