@@ -160,7 +160,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  }
  return s;
 }
-const TZ=8*3600000,HOUR=3600000;
+const TZ=8*3600000,HOUR=3600000,DAY=24*HOUR;
 function localStamp(y,m,d,h){return Date.UTC(y,m-1,d,h)-TZ;}
 function workday(y,m,d){const w=new Date(Date.UTC(y,m-1,d)).getUTCDay();return w!==0&&w!==6;}
 function daysInMonth(y,m){return new Date(Date.UTC(y,m,0)).getUTCDate();}
