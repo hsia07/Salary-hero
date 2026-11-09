@@ -13,6 +13,9 @@ export function validateHurtAtlas(w,h){
   return 0;
 }
 export function shouldRecoil(previousHp,latestHp,result){
-  return !!result && result.type==='hit' &&
-    Number.isFinite(previousHp) && Number.isFinite(latestHp) && latestHp<previousHp;
+ if(!result||result.type!=='hit')return false;
+ // The combat engine may restore full HP immediately after a fatal hit.
+ // Its recorded retaliationDamage remains the authoritative injury marker.
+ if(Number(result.retaliationDamage)>0)return true;
+ return Number.isFinite(previousHp) && Number.isFinite(latestHp) && latestHp<previousHp;
 }
