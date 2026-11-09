@@ -5,7 +5,7 @@ import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
-import {validateMonsterAtlasManifest,validateSpritePixels,drawMonsterAtlasFrame} from './sprite-atlas.mjs';
+import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame} from './sprite-atlas.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 const $=s=>document.querySelector(s);
@@ -58,7 +58,10 @@ async function loadApprovedMonsterArt(){
    const frames={};let ok=true;
    for(const [state,frame] of Object.entries(record.states)){
      const image=await imageFrom(frame.src);
-     if(!validateSpritePixels(image,frame).ok){ok=false;break;}
+     const pixels=validateSpritePixels(image,frame);
+     if(!pixels.ok){console.warn('怪物逐格圖片尺寸不符：',id,state,pixels.reason);ok=false;break;}
+     const artErrors=inspectAtlasFrameArt(image,frame,state);
+     if(artErrors.length){console.warn('怪物逐格美術未通過：',id,state,artErrors);ok=false;break;}
      frames[state]={image,frame};
    }
    if(ok)approved.set(id,frames);
