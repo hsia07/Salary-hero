@@ -18,10 +18,15 @@ def main():
   page.locator('#player-name-input').fill('藝術驗收')
   page.locator('#name-form button').click()
   page.wait_for_function("document.querySelector('#attack')?.disabled === false",timeout=20000)
+  backing=page.locator('#world').evaluate('(canvas)=>[canvas.width,canvas.height]')
+  if backing!=[1440,1240]:
+   raise AssertionError(f'High-DPI canvas has incorrect backing resolution: {backing}')
+
   urls=[
    '/art/v19/runtime/backgrounds/office-night.svg',
    '/art/v19/runtime/foreground/cherry-filigree.svg',
-   '/art/v19/runtime/weapons/ornate-briefcase.svg'
+   '/art/v19/runtime/weapons/ornate-briefcase.svg',
+   '/art/v19/runtime/ui/ornate-theme.css'
   ]
   for url in urls:
    response=page.request.get('http://127.0.0.1:8766'+url)
@@ -44,7 +49,7 @@ def main():
   if not page.locator('#panel-content').get_by_text('角色衣櫃').count():
    raise AssertionError('Cosmetic wardrobe not accessible')
   page.screenshot(path=str(output/'mobile-v19-wardrobe.png'),full_page=True)
-  print('PASS: art HTTP, canvas rendering, 390px layout, combat state, naming, wardrobe; '+wave)
+  print('PASS: art HTTP, 1440x1240 Retina canvas, 390px layout, combat state, naming, wardrobe; '+wave)
   browser.close()
 
 if __name__=='__main__':
