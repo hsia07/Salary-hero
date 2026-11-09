@@ -4,6 +4,7 @@ import {HERO_STYLES,ALL_ENEMIES} from './roster.mjs';
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
+import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
 const LOGICAL_WIDTH=720,LOGICAL_HEIGHT=620;
@@ -45,6 +46,8 @@ const artMode=new URLSearchParams(location.search).get('art');
 const chibiV2Mode=artMode==='chibi-v2';
 const chibiArtPreview=artMode==='chibi'||chibiV2Mode;
 const CHIBI_V2_STORAGE='salary-hero-v19-local-chibi-v2-atlas';
+const CHIBI_HURT_STORAGE='salary-hero-v19-local-chibi-hurt-v1';
+let hurtPreviewStart=0;
 const assetPaths={
  bg:'../art/v19/runtime/backgrounds/office-night.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
@@ -123,6 +126,14 @@ function drawStage(now){
  ctx.fillStyle='#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
  const phase=fx?Math.min((now-fx.start)/1000,2):3;
  const animationMs=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
+ const attackDurationMs=(chibiV2Mode&&images.chibiAttackV2)?CHIBI_ATTACK_V2_TOTAL_MS:680;
+ const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
+ const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
+ const retaliationHurt=!!(hurtCell&&fx?.retaliation&&animationMs>=attackDurationMs&&
+      hurtFrameAt(animationMs-attackDurationMs)>=0);
+ const visualHurtMs=hurtPreviewStart>0?now-hurtPreviewStart:Infinity;
+ const manualHurt=!!(hurtCell&&visualHurtMs<CHIBI_HURT_TOTAL_MS);
+ const hurtPoseIndex=manualHurt?hurtFrameAt(visualHurtMs):retaliationHurt?hurtFrameAt(animationMs-attackDurationMs):-1;
  const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
  const attacking=Boolean(fx&&typeof fx.wave==='number')&&(chibiV2Ready?attackFrameAt(animationMs)>=0:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
@@ -139,7 +150,10 @@ function drawStage(now){
  if(chibiReady){
   // The new V2 sprites never stretch, ghost/cross-fade or translate the whole character.
   // Original art was 7 genuinely different limb/briefcase poses; target dimensions are square.
-  if(attacking&&chibiV2Ready){
+  if(hurtPoseIndex>=0&&hurtCell){
+   // These five drawings change arms, head, legs, expression and briefcase position.
+   ctx.drawImage(hurtAtlas,hurtPoseIndex*hurtCell,0,hurtCell,hurtCell,-25,8,306,306);
+  }else if(attacking&&chibiV2Ready){
    const frameIndex=attackFrameAt(animationMs);
    const cell=validateAttackAtlas(images.chibiAttackV2.naturalWidth,images.chibiAttackV2.naturalHeight);
    if(cell>0)ctx.drawImage(images.chibiAttackV2,frameIndex*cell,0,cell,cell,-25,8,306,306);
@@ -240,10 +254,12 @@ function render(){
 function commit(action){
  const type=typeof action==='string'?action:action?.type;
  if(!ready&&!['setName','toggleFavoriteStyle','equipSkin','drawSkin','claimSkinEvent'].includes(type))return;
- const oldEnemy={...state.enemy},wasWave=state.wave;
+ const oldEnemy={...state.enemy},wasWave=state.wave,oldHeroHp=state.heroHp;
  state=transition(state,action);
  if(action==='attack'){
-   fx={start:performance.now(),result:state.last,oldEnemy,wave:wasWave};
+   fx={start:performance.now(),result:state.last,oldEnemy,wave:wasWave,
+      retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
+      retaliationDamage:Math.max(0,oldHeroHp-state.heroHp)};
    lastAttack=performance.now();
  }else if(state.last?.type==='heal'||state.last?.type==='chest')fx={start:performance.now(),result:state.last,oldEnemy};
  save();render();
@@ -344,10 +360,15 @@ world.addEventListener('pointerup',e=>{
  const x=(e.clientX-rect.left)/rect.width;
  if(x>.48)attack();
 });
+function attackCooldownMs(){
+ const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
+ return base+(fx?.retaliation&&chibiV2Mode&&images.chibiHurtV1?CHIBI_HURT_TOTAL_MS:0);
+}
 function attack(){
  if(!ready)return;
  const now=performance.now();
- if(fx&&now-fx.start<(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680)/state.speed)return;
+ if(hurtPreviewStart&&now-hurtPreviewStart<CHIBI_HURT_TOTAL_MS)return;
+ if(fx&&now-fx.start<attackCooldownMs()/state.speed)return;
  commit('attack');
 }
 async function initChibiV2Lab(){
@@ -386,7 +407,45 @@ async function initChibiV2Lab(){
     await install(dataUrl,true);
   }catch(error){report('❌ '+String(error.message||error));}
  });
- $('#chibi-v2-clear')?.addEventListener('click',()=>{
+
+ const hurtInput=$('#chibi-hurt-file'),hurtMsg=$('#chibi-hurt-status'),hurtDemo=$('#chibi-hurt-demo');
+ async function installHurt(dataUrl,persist){
+   const img=await imageFrom(dataUrl);
+   const cell=validateHurtAtlas(img.naturalWidth,img.naturalHeight);
+   if(!cell)throw new Error('受傷圖組尺寸不正確：請使用 2560×512 PNG 或 1920×384 WebP，實際為 '+img.naturalWidth+'×'+img.naturalHeight);
+   const check=document.createElement('canvas');check.width=2;check.height=2;
+   const cx=check.getContext('2d',{willReadFrequently:true});
+   cx.drawImage(img,0,0,2,2);
+   if(cx.getImageData(0,0,1,1).data[3]>3)throw new Error('圖片左上角不透明，無法當透明精靈。');
+   images.chibiHurtV1=img;
+   if(hurtDemo)hurtDemo.disabled=false;
+   if(hurtMsg)hurtMsg.textContent='✓ 已載入 5 張不同受傷姿勢（每格 '+cell+'px）。下一次敵人反擊時會播放。';
+   if(persist){
+     try{localStorage.setItem(CHIBI_HURT_STORAGE,dataUrl)}
+     catch(error){console.warn('受傷素材未能寫入本機快取，但本次仍可使用',error)}
+   }
+ }
+ if(hurtInput)hurtInput.addEventListener('change',async()=>{
+   const file=hurtInput.files?.[0];if(!file)return;
+   if(file.size>5000000){hurtMsg.textContent='圖片超過 5 MB，請使用素材包中的 WebP';return;}
+   try{
+     const url=await new Promise((resolve,reject)=>{
+       const reader=new FileReader();reader.onload=()=>resolve(reader.result);
+       reader.onerror=()=>reject(reader.error);reader.readAsDataURL(file);
+     });
+     await installHurt(url,true);
+   }catch(err){hurtMsg.textContent='❌ '+String(err.message||err)}
+ });
+ if(hurtDemo)hurtDemo.addEventListener('click',()=>{
+   if(!images.chibiHurtV1)return;
+   hurtPreviewStart=performance.now();
+   // Visual only: do not issue a battle transition or change user stats.
+ });
+ try{
+   const savedHurt=localStorage.getItem(CHIBI_HURT_STORAGE);
+   if(savedHurt)await installHurt(savedHurt,false);
+ }catch(err){console.warn('還原受傷候選素材失敗',err)}
+  $('#chibi-v2-clear')?.addEventListener('click',()=>{
    try{localStorage.removeItem(store)}catch{}
    images.chibiAttackV2=null;
    world.dataset.art='chibi-7pose-awaiting-art';
@@ -413,7 +472,8 @@ function payRender(){
 }
 function frame(now){
  if(!document.hidden&&ready){
-  if(state.auto&&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680)/state.speed))attack();
+  if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=CHIBI_HURT_TOTAL_MS)
+    &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
   drawStage(now);
  }
  requestAnimationFrame(frame);
