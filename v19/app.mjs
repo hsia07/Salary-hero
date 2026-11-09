@@ -37,7 +37,9 @@ function loadGame(){
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 const assetPaths={
- bg:'../art/enchanted-office.svg',
+ bg:'../art/v19/runtime/backgrounds/office-night.svg',
+ foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
+ weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
  hero:'../art/v19/candidates/hero/idle.svg',
  heroAttack:'../art/v19/candidates/hero/attack.svg',
  heroHurt:'../art/v19/candidates/hero/hurt.svg',
@@ -66,7 +68,8 @@ function drawWeapon(x,y,t){
  ctx.save();ctx.translate(x,y);ctx.rotate((t<.3?.3:-.15)+Math.sin(performance.now()/510)*.08);
  ctx.shadowBlur=item.id==='excalibur'?28:item.id==='notice'?18:8;
  ctx.shadowColor=item.id==='excalibur'?'#77f5ff':item.id==='notice'?'#ffe787':'#d9a9ff';
- if(item.id==='excalibur'){ctx.drawImage(images.weapon,-32,-88,85,100);}
+ if(item.id==='briefcase'){ctx.drawImage(images.weaponBriefcase,-43,-20,79,85);}
+ else if(item.id==='excalibur'){ctx.drawImage(images.weapon,-32,-88,85,100);}
  else {ctx.font='bold 53px system-ui';ctx.textAlign='center';ctx.fillText(item.icon,0,5);}
  ctx.restore();
 }
@@ -150,7 +153,22 @@ function drawStage(now){
   const y=335-phase*80;ctx.save();ctx.globalAlpha=Math.min(1,(1.05-phase)*3);ctx.font='900 43px system-ui';ctx.textAlign='center';ctx.lineWidth=6;ctx.strokeStyle='#2d163c';ctx.strokeText('-'+fx.result.damage,546,y);ctx.fillStyle=fx.result.crit?'#fff3a9':'#ff8a9e';ctx.fillText('-'+fx.result.damage,546,y);ctx.restore();
  }
  if(victory&&phase<1.35){ctx.save();ctx.globalAlpha=Math.min(1,(1.35-phase)*2);ctx.textAlign='center';ctx.font='bold 32px system-ui';ctx.fillStyle='#ffdb88';ctx.strokeStyle='#32132e';ctx.lineWidth=5;ctx.strokeText('勝利！ +'+fx.result.gold+' 🪙',365,170);ctx.fillText('勝利！ +'+fx.result.gold+' 🪙',365,170);ctx.restore();}
- for(let i=0;i<5;i++){const x=50+i*155+Math.sin(time*.7+i)*14,y=580-((time*22+i*80)%240);circle(x,y,3+(i%2),'#ffe5a790');}
+ // Art is rendered in physical layers: background, moving actors, combat FX,
+ // independent cherry blossom / gilded foreground, then free-floating lights.
+ ctx.save();
+ ctx.globalAlpha=.94;
+ ctx.drawImage(images.foreground,Math.cos(time*.30)*4,0,W,H);
+ ctx.restore();
+ for(let i=0;i<18;i++){
+  const speed=10+(i%4)*7;
+  const x=(i*109+Math.sin(time*.38+i*.6)*25+W)%W;
+  const y=(H+((i*97-time*speed)%(H+90)))%(H+90)-30;
+  ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(time*1.5+i)*.3);
+  const col=i%5===0?'#c7b4ff':i%3===0?'#ffdba9':'#ffb9d8';
+  ctx.fillStyle=col;ctx.globalAlpha=.22+(Math.sin(time*2+i)+1)*.14;
+  ctx.beginPath();ctx.ellipse(0,0,3+i%3,5+i%4,0,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+ }
 }
 function render(){
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
