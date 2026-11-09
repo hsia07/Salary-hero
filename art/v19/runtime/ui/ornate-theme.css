@@ -1,0 +1,70 @@
+/* V19 hand-layered RPG art direction. Decorates real UI, never simulates game with a screenshot. */
+:root{--gold:#ebba73;--pale:#ffedc2;--shadow:#110b26;--violet:#4c315d}
+#app{position:relative;background:
+ radial-gradient(ellipse at 55% 5%,#77507840,transparent 36%),
+ linear-gradient(170deg,#392740,#1b152d 44%,#291a38);
+ border-inline:2px solid #b37b69;box-shadow:0 0 35px #000a,0 0 80px #6d3f6c39}
+.hud{position:relative;z-index:2;
+ background:
+ radial-gradient(ellipse at 80% 0%,#af72893b,transparent 64%),
+ linear-gradient(100deg,#26172f 10%,#593755 48%,#251b3a);
+ border-bottom:3px solid #e7b677;box-shadow:inset 0 1px #fce7bd5c,0 6px 25px #10071d9c}
+.hud:after{content:"";position:absolute;pointer-events:none;inset:4px;
+ border:1px solid #f4cb8d4a;border-radius:11px}
+.brand{font-weight:950;letter-spacing:1px;
+ color:#ffe4a4;text-shadow:0 2px #5e3340,1px 0 3px #2a102b,0 0 14px #d8906366}
+.subtitle{color:#ebbb93;letter-spacing:1.4px}
+.currency{background:linear-gradient(160deg,#493048,#20162f);
+ color:#ffdf9b;border:1px solid #e6b87b;box-shadow:inset 0 1px 1px #fce4be7a,0 3px 9px #12091c77;
+ padding:6px 9px}
+.pay{border:2px solid #e1af78;border-radius:12px;
+ background:
+ radial-gradient(ellipse at 0% 0%,#fbbf8340,transparent 43%),
+ linear-gradient(135deg,#573450,#322344 65%,#50304d);
+ box-shadow:inset 0 0 0 2px #21172b,0 4px 17px #0006}
+.pay strong{font-size:21px;text-shadow:0 1px #62343a,0 0 12px #c88c614f}
+.pay-right button{background:linear-gradient(#8e5661,#49314d);
+ color:#ffebc2;border:1px solid #e4b379;box-shadow:inset 0 1px #ffe9c08a}
+.scene{border-top:2px solid #f4ce93;border-bottom:4px solid #dfa965;
+ background:#20142d;box-shadow:inset 0 0 45px #f3b48433}
+.scene:before,.scene:after{content:"";position:absolute;inset:6px;pointer-events:none;z-index:3;border:1px solid #ffd5a240}
+.scene:after{inset:0;border:0;box-shadow:inset 0 0 33px #0e0823a8,inset 0 0 3px 2px #f9cb875d}
+.stage-head span{border:2px solid #eec58a;
+ background:linear-gradient(#503352f0,#24152ef2);
+ color:#ffdda3;border-radius:11px;box-shadow:0 4px 14px #140b2699,inset 0 1px #ffd5a472;
+ padding:8px 11px;text-shadow:0 1px #311527}
+.stage-head .boss{border-color:#ffa88c;background:linear-gradient(#843f57ec,#3b1d41ef)}
+.bars article{padding:7px;background:#22153390;border:1px solid #d4a57394;border-radius:8px;
+ box-shadow:0 2px 8px #08051988;color:#fff2df}
+.meter{border:2px solid #d9ac79;background:#1b1326;height:11px}
+.meter i{background:linear-gradient(90deg,#bb4076,#f7a079,#ffe1ad);box-shadow:inset 0 1px #ffe9d5a1}
+.enemy-meter i{background:linear-gradient(90deg,#486ed7,#82c7ff,#c98aff)}
+.log{background:linear-gradient(90deg,#1c122e,#5b314e,#1c122e);
+ border-block:1px solid #d09c6a;color:#ffe2af;text-shadow:0 1px #25112d;
+ min-height:43px}
+.controls,.mini-actions{background:linear-gradient(#38213f,#2b1d39)}
+.controls button,.mini-actions button,.tabs button,.panel-button{border:2px solid #e4b276;
+ background:linear-gradient(175deg,#9b646c 0%,#65405e 45%,#37233e 100%);
+ color:#ffedc8;text-shadow:0 1px 2px #28182d;
+ box-shadow:inset 0 2px #ffe7b78c,inset 0 -2px #1e1225,0 3px 7px #08041177;
+ border-radius:10px;transition:filter .15s,transform .15s}
+.controls button:active,.mini-actions button:active,.tabs button:active,.panel-button:active{filter:brightness(1.2);transform:translateY(2px)}
+.controls .attack{background:linear-gradient(#c58b64,#a15762 48%,#603350);border-color:#ffdc95}
+.tabs{background:
+ radial-gradient(ellipse at 50% 0%,#a76a663a,transparent 64%),
+ linear-gradient(#3d2445,#20152f);
+ border-top:3px solid #f4bf7b;box-shadow:inset 0 1px #fff5cb88}
+.tabs button{font-size:12px;min-height:65px}
+.tabs button span{filter:drop-shadow(0 2px 2px #000a)}
+#panel{background:radial-gradient(ellipse at 40% 0%,#765077,#271b34 62%,#19122b);
+ border:3px solid #f0c187;box-shadow:inset 0 0 0 3px #321f3d,0 16px 68px #000c}
+#panel h2{letter-spacing:.8px;text-shadow:0 2px #633957}
+.item{background:linear-gradient(110deg,#422941,#2c223c);border:1px solid #b7896b;
+ box-shadow:inset 0 1px #ffe1b429}
+.item strong{color:#ffde9a}
+#panel-content .item button{border:1px solid #deb278;
+ background:linear-gradient(#81526b,#47304d);box-shadow:inset 0 1px #ffe4b266}
+#panel-content .item button:not(:disabled):active{transform:translateY(1px)}
+#panel-content h3{color:#ffe09d;border-bottom:1px solid #bd906f66;padding-bottom:5px}
+@media(max-width:385px){.hud-title{gap:4px}.brand{font-size:19px}.currency{padding:5px 6px}.tabs button{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.controls button,.mini-actions button,.tabs button{transition:none}}
