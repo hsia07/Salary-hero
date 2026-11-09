@@ -3,7 +3,7 @@
   "character": "A - default starter",
   "nameTemplate": "平凡社畜・{playerName}",
   "specification": "docs/V19_CANONICAL_HERO_ART.md",
-  "status": "LONG-BODY APPEARANCE APPROVED AS REFERENCE; CHIBI GAME SPRITES NOT DELIVERED",
+  "status": "First real independent Q版 idle candidate delivered to GitHub; visual owner approval & action animation still pending",
   "approved": false,
   "date": "2026-11-09",
   "artTarget": {
@@ -38,9 +38,18 @@
     },
     {
       "id": "idle",
-      "path": null,
-      "status": "not-produced",
-      "approved": false
+      "path": "art/v19/candidates/characters/starter/chibi/idle-candidate.webp",
+      "status": "STANDALONE_TRANSPARENT_CHIBI_CANDIDATE__DRAWN_FROM_COMPOSITE_SHEET__VISUAL_QA_PENDING",
+      "approved": false,
+      "imageDimensionsPx": [
+        384,
+        384
+      ],
+      "sourceType": "Extracted from a generated sprite reference sheet using image segmentation and manually composed on a clean transparent canvas",
+      "gitBlobSha": "ddd8c31a659a480db2fb5c2a283b181c1284baae",
+      "fileBytes": 7432,
+      "alphaRequirement": "transparent background, verify in browser",
+      "note": "A genuine standalone drawable file; NOT a newly painted original isolated source. Q版 adult black-haired, stubble, ID, briefcase. Source poster matting may leave mild border remnants. No independent movement frames included."
     },
     {
       "id": "walk",
@@ -106,7 +115,7 @@
     "approved for art style by project owner",
     "game load and iOS Safari preview verified"
   ],
-  "note": "User accepted the TALL-BODY exterior as the identity reference; actual in-game character must be high-detail Q版 chibi with independent newly drawn action poses. Still not integrated / not delivered.",
+  "note": "Initial adult long-body reference accepted, and standalone high-detail Q版 idle chibi candidate now committed. Attack, walk, hurt, victory and sleep not produced as real independent poses. Nothing has been promoted to official runtime.",
   "appearanceApproval": {
     "status": "accepted-as-current-reference",
     "source": "user response 2026-11-09: 已經不太需要調整了",
@@ -166,5 +175,17 @@
       "no actual limb or expression difference",
       "residual purple matte fringing"
     ]
+  },
+  "technicalCandidate": {
+    "path": "art/v19/candidates/characters/starter/chibi/idle-candidate.webp",
+    "nativeSizePx": [
+      384,
+      384
+    ],
+    "sourceLocalSha256": "c6f78cf546938b4264170f259342716b6875ba30bb002a760e327c0955ba20a2",
+    "gitHubBlob": "ddd8c31a659a480db2fb5c2a283b181c1284baae",
+    "cutoutQuality": "Pixel-clean alpha background and margins; edges still require manual owner check",
+    "stagingPreview": "v19/chibi-art-preview.html",
+    "approvedForRuntime": false
   }
 }
