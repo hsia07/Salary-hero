@@ -25,7 +25,7 @@ const RAW=[
  ['presentation-siren','starwolf','beam','phase','dissolve','plasma'],
  ['overtime-hound','hound','pounce','recoil','dissolve','hellfire'],
  ['server-lich','lich','drain','glitch','pixel','binary'],
- ['clockwork-samurai','yaksha','trident','bend','scatter','water'],
+ ['clockwork-samurai','yaksha','whirltrident','bend','scatter','water'],
  ['printer-overlord','printer','storm','sparks','collapse','paper'],
  ['hr-queen','foodcart','banquet','spill','shatter','soup'],
  ['deadline-dragon','wukong','staffstorm','recoil','scatter','gold'],
