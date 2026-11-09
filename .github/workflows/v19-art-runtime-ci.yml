@@ -12,6 +12,7 @@ on:
       - 'scripts/qa-v19-layered-art.py'
       - 'scripts/qa-v19-chibi-candidate.py'
       - 'scripts/qa-v19-chibi-attack.py'
+      - 'scripts/qa-v19-hd-battle-art.py'
       - 'scripts/qa-v19-chibi-browser.py'
       - 'scripts/qa-v19-mobile-smoke.py'
       - '.github/workflows/v19-art-runtime-ci.yml'
@@ -47,6 +48,8 @@ jobs:
         run: python scripts/qa-v19-chibi-candidate.py
       - name: Verify real five-pose art strip dimensions, alpha and limb differences
         run: python scripts/qa-v19-chibi-attack.py
+      - name: Verify the actual committed HD attack/hurt binary files and all frame margins
+        run: python scripts/qa-v19-hd-battle-art.py
       - name: Start local build for browser smoke check
         run: |
           python -m http.server 8766 --bind 127.0.0.1 --directory . > /tmp/salary-hero-http.log 2>&1 &
