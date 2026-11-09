@@ -446,11 +446,16 @@ async function initChibiV2Lab(){
    if(savedHurt)await installHurt(savedHurt,false);
  }catch(err){console.warn('還原受傷候選素材失敗',err)}
   $('#chibi-v2-clear')?.addEventListener('click',()=>{
-   try{localStorage.removeItem(store)}catch{}
+   try{localStorage.removeItem(store);localStorage.removeItem(CHIBI_HURT_STORAGE)}catch{}
    images.chibiAttackV2=null;
+   images.chibiHurtV1=null;
+   hurtPreviewStart=0;
+   if(hurtInput)hurtInput.value='';
+   if(hurtDemo)hurtDemo.disabled=true;
+   if(hurtMsg)hurtMsg.textContent='受傷五姿勢圖片已從本機清除。';
    world.dataset.art='chibi-7pose-awaiting-art';
    input.value='';
-   report('已清除七姿勢測試圖；遊戲進度和薪資資料不受影響。');
+   report('已清除攻擊及受傷候選素材；遊戲進度和薪資資料不受影響。');
  });
  if(images.chibiAttackV2){
    report('✓ 網站已提供七姿勢素材，可直接攻擊。');
