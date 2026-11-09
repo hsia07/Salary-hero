@@ -10,6 +10,8 @@ on:
       - "v19/app.mjs"
       - "v19/attack-timing.mjs"
       - "v19/hurt-timing.mjs"
+      - "v19/hurt-effects.mjs"
+      - "v19/hurt-effects.test.mjs"
       - "v19/hurt-timing.test.mjs"
       - "v19/attack-timing.test.mjs"
       - "v19/play.html"
@@ -38,5 +40,6 @@ jobs:
           node --check v19/app.mjs
           node --check v19/attack-timing.mjs
           node --check v19/hurt-timing.mjs
+          node --check v19/hurt-effects.mjs
       - name: Run all engine and cosmetics rules tests
-        run: node --test v19/engine.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs
+        run: node --test v19/engine.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs
