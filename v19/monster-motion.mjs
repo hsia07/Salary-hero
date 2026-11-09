@@ -255,6 +255,64 @@ function effectPiece(c,element,x,y,size,accent,i){
  }
  c.restore();
 }
+/** Frame-specific secondary limbs, props and recoil — not a translated idle still. */
+function drawPoseDetails(c,enemy,m,state,p,now){
+ const peak=Math.sin(Math.PI*clamp(p)),accent=enemy.accent||'#f3d5ac';
+ if(state==='idle'){
+   const pulse=.55+.35*Math.sin(now/330+m.index);
+   c.save();c.globalAlpha=pulse;
+   effectPiece(c,m.element,24+Math.sin(now/470+m.index)*7,62,5,accent,m.index);
+   effectPiece(c,m.element,176+Math.cos(now/380+m.index)*5,110,4,accent,m.index+1);
+   c.restore();return;
+ }
+ if(state==='hurt'){
+   c.save();c.globalAlpha=.5+peak*.5;
+   // Local red impact at upper torso; each monster's anatomy still animates independently.
+   ellipse(c,164,109,5+peak*18,5+peak*17,'#ff6678a8','#ffe5c7',2);
+   line(c,[[59,94],[75,87]],'#ec7687',Math.max(1,5*peak));
+   line(c,[[123,88],[143,96]],'#ec7687',Math.max(1,5*peak));
+   c.restore();return;
+ }
+ if(state==='defeat'){
+   for(let i=0;i<4;i++){
+     const a=i*TAU/4+m.index*.3;
+     c.save();c.globalAlpha=1-p;
+     effectPiece(c,m.element,100+Math.cos(a)*p*72,116+Math.sin(a)*p*60,7+p*5,accent,i);
+     c.restore();
+   }
+   return;
+ }
+ if(state!=='attack'&&state!=='special')return;
+ c.save();c.globalAlpha=.75+.25*peak;
+ const mode=m.attack;
+ if(/staff|trident|slash|reap|blade|pinch|bite|pounce|charge|sting/.test(mode)){
+   // Physically swing a distinct weapon or claw toward the hero on the left.
+   c.translate(56,121);c.rotate(-peak*.75);
+   const reach=mode==='staffstorm'||mode==='whirltrident'?105:78;
+   line(c,[[0,4],[-reach*peak,-31-10*peak]],/staff|trident/.test(mode)?'#f8d7a2':accent,10);
+   if(/trident/.test(mode)){
+     const x=-reach*peak,y=-31-10*peak;
+     line(c,[[x,y-23],[x,y+13],[x-12,y+2],[x+12,y+2]],'#d8f6ef',5);
+   }else if(/slash|blade|reap/.test(mode)){
+     poly(c,[[-reach*peak,-31],[-reach*peak-24,-52],[-reach*peak-8,-14]],'#d7eeef','#5f6b78',2);
+   }else{
+     ellipse(c,-reach*peak,-31-10*peak,10+peak*7,11+peak*7,accent,'#49334d',3);
+   }
+ }else if(/beam|laser|blinkshot|pulse|drain|judgment|abduct|virus|rapidshot/.test(mode)){
+   // Caster's limb extends forward and a luminous charging core blooms.
+   line(c,[[47,123],[18-18*peak,119-11*peak]],accent,9);
+   ellipse(c,25-23*peak,112-12*peak,8+peak*12,8+peak*12,'#fff1d8',accent,3);
+ }else if(/stamp|quake|storm|banquet|toss|potion|haunt|splash|fling|sandwave/.test(mode)){
+   // A visible throwing arm rises; it is not the body's translation.
+   line(c,[[45,139],[25+9*peak,112-45*peak]],accent,12);
+   effectPiece(c,m.element,24+9*peak,109-47*peak,7+10*peak,accent,m.index);
+ }
+ if(state==='special'){
+   c.globalAlpha=.8*peak;c.strokeStyle=accent;c.lineWidth=5;c.shadowColor=accent;c.shadowBlur=17;
+   c.beginPath();c.arc(102,116,43+35*peak,0,TAU);c.stroke();
+ }
+ c.restore();
+}
 export function drawMonsterActor(ctx,enemy,now,visual={state:'idle',progress:0}){
  const m=monsterVisualFor(enemy),state=MONSTER_STATES.includes(visual.state)?visual.state:'idle',p=clamp(visual.progress||0);
  const w=enemy.boss?214:enemy.tier==='elite'?194:177,h=enemy.boss?258:enemy.tier==='elite'?248:240;
@@ -288,6 +346,7 @@ export function drawMonsterActor(ctx,enemy,now,visual={state:'idle',progress:0})
  }
  ctx.shadowColor='#180e24';ctx.shadowBlur=13;ctx.shadowOffsetY=6;
  drawAnatomy(ctx,enemy,m,phase);
+ drawPoseDetails(ctx,enemy,m,state,p,now);
  ctx.restore();
  if(enemy.tier==='elite'||enemy.tier==='boss'){
    ctx.save();ctx.strokeStyle=enemy.tier==='boss'?'#ffe6aa':enemy.accent||'#f5d5aa';
