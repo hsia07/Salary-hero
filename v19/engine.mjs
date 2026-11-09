@@ -1,4 +1,11 @@
 /* Salary Hero V19 — isolated, deterministic game rules. No UI or screenshot dependency. */
+import {enemyDesignFor,ALL_ENEMIES,HERO_STYLES} from './roster.mjs';
+export const PLAYER_TITLE='平凡社畜・';
+export function cleanPlayerName(value){
+ const text=String(value??'').normalize('NFC').replace(/[\p{Cc}\p{Cf}]/gu,'').trim();
+ return Array.from(text).slice(0,12).join('');
+}
+export function playerTitle(state){return PLAYER_TITLE+(cleanPlayerName(state?.playerName)||'未命名');}
 export const ITEMS = Object.freeze([
   {id:'briefcase',name:'破舊公事包',tier:'普通',attack:12,icon:'💼',cost:0},
   {id:'laptop',name:'鋼鐵加班筆電',tier:'稀有',attack:19,icon:'💻',cost:90},
@@ -16,17 +23,24 @@ export function todayTW(now=Date.now()){
  return [parts.year,parts.month,parts.day].join('-');
 }
 export function enemyFor(wave){
- const boss=wave%4===0,scale=Math.floor((wave-1)/4);
- return {id:wave,boss,name:boss?'加班暴君・影印機':'暴走報表怪',hp:boss?145+scale*48:44+wave*10,maxHp:boss?145+scale*48:44+wave*10,attack:boss?10+scale*2:3+Math.floor(wave/3)};
+ const n=Math.max(1,Math.floor(Number(wave)||1)),design=enemyDesignFor(n);
+ const boss=n%4===0,scale=Math.floor((n-1)/4);
+ const maxHp=boss?145+scale*48:44+n*10;
+ return {id:n,typeId:design.id,boss,name:design.name,icon:design.icon,family:design.family,
+   sprite:design.sprite||null,accent:design.accent,trait:design.trait,traitText:design.traitText,
+   hp:maxHp,maxHp,attack:boss?10+scale*2:3+Math.floor(n/3)};
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
-   equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:enemyFor(1),
+   playerName:'',styleWishlist:[],defeatedTypes:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:enemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw){
  const fresh=initial();if(!raw||typeof raw!=='object'||raw.version!==19)return fresh;
  const n={...fresh,...raw};
+ n.playerName=cleanPlayerName(raw.playerName);
+ n.styleWishlist=[...new Set((Array.isArray(raw.styleWishlist)?raw.styleWishlist:[]).filter(id=>HERO_STYLES.some(s=>s.id===id)))];
+ n.defeatedTypes=[...new Set((Array.isArray(raw.defeatedTypes)?raw.defeatedTypes:[]).filter(id=>ALL_ENEMIES.some(s=>s.id===id)))];
  n.owned=[...new Set((Array.isArray(raw.owned)?raw.owned:[]).filter(x=>ITEMS.some(it=>it.id===x)).concat('briefcase'))];
  n.equipped=n.owned.includes(raw.equipped)?raw.equipped:'briefcase';
  n.level=Math.max(1,Math.min(500,Math.floor(Number(n.level)||1)));
@@ -58,24 +72,49 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  const s=normalize(raw),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
  switch(a.type){
+ case 'setName':{
+   const nickname=cleanPlayerName(a.value);
+   if(!nickname){notice(s,'請輸入 1–12 個字的遊戲名稱。');break;}
+   s.playerName=nickname;s.last={type:'rename',name:nickname};
+   notice(s,'📛 角色名稱已更新：'+playerTitle(s));break;
+ }
+ case 'toggleFavoriteStyle':{
+   const style=HERO_STYLES.find(x=>x.id===a.id);
+   if(!style)break;
+   if(s.styleWishlist.includes(style.id)){
+     s.styleWishlist=s.styleWishlist.filter(id=>id!==style.id);
+     notice(s,'已從造型願望清單移除：'+style.name);
+   }else{
+     s.styleWishlist.push(style.id);
+     notice(s,'⭐ 已收藏造型概念：'+style.name);
+   }
+   s.last={type:'favoriteStyle',id:style.id};break;
+ }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
  case 'speed':s.speed=a.value===2?2:1;notice(s,'戰鬥速度 ×'+s.speed);break;
  case 'attack':{
    const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
-   const crit=Number(rng())<.16,damage=Math.round((weapon.attack+4+s.level*2)*(crit?1.7:1));
+   const crit=Number(rng())<.16,baseDamage=Math.round((weapon.attack+4+s.level*2)*(crit?1.7:1));
+   const damage=s.enemy.trait==='guard'?Math.max(1,Math.round(baseDamage*.75)):baseDamage;
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
    s.last={type:'hit',damage,crit,boss:s.enemy.boss};
    notice(s,(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
    if(s.enemy.hp===0){
      const dead=s.enemy,boss=dead.boss,reward=dead.boss?70+s.wave*9:12+s.wave*4;
+     if(!s.defeatedTypes.includes(dead.typeId))s.defeatedTypes.push(dead.typeId);
      s.gold+=reward;s.cleared++;awardXP(s,boss?75:12+s.wave*2);
      if(boss){s.gems+=2;s.chests+=1;s.heroHp=s.maxHp;notice(s,'🏆 首領擊敗！全隊回滿血，獲得寶箱與寶石。');}
      lootRoll(s,rng);s.wave++;s.enemy=enemyFor(s.wave);
      s.last={type:'victory',damage,crit,boss,gold:reward,newWave:s.wave};
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
    }else{
-     const retaliation=s.enemy.attack;
+     const retaliation=s.enemy.attack+(s.enemy.trait==='rage'?Math.max(2,Math.floor(s.wave/3)):0);
      s.heroHp=Math.max(0,s.heroHp-retaliation);
+     if(s.enemy.trait==='leech'){
+       const healed=Math.min(s.enemy.maxHp-s.enemy.hp,Math.max(2,Math.ceil(s.enemy.maxHp*.06)));
+       s.enemy.hp+=healed;
+       if(healed>0)notice(s,'🩹 '+s.enemy.name+' 回復 '+healed+' HP！');
+     }
      if(!s.heroHp){s.heroHp=s.maxHp;const loss=Math.min(s.gold,10);s.gold-=loss;notice(s,'💫 勇者被打倒，自動復活，損失 '+loss+' 金幣。');}
    }
    break;
