@@ -41,6 +41,16 @@
 @keyframes float{to{transform:translateY(-8px)}}.footnote{text-align:center;font-size:10px;color:#bba8b9;padding:10px 12px 16px}
 a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+#level{max-width:60%;text-align:right;overflow-wrap:anywhere;font-size:clamp(10px,2.7vw,12px)}
+#enemy-trait{display:block;font-size:10px;color:#d9c1ea;margin-top:3px;text-shadow:0 1px #110a22}
+#name-dialog{width:min(92vw,400px);border:3px solid #f4bd76;border-radius:18px;background:radial-gradient(ellipse at top,#58395e,#20172e);color:#fff0cb;padding:20px;box-shadow:0 12px 65px #000b}
+#name-dialog::backdrop{background:#070510dd}
+#name-dialog h2{color:#ffe1a1;margin:0 0 9px}
+#name-dialog p{line-height:1.65;font-size:13px}
+#name-dialog input{font:inherit;width:100%;font-size:18px;background:#261d35;color:#fff5d6;border:1px solid #e5b671;border-radius:10px;padding:13px 12px}
+#name-preview{margin:12px 0;border:1px solid #b68e65;border-radius:10px;padding:13px;background:#36273e;color:#ffd897;font-weight:800;overflow-wrap:anywhere}
+#name-dialog button{width:100%;border:2px solid #ffda91;border-radius:10px;background:linear-gradient(#ae7957,#704158);padding:12px;font:800 15px system-ui;color:#fff3ce}
+#name-message{min-height:18px;color:#ffadba}
 </style></head><body>
 <main id="app">
 <header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.0</div></div>
@@ -50,12 +60,19 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 </header>
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
-<div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div></article></div></section>
+<div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
 <nav class="tabs" aria-label="遊戲功能"><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
-<div class="footnote">獨立角色／敵人素材與動畫運行 · 存檔僅在此瀏覽器 · 薪資為稅前班表估算，不是遊戲貨幣</div>
+<div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
+<dialog id="name-dialog" aria-labelledby="name-title"><form id="name-form" method="dialog">
+<h2 id="name-title">✦ 幫你的勇者取名</h2>
+<p>你的角色會被稱為「平凡社畜・（遊戲名稱）」。可以取任何喜歡的名字，以後也能從角色頁修改。</p>
+<label for="player-name-input">遊戲名稱（最多 12 個字）</label>
+<input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
+<div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
+<button type="submit">開始我的冒險</button></form></dialog>
 <script type="module" src="./app.mjs"></script></body></html>
