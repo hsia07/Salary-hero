@@ -610,7 +610,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
  catch(error){
    if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
-   else if(k==='foreground'||k==='weaponBriefcase'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
+   else if(k==='foreground'||k==='weaponBriefcase'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;
  }
