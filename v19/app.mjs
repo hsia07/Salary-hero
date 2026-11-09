@@ -1,6 +1,8 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES} from './roster.mjs';
+import {SKINS,skinById} from './skins.mjs';
+import {renderSkinPanel} from './skin-ui.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
 const panel=$('#panel'),body=$('#panel-content');
@@ -106,6 +108,14 @@ function drawStage(now){
    ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:phase>.53&&phase<.75?images.heroHurt:images.heroAttack)
    :(!state.auto?images.heroSleep:images.hero);
  ctx.drawImage(pose,0,0,236,306);
+ // Engineering preview only: nondefault outfits have no approved animation sprites yet.
+ if(state.activeSkin!=='starter'){
+   const selected=skinById(state.activeSkin);
+   if(selected){
+     ctx.save();ctx.font='36px "Apple Color Emoji","Segoe UI Emoji",system-ui';
+     ctx.textAlign='center';ctx.fillText(selected.icon,218,16);ctx.restore();
+   }
+ }
  ctx.restore();
  glow(heroX+162,heroY+163,state.equipped==='excalibur'?105:46,state.equipped==='excalibur'?'#73ddff50':'#ffd28b25');
  drawWeapon(heroX+188,heroY+222,phase);
@@ -144,6 +154,7 @@ function drawStage(now){
 }
 function render(){
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
+ const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  $('#wave').textContent='第 '+state.wave+' 關 · '+(state.enemy.boss?'首領戰':'辦公室走廊');
  $('#wave').classList.toggle('boss',state.enemy.boss);
  $('#level').textContent='Lv.'+state.level+' '+playerTitle(state);
@@ -165,7 +176,7 @@ function render(){
 }
 function commit(action){
  const type=typeof action==='string'?action:action?.type;
- if(!ready&&!['setName','toggleFavoriteStyle'].includes(type))return;
+ if(!ready&&!['setName','toggleFavoriteStyle','equipSkin','drawSkin','claimSkinEvent'].includes(type))return;
  const oldEnemy={...state.enemy},wasWave=state.wave;
  state=transition(state,action);
  if(action==='attack'){
@@ -183,18 +194,14 @@ function itemRow(it,kind){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={hero:'角色狀態',styles:'角色造型圖鑑',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
-  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · 每四關為首領戰，勝利回滿血</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+btn('✎ 修改遊戲名稱','rename')+btn('🎭 角色造型參考（'+HERO_STYLES.length+' 種）','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
+  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · 每四關為首領戰，勝利回滿血</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
+  +btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
-  body.innerHTML='<p>這裡是 '+HERO_STYLES.length+' 種角色造型的設計方向（男性、女性、怪物、機器人、外星人等）。目前**沒有**合格的正式立繪與換裝素材，因此暫時只能收藏喜歡的造型，不能裝備；所有造型都會沿用玩家自訂名稱。</p>'.replaceAll('**','')
-   +'<p>⭐ 已收藏 '+state.styleWishlist.length+' 種；你想要的外觀可以直接收藏。</p>'
-   +HERO_STYLES.map(style=>{
-     const fav=state.styleWishlist.includes(style.id);
-     return '<div class="item"><span class="symbol">'+style.icon+'</span><div class="detail"><strong>'+escapeHTML(style.name)+'</strong><small>'+escapeHTML(style.family)+' · '+escapeHTML(style.description)+'</small><small>狀態：美術候選／尚未開放換裝</small></div><button type="button" data-action="favoriteStyle" data-value="'+style.id+'">'+(fav?'★ 已收藏':'☆ 收藏')+'</button></div>';
-   }).join('');
+  body.innerHTML=renderSkinPanel(state);
  } else if(type==='equipment'){
   body.innerHTML='<p>更換裝備立即影響實際傷害，戰場中的武器外觀也會切換。</p>'+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>有 '+state.pendingDrops.length+' 件掉寶待領取。</p>'+btn('領取掉寶','claim'):'');
  } else if(type==='shop'){
@@ -229,6 +236,9 @@ body.addEventListener('click',e=>{
  const act=b.dataset.action;
  if(act==='rename')openNameEditor();
  else if(act==='styles')renderPanel('styles');
+ else if(act==='equipSkin')commit({type:'equipSkin',id:b.dataset.value});
+ else if(act==='claimSkinEvent')commit({type:'claimSkinEvent',id:b.dataset.value});
+ else if(act==='drawSkin')commit('drawSkin');
  else if(act==='favoriteStyle')commit({type:'toggleFavoriteStyle',id:b.dataset.value});
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
  else if(act==='equip'||act==='buy')commit({type:act,id:b.dataset.value});
