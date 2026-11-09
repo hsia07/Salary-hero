@@ -1,0 +1,40 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>薪水勇者 V19｜角色素材驗收</title><style>*{box-sizing:border-box}body{margin:0;background:#181027;color:#fce5bd;font:15px system-ui,-apple-system,sans-serif}main{max-width:900px;margin:auto;padding:20px}h1{font-size:25px;color:#ffe29a}p{line-height:1.7}nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}button,a{color:#ffe6be;border:1px solid #ba9156;background:#4b3052;padding:10px 14px;border-radius:9px;text-decoration:none;font:inherit;cursor:pointer}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px}.card{background:#332340;border:1px solid #bc9068;border-radius:12px;overflow:hidden;padding:12px}.preview{aspect-ratio:1;background:repeating-conic-gradient(#b9aab8 0% 25%,#80738a 0% 50%) 50%/26px 26px;border-radius:8px;display:grid;place-items:center}.preview img{width:100%;height:100%;object-fit:contain}.card h2{font-size:17px}.card small{display:block;font-size:12px;line-height:1.6}.ok{color:#98eeb8}.bad{color:#ff9898}.unknown{color:#f8d28b}#summary{font-size:17px;font-weight:800;margin:15px 0}code{word-break:break-all}footer{margin-top:25px;font-size:12px;color:#cfb9cf}</style></head><body><main><h1>⚔️ 薪水勇者 V19 · 真實素材驗收</h1><p>這裡會實際下載五張獨立角色素材，再用瀏覽器 Canvas 確認圖片可解碼、512×512 像素、具透明背景、並檢查畫面邊緣是否有被裁切。圖案目前屬於<strong>候選美術</strong>，檢查通過不代表已經達到最終視覺品質。</p><nav><button id="run">重新執行檢查</button><a href="./play.html">回到 V19 遊戲</a><a href="../docs/V19_ASSET_GAP_AND_DELIVERY.md">缺失素材清單</a></nav><div id="summary" aria-live="polite">準備檢查中…</div><div class="cards" id="cards"></div><footer>驗收方式：綠色為通過瀏覽器解析、實際像素、透明通道與裁切檢查；紅色為失敗。請額外人工檢查姿勢、畫風一致性、表情及手機顯示效果。</footer></main><script>
+const poses=[['idle','待機'],['attack','攻擊'],['hurt','受傷'],['victory','勝利'],['sleep','睡覺']];
+const cards=document.getElementById('cards'),summary=document.getElementById('summary');
+async function checkPose(id,name){
+ const url='../art/v19/candidates/hero/'+id+'.svg?v='+Date.now();
+ const div=document.createElement('article');div.className='card';div.innerHTML='<div class="preview"><img alt="'+name+'角色素材"></div><h2>'+name+'</h2><small class="unknown">正在載入…</small>';
+ cards.append(div);const img=div.querySelector('img'),msg=div.querySelector('small');img.src=url;
+ try{
+  await img.decode();
+  const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});if(!ctx)throw Error('Canvas 不可用');
+  ctx.clearRect(0,0,512,512);ctx.drawImage(img,0,0,512,512);
+  const px=ctx.getImageData(0,0,512,512).data;let min=255,max=0,left=512,right=-1,top=512,bottom=-1;
+  for(let y=0;y<512;y++)for(let x=0;x<512;x++){
+   const a=px[(y*512+x)*4+3];min=Math.min(min,a);max=Math.max(max,a);
+   if(a>8){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}
+  }
+  const checks={
+   '原生尺寸 512×512':img.naturalWidth===512&&img.naturalHeight===512,
+   '存在透明像素':min===0&&max>=225,
+   '非空白影格':right>=left&&bottom>=top,
+   '邊緣未裁切':left>1&&right<510&&top>1&&bottom<510
+  };
+  const fail=Object.entries(checks).filter(([,v])=>!v).map(([k])=>k);
+  msg.className=fail.length?'bad':'ok';
+  msg.textContent=(fail.length?'✖ 失敗：'+fail.join('、'):'✓ 通過 4 項技術檢查')+'；尺寸 '+img.naturalWidth+'×'+img.naturalHeight+'；alpha '+min+'–'+max+'；內容範圍 '+[left,top,right,bottom].join(',');
+  return {id,name,pass:!fail.length,checks};
+ }catch(e){msg.className='bad';msg.textContent='✖ 載入／解碼失敗：'+e.message;return{id,name,pass:false,error:String(e)};}
+}
+let running=false;
+async function run(){
+ if(running)return;running=true;document.getElementById('run').disabled=true;cards.replaceChildren();summary.textContent='正在檢查 5 張圖片…';
+ try{const results=await Promise.all(poses.map(x=>checkPose(...x)));
+ const ok=results.filter(x=>x.pass).length;
+ summary.textContent='實際測試結果：'+ok+'/5 張通過'+(ok===5?'（仍待美術人工驗收）':'（請修正失敗項目）');
+ summary.className=ok===5?'ok':'bad';
+ }finally{running=false;document.getElementById('run').disabled=false;}
+}
+document.getElementById('run').onclick=run;run();
+</script></body></html>
