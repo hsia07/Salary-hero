@@ -186,12 +186,20 @@ function drawStage(now){
     (chibiV2Ready?attackFrameAt(animationMs)>=0:chibiArtPreview?animationMs<680:phase<.7);
  // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
  const chibiReady=Boolean(chibiV2Mode&&images.chibiIdle);
- const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
+ // The hero must physically close the distance before contact, even with illustrated Q版 frames.
+ // Keep a full-contact position through impact, then retreat during recovery.
+ const lunge=chibiReady&&chibiV2Ready&&attacking
+   ?(animationMs<345?0:animationMs<405?(animationMs-345)/60*106:
+     animationMs<650?106:106*Math.max(0,1-(animationMs-650)/155))
+   :(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
  const heroX=100+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
  shadow(heroX+133,515,110,17);
  ctx.save();ctx.translate(heroX+120+hurtVfx.shakeX,heroY+148+hurtVfx.shakeY);
  ctx.rotate(chibiReady?0:(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018));
  ctx.translate(-120,-148);
+ // Approved atlas is drawn facing away from the opponent; mirror the actor only.
+ // The opponent and the whole arena stay in their original world coordinates.
+ if(chibiReady){ctx.translate(240,0);ctx.scale(-1,1);}
  const pose=hurtVfx.active?images.heroHurt:(attacking
    ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:images.heroAttack)
    :(!state.auto?images.heroSleep:images.hero));
@@ -255,7 +263,7 @@ function drawStage(now){
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
  if(slashActive){
-   ctx.save();ctx.globalAlpha=chibiV2Ready?Math.max(0,1-(animationMs-345)/205):Math.max(0,Math.min(1,(.55-phase)*3.2));ctx.translate(343,287);ctx.rotate(-.2);
+   ctx.save();ctx.globalAlpha=chibiV2Ready?Math.max(0,1-(animationMs-345)/205):Math.max(0,Math.min(1,(.55-phase)*3.2));ctx.translate(chibiV2Ready?heroX+226:343,287);ctx.rotate(-.2);
    ctx.drawImage(images.slash,-85,-80,286,240);ctx.restore();
  }
  if(impactActive){
@@ -264,9 +272,9 @@ function drawStage(now){
  }
  if(slashActive){
    const alpha=chibiV2Ready?Math.max(0,1-(animationMs-345)/205):(.55-phase)/.38;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#aafaff';ctx.shadowColor='#55dbff';ctx.shadowBlur=25;ctx.lineWidth=20;
-   ctx.beginPath();ctx.arc(395,370,110,-1.4,1.3);ctx.stroke();ctx.lineWidth=6;ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(400,366,124,-1.4,1.3);ctx.stroke();ctx.restore();
+   ctx.beginPath();ctx.arc(chibiV2Ready?heroX+270:395,370,110,-1.4,1.3);ctx.stroke();ctx.lineWidth=6;ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(chibiV2Ready?heroX+275:400,366,124,-1.4,1.3);ctx.stroke();ctx.restore();
  }
- if(fx&&(fx.result?.type==='hit'||fx.result?.type==='victory')&&phase<1.05){
+ if(fx&&(fx.result?.type==='hit'||fx.result?.type==='victory')&&phase<1.05&&(!chibiV2Ready||animationMs>=405)){
   const y=335-phase*80;ctx.save();ctx.globalAlpha=Math.min(1,(1.05-phase)*3);ctx.font='900 43px system-ui';ctx.textAlign='center';ctx.lineWidth=6;ctx.strokeStyle='#2d163c';ctx.strokeText('-'+fx.result.damage,546,y);ctx.fillStyle=fx.result.crit?'#fff3a9':'#ff8a9e';ctx.fillText('-'+fx.result.damage,546,y);ctx.restore();
  }
  if(victory&&phase<1.35){ctx.save();ctx.globalAlpha=Math.min(1,(1.35-phase)*2);ctx.textAlign='center';ctx.font='bold 32px system-ui';ctx.fillStyle='#ffdb88';ctx.strokeStyle='#32132e';ctx.lineWidth=5;ctx.strokeText('勝利！ +'+fx.result.gold+' 🪙',365,170);ctx.fillText('勝利！ +'+fx.result.gold+' 🪙',365,170);ctx.restore();}
