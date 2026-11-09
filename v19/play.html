@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#160e2c"><title>薪水勇者｜可玩主版本</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#fff0cf;background:#120b24;font-synthesis:none}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% 0,#49315c,#110b20 65%)}button{font:inherit;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.43;cursor:not-allowed}
+#app{width:min(100%,490px);min-height:100dvh;margin:0 auto;background:linear-gradient(175deg,#31203b,#17122d 48%,#23132b);border-inline:1px solid #805b58;box-shadow:0 0 60px #0008}
+.hud{padding:calc(10px + env(safe-area-inset-top)) 12px 9px;border-bottom:3px solid #d9a45a;background:linear-gradient(145deg,#4d2b44,#1e1736)}
+.hud-title{display:flex;align-items:center;justify-content:space-between;gap:9px}.brand{font-size:clamp(19px,5vw,27px);color:#ffd98c;font-weight:950;text-shadow:0 2px 4px #260e25;white-space:nowrap}
+.subtitle{font-size:10px;color:#f9d1aa;letter-spacing:.8px}.currencies{display:flex;gap:6px;font-size:12px;font-weight:800}.currency{border:1px solid #aa8859;border-radius:20px;background:#23172f;padding:5px 8px;white-space:nowrap}
+.pay{margin-top:9px;display:flex;justify-content:space-between;align-items:center;gap:7px;background:linear-gradient(95deg,#2f2140,#43304e);border:1px solid #a68469;border-radius:11px;padding:8px 10px;box-shadow:inset 0 0 15px #0004}
+.pay strong{font-size:18px;display:block;color:#ffe1a0;font-variant-numeric:tabular-nums}.pay small{font-size:11px;color:#d7c4d0}.pay-right{text-align:right;font-size:12px;white-space:nowrap}
+.pay-right button{border:1px solid #dab67a;border-radius:9px;background:#53354e;color:#ffe5b7;padding:5px 9px;font-size:11px}
+.scene{position:relative;background:#14132c;border-bottom:3px solid #dbab69;isolation:isolate;overflow:hidden}
+#world{display:block;width:100%;height:auto;aspect-ratio:720/620;background:linear-gradient(#41385d,#201630);touch-action:manipulation}
+.stage-head{position:absolute;top:10px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:center;gap:9px;pointer-events:none}
+.stage-head span{padding:6px 10px;background:#24162de8;color:#ffe3a3;border:1px solid #e1b675;border-radius:8px;font-size:12px;font-weight:800;box-shadow:0 3px 12px #0007}
+.stage-head .boss{background:#5f253cea;border-color:#ffb09b}
+.bars{position:absolute;bottom:6px;left:8px;right:8px;display:grid;grid-template-columns:1fr 1fr;gap:14px;pointer-events:none}
+.bars article{font-size:11px;font-weight:800;text-shadow:0 2px #000}.bars article:last-child{text-align:right}
+.meter{border:1px solid #e2b67b;background:#2c182c;height:9px;border-radius:12px;overflow:hidden;margin-top:4px;box-shadow:0 2px 4px #0008}.meter i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#d94b74,#ffa76f);transition:width .22s}.enemy-meter i{background:linear-gradient(90deg,#75baff,#b374ef)}
+.log{min-height:29px;display:flex;align-items:center;justify-content:center;padding:5px 9px;text-align:center;font-size:12px;color:#ffe7af;background:#25152e;border-bottom:1px solid #745074;line-height:1.45}
+.controls{padding:10px 10px 8px;display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:7px}
+.controls button,.mini-actions button{color:#fff1c9;border:2px solid #d6ac69;border-radius:10px;background:linear-gradient(#70455d,#38233f);padding:10px 4px;font-weight:850;font-size:13px;box-shadow:0 3px 0 #160d24}
+.controls button:active,.mini-actions button:active{transform:translateY(2px);box-shadow:0 1px 0 #160d24}
+.controls .attack{background:linear-gradient(#bb7354,#66334d);border-color:#ffdd96}
+.mini-actions{padding:0 10px 11px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.mini-actions button{padding:7px 3px;font-size:11px;border-width:1px;background:#382846}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:8px 6px calc(10px + env(safe-area-inset-bottom));gap:5px;border-top:2px solid #dbac6a;background:linear-gradient(#492c47,#25192f)}
+.tabs button{min-width:0;border:1px solid #c89b66;border-radius:10px;background:linear-gradient(#66405b,#34243e);color:#ffe8bb;min-height:59px;padding:6px 2px;font-size:11px;font-weight:850}
+.tabs span{font-size:24px;display:block;line-height:1.25}.tabs button:active{filter:brightness(1.3)}
+#panel{width:min(94vw,440px);max-height:85dvh;overflow-y:auto;background:radial-gradient(ellipse at top,#503257,#22172e 80%);color:#ffe9c3;border:3px solid #e8ba70;border-radius:17px;padding:16px;box-shadow:0 10px 60px #000a}
+#panel::backdrop{background:#07050cd9}#panel header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-bottom:9px;border-bottom:1px solid #957255}
+#panel h2{margin:0;font-size:20px;color:#ffde98}.close{width:40px;height:35px;flex:none;background:#633f52;border:1px solid #d2ab77;color:#ffecda;border-radius:8px}
+#panel-content{padding-top:10px;font-size:14px;line-height:1.55}
+#panel-content p{margin:8px 0 13px}.item{display:flex;gap:9px;align-items:center;justify-content:space-between;margin:8px 0;padding:9px;border:1px solid #9d7759;background:#35253d;border-radius:10px}.item .symbol{font-size:29px}
+.item .detail{flex:1;min-width:0}.item strong{display:block;color:#ffe1a0}.item small{color:#d5b9c6;font-size:11px}
+.item button,.panel-button{border:1px solid #e4b77f;border-radius:9px;color:#fff1d0;background:linear-gradient(#845567,#4c304b);padding:9px;min-width:72px;font-weight:800}
+.panel-button{width:100%;margin:7px 0}.choices{display:grid;gap:8px}.choices button{min-height:45px;background:#634560;border:1px solid #e6bd7b;color:#fff4d2;border-radius:9px;font-weight:700}
+.item.muted{opacity:.65}.center{text-align:center}.large-symbol{font-size:64px;display:block;margin:15px 0;animation:float 2.5s ease-in-out infinite alternate}
+@keyframes float{to{transform:translateY(-8px)}}.footnote{text-align:center;font-size:10px;color:#bba8b9;padding:10px 12px 16px}
+a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body>
+<main id="app">
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.0</div></div>
+<div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span></div></div>
+<div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
+<div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
+</header>
+<section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
+<div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
+<div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div></article></div></section>
+<div class="log" id="game-log" role="status">開始新的冒險！</div>
+<section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
+<section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
+<nav class="tabs" aria-label="遊戲功能"><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
+<div class="footnote">獨立角色／敵人素材與動畫運行 · 存檔僅在此瀏覽器 · 薪資為稅前班表估算，不是遊戲貨幣</div>
+</main>
+<dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
+<script type="module" src="./app.mjs"></script></body></html>
