@@ -8,6 +8,8 @@ on:
       - "v19/skins.mjs"
       - "v19/skin-ui.mjs"
       - "v19/app.mjs"
+      - "v19/attack-timing.mjs"
+      - "v19/attack-timing.test.mjs"
       - "v19/play.html"
       - "v19/engine.test.mjs"
       - "v19/skins.test.mjs"
@@ -32,5 +34,6 @@ jobs:
           node --check v19/skins.mjs
           node --check v19/skin-ui.mjs
           node --check v19/app.mjs
+          node --check v19/attack-timing.mjs
       - name: Run all engine and cosmetics rules tests
-        run: node --test v19/engine.test.mjs v19/skins.test.mjs
+        run: node --test v19/engine.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs
