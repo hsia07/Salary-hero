@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "project": "Salary Hero",
+  "lastConfirmed": "2026-11-09",
+  "defaultVariant": "A",
+  "variants": [
+    {
+      "id": "A",
+      "key": "starter-salaryman",
+      "name": "平凡社畜・夏",
+      "role": "starter",
+      "available": false,
+      "visualStatus": "awaiting-art-production",
+      "unlockRule": "available-at-start-after-assets-pass",
+      "appearance": {
+        "body": "slim",
+        "hair": "short black, slightly tousled",
+        "ageImpression": "adult Japanese office worker",
+        "face": "light under-eye shadows, clean-shaven",
+        "outfit": [
+          "white office shirt",
+          "loose red tie",
+          "dark suit trousers",
+          "leather shoes",
+          "employee badge"
+        ],
+        "props": [
+          "briefcase",
+          "coffee cup",
+          "laptop"
+        ]
+      },
+      "artRoot": "art/v19/candidates/characters/starter/",
+      "approvedAssetPaths": []
+    },
+    {
+      "id": "B",
+      "key": "burnout-salaryman",
+      "name": "爆肝加班・頹廢社畜",
+      "role": "unlockable-outfit",
+      "available": false,
+      "visualStatus": "concept-approved-not-produced",
+      "unlockRule": null,
+      "appearance": {
+        "body": "same base character and silhouette as A",
+        "hair": "messier black hair",
+        "ageImpression": "overtired office worker with stronger exhaustion marks",
+        "face": "visible stubble and dark under-eyes",
+        "outfit": [
+          "more wrinkled white shirt",
+          "very loose red tie",
+          "dark trousers",
+          "crooked employee badge",
+          "blanket-like red cape"
+        ],
+        "props": [
+          "cold coffee",
+          "worn briefcase",
+          "work papers"
+        ]
+      },
+      "artRoot": "art/v19/candidates/characters/burnout/",
+      "approvedAssetPaths": []
+    }
+  ],
+  "retiredCandidatePaths": [
+    "art/v19/candidates/hero/idle.svg",
+    "art/v19/candidates/hero/attack.svg",
+    "art/v19/candidates/hero/hurt.svg",
+    "art/v19/candidates/hero/victory.svg",
+    "art/v19/candidates/hero/sleep.svg"
+  ],
+  "qa": {
+    "artApprovalRequired": true,
+    "rasterDimensions": [
+      512,
+      512
+    ],
+    "needAlpha": true,
+    "needCropCheck": true,
+    "needBrowserPlayback": true
+  },
+  "note": "Descriptions and paths are plans; no approved sprite assets exist for either variant yet. Old flat SVGs are not the approved B design."
+}
