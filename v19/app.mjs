@@ -40,6 +40,7 @@ function loadGame(){
 }
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
+const chibiArtPreview=new URLSearchParams(location.search).get('art')==='chibi';
 const assetPaths={
  bg:'../art/v19/runtime/backgrounds/office-night.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
@@ -55,6 +56,14 @@ const assetPaths={
  slash:'../art/v19/candidates/effects/slash.svg',
  impact:'../art/v19/candidates/effects/impact.svg'
 };
+if(chibiArtPreview){
+ // Opt-in ONLY: the approved-look chibi idle cutout and five POSE animation cells
+ // remain art candidates, not finished production sprites.
+ assetPaths.chibiIdle='../art/v19/candidates/characters/starter/chibi/idle-candidate.webp';
+ assetPaths.chibiAttack='../art/v19/candidates/characters/starter/chibi/attack-5pose-128.avif';
+ const sub=$('.subtitle');
+ if(sub)sub.textContent+=' · Q版真姿勢測試（美術候選）';
+}
 function imageFrom(url){
  return new Promise((resolve,reject)=>{
   const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('無法載入 '+url));img.src=new URL(url,import.meta.url).href;
@@ -108,14 +117,26 @@ function drawStage(now){
  glow(126,88,135,'#ffd58a34');glow(614,165,175,'#a575ff35');
  ctx.fillStyle='#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
  const phase=fx?Math.min((now-fx.start)/1000,2):3,attacking=fx&&phase<.7;
- const lunge=attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0;
+ // Chibi motion comes from distinct pixel poses, NOT moving/rotating a single static sprite.
+ const chibiReady=chibiArtPreview&&images.chibiIdle&&images.chibiAttack&&state.equipped==='briefcase';
+ const lunge=chibiReady?0:(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
  const heroX=100+lunge,heroY=227+Math.sin(time*3.2)*4;
  shadow(heroX+133,515,110,17);
- ctx.save();ctx.translate(heroX+120,heroY+148);ctx.rotate(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018);ctx.translate(-120,-148);
+ ctx.save();ctx.translate(heroX+120,heroY+148);
+ ctx.rotate(chibiReady?0:(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018));
+ ctx.translate(-120,-148);
  const pose=attacking
    ?(fx?.result?.type==='victory'&&phase>.42?images.heroVictory:phase>.53&&phase<.75?images.heroHurt:images.heroAttack)
    :(!state.auto?images.heroSleep:images.hero);
- ctx.drawImage(pose,0,0,236,306);
+ if(chibiReady){
+  // 5 actual drawings: raise, wind-up, swing, step-impact, recover.
+  // Source strip = 5×128 transparent AVIF; all frames share a common ground line.
+  const frameIndex=attacking?Math.min(4,Math.floor(Math.max(0,phase)/.70*5)):0;
+  if(attacking)ctx.drawImage(images.chibiAttack,frameIndex*128,0,128,128,-8,18,260,306);
+  else ctx.drawImage(images.chibiIdle,-7,49,270,270);
+ }else{
+  ctx.drawImage(pose,0,0,236,306);
+ }
  // Engineering preview only: nondefault outfits have no approved animation sprites yet.
  if(state.activeSkin!=='starter'){
    const selected=skinById(state.activeSkin);
@@ -126,7 +147,7 @@ function drawStage(now){
  }
  ctx.restore();
  glow(heroX+162,heroY+163,state.equipped==='excalibur'?105:46,state.equipped==='excalibur'?'#73ddff50':'#ffd28b25');
- drawWeapon(heroX+188,heroY+222,phase);
+ if(!chibiReady)drawWeapon(heroX+188,heroY+222,phase);
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const victory=fx?.result?.type==='victory'&&phase<.95;
@@ -333,8 +354,8 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
  catch(error){
    if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
-   else if(k==='foreground'||k==='weaponBriefcase'){
-     images[k]=null;console.warn('Optional decorative layer skipped:',k,error);
+   else if(k==='foreground'||k==='weaponBriefcase'||k==='chibiIdle'||k==='chibiAttack'){
+     images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;
  }
 })).then(()=>{
