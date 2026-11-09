@@ -1,0 +1,110 @@
+{
+  "project": "Salary Hero",
+  "character": "A - default starter",
+  "nameTemplate": "平凡社畜・{playerName}",
+  "specification": "docs/V19_CANONICAL_HERO_ART.md",
+  "status": "concept-spec-locked__standalone-sprite-NOT-delivered",
+  "approved": false,
+  "date": "2026-11-09",
+  "artTarget": {
+    "subject": "single original adult black-haired slim Japanese office worker; lightly unshaven, scruffy but handsome",
+    "scope": "one complete, independent, full-body main character only",
+    "originalSourcePreferred": [
+      1024,
+      1024
+    ],
+    "gameRasterTarget": [
+      512,
+      512
+    ],
+    "background": "transparent alpha channel",
+    "margin": "full head, shoes and briefcase visible; empty canvas border",
+    "forbidden": [
+      "full RPG UI screenshot",
+      "concept poster",
+      "background scene",
+      "several versions in one file",
+      "brown-haired schoolboy",
+      "anime copy of named existing character",
+      "flat low-detail SVG placeholder"
+    ]
+  },
+  "spriteSlots": [
+    {
+      "id": "reference",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    },
+    {
+      "id": "idle",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    },
+    {
+      "id": "walk",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    },
+    {
+      "id": "attack",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    },
+    {
+      "id": "hurt",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    },
+    {
+      "id": "victory",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    },
+    {
+      "id": "sleep",
+      "path": null,
+      "status": "not-produced",
+      "approved": false
+    }
+  ],
+  "rejectedGenerationAttempts": [
+    {
+      "kind": "full-game-ui-concept",
+      "width": 1672,
+      "height": 941,
+      "alphaExtrema": [
+        227,
+        252
+      ],
+      "issue": "Contains all UI, backgrounds and multiple in-scene characters; no transparent isolated sprite",
+      "approved": false
+    },
+    {
+      "kind": "full-game-ui-concept",
+      "width": 1672,
+      "height": 941,
+      "alphaExtrema": [
+        206,
+        252
+      ],
+      "issue": "Contains full interface with character portrait; not a separate character asset",
+      "approved": false
+    }
+  ],
+  "qualityGate": [
+    "actual decoded dimensions verified",
+    "transparent pixels present with alpha_min=0",
+    "subject within canvas and bbox not touching border",
+    "no background, HUD or other characters",
+    "consistent approved black-haired adult salaryman appearance",
+    "approved for art style by project owner",
+    "game load and iOS Safari preview verified"
+  ],
+  "note": "The two failed renders were NOT committed to GitHub assets. A proper sprite file is not yet available. Do not promote old rejected v19/candidates/hero SVG placeholders."
+}
