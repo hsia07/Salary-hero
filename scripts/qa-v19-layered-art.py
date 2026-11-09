@@ -44,7 +44,7 @@ def main():
   if transparent and (low!=0 or high<=225):raise ValueError(filename+': no valid alpha range')
   if not transparent and high<225:raise ValueError(filename+': background too transparent')
   box=alpha.getbbox()
-  if transparent and (not box or box[0]<=0 or box[1]<=0 or box[2]>=dims[0] or box[3]>=dims[1]):
+  if transparent and kind=='weapon' and (not box or box[0]<=0 or box[1]<=0 or box[2]>=dims[0] or box[3]>=dims[1]):
    raise ValueError(f'{filename}: possible clipping at canvas edge {box}')
   if transparent and kind=='foreground':
    center_alpha=image.getpixel((dims[0]//2,dims[1]//2))[3]
