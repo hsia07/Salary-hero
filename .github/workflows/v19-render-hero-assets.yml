@@ -8,6 +8,8 @@ on:
       - "scripts/build-v19-hero-assets.py"
       - "v19/app.mjs"
       - "v19/engine.mjs"
+      - "v19/roster.mjs"
+      - "v19/play.html"
       - "v19/engine.test.mjs"
       - ".github/workflows/v19-render-hero-assets.yml"
   workflow_dispatch:
@@ -36,6 +38,7 @@ jobs:
         run: |
           node --check v19/app.mjs
           node --check v19/engine.mjs
+          node --check v19/roster.mjs
           node --test v19/engine.test.mjs
       - name: Render 5 independent sprites and reject invalid sizes, alpha or clipping
         run: python scripts/build-v19-hero-assets.py
