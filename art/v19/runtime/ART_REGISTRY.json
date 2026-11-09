@@ -5,7 +5,7 @@
   "approvedQualityReference": "art/v18/portrait-home-master.webp",
   "referenceRole": "visual target only: never use the full screenshot as a playable scene or sprite",
   "status": "layered engineering pass; high-fidelity final art NOT YET ACCEPTED",
-  "playerAppearance": "Default slim, black-haired, Japanese office worker; user-entered name as 平凡社畜・{name}",
+  "playerAppearance": "Approved V2 starter: slim, slightly scruffy Japanese office-worker uncle, visually age 35-45, short messy BLACK hair, visible short stubble, dark under-eyes, rumpled white shirt, loose dark-red tie, black trousers, employee badge, worn briefcase; user-defined 平凡社畜・{name}; NOT youth/knight/fat/very dirty.",
   "runtime": {
     "backgrounds": [
       {
@@ -50,7 +50,7 @@
           "art/v19/candidates/hero/victory.svg",
           "art/v19/candidates/hero/sleep.svg"
         ],
-        "status": "temporary-flat-rejected-not-production"
+        "status": "REJECTED TECHNICAL PLACEHOLDER: does not match V2 slim scruffy Japanese salaryman uncle; must not be released as production art"
       }
     ],
     "enemies": [
@@ -99,9 +99,10 @@
     "User-approved visual likeness to V18 quality"
   ],
   "nextProductionVerticalSlice": [
-    "starter Japanese office worker pixel-art idle, attack, hurt, rest",
+    "A V2 hero: slim scruffy black-haired 35–45 y/o Japanese office uncle, visible light stubble and tired eyes; 1 standalone full-body transparent asset first, then idle/attack/hurt/rest animation",
     "first detailed office monster with distinct animation",
     "final 3-layer office night scene replacing prototype SVG",
     "ornate briefcase/paper/laptop weapon states"
-  ]
+  ],
+  "canonicalHeroSpec": "docs/V19_CANONICAL_HERO_ART.md"
 }
