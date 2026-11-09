@@ -1,5 +1,6 @@
 /* Salary Hero V19 — isolated, deterministic game rules. No UI or screenshot dependency. */
 import {enemyDesignFor,ALL_ENEMIES,HERO_STYLES} from './roster.mjs';
+import {SKINS,SKIN_EVENTS,skinById,drawPool,pickSkin,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
  const text=String(value??'').normalize('NFC').replace(/[\p{Cc}\p{Cf}]/gu,'').trim();
@@ -32,7 +33,9 @@ export function enemyFor(wave){
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
-   playerName:'',styleWishlist:[],defeatedTypes:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:enemyFor(1),
+   playerName:'',styleWishlist:[],defeatedTypes:[],
+   skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
+   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:enemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw){
@@ -41,6 +44,15 @@ export function normalize(raw){
  n.playerName=cleanPlayerName(raw.playerName);
  n.styleWishlist=[...new Set((Array.isArray(raw.styleWishlist)?raw.styleWishlist:[]).filter(id=>HERO_STYLES.some(s=>s.id===id)))];
  n.defeatedTypes=[...new Set((Array.isArray(raw.defeatedTypes)?raw.defeatedTypes:[]).filter(id=>ALL_ENEMIES.some(s=>s.id===id)))];
+ n.ownedSkins=[...new Set(['starter',...(Array.isArray(raw.ownedSkins)?raw.ownedSkins:[]).filter(id=>SKINS.some(s=>s.id===id))])];
+ n.activeSkin=n.ownedSkins.includes(raw.activeSkin)?raw.activeSkin:'starter';
+ n.skinTickets=Math.max(0,Math.floor(Number(raw.skinTickets)||0));
+ n.skinDraws=Math.max(0,Math.floor(Number(raw.skinDraws)||0));
+ n.skinHistory=Array.isArray(raw.skinHistory)?raw.skinHistory.filter(x=>x&&skinById(x.id)).slice(0,60):[];
+ n.activityClaims=[...new Set((Array.isArray(raw.activityClaims)?raw.activityClaims:[]).filter(x=>typeof x==='string'&&x.length<90))].slice(-104);
+ n.activityDaily=raw.activityDaily&&typeof raw.activityDaily==='object'
+   ?{day:String(raw.activityDaily.day||''),wins:Math.max(0,Math.floor(Number(raw.activityDaily.wins)||0)),bosses:Math.max(0,Math.floor(Number(raw.activityDaily.bosses)||0))}
+   :{day:'',wins:0,bosses:0};
  n.owned=[...new Set((Array.isArray(raw.owned)?raw.owned:[]).filter(x=>ITEMS.some(it=>it.id===x)).concat('briefcase'))];
  n.equipped=n.owned.includes(raw.equipped)?raw.equipped:'briefcase';
  n.level=Math.max(1,Math.min(500,Math.floor(Number(n.level)||1)));
@@ -90,6 +102,48 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    }
    s.last={type:'favoriteStyle',id:style.id};break;
  }
+ case 'equipSkin':{
+   const skin=skinById(a.id);
+   if(!skin||!s.ownedSkins.includes(skin.id)){notice(s,'🔒 尚未取得這個造型，無法裝備。');break;}
+   s.activeSkin=skin.id;s.last={type:'skinEquipped',id:skin.id};
+   notice(s,'🎭 已選用造型：'+skin.name+'（正式角色動畫仍待製作）');break;
+ }
+ case 'drawSkin':{
+   const pool=drawPool(s.ownedSkins);
+   if(s.skinTickets<1){notice(s,'🎟️ 抽獎券不足：挑戰首領或完成每日奇遇取得。');break;}
+   if(!pool.length){notice(s,'🏅 可抽取造型已全部收齊，不扣抽獎券。');break;}
+   const skin=pickSkin(pool,rng);
+   if(!skin)break;
+   s.skinTickets--;s.skinDraws++;
+   s.ownedSkins.push(skin.id);
+   s.skinHistory.unshift({id:skin.id,source:'draw',at:new Date(now).toISOString()});
+   s.skinHistory=s.skinHistory.slice(0,60);
+   s.last={type:'skinDraw',id:skin.id,rarity:skin.rarity};
+   notice(s,'🎊 抽到新造型：'+skin.name+'！已加入衣櫃。');break;
+ }
+ case 'claimSkinEvent':{
+   const event=SKIN_EVENTS.find(x=>x.id===a.id);
+   const weekday=weekdayTaiwan(now),day=todayTW(now),week=taiwanWeekKey(now);
+   if(!event||weekday!==event.weekday){notice(s,'目前不是這項活動的開放日期。');break;}
+   const key=event.id+':'+week;
+   if(s.activityClaims.includes(key)){notice(s,'本週活動獎勵已領取。');break;}
+   if(s.activityDaily.day!==day||s.activityDaily.wins<event.requiredWins){
+      notice(s,'還沒有達成本日活動目標。');break;
+   }
+   s.activityClaims.push(key);
+   const skin=skinById(event.skinId);
+   if(s.ownedSkins.includes(skin.id)){
+      s.skinTickets++;s.last={type:'eventTicket',id:event.id};
+      notice(s,'🎟️ 本週活動完成：重複造型改領 1 張造型券。');
+   }else{
+      s.ownedSkins.push(skin.id);
+      s.skinHistory.unshift({id:skin.id,source:'event',at:new Date(now).toISOString()});
+      s.skinHistory=s.skinHistory.slice(0,60);
+      s.last={type:'skinEvent',id:skin.id};
+      notice(s,'🎉 活動解鎖造型：'+skin.name+'！');
+   }
+   break;
+ }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
  case 'speed':s.speed=a.value===2?2:1;notice(s,'戰鬥速度 ×'+s.speed);break;
  case 'attack':{
@@ -103,7 +157,15 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      const dead=s.enemy,boss=dead.boss,reward=dead.boss?70+s.wave*9:12+s.wave*4;
      if(!s.defeatedTypes.includes(dead.typeId))s.defeatedTypes.push(dead.typeId);
      s.gold+=reward;s.cleared++;awardXP(s,boss?75:12+s.wave*2);
-     if(boss){s.gems+=2;s.chests+=1;s.heroHp=s.maxHp;notice(s,'🏆 首領擊敗！全隊回滿血，獲得寶箱與寶石。');}
+     const today=todayTW(now);
+     if(s.activityDaily.day!==today)s.activityDaily={day:today,wins:0,bosses:0};
+     s.activityDaily.wins++;
+     if(boss){
+       s.activityDaily.bosses++;
+       s.gems+=2;s.chests+=1;s.skinTickets++;
+       s.heroHp=s.maxHp;
+       notice(s,'🏆 首領擊敗！生命回滿，獲得寶箱、寶石與 1 張造型券。');
+     }
      lootRoll(s,rng);s.wave++;s.enemy=enemyFor(s.wave);
      s.last={type:'victory',damage,crit,boss,gold:reward,newWave:s.wave};
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
@@ -153,8 +215,10 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.gold+=c.gold;awardXP(s,c.xp);if(c.heal)s.heroHp=Math.min(s.maxHp,s.heroHp+c.heal);
    s.encounterHistory.unshift({day:s.encounterDay,id:e.id,choice:a.choice});
    s.encounterHistory=s.encounterHistory.slice(0,80);
-   s.encounterPending=null;s.last={type:'encounter',id:e.id};
-   notice(s,'✨ 奇遇完成，獲得 '+c.gold+' 金幣、'+c.xp+' 經驗！');break;
+   s.encounterPending=null;
+   s.skinTickets++;
+   s.last={type:'encounter',id:e.id};
+   notice(s,'✨ 奇遇完成，獲得 '+c.gold+' 金幣、'+c.xp+' 經驗與 1 張造型券！');break;
  }
  default:break;
  }
