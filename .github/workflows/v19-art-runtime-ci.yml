@@ -4,9 +4,12 @@ on:
     branches: [main]
     paths:
       - 'art/v19/runtime/**'
+      - 'art/v19/candidates/characters/starter/**'
+      - 'v19/chibi-art-preview.html'
       - 'v19/app.mjs'
       - 'v19/play.html'
       - 'scripts/qa-v19-layered-art.py'
+      - 'scripts/qa-v19-chibi-candidate.py'
       - 'scripts/qa-v19-mobile-smoke.py'
       - '.github/workflows/v19-art-runtime-ci.yml'
   workflow_dispatch:
@@ -37,6 +40,8 @@ jobs:
           node --check v19/skins.mjs
       - name: Validate real pixel size, alpha and independent art layers
         run: python scripts/qa-v19-layered-art.py
+      - name: Verify Q-version starter standalone sprite dimensions and alpha
+        run: python scripts/qa-v19-chibi-candidate.py
       - name: Start local build for browser smoke check
         run: |
           python -m http.server 8766 --bind 127.0.0.1 --directory . > /tmp/salary-hero-http.log 2>&1 &
