@@ -37,7 +37,9 @@ const assetPaths={
  hero:'../art/hero-idle.svg',
  minion:'../art/paper-minion.svg',
  boss:'../art/printer-boss.svg',
- weapon:'../art/equipment-weapon.svg'
+ weapon:'../art/equipment-weapon.svg',
+ slash:'../art/v19/candidates/effects/slash.svg',
+ impact:'../art/v19/candidates/effects/impact.svg'
 };
 function imageFrom(url){
  return new Promise((resolve,reject)=>{
@@ -93,6 +95,14 @@ function drawStage(now){
  if(victory&&phase>.7&&phase<1.2){
   const fade=Math.min(1,(phase-.7)*3);ctx.save();ctx.globalAlpha=fade;
   ctx.drawImage(state.enemy.boss?images.boss:images.minion,enemyX,enemyY,177,240);ctx.restore();
+ }
+ if(attacking&&phase>.17&&phase<.55){
+   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,(.55-phase)*3.2));ctx.translate(343,287);ctx.rotate(-.2);
+   ctx.drawImage(images.slash,-85,-80,286,240);ctx.restore();
+ }
+ if(attacking&&phase>.27&&phase<.68){
+   const strength=Math.max(0,Math.min(1,(.68-phase)*4));ctx.save();ctx.globalAlpha=strength;
+   ctx.drawImage(images.impact,enemyX+18,enemyY+38,156,156);ctx.restore();
  }
  if(attacking&&phase>.17&&phase<.55){
    const alpha=(.55-phase)/.38;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#aafaff';ctx.shadowColor='#55dbff';ctx.shadowBlur=25;ctx.lineWidth=20;
