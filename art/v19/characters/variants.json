@@ -7,7 +7,7 @@
     {
       "id": "A",
       "key": "starter-salaryman",
-      "name": "平凡社畜・夏",
+      "name": "平凡社畜・{playerName}",
       "role": "starter",
       "available": false,
       "visualStatus": "awaiting-art-production",
@@ -31,7 +31,9 @@
         ]
       },
       "artRoot": "art/v19/candidates/characters/starter/",
-      "approvedAssetPaths": []
+      "approvedAssetPaths": [],
+      "displayNameTemplate": "平凡社畜・{playerName}",
+      "nameSource": "User-defined nickname saved in v19 engine state. '夏' is not hardcoded."
     },
     {
       "id": "B",
@@ -80,5 +82,26 @@
     "needCropCheck": true,
     "needBrowserPlayback": true
   },
-  "note": "Descriptions and paths are plans; no approved sprite assets exist for either variant yet. Old flat SVGs are not the approved B design."
+  "note": "Descriptions and paths are plans; no approved sprite assets exist for either variant yet. Old flat SVGs are not the approved B design.",
+  "conceptCatalog": {
+    "module": "v19/roster.mjs",
+    "styleCount": 16,
+    "approvalState": "unapproved-reference-options",
+    "families": [
+      "男性職員",
+      "女性職員",
+      "社畜變體",
+      "怪物",
+      "機器人",
+      "外星人",
+      "獸人",
+      "奇幻生物"
+    ],
+    "rules": [
+      "Player name remains user-defined for all styles.",
+      "A remains the intended starting appearance; B remains the future unlockable burnout style.",
+      "Concept icon is not an approved sprite.",
+      "No style is equipped without independent transparent assets and QA."
+    ]
+  }
 }
