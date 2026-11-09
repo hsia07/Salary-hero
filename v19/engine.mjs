@@ -29,7 +29,7 @@ export function enemyFor(wave){
  const maxHp=boss?175+scale*75:elite?Math.round((44+n*10)*1.65):44+n*10;
  return {id:n,typeId:design.id,tier,boss,elite,name:design.name,icon:design.icon,family:design.family,
    sprite:design.sprite||null,shape:design.shape||null,accent:design.accent,trait:design.trait,traitText:design.traitText,
-   hp:maxHp,maxHp,attack:boss?10+scale*2:elite?7+Math.floor(n/3):3+Math.floor(n/3)};
+   hp:maxHp,maxHp,turns:0,attack:boss?10+scale*2:elite?7+Math.floor(n/3):3+Math.floor(n/3)};
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
@@ -60,7 +60,7 @@ export function normalize(raw){
  n.maxHp=Math.max(1,Number(n.maxHp)||110);
  n.heroHp=Math.max(0,Math.min(n.maxHp,Number(n.heroHp)||0));
  n.enemy=raw.enemy&&Number(raw.enemy.id)===n.wave&&Number(raw.enemy.hp)>0
-   ?{...enemyFor(n.wave),hp:Math.min(enemyFor(n.wave).maxHp,Number(raw.enemy.hp))}
+   ?{...enemyFor(n.wave),hp:Math.min(enemyFor(n.wave).maxHp,Number(raw.enemy.hp)),turns:Math.max(0,Math.floor(Number(raw.enemy.turns)||0))}
    :enemyFor(n.wave);
  n.pendingDrops=Array.isArray(raw.pendingDrops)?raw.pendingDrops.filter(x=>ITEMS.some(it=>it.id===x)).slice(0,20):[];
  n.encounterHistory=Array.isArray(raw.encounterHistory)?raw.encounterHistory.slice(0,80):[];
@@ -172,7 +172,17 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave};
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
    }else{
-     const retaliation=s.enemy.attack+(s.enemy.trait==='rage'?Math.max(2,Math.floor(s.wave/3)):0);
+     // Enemy turns survive save/normalize, so special moves trigger consistently.
+     s.enemy.turns=(s.enemy.turns||0)+1;
+     const eliteSkill=s.enemy.tier==='elite'&&s.enemy.turns%3===0;
+     const bossSkill=s.enemy.tier==='boss'&&s.enemy.turns%4===0;
+     const baseRetaliation=s.enemy.attack+(s.enemy.trait==='rage'?Math.max(2,Math.floor(s.wave/3)):0);
+     const retaliation=baseRetaliation+(eliteSkill?Math.max(3,Math.round(baseRetaliation*.45)):
+       bossSkill?Math.max(5,Math.round(baseRetaliation*.65)):0);
+     if(eliteSkill||bossSkill){
+       s.last.enemySkill=eliteSkill?'菁英反制':'首領狂暴';
+       notice(s,(eliteSkill?'✦ 菁英反制！':'👑 首領狂暴！')+' '+s.enemy.name+' 發動強力攻擊！');
+     }
      const hpBeforeRetaliation=s.heroHp;
      s.heroHp=Math.max(0,s.heroHp-retaliation);
      // Persist the actual HP lost within this attack result. If the hero dies and
