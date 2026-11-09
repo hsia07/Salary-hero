@@ -17,6 +17,9 @@ test('both full-quality 512 and 384 WebP atlas sizes accepted, wrong sizes rejec
 });
 test('recoil only happens after actual enemy retaliation damage',()=>{
  assert.equal(shouldRecoil(100,93,{type:'hit'}),true);
+ assert.equal(shouldRecoil(3,110,{type:'hit',retaliationDamage:3,respawned:true}),true);
+ assert.equal(shouldRecoil(100,100,{type:'hit',retaliationDamage:0}),false);
+ assert.equal(shouldRecoil(30,30,{type:'victory',retaliationDamage:10}),false);
  assert.equal(shouldRecoil(100,100,{type:'hit'}),false);
  assert.equal(shouldRecoil(100,110,{type:'hit'}),false);
  assert.equal(shouldRecoil(100,93,{type:'victory'}),false);
