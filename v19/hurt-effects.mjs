@@ -30,8 +30,8 @@ export function hurtEffectAt(elapsedMs,{reducedMotion=false}={}){
  // Freeze animation pose for 48ms, THEN one quick shake, not a constant blur.
  const shakeAge=elapsed-HIT_STOP_MS;
  const envelope=(shakeAge>=0&&shakeAge<112&&!reducedMotion)?(1-shakeAge/112):0;
- const shakeX=envelope*12*Math.sin(shakeAge*.30);
- const shakeY=envelope*4.8*Math.sin(shakeAge*.48+.6);
+ const shakeX=envelope>0?envelope*12*Math.sin(shakeAge*.30):0;
+ const shakeY=envelope>0?envelope*4.8*Math.sin(shakeAge*.48+.6):0;
  // Standalone, localized red-orange burst, never tint the whole screen.
  const sparkAge=Math.max(0,elapsed-20);
  const sparkAlpha=elapsed<175?clamp(1-sparkAge/155,0,1):0;
