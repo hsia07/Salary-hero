@@ -5,6 +5,7 @@ import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
+import {validateMonsterAtlasManifest,validateSpritePixels,drawMonsterAtlasFrame} from './sprite-atlas.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 const $=s=>document.querySelector(s);
@@ -44,6 +45,30 @@ function loadGame(){
 }
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
+let approvedMonsterArt=new Map();
+async function loadApprovedMonsterArt(){
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url);
+ const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
+ const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
+   BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
+ const errors=validateMonsterAtlasManifest(manifest,tierById);
+ if(errors.length)throw new Error('未核准的怪物素材：'+errors.join('; '));
+ const approved=new Map();
+ for(const [id,record] of Object.entries(manifest.monsters||{})){
+   const frames={};let ok=true;
+   for(const [state,frame] of Object.entries(record.states)){
+     const image=await imageFrom(frame.src);
+     if(!validateSpritePixels(image,frame).ok){ok=false;break;}
+     frames[state]={image,frame};
+   }
+   if(ok)approved.set(id,frames);
+ }
+ approvedMonsterArt=approved;
+ const notice=$('#monster-art-status');
+ if(notice)notice.textContent=approved.size
+   ?'🎨 已核准正式逐格怪物：'+approved.size+'/32；其他怪物仍使用未核准的工程替身'
+   :'⚠️ 怪物正式逐格美術：0/32。現有怪物是未核准工程替身，並非真正的逐格動畫。';
+}
 const artMode=new URLSearchParams(location.search).get('art');
 // High-resolution Q版 is now the normal V19 hero art, not a hidden opt-in.
 // A temporary ?art=legacy escape hatch exists only to troubleshoot old saves/browsers.
@@ -149,6 +174,19 @@ function drawWeapon(x,y,t){
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
 // 32 real monster actors: per-species anatomy/poses, not shared emoji bodies.
 function paintEnemy(enemy,now,visual={state:'idle',progress:0}){
+ const approved=approvedMonsterArt.get(enemy.typeId);
+ if(approved){
+   const pose=approved[visual?.state]||approved.idle;
+   if(pose){
+     const {image,frame}=pose,durations=frame.durations;
+     const duration=durations.reduce((a,b)=>a+b,0);
+     const elapsed=visual?.state==='idle'?now:duration*Math.max(0,Math.min(1,visual?.progress||0));
+     const w=enemy.boss?214:enemy.tier==='elite'?194:177;
+     const h=enemy.boss?258:enemy.tier==='elite'?248:240;
+     if(drawMonsterAtlasFrame(ctx,image,frame,0,0,w,h,elapsed,visual?.state==='idle'))return;
+   }
+ }
+ // Unapproved prototype only; do not call this a sprite animation.
  drawMonsterActor(ctx,enemy,now,visual);
 }
 function drawStage(now){
@@ -621,6 +659,11 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    initChibiV2Lab();
  }
  render();
+ loadApprovedMonsterArt().catch(err=>{
+   console.warn('正式怪物逐格素材載入失敗，保留工程替身：',err);
+   const notice=$('#monster-art-status');
+   if(notice)notice.textContent='⚠️ 怪物正式美術尚未可用，現正顯示未核准工程替身。';
+ });
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
  console.error(err);render();
