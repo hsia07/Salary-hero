@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-11-09",
+  "project": "Salary Hero V19",
+  "approvedQualityReference": "art/v18/portrait-home-master.webp",
+  "referenceRole": "visual target only: never use the full screenshot as a playable scene or sprite",
+  "status": "layered engineering pass; high-fidelity final art NOT YET ACCEPTED",
+  "playerAppearance": "Default slim, black-haired, Japanese office worker; user-entered name as 平凡社畜・{name}",
+  "runtime": {
+    "backgrounds": [
+      {
+        "id": "night-office",
+        "path": "art/v19/runtime/backgrounds/office-night.svg",
+        "canvas": [
+          720,
+          620
+        ],
+        "status": "engineering-layer-not-art-approved"
+      }
+    ],
+    "foreground": [
+      {
+        "id": "sakura-filigree",
+        "path": "art/v19/runtime/foreground/cherry-filigree.svg",
+        "canvas": [
+          720,
+          620
+        ],
+        "status": "engineering-layer-not-art-approved"
+      }
+    ],
+    "weapons": [
+      {
+        "id": "briefcase",
+        "path": "art/v19/runtime/weapons/ornate-briefcase.svg",
+        "canvas": [
+          256,
+          256
+        ],
+        "status": "engineering-layer-not-art-approved"
+      }
+    ],
+    "characters": [
+      {
+        "id": "starter",
+        "frames": [
+          "art/v19/candidates/hero/idle.svg",
+          "art/v19/candidates/hero/attack.svg",
+          "art/v19/candidates/hero/hurt.svg",
+          "art/v19/candidates/hero/victory.svg",
+          "art/v19/candidates/hero/sleep.svg"
+        ],
+        "status": "temporary-flat-rejected-not-production"
+      }
+    ],
+    "enemies": [
+      {
+        "id": "paper",
+        "path": "art/paper-minion.svg",
+        "status": "existing-engineering-placeholder"
+      },
+      {
+        "id": "printer",
+        "path": "art/printer-boss.svg",
+        "status": "existing-engineering-placeholder"
+      }
+    ],
+    "effects": [
+      {
+        "id": "slash",
+        "path": "art/v19/candidates/effects/slash.svg",
+        "status": "candidate"
+      },
+      {
+        "id": "impact",
+        "path": "art/v19/candidates/effects/impact.svg",
+        "status": "candidate"
+      }
+    ]
+  },
+  "mobileRendering": {
+    "logicalSize": [
+      720,
+      620
+    ],
+    "maxBackingScale": 2,
+    "backingPixelsAtDpr2": [
+      1440,
+      1240
+    ],
+    "technicalQA": "CI configured; result not confirmed"
+  },
+  "allowedFinalStatusOnlyAfter": [
+    "Actual sprite exists separately",
+    "Pixel dimensions & alpha verified",
+    "Edges/cropping passed",
+    "Consistent animation registration",
+    "Played on mobile test",
+    "User-approved visual likeness to V18 quality"
+  ],
+  "nextProductionVerticalSlice": [
+    "starter Japanese office worker pixel-art idle, attack, hurt, rest",
+    "first detailed office monster with distinct animation",
+    "final 3-layer office night scene replacing prototype SVG",
+    "ornate briefcase/paper/laptop weapon states"
+  ]
+}
