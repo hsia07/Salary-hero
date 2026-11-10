@@ -1,0 +1,51 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>薪水勇者｜打卡保全機兵・16 格逐格試播</title>
+<style>:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#ffe6ce;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:16px;background:radial-gradient(ellipse at top,#46344d,#190e24 75%)}main{max-width:780px;margin:auto}a{color:#ffe1b0}h1{font-size:24px;margin:12px 0 4px}p{font-size:13px;line-height:1.7;color:#dcc3d1}.panel{border:1px solid #c79672;border-radius:14px;background:#302133;padding:12px;margin:12px 0}canvas{display:block;width:100%;height:auto;aspect-ratio:720/420;border-radius:12px;background:#261e32}#controls{display:flex;flex-wrap:wrap;justify-content:center;margin-top:8px}button{touch-action:manipulation;font:inherit;background:linear-gradient(#815056,#4a2c48);border:1px solid #e7af78;color:#ffe5bb;border-radius:9px;padding:10px 11px;font-weight:800;font-size:13px;margin:3px;cursor:pointer}button:disabled{opacity:.45}button[aria-pressed=true]{background:linear-gradient(#b96347,#743246)}#status{font-size:12px;color:#ffdcaa}.candidate{color:#f4c8a3;font-size:12px}</style></head><body><main>
+<a href="./play.html">返回《薪水勇者》</a><h1>🚨 打卡保全機兵・16 格試播</h1>
+<p>真正的邪惡 Q 版機械警衛：紅色電子怒眼、掃描燈、打卡紙、厚重金屬機體與柵欄刀刃。每個姿勢都從獨立畫格播放，不靠旋轉或模糊模型冒充動畫。</p>
+<p class="candidate">⚠️ 美術候選：這是已做透明處理的 16 格試播版本，仍待使用者驗收；菁英專屬技能的 5 張獨立畫格尚未繪製，正式驗收維持 2／32。</p>
+<div class="panel"><p id="status" role="status">正在自動載入 16 格真正的 WebP 圖片……</p>
+<canvas id="arena" width="720" height="420"></canvas>
+<div id="controls"><button data-state="idle" disabled>待機 4 格</button><button data-state="attack" disabled>柵欄刀攻擊 5 格</button><button data-state="hurt" disabled>紅閃受傷 3 格</button><button data-state="defeat" disabled>機體碎裂 4 格</button><button id="play-all" disabled>▶ 全部連播</button></div></div>
+<p><a href="./play.html?training=chair-golem">⚔️ 用主遊戲的真正戰鬥畫面測試機兵（不改存檔）</a></p>
+<script type="module">
+import {drawGuardCombatFx,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS} from './guard-combat.mjs';
+import {drawPaperHitTint} from './paper-combat.mjs';
+const poses={idle:{frames:4,ms:[250,185,240,165]},attack:{frames:5,ms:[145,155,75,115,160]},hurt:{frames:3,ms:[95,125,205]},defeat:{frames:4,ms:[145,200,265,445]}};
+const frames={},ctx=document.querySelector('#arena').getContext('2d'),status=document.querySelector('#status');
+let ready=false,action='idle',started=performance.now(),sequence=false,seriesAt=0;
+const total=pose=>pose.ms.reduce((a,b)=>a+b,0),full=Object.values(poses).reduce((a,b)=>a+total(b),0);
+function select(p){action=p;started=performance.now();sequence=false;document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state===p)));}
+document.querySelectorAll('[data-state]').forEach(b=>b.onclick=()=>select(b.dataset.state));
+document.querySelector('#play-all').onclick=()=>{sequence=true;seriesAt=performance.now();};
+function poseFrame(state,t){const p=poses[state];let phase=t%total(p);if(state!=='idle')phase=Math.min(t,total(p)-.01);for(let i=0;i<p.frames;i++){if(phase<p.ms[i])return i;phase-=p.ms[i];}return p.frames-1;}
+function draw(now){
+ const W=720,H=420;ctx.clearRect(0,0,W,H);
+ const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#504057');bg.addColorStop(1,'#211826');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#624154';ctx.beginPath();ctx.ellipse(365,378,310,35,0,0,Math.PI*2);ctx.fill();
+ ctx.save();ctx.fillStyle='#422434';ctx.strokeStyle='#dcaa81';ctx.lineWidth=6;ctx.beginPath();ctx.arc(115,253,41,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.beginPath();ctx.moveTo(91,253);ctx.lineTo(139,253);ctx.moveTo(115,229);ctx.lineTo(115,277);ctx.stroke();ctx.fillStyle='#ffe0b7';ctx.textAlign='center';ctx.font='13px system-ui';ctx.fillText('練習標靶',115,316);ctx.restore();
+ if(ready){
+  let name=action,elapsed=now-started;if(sequence){let t=Math.min(now-seriesAt,full-.001);for(const k of Object.keys(poses)){if(t<total(poses[k])){name=k;elapsed=t;break;}t-=total(poses[k]);}if(now-seriesAt>=full){sequence=false;select('defeat');name='defeat';elapsed=total(poses.defeat);}}
+  else if(elapsed>=total(poses[name])&&name!=='idle'&&name!=='defeat'){select('idle');name='idle';elapsed=0;}
+  const frame=poseFrame(name,elapsed),sprite=frames[name],rect={x:281,y:37,w:350,h:350};
+  ctx.drawImage(sprite,frame*384,0,384,384,rect.x,rect.y,rect.w,rect.h);
+  if(name==='hurt'){
+   drawPaperHitTint(ctx,sprite,{cell:384},frame,rect,GUARD_HERO_HIT_MS+elapsed);
+   drawGuardCombatFx(ctx,GUARD_HERO_HIT_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:false});
+  }else if(name==='attack'){
+   drawGuardCombatFx(ctx,GUARD_ATTACK_START_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:true});
+  }else if(name==='defeat'&&elapsed<195){
+   drawGuardCombatFx(ctx,GUARD_HERO_HIT_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:false});
+  }
+  ctx.fillStyle='#ffe1ae';ctx.font='800 16px system-ui';ctx.textAlign='right';
+  ctx.fillText(({idle:'待機',attack:'柵欄刀攻擊',hurt:'全身紅閃',defeat:'冒煙解體'})[name]+' '+(frame+1)+' / '+poses[name].frames,676,398);
+ }else{ctx.fillStyle='#ffe0b4';ctx.font='18px system-ui';ctx.textAlign='center';ctx.fillText('載入機兵透明畫格中……',360,214);}
+ requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+Promise.all(Object.entries(poses).map(([k,p])=>new Promise((resolve,reject)=>{
+ const image=new Image();image.onload=()=>{if(image.naturalWidth!==p.frames*384||image.naturalHeight!==384)return reject(new Error(k+' 圖片尺寸錯誤'));frames[k]=image;resolve();};
+ image.onerror=()=>reject(new Error(k+' 讀取失敗'));image.src='../art/v19/candidates/monsters/chair-golem/'+k+'.webp?v=guard-v19-7-20261110';
+}))).then(()=>{ready=true;document.querySelectorAll('#controls button').forEach(b=>b.disabled=false);status.textContent='✓ 16 格邪惡保全機兵透明素材已載入，可切換攻擊／受傷／死亡。無需下載。';}).catch(e=>{status.textContent='❌ '+e.message;console.error(e)});
+</script></main></body></html>
