@@ -1006,7 +1006,12 @@ function payRender(){
 function frame(now){
  if(!document.hidden&&ready){
   if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=HIT_FEEDBACK_MS)
-    &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
+    &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed)){
+      const pick=state.heroHp<state.maxHp*.6&&state.skillCooldowns.drain===0?'drain':
+       state.heroHp<state.maxHp*.35&&state.skillCooldowns.guard===0?'guard':
+       state.skillCooldowns.burst===0?'burst':null;
+      if(pick)skillAttack(pick);else attack();
+    }
   drawStage(now);
   renderCombatBars(now);
   if(trainingSpecies==='keyboard-piranha'){
