@@ -83,6 +83,27 @@ export function autoEncounterChoice(event){
  for(let i=1;i<scores.length;i++)if(scores[i]>scores[best])best=i;
  return best;
 }
+export const GAME_MODES=Object.freeze([
+ {id:'campaign',name:'🏙️ 社畜遠征',description:'一般冒險 · 普通怪循環，永久推進'},
+ {id:'tower',name:'🗼 無限之塔',description:'每四波補滿生命，持續挑戰更高樓層'},
+ {id:'dungeon',name:'🌌 異界副本',description:'異世界主題怪物循環，進度獨立'}
+]);
+export const GAME_SKILLS=Object.freeze([
+ {id:'burst',name:'⚡ 爆肝連擊',cooldown:4,description:'下次攻擊造成 2 倍傷害'},
+ {id:'guard',name:'🛡️ 摸魚防護',cooldown:5,description:'本次反擊傷害減半'},
+ {id:'drain',name:'☕ 咖啡續命',cooldown:6,description:'攻擊時恢復 25 生命'}
+]);
+const LOOP_IDS=['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'];
+export function loopEnemyFor(wave,mode='campaign'){
+ const n=Math.max(1,Math.floor(Number(wave)||1));
+ const id=LOOP_IDS[(n-1+(mode==='dungeon'?3:0))%LOOP_IDS.length];
+ const design=ALL_ENEMIES.find(x=>x.id===id)||ALL_ENEMIES[0];
+ const hp=Math.round((45+n*9)*(mode==='tower'?1.15:mode==='dungeon'?1.1:1));
+ return {id:n,typeId:design.id,tier:'normal',boss:false,elite:false,name:design.name,icon:design.icon,
+  family:design.family,faction:design.faction,sprite:design.sprite||null,shape:design.shape||null,
+  accent:design.accent,trait:design.trait,traitText:design.traitText,
+  hp,maxHp:hp,turns:0,attack:3+Math.floor(n/4)+(mode==='tower'?2:0)};
+}
 export const STORAGE_KEY='salary-hero-v19-save-1';
 export function todayTW(now=Date.now()){
  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(now)).map(p=>[p.type,p.value]));
@@ -98,15 +119,19 @@ export function enemyFor(wave){
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
-   playerName:'',styleWishlist:[],defeatedTypes:[],
+   playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
-   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:enemyFor(1),
+   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw){
  const fresh=initial();if(!raw||typeof raw!=='object'||raw.version!==19)return fresh;
  const n={...fresh,...raw};
  n.playerName=cleanPlayerName(raw.playerName);
+ n.activeMode=GAME_MODES.some(m=>m.id===raw.activeMode)?raw.activeMode:'campaign';
+ n.modeWaves=Object.fromEntries(GAME_MODES.map(m=>[m.id,Math.max(1,Math.min(100000,Math.floor(Number(raw.modeWaves?.[m.id])|| (m.id===n.activeMode?Number(raw.wave)||1:1))))]));
+ n.wave=n.modeWaves[n.activeMode];
+ n.skillCooldowns=Object.fromEntries(GAME_SKILLS.map(k=>[k.id,Math.max(0,Math.min(k.cooldown,Math.floor(Number(raw.skillCooldowns?.[k.id])||0)))]));
  n.styleWishlist=[...new Set((Array.isArray(raw.styleWishlist)?raw.styleWishlist:[]).filter(id=>HERO_STYLES.some(s=>s.id===id)))];
  n.defeatedTypes=[...new Set((Array.isArray(raw.defeatedTypes)?raw.defeatedTypes:[]).filter(id=>ALL_ENEMIES.some(s=>s.id===id)))];
  n.ownedSkins=[...new Set(['starter',...(Array.isArray(raw.ownedSkins)?raw.ownedSkins:[]).filter(id=>SKINS.some(s=>s.id===id))])];
@@ -124,9 +149,10 @@ export function normalize(raw){
  for(const k of ['xp','gold','gems','potions','chests','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.maxHp=Math.max(1,Number(n.maxHp)||110);
  n.heroHp=Math.max(0,Math.min(n.maxHp,Number(n.heroHp)||0));
- n.enemy=raw.enemy&&Number(raw.enemy.id)===n.wave&&Number(raw.enemy.hp)>0
-   ?{...enemyFor(n.wave),hp:Math.min(enemyFor(n.wave).maxHp,Number(raw.enemy.hp)),turns:Math.max(0,Math.floor(Number(raw.enemy.turns)||0))}
-   :enemyFor(n.wave);
+ const baseEnemy=loopEnemyFor(n.wave,n.activeMode);
+ n.enemy=raw.enemy&&Number(raw.enemy.id)===n.wave&&raw.enemy.typeId===baseEnemy.typeId&&Number(raw.enemy.hp)>0
+   ?{...baseEnemy,hp:Math.min(baseEnemy.maxHp,Number(raw.enemy.hp)),turns:Math.max(0,Math.floor(Number(raw.enemy.turns)||0))}
+   :baseEnemy;
  n.pendingDrops=Array.isArray(raw.pendingDrops)?raw.pendingDrops.filter(x=>ITEMS.some(it=>it.id===x)).slice(0,20):[];
  n.encounterHistory=Array.isArray(raw.encounterHistory)?raw.encounterHistory.slice(0,80):[];
  n.autoEncounter=raw.autoEncounter===true;
@@ -210,15 +236,32 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    }
    break;
  }
+ case 'mode':{
+   if(!GAME_MODES.some(m=>m.id===a.id))break;
+   if(a.id===s.activeMode)break;
+   s.modeWaves[s.activeMode]=s.wave;
+   s.activeMode=a.id;s.wave=s.modeWaves[a.id];
+   s.enemy=loopEnemyFor(s.wave,a.id);
+   s.heroHp=s.maxHp;
+   notice(s,'🗺️ 切換至 '+GAME_MODES.find(m=>m.id===a.id).name+'，進度獨立保存。');
+   s.last={type:'mode',id:a.id};break;
+ }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
  case 'autoEncounter':s.autoEncounter=!!a.value;notice(s,s.autoEncounter?'🗺️ 每日奇遇：智慧託管已開啟':'🗺️ 每日奇遇：已改為手動探索');break;
  case 'speed':s.speed=a.value===2?2:1;notice(s,'戰鬥速度 ×'+s.speed);break;
+ case 'skill':
  case 'attack':{
+   const skill=a.type==='skill'?GAME_SKILLS.find(k=>k.id===a.id):null;
+   if(a.type==='skill'&&(!skill||s.skillCooldowns[skill.id]>0)){notice(s,'技能尚未準備好。');break;}
    const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
    const crit=Number(rng())<.16,baseDamage=Math.round((weapon.attack+4+s.level*2)*(crit?1.7:1));
-   const damage=s.enemy.trait==='guard'?Math.max(1,Math.round(baseDamage*.75)):baseDamage;
+   const boosted=skill?.id==='burst'?baseDamage*2:baseDamage;
+   const damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
+   for(const key of GAME_SKILLS)s.skillCooldowns[key.id]=Math.max(0,s.skillCooldowns[key.id]-1);
+   if(skill)s.skillCooldowns[skill.id]=skill.cooldown;
+   if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+25);
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
-   s.last={type:'hit',damage,crit,boss:s.enemy.boss};
+   s.last={type:'hit',damage,crit,boss:s.enemy.boss,skill:skill?.id||null};
    notice(s,(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
    if(s.enemy.hp===0){
      const dead=s.enemy,boss=dead.boss,elite=dead.tier==='elite';
@@ -235,7 +278,10 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        notice(s,'🏆 首領擊敗！生命回滿，獲得寶箱、寶石與 1 張造型券。');
      }
      if(elite){s.gems+=1;notice(s,'💠 菁英擊敗！獲得額外 1 顆寶石，必定掉落裝備。');}
-     lootRoll(s,rng,elite);s.wave++;s.enemy=enemyFor(s.wave);
+     lootRoll(s,rng,false);s.wave++;s.modeWaves[s.activeMode]=s.wave;
+     if(s.activeMode==='tower'&&(s.wave-1)%4===0){s.heroHp=s.maxHp;s.chests++;notice(s,'🗼 四層突破！恢復全部生命，獲得寶箱。');}
+     if(s.activeMode==='dungeon'&&(s.wave-1)%5===0){s.gems++;notice(s,'🌌 副本結算：獲得一顆寶石。');}
+     s.enemy=loopEnemyFor(s.wave,s.activeMode);
      s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave};
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
    }else{
@@ -251,7 +297,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        notice(s,(eliteSkill?'✦ 菁英反制！':'👑 首領狂暴！')+' '+s.enemy.name+' 發動強力攻擊！');
      }
      const hpBeforeRetaliation=s.heroHp;
-     s.heroHp=Math.max(0,s.heroHp-retaliation);
+     s.heroHp=Math.max(0,s.heroHp-(skill?.id==='guard'?Math.ceil(retaliation/2):retaliation));
      // Persist the actual HP lost within this attack result. If the hero dies and
      // instantly respawns, comparing only before/after HP would miss the injury.
      s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
