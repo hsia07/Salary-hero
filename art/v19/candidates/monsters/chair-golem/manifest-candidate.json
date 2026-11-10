@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "id": "chair-golem",
+  "name": "打卡保全機兵",
+  "tier": "elite",
+  "approved": false,
+  "previewOnly": true,
+  "userVisualApproval": "PENDING",
+  "reason": "16 originally illustrated pose frames technical candidate; elite special skill requires 5 additional unique art frames before official 3/32 promotion",
+  "source": "original detailed chibi security timecard robot, opaque dark source art converted to silhouette alpha with edge decontamination",
+  "states": {
+    "idle": {
+      "src": "../art/v19/candidates/monsters/chair-golem/idle.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        250,
+        185,
+        240,
+        165
+      ],
+      "sha256": "20cd175c8d316cb4c7a4fb55d60b3f24875c422073a5cb0364de61e4dbb686ad"
+    },
+    "attack": {
+      "src": "../art/v19/candidates/monsters/chair-golem/attack.webp",
+      "frames": 5,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        145,
+        155,
+        75,
+        115,
+        160
+      ],
+      "sha256": "8a845134b5bb8ab84e1b5f62fde99ea74188912a9d691b7bf4104e2289e09c17"
+    },
+    "hurt": {
+      "src": "../art/v19/candidates/monsters/chair-golem/hurt.webp",
+      "frames": 3,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        95,
+        125,
+        205
+      ],
+      "sha256": "c987520bc047819ee4854b48153946b199cb2b7a4812f5d63af20b795df1a22b"
+    },
+    "defeat": {
+      "src": "../art/v19/candidates/monsters/chair-golem/defeat.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        145,
+        200,
+        265,
+        445
+      ],
+      "sha256": "473bc976630711e15aa435380bae66db9d5578c3c734b07e38ed1f24a5e001ac"
+    }
+  },
+  "special": {
+    "approved": false,
+    "missingUniquePoses": 5
+  },
+  "style": "evil Japanese fantasy RPG chibi: navy guard cap, scarlet LED angry eyes, timecard dispenser, red beacon, hazard-striped steel barrier blade; NOT cup/paper recolor"
+}
