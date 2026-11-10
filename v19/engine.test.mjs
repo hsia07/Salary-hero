@@ -121,14 +121,19 @@ test('existing V19 save retains character/progress while adding elite metadata',
  assert.equal(saved.wave,3);assert.equal(saved.enemy.hp,20);
  assert.equal(saved.enemy.tier,'elite');assert.equal(saved.enemy.elite,true);
 });
+test('new players encounter the two illustrated characters in floor order',()=>{
+ assert.equal(enemyFor(1).typeId,'paper-gremlin');
+ assert.equal(enemyFor(2).typeId,'coffee-mimic');
+ assert.equal(enemyFor(10).typeId,'file-crab'); // swapped, not removed
+});
 test('shield enemy actually mitigates damage',()=>{
  const a=initial();
- a.wave=2;a.enemy=enemyFor(2); // wave 2 is the guarded file crab
+ a.wave=10;a.enemy=enemyFor(10); // guarded crab retained in the rotation
  const b=transition(a,'attack',()=>.9);
  assert.equal(a.enemy.hp-b.enemy.hp,Math.round(18*.75));
 });
 test('healing enemy actually restores HP between turns',()=>{
- const a=initial();a.wave=10;a.enemy=enemyFor(10); // coffee mimic has real leech trait
+ const a=initial();a.wave=2;a.enemy=enemyFor(2); // the evil coffee mimic has leech
  const b=transition(a,'attack',()=>.9);
  assert.ok(b.enemy.hp>a.enemy.hp-18);
  assert.ok(b.enemy.hp<=a.enemy.maxHp);
