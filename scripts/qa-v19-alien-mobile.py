@@ -26,7 +26,7 @@ def main():
   assert '第 50 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
   assert '3/32' in page.locator('#monster-art-status').inner_text()
-  assert '角色美術尚未整合' in page.locator('#training-mode-notice').inner_text()
+  assert '正式美術尚未整合' in page.locator('#training-mode-notice').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth > window.innerWidth+3') is False
   page.evaluate('(k)=>localStorage.setItem(k,"ORIGINAL_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0])
