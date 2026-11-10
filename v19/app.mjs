@@ -8,7 +8,7 @@ import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-m
 import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
-import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardCombatCaptionAt} from './guard-combat.mjs?v=scan-lock-v19-9';
+import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardArmorFlashAt,drawGuardArmorTint,guardCombatCaptionAt} from './guard-combat.mjs?v=armor-red-v19-12';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
@@ -260,7 +260,7 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
          // Browser QA reports what the player ACTUALLY sees, not a guessed timer.
          world.dataset.guardPose=visual?.state||'idle';
          world.dataset.guardFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
-         const visualFlash=paperHitFlashAt(combatMs,{reducedMotion:motionReduced,extendedRed:true});
+         const visualFlash=guardArmorFlashAt(combatMs,{reducedMotion:motionReduced});
          world.dataset.guardFlash=JSON.stringify(visualFlash);
          world.dataset.guardPeakRed=String(Math.max(Number(world.dataset.guardPeakRed)||0,visualFlash.red));
        }
@@ -268,8 +268,13 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
        // actual hit/defeat; never tint the entire arena or the idle actor.
        if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem')&&(visual?.state==='hurt'||visual?.state==='defeat')){
          const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
-         drawPaperHitTint(ctx,image,frame,frameIndex,
-           {x:frameX,y:frameY,w:displaySize,h:displaySize},combatMs,{reducedMotion:motionReduced,extendedRed:enemy.typeId==='chair-golem'});
+         const rect={x:frameX,y:frameY,w:displaySize,h:displaySize};
+         if(enemy.typeId==='chair-golem'){
+           const tinted=drawGuardArmorTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
+           if(trainingSpecies==='chair-golem'&&tinted)world.dataset.guardTintApplied='true';
+         }else{
+           drawPaperHitTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
+         }
        }
        return;
      }
@@ -537,7 +542,7 @@ function commit(action){
    state=repeatTrainingEnemy(state,trainingSpecies,enemyFor);
  }
  if(action==='attack'){
-   if(trainingSpecies==='chair-golem')world.dataset.guardPeakRed='0';
+   if(trainingSpecies==='chair-golem'){world.dataset.guardPeakRed='0';world.dataset.guardTintApplied='false';}
    fx={start:performance.now(),result:state.last,oldEnemy,oldHeroHp,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
       retaliationDamage:Math.max(0,Number(state.last?.retaliationDamage??(oldHeroHp-state.heroHp)))};
