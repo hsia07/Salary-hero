@@ -10,6 +10,8 @@ on:
       - 'v19/combat-feedback.mjs'
       - 'v19/combat-feedback.test.mjs'
       - 'v19/coffee-combat.mjs'
+      - 'v19/coffee-combat.test.mjs'
+      - 'v19/coffee-candidate.test.mjs'
       - 'v19/paper-combat.mjs'
       - 'v19/guard-combat.mjs'
       - 'v19/alien-combat.mjs'
