@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>薪水勇者・茶水間邪惡杯靈逐格動畫驗收</title>
+<style>:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#ffe5ca}*{box-sizing:border-box}body{margin:0;padding:16px;background:radial-gradient(ellipse at top,#53344e,#190e24 75%)}main{max-width:800px;margin:0 auto}a{color:#ffe0a0;text-decoration:none}h1{font-size:23px;margin:14px 0 5px}p{font-size:13px;line-height:1.65;color:#dcc6d0}.panel{background:#302135;border:1px solid #ad8270;border-radius:14px;margin:13px 0;padding:12px}canvas{display:block;width:100%;height:auto;aspect-ratio:720/420;background:#262135;border-radius:12px}button{touch-action:manipulation;background:linear-gradient(#80504e,#4b304b);border:1px solid #e4b97c;color:#ffe0bb;border-radius:10px;padding:10px 12px;margin:3px;font-weight:800}button:disabled{opacity:.45}button[aria-pressed=true]{background:linear-gradient(#b66044,#713047)}#status{font-size:12px;color:#ffd49d}small{color:#d8bbcb}#controls{display:flex;flex-wrap:wrap;justify-content:center}</style>
+</head><body><main>
+<a href="./play.html">返回《薪水勇者》</a><h1>☕ 邪惡杯靈・實際逐格動畫</h1>
+<p>紅眼尖牙、黑咖啡觸手、5 格攻擊、3 格受擊紅閃、4 格碎裂死亡。這些是遊戲內建的真正圖片畫格，不使用舊的可愛杯靈，也不需下載或上傳。</p>
+<div class="panel"><p id="status" role="status">正在載入四組真實 WebP 圖片……</p>
+<canvas id="arena" width="720" height="420"></canvas>
+<div id="controls"><button data-state="idle" disabled>待機 4</button><button data-state="attack" disabled>噴咖啡 5</button><button data-state="hurt" disabled>受擊紅閃 3</button><button data-state="defeat" disabled>碎裂死亡 4</button><button id="play-all" disabled>▶ 連續播放</button></div></div>
+<p><small>實際角色的每一幀均來自獨立圖畫；命中特效疊在角色透明輪廓上。測試頁不會修改你的遊戲存檔。</small></p></main>
+<script type="module">
+import {drawCoffeeCombatFx,COFFEE_HERO_HIT_MS,COFFEE_ATTACK_START_MS} from './coffee-combat.mjs';
+import {drawPaperHitTint} from './paper-combat.mjs';
+const spec={idle:{count:4,ms:[230,185,235,160]},attack:{count:5,ms:[130,135,95,115,165]},hurt:{count:3,ms:[105,130,205]},defeat:{count:4,ms:[170,190,270,410]}};
+const images={},canvas=document.querySelector('#arena'),ctx=canvas.getContext('2d'),status=document.querySelector('#status');
+let ready=false,mode='idle',start=performance.now(),sequenceStart=0,sequence=false;
+const duration=s=>s.ms.reduce((a,b)=>a+b,0);const total=Object.values(spec).reduce((sum,s)=>sum+duration(s),0);
+function stateOf(t){let rem=t;for(const name of Object.keys(spec)){const time=duration(spec[name]);if(rem<time)return {name,elapsed:rem};rem-=time;}return {name:'defeat',elapsed:duration(spec.defeat)};}
+function frameAt(s,t,loop){const ms=s.ms;let time=loop?(t%duration(s)):Math.min(t,duration(s)-.01);for(let i=0;i<ms.length;i++){if(time<ms[i])return i;time-=ms[i];}return ms.length-1;}
+function choose(name){mode=name;start=performance.now();sequence=false;document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state===name)));}
+document.querySelectorAll('[data-state]').forEach(b=>b.onclick=()=>choose(b.dataset.state));
+document.querySelector('#play-all').onclick=()=>{sequence=true;sequenceStart=performance.now();mode='idle';};
+function draw(now){
+ ctx.clearRect(0,0,720,420);
+ const bg=ctx.createLinearGradient(0,0,0,420);bg.addColorStop(0,'#51415d');bg.addColorStop(1,'#21192d');
+ ctx.fillStyle=bg;ctx.fillRect(0,0,720,420);
+ ctx.fillStyle='#694555';ctx.beginPath();ctx.ellipse(373,377,300,40,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#261b2e';ctx.beginPath();ctx.ellipse(453,375,111,16,0,0,Math.PI*2);ctx.fill();
+ // A practice dummy on the LEFT shows the jet is aimed at the enemy player.
+ ctx.save();ctx.translate(113,248);ctx.fillStyle='#452635';ctx.lineWidth=5;ctx.strokeStyle='#dca17e';
+ ctx.beginPath();ctx.arc(0,0,44,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.beginPath();ctx.moveTo(-24,0);ctx.lineTo(24,0);ctx.moveTo(0,-24);ctx.lineTo(0,24);ctx.stroke();
+ ctx.fillStyle='#f8d2a4';ctx.font='15px system-ui';ctx.textAlign='center';ctx.fillText('玩家方向',0,74);ctx.restore();
+ if(ready){
+   let action=mode,elapsed=now-start;
+   if(sequence){const played=now-sequenceStart;const r=stateOf(Math.min(played,total-.01));action=r.name;elapsed=r.elapsed;
+    if(played>=total){sequence=false;choose('defeat');elapsed=duration(spec.defeat);}
+   }else if(elapsed>=duration(spec[action])&&action!=='idle'&&action!=='defeat'){choose('idle');action='idle';elapsed=0;}
+   const state=spec[action],n=frameAt(state,elapsed,action==='idle');
+   const area={x:287,y:72,w:334,h:334},image=images[action];
+   ctx.drawImage(image,n*320,0,320,320,area.x,area.y,area.w,area.h);
+   if(action==='hurt'){
+     drawPaperHitTint(ctx,image,{cell:320},n,area,COFFEE_HERO_HIT_MS+elapsed);
+     drawCoffeeCombatFx(ctx,COFFEE_HERO_HIT_MS+elapsed,{enemyX:287,enemyY:78,heroX:-45,heroY:120,canRetaliate:false});
+   }else if(action==='attack'){
+     drawCoffeeCombatFx(ctx,COFFEE_ATTACK_START_MS+elapsed,{enemyX:287,enemyY:78,heroX:-45,heroY:120,canRetaliate:true});
+   }else if(action==='defeat'&&elapsed<170){
+     drawCoffeeCombatFx(ctx,COFFEE_HERO_HIT_MS+elapsed,{enemyX:287,enemyY:78,heroX:-45,heroY:120,canRetaliate:false});
+   }
+   ctx.fillStyle='#ffdcad';ctx.font='bold 16px system-ui';ctx.textAlign='right';
+   ctx.fillText(({idle:'待機',attack:'噴咖啡',hurt:'受擊紅閃',defeat:'破碎死亡'})[action]+' '+(n+1)+' / '+state.count,680,393);
+ }else{ctx.fillStyle='#ffe7be';ctx.font='20px system-ui';ctx.textAlign='center';ctx.fillText('正在載入邪惡杯靈……',360,210)}
+ requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+Promise.all(Object.entries(spec).map(([state,config])=>new Promise((resolve,reject)=>{
+ const image=new Image();image.onload=()=>{if(image.naturalWidth!==config.count*320||image.naturalHeight!==320)return reject(Error(state+' 尺寸不符'));images[state]=image;resolve();};
+ image.onerror=()=>reject(Error(state+' 讀取失敗'));image.src='../art/v19/runtime/monsters/coffee-mimic/'+state+'.webp?v=evil-coffee-59a2b7';
+}))).then(()=>{ready=true;document.querySelectorAll('#controls button').forEach(b=>b.disabled=false);status.textContent='✓ 16 張邪惡杯靈動畫已自動載入。可選擇噴咖啡／紅閃／碎裂，不用下載圖片。';})
+.catch(e=>{status.textContent='❌ '+e.message;console.error(e)});
+</script></body></html>
