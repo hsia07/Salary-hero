@@ -33,8 +33,9 @@ test('candidate actually includes 16 committed WebP original poses with proper a
    assert.equal(validateSpritePixels({naturalWidth:384*n,naturalHeight:384},record).ok,true);
  }
 });
-test('fifth creature is candidate ONLY, official 3/32 unchanged',()=>{
+test('fifth creature remains candidate while fourth is officially 4/32',()=>{
  const official=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
- assert.equal(Object.keys(official.monsters).length,3);
+ assert.equal(Object.keys(official.monsters).length,4);
+ assert.equal(official.monsters['meeting-ghost'].approved,true);
  assert.equal(official.monsters['deadline-clock'],undefined);
 });
