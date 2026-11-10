@@ -45,7 +45,8 @@ export function monsterAnimationState(enemy,attackElapsedMs,result){
  if(!Number.isFinite(elapsed)||elapsed<0)return {state:'idle',progress:0};
  if(result.type==='victory'){
    if(elapsed<405)return {state:'idle',progress:0};
-   if(elapsed<895)return {state:'defeat',progress:Math.min(1,(elapsed-405)/490)};
+   // Hold the final collapsed illustration until the next wave is visible.
+   if(elapsed<1100)return {state:'defeat',progress:Math.min(1,(elapsed-405)/490)};
    return {state:'idle',progress:0};
  }
  if(elapsed>=405&&elapsed<805)return {state:'hurt',progress:(elapsed-405)/400};
