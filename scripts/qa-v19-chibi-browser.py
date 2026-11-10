@@ -60,6 +60,8 @@ def main():
   # Automatic injury should follow a nonlethal enemy retaliation, but regardless
   # the independent preview always allows deterministic visual-only inspection.
   hp_before=page.locator('#hero-hp-text').inner_text()
+  # Development-only preview is intentionally collapsed on the production UI.
+  page.locator('.dev-gallery > summary').click()
   page.locator('#hurt-demo-quick').click()
   page.wait_for_timeout(90)
   page.locator('#world').screenshot(path=str(OUT/'v19-default-HD-hurt-red-flash.png'))
