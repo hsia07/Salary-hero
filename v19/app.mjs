@@ -11,6 +11,7 @@ import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './co
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy} from './training-mode.mjs';
+import {visibleCombatHealthAt} from './combat-feedback.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
 const LOGICAL_WIDTH=720,LOGICAL_HEIGHT=620;
@@ -412,6 +413,22 @@ function drawStage(now){
   ctx.restore();
  }
 }
+let lastCombatBarKey='';
+function renderCombatBars(now){
+ const elapsed=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
+ const caster=fx?.oldEnemy?.typeId;
+ const illustrated=fx?.retaliation&&approvedMonsterArt.has(caster);
+ const contactMs=illustrated&&(caster==='paper-gremlin'||caster==='coffee-mimic')
+   ?(caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
+   :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
+ const view=visibleCombatHealthAt(state,fx,elapsed,{retaliationContactMs:contactMs});
+ const key=[view.heroHp,view.enemyHp,view.maxHero,view.maxEnemy].join('|');
+ if(key===lastCombatBarKey)return;
+ lastCombatBarKey=key;
+ $('#hero-hp-text').textContent=Math.ceil(view.heroHp)+'/'+Math.ceil(view.maxHero);
+ $('#hero-hp-fill').style.width=(view.heroHp/view.maxHero*100)+'%';
+ $('#enemy-hp-fill').style.width=(view.enemyHp/view.maxEnemy*100)+'%';
+}
 function render(){
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
@@ -423,9 +440,7 @@ function render(){
  document.querySelector('.enemy-meter')?.classList.toggle('elite',enemyTier==='elite');
  document.querySelector('.enemy-meter')?.classList.toggle('boss',enemyTier==='boss');
  $('#level').textContent='Lv.'+state.level+' '+playerTitle(state);
- $('#hero-hp-text').textContent=Math.ceil(state.heroHp)+'/'+Math.ceil(state.maxHp);
- $('#hero-hp-fill').style.width=(state.heroHp/state.maxHp*100)+'%';
- $('#enemy-hp-fill').style.width=(state.enemy.hp/state.enemy.maxHp*100)+'%';
+ renderCombatBars(performance.now());
  $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+state.enemy.name;
  const trait=$('#enemy-trait');
  if(trait){
@@ -455,7 +470,7 @@ function commit(action){
    state=repeatTrainingEnemy(state,trainingSpecies,enemyFor);
  }
  if(action==='attack'){
-   fx={start:performance.now(),result:state.last,oldEnemy,wave:wasWave,
+   fx={start:performance.now(),result:state.last,oldEnemy,oldHeroHp,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
       retaliationDamage:Math.max(0,Number(state.last?.retaliationDamage??(oldHeroHp-state.heroHp)))};
    lastAttack=performance.now();
@@ -694,6 +709,7 @@ function frame(now){
   if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=HIT_FEEDBACK_MS)
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
   drawStage(now);
+  renderCombatBars(now);
  }
  requestAnimationFrame(frame);
 }
