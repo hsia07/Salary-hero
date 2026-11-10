@@ -65,7 +65,12 @@ export function tierForWave(wave){
 }
 export function enemyDesignFor(wave){
  const w=Math.max(1,Math.floor(Number(wave)||1)),tier=tierForWave(w);
+ // Preserve the full 16-species permutation while letting new players encounter
+ // both finished illustrated enemies immediately: paper-gremlin at 1, coffee-mimic at 2.
+ // The previous index 7 (guarded crab) is swapped with index 1, NOT removed.
+ const rawIndex=((w-1)*7+Math.floor((w-1)/4))%COMMON_ENEMIES.length;
+ const commonIndex=rawIndex===7?1:rawIndex===1?7:rawIndex;
  return tier==='boss'?BOSSES[(Math.floor(w/4)-1)%BOSSES.length]:
    tier==='elite'?ELITE_ENEMIES[Math.floor((w-3)/4)%ELITE_ENEMIES.length]:
-   COMMON_ENEMIES[((w-1)*7+Math.floor((w-1)/4))%COMMON_ENEMIES.length];
+   COMMON_ENEMIES[commonIndex];
 }
