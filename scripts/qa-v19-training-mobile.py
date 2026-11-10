@@ -35,12 +35,12 @@ def test_species(page,species,expected_name,expected_wave):
       return [img.naturalWidth,img.naturalHeight];
     }""",species)
     assert frames==[1600,320],f'actual animation pixels missing {species}: {frames}'
-    page.locator('#world').screenshot(path=str(OUT/'training-'+species+'-idle.png'))
+    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-idle.png')))
     page.locator('#attack').click()
     page.wait_for_timeout(520)
-    page.locator('#world').screenshot(path=str(OUT/'training-'+species+'-hero-hit.png'))
+    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hero-hit.png')))
     page.wait_for_timeout(610)
-    page.locator('#world').screenshot(path=str(OUT/'training-'+species+'-counterattack.png'))
+    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-counterattack.png')))
     assert page.evaluate('(key)=>localStorage.getItem(key)',SAVE_KEY)=='UNCHANGED_REAL_PLAYER_SAVE'
 
 def main():
