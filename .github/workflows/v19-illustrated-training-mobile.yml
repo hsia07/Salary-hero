@@ -46,7 +46,7 @@ jobs:
             sleep 1
           done
           exit 1
-      - name: Mobile real-sprite combat: attacks, injury, save isolation, screenshots
+      - name: "Mobile real-sprite combat: attacks, injury, save isolation, screenshots"
         run: python scripts/qa-v19-training-mobile.py
       - name: Retain real screenshots for art review
         if: always()
