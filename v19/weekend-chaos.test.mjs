@@ -76,7 +76,8 @@ test('rogue AI deals more damage, pays extra gem and boss floor cannot be skippe
  const hit=transition(s,'attack',()=>.95,SAT);
  assert.ok(before-hit.heroHp>hit.enemy.attack);
  let boss=initial();
- boss.modeWaves.dungeon=4;boss=transition(boss,{type:'mode',id:'dungeon'},()=>0,SAT);
+ boss.modeWaves.dungeon=4;boss.dailyDungeonKey=dungeonPeriodKey(SAT);boss.dailyDungeonDay=todayTW(SAT);
+ boss=transition(boss,{type:'mode',id:'dungeon'},()=>0,SAT);
  assert.equal(boss.wave,4);
  assert.equal(boss.enemy.boss,true);
  assert.equal(boss.weekendChaosEvent.id,'rogue-ai');
@@ -87,7 +88,7 @@ test('rogue AI deals more damage, pays extra gem and boss floor cannot be skippe
 });
 test('Friday escaped boss still works unchanged and weekend cannot revive Friday rolls',()=>{
  const FRI=Date.parse('2026-11-13T08:00:00Z');
- let s=initial();s.modeWaves.dungeon=4;
+ let s=initial();s.modeWaves.dungeon=4;s.dailyDungeonKey=dungeonPeriodKey(FRI);s.dailyDungeonDay=todayTW(FRI);
  s=transition(s,{type:'mode',id:'dungeon'},()=>0,FRI);
  assert.equal(s.wave,5);
  assert.ok(s.fridayNote);
