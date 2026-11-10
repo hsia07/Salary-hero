@@ -624,10 +624,10 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.last={type:'loot',id};break;
  }
  case 'equip':
-   if(item&&s.owned.includes(item.id)){s.equipped=item.id;s.liteLoadout.weapon=null;s.last={type:'equip',id:item.id};notice(s,'🛡️ 換裝：'+item.name+'，攻擊 '+item.attack);}
+   if(item&&s.owned.includes(item.id)){s.equipped=item.id;s.liteLoadout.weapon=null;recalcLiteHp(s);s.last={type:'equip',id:item.id};notice(s,'🛡️ 換裝：'+item.name+'，攻擊 '+item.attack);}
    break;
  case 'buy':
-   if(item&&item.id!=='briefcase'&&!s.owned.includes(item.id)&&s.gold>=item.cost){s.gold-=item.cost;s.owned.push(item.id);s.equipped=item.id;s.liteLoadout.weapon=null;s.last={type:'equip',id:item.id};notice(s,'🛒 買下並裝備 '+item.name);}
+   if(item&&item.id!=='briefcase'&&!s.owned.includes(item.id)&&s.gold>=item.cost){s.gold-=item.cost;s.owned.push(item.id);s.equipped=item.id;s.liteLoadout.weapon=null;recalcLiteHp(s);s.last={type:'equip',id:item.id};notice(s,'🛒 買下並裝備 '+item.name);}
    else notice(s,'金幣不足或已擁有該裝備。');
    break;
  case 'chest':
