@@ -2,11 +2,11 @@
   "version": 1,
   "id": "chair-golem",
   "name": "打卡保全機兵",
-  "tier": "elite",
+  "tier": "normal",
   "approved": false,
   "previewOnly": true,
   "userVisualApproval": "PENDING",
-  "reason": "16 originally illustrated pose frames technical candidate; elite special skill requires 5 additional unique art frames before official 3/32 promotion",
+  "reason": "16 original transparent drawn poses (idle 4/attack 5/hurt 3/defeat 4) technically staged; pending user visual approval before official 3/32 promotion",
   "source": "original detailed chibi security timecard robot, opaque dark source art converted to silhouette alpha with edge decontamination",
   "states": {
     "idle": {
@@ -62,9 +62,6 @@
       "sha256": "473bc976630711e15aa435380bae66db9d5578c3c734b07e38ed1f24a5e001ac"
     }
   },
-  "special": {
-    "approved": false,
-    "missingUniquePoses": 5
-  },
-  "style": "evil Japanese fantasy RPG chibi: navy guard cap, scarlet LED angry eyes, timecard dispenser, red beacon, hazard-striped steel barrier blade; NOT cup/paper recolor"
+  "style": "evil Japanese fantasy RPG chibi: navy guard cap, scarlet LED angry eyes, timecard dispenser, red beacon, hazard-striped steel barrier blade; NOT cup/paper recolor",
+  "normalSkill": "Guard trait: reduces incoming damage by 25%; five attack animation poses already exist"
 }
