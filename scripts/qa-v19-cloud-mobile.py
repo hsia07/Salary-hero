@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Chromium mobile end-to-end: fifth Q-version cloud ghost is a genuine 16-frame
-illustrated candidate, NOT a production promotion. Real battle & save isolated."""
+player-approved fifth official illustrated species. Real battle & save isolated."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -18,20 +18,20 @@ def main():
   page.goto(BASE+'/v19/play.html?training=deadline-clock',wait_until='domcontentloaded')
   page.wait_for_function("""() => {
    const s=document.querySelector('#monster-art-status'),w=document.querySelector('#world');
-   return s?.dataset.loaded==='true'&&s?.dataset.candidate==='true'&&
+   return s?.dataset.loaded==='true'&&s?.dataset.approved==='true'&&
     w?.dataset.cloudArt==='16-original-frames-loaded'&&w?.dataset.cloudFacing==='left'&&
     document.querySelector('#attack')?.disabled===false;
   }""",timeout=45000)
   assert '雲端資料專員靈' in page.locator('#enemy-name').inner_text()
   assert '第 6 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
-  assert '正式已有 4/32' in page.locator('#monster-art-status').inner_text()
+  assert '5/32' in page.locator('#monster-art-status').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth>innerWidth+3') is False
   sizes=page.evaluate("""async()=>{
    const out={};
    for(const [k,n] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
     const im=new Image();
-    im.src='../art/v19/candidates/monsters/deadline-clock/'+k+'.webp';
+    im.src='../art/v19/runtime/monsters/deadline-clock/'+k+'.webp';
     await im.decode();
     out[k]=[im.naturalWidth,im.naturalHeight];
    }
@@ -82,6 +82,6 @@ def main():
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='REAL_SAVE_UNCHANGED'
   assert not errors,errors
   browser.close()
- print('PASS: 390px real cloud ghost 16 original atlas frames, red/white silhouette hit, 1225ms left-going clock, HP timing and isolated save. Candidate only 4/32.')
+ print('PASS: 390px real cloud ghost 16 original atlas frames, red/white silhouette hit, 1225ms left-going clock, HP timing and isolated save. Official fifth monster 5/32.')
 
 if __name__=='__main__':main()

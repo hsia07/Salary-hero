@@ -25,12 +25,12 @@ def main():
   assert '星際打卡實習生' in page.locator('#enemy-name').inner_text()
   assert '第 50 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
-  assert '4/32' in page.locator('#monster-art-status').inner_text()
+  assert '5/32' in page.locator('#monster-art-status').inner_text()
   assert '正式 16 格逐格美術・面向左' in page.locator('#training-mode-notice').inner_text()
   page.wait_for_function("""() => {
     const w=document.querySelector('#world'),label=document.querySelector('#monster-art-status');
     return w?.dataset.alienArt==='16-frames-loaded'&&w?.dataset.alienFacing==='left'&&
-           label?.dataset.approved==='true'&&label.textContent.includes('4/32');
+           label?.dataset.approved==='true'&&label.textContent.includes('5/32');
   }""",timeout=20000)
   dimensions=page.evaluate("""async()=>{
     const r={};for(const [state,frames] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
