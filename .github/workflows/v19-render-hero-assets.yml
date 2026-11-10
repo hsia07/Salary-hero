@@ -1,4 +1,4 @@
-name: V19 hero asset render and strict QA
+name: V19 legacy SVG hero candidate render (non-runtime)
 
 on:
   push:
@@ -6,11 +6,6 @@ on:
     paths:
       - "art/v19/candidates/hero/*.svg"
       - "scripts/build-v19-hero-assets.py"
-      - "v19/app.mjs"
-      - "v19/engine.mjs"
-      - "v19/roster.mjs"
-      - "v19/play.html"
-      - "v19/engine.test.mjs"
       - ".github/workflows/v19-render-hero-assets.yml"
   workflow_dispatch:
 
@@ -18,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: v19-hero-assets-main
+  group: v19-legacy-svg-candidates
   cancel-in-progress: false
 
 jobs:
@@ -40,7 +35,7 @@ jobs:
           node --check v19/engine.mjs
           node --check v19/roster.mjs
           node --test v19/engine.test.mjs
-      - name: Render 5 independent sprites and reject invalid sizes, alpha or clipping
+      - name: Render retired SVG candidates and report any invalid sizing/clipping (does not gate shipped HD sprites)
         run: python scripts/build-v19-hero-assets.py
       - name: Commit only validated candidate sprites and technical report
         run: |
