@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "paper_gremlin_art_user_approved_remaining_31_pending",
+  "status": "2_species_illustrated_art_integrated_user_gameplay_review_pending_for_coffee",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
   "monsters": {
     "paper-gremlin": {
@@ -60,7 +60,63 @@
       },
       "notes": "V19.4: independently drawn attack/recoil frames with 48ms contact hold, white→red silhouette hurt flash, moving paper-blade projectile and delayed retaliation impact. Pending visual approval.",
       "userVisualApprovalDate": "2026-11-10"
+    },
+    "coffee-mimic": {
+      "id": "coffee-mimic",
+      "approved": true,
+      "approvalScope": "user accepted evil coffee-cup visual design on 2026-11-10; in-game animation still pending user visual QA",
+      "source": "original evil coffee cup character 16-pose illustration, alpha-cleaned and oriented toward hero",
+      "states": {
+        "idle": {
+          "src": "../art/v19/runtime/monsters/coffee-mimic/idle.webp",
+          "frames": 4,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            230,
+            185,
+            235,
+            160
+          ]
+        },
+        "attack": {
+          "src": "../art/v19/runtime/monsters/coffee-mimic/attack.webp",
+          "frames": 5,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            130,
+            135,
+            95,
+            115,
+            165
+          ]
+        },
+        "hurt": {
+          "src": "../art/v19/runtime/monsters/coffee-mimic/hurt.webp",
+          "frames": 3,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            105,
+            130,
+            205
+          ]
+        },
+        "defeat": {
+          "src": "../art/v19/runtime/monsters/coffee-mimic/defeat.webp",
+          "frames": 4,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            170,
+            190,
+            270,
+            410
+          ]
+        }
+      }
     }
   },
-  "note": "Paper gremlin illustrated 16-pose animation and V19.4 hit flash/attack were accepted by the user. This is 1/32 user visually accepted species, not an assertion that independent engineering/physical-device QA passed. Remaining 31 species need independent illustrated assets."
+  "note": "Paper gremlin approved V19.4; evil coffee-cup design approved, gameplay pose feedback pending. Other 30 monsters are engineering stand-ins."
 }
