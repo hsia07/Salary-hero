@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "3_species_illustrated_user_approved",
+  "status": "4_species_illustrated_user_approved",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
   "monsters": {
     "paper-gremlin": {
@@ -177,7 +177,70 @@
           "sha256": "473bc976630711e15aa435380bae66db9d5578c3c734b07e38ed1f24a5e001ac"
         }
       }
+    },
+    "meeting-ghost": {
+      "id": "meeting-ghost",
+      "approved": true,
+      "tier": "normal",
+      "facing": "left",
+      "userVisualApprovalDate": "2026-11-10",
+      "approvalScope": "User responded 可以 繼續 to corrected left-facing original alien pose and combat art",
+      "source": "Bit-identical independent 16-pose WebP art copied without re-encoding from reviewed candidate",
+      "states": {
+        "idle": {
+          "src": "../art/v19/runtime/monsters/meeting-ghost/idle.webp",
+          "frames": 4,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            240,
+            190,
+            245,
+            160
+          ],
+          "sha256": "9dd3074f148f4da72e627199a4bbf93dabc6355a84e453de35c8c3398606b2f3"
+        },
+        "attack": {
+          "src": "../art/v19/runtime/monsters/meeting-ghost/attack.webp",
+          "frames": 5,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            130,
+            150,
+            90,
+            140,
+            165
+          ],
+          "sha256": "65d57b939ec9fb70af324ad84d09f3178541225d59928a360cf21d6e13fa1c41"
+        },
+        "hurt": {
+          "src": "../art/v19/runtime/monsters/meeting-ghost/hurt.webp",
+          "frames": 3,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            95,
+            135,
+            210
+          ],
+          "sha256": "2d0f1e9b4028259b2bd1bdb35e46adb8f31f43e4b8eb75bbb1917bd93c359ac2"
+        },
+        "defeat": {
+          "src": "../art/v19/runtime/monsters/meeting-ghost/defeat.webp",
+          "frames": 4,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            180,
+            220,
+            250,
+            390
+          ],
+          "sha256": "dd4a1270a057dc3ea0e355a001204c6bda9938b640da281067dc5e02634a95cb"
+        }
+      }
     }
   },
-  "note": "3/32 approved originals; other 29 species still unillustrated."
+  "note": "Four approved original species: paper, coffee, security mech, alien intern. Cloud ghost remains an independently illustrated candidate until its visual approval."
 }
