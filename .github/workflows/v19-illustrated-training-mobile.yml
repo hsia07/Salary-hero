@@ -14,6 +14,9 @@ on:
       - 'v19/guard-combat.mjs'
       - 'v19/alien-combat.mjs'
       - 'v19/alien-combat.test.mjs'
+      - 'v19/alien-candidate.test.mjs'
+      - 'v19/alien-trial.html'
+      - 'art/v19/candidates/monsters/meeting-ghost/**'
       - 'scripts/qa-v19-alien-mobile.py'
       - 'v19/monster-variants.mjs'
       - 'v19/monster-variants.test.mjs'
@@ -49,7 +52,7 @@ jobs:
           node --check v19/combat-feedback.mjs
           node --check v19/guard-combat.mjs
           node --check v19/alien-combat.mjs
-          node --test v19/alien-combat.test.mjs v19/monster-variants.test.mjs v19/guard-candidate.test.mjs v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/paper-combat.test.mjs
+          node --test v19/alien-combat.test.mjs v19/alien-candidate.test.mjs v19/monster-variants.test.mjs v19/guard-candidate.test.mjs v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/paper-combat.test.mjs
       - name: Install real Chromium mobile browser
         run: |
           python -m pip install --disable-pip-version-check "playwright>=1.56,<2"
