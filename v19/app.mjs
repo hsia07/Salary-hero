@@ -452,7 +452,11 @@ function drawStage(now){
  }
 }
 let lastCombatBarKey='';
+function attackInCooldown(now){
+ return Boolean(fx&&(now-fx.start)<attackCooldownMs()/state.speed);
+}
 function renderCombatBars(now){
+ $('#attack').disabled=!ready||attackInCooldown(now);
  const elapsed=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const caster=fx?.oldEnemy?.typeId;
  const illustrated=fx?.retaliation&&hasIllustratedMonster(caster);
@@ -493,7 +497,7 @@ function render(){
  $('#speed').textContent='⏩ 速度 ×'+state.speed;
  $('#heal').textContent='❤️ 治療 ×'+state.potions;
  $('#heal').disabled=!ready||state.potions===0||state.heroHp===state.maxHp;
- $('#attack').disabled=!ready;$('#claim').disabled=!ready||state.pendingDrops.length===0;$('#chest').disabled=!ready||state.chests===0;
+ $('#attack').disabled=!ready||attackInCooldown(performance.now());$('#claim').disabled=!ready||state.pendingDrops.length===0;$('#chest').disabled=!ready||state.chests===0;
  $('#claim').textContent='🎁 掉寶 ('+state.pendingDrops.length+')';
  $('#chest').textContent='📦 寶箱 ('+state.chests+')';
  if(currentPanel&&panel.open)renderPanel(currentPanel);
