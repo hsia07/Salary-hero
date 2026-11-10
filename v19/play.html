@@ -73,6 +73,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .training-mode-notice[hidden]{display:none}
 .training-mode-notice a{display:inline-block;color:#fff5ba;font-weight:800;margin-top:5px;text-decoration:underline}
 .training-fight-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:4px 0 8px}
+.training-fight-links a:last-child{grid-column:1/-1}
 .training-fight-links a{display:block;border:1px solid #efc187;background:linear-gradient(135deg,#6e3d4d,#2e2b48);color:#fff0c6;text-decoration:none;text-align:center;border-radius:9px;font-size:12px;font-weight:800;padding:11px 5px;line-height:1.4}
 .art-advanced summary{font-size:12px;color:#d9bca3;padding:7px 0 4px;cursor:pointer}
 .art-advanced .chibi-v2-lab{padding:9px;margin-top:6px;border:1px solid #be9872;border-radius:9px}
@@ -97,9 +98,11 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="training-fight-links" aria-label="不更改遊戲存檔的實戰練習">
  <a href="./play.html?training=paper-gremlin">⚔️ 紙妖<br>直接實戰</a>
  <a href="./play.html?training=coffee-mimic">☕ 邪惡杯靈<br>直接實戰</a>
+ <a href="./play.html?training=chair-golem">🚨 打卡保全機兵・第 3 關<br>測試候選真實戰鬥（不改正式存檔）</a>
 </div>
 <a class="paper-art-preview" href="./paper-trial.html">⚔️ 試播紙妖：攻擊紙刃＋受傷白亮紅閃（免下載）</a>
 <a class="paper-art-preview" href="./coffee-trial.html">☕ 試播邪惡杯靈：噴咖啡＋受傷紅閃＋杯身碎裂（免下載）</a>
+<a class="paper-art-preview" href="./guard-trial.html" style="background:linear-gradient(135deg,#6f3843,#332e53)">🚨 美術候選｜打卡保全機兵：柵欄刀攻擊＋紅閃＋冒煙解體（免下載）</a>
 <button id="hurt-demo-quick" type="button">💥 試播主角受擊動畫（不扣血）</button>
 <details class="art-advanced"><summary>素材檢查／進階測試</summary>
 <section id="chibi-v2-lab" class="chibi-v2-lab" hidden aria-label="七姿勢高畫質動畫測試">
@@ -123,7 +126,8 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <nav class="tabs" aria-label="遊戲功能"><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
 <div class="footnote">🖼️ <a href="./paper-trial.html">直接觀看紙妖 16 格動畫｜無須下載或上傳</a></div>
 <div class="footnote">☕ <a href="./coffee-trial.html">直接觀看邪惡杯靈 16 格動畫｜無須下載或上傳</a></div>
-<div class="footnote">已實裝 2／32 種獨立 Q 版怪物：紙妖（已驗收）與邪惡杯靈（造型已認可、待實戰驗收），其餘 30 隻仍使用工程替身。</div>
+<div class="footnote">🚨 <a href="./guard-trial.html">打卡保全機兵・16 格候選試播（未正式核准）</a></div>
+<div class="footnote">已實裝 2／32 種獨立 Q 版怪物：紙妖（已驗收）與邪惡杯靈（造型已認可、待實戰驗收），第 3 隻打卡保全機兵已加入實戰候選測試（尚缺菁英專屬技能的 5 張獨立畫格），其餘怪物仍使用工程替身。</div>
 <div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
@@ -134,4 +138,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=two-monsters-combat-hit-feedback-v19-6-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=security-mech-training-candidate-v19-7-20261110"></script></body></html>
