@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Real 390px Chromium QA for sixth ORIGINAL human ghost office worker.
-Candidate only. Its report projectile must land at 1255ms; no save mutation.
+Its report projectile lands at 1255ms in normal play and isolated rehearsal.
 """
 from base64 import b64decode
 from pathlib import Path
@@ -12,6 +12,36 @@ KEY='salary-hero-v19-save-1'
 OUT=ROOT/'art/v19/runtime/qa'
 OUT.mkdir(parents=True,exist_ok=True)
 
+def check_normal_battle(page):
+ # Start on a regular save at wave 26 so this checks the default route.
+ page.clock.resume()
+ page.evaluate("""async(key)=>{
+  const {initial,enemyFor}=await import(new URL('engine.mjs',location.href).href);
+  localStorage.setItem(key,JSON.stringify({...initial(),playerName:'測試勇者',
+   wave:26,enemy:enemyFor(26),maxHp:900,heroHp:900,auto:false,gold:123}));
+ }""",KEY)
+ page.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
+ page.wait_for_function("""()=>document.querySelector('#world')?.dataset.clerkApproval==='official'
+  &&document.querySelector('#attack')?.disabled===false""",timeout=45000)
+ assert page.locator('#training-mode-notice').is_hidden()
+ assert '第 26 關' in page.locator('#wave').inner_text()
+ assert '加班遊魂文員' in page.locator('#enemy-name').inner_text()
+ assert '6/32' in page.locator('#monster-art-status').inner_text()
+ page.clock.pause_at(page.evaluate('Date.now()')+1000)
+ attack=page.locator('#attack')
+ assert attack.is_enabled()
+ attack.dispatch_event('click')
+ page.clock.run_for(1200)
+ assert page.locator('#hero-hp-text').inner_text()=='900/900'
+ assert page.locator('#world').evaluate("c=>JSON.parse(c.dataset.clerkPaper).projectile")
+ page.clock.run_for(80)
+ assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])<900
+ assert attack.is_disabled()
+ saved=page.evaluate("key=>JSON.parse(localStorage.getItem(key))",KEY)
+ assert saved['wave']==26 and saved['enemy']['typeId']=='keyboard-piranha'
+ assert saved['enemy']['hp']<saved['enemy']['maxHp'] and saved['heroHp']<900
+ assert saved['gold']==123
+
 def main():
  errors=[]
  with sync_playwright() as p:
@@ -22,20 +52,20 @@ def main():
   page.goto(BASE+'/v19/play.html?training=keyboard-piranha',wait_until='domcontentloaded')
   page.wait_for_function("""()=>{
    const s=document.querySelector('#monster-art-status'),w=document.querySelector('#world');
-   return s?.dataset.loaded==='true'&&s?.dataset.candidate==='true'&&
+   return s?.dataset.loaded==='true'&&s?.dataset.approved==='true'&&w?.dataset.clerkApproval==='official'&&
     w?.dataset.clerkArt==='16-original-frames-loaded'&&w?.dataset.clerkFacing==='left'&&
     document.querySelector('#attack')?.disabled===false;
   }""",timeout=45000)
   assert '加班遊魂文員' in page.locator('#enemy-name').inner_text()
   assert '第 26 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
-  assert '5/32' in page.locator('#monster-art-status').inner_text()
-  assert '512px 高清 16 格人形怨靈候選' in page.locator('#training-mode-notice').inner_text()
+  assert '6/32' in page.locator('#monster-art-status').inner_text()
+  assert '512px 高清 16 格正式美術' in page.locator('#training-mode-notice').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth>innerWidth+3') is False
   dimensions=page.evaluate("""async()=>{
    const dims={};
    for(const [s,n] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
-    const im=new Image();im.src='../art/v19/candidates/monsters/keyboard-piranha/hd/'+s+'.webp';
+    const im=new Image();im.src='../art/v19/runtime/monsters/keyboard-piranha/'+s+'.webp';
     await im.decode();dims[s]=[im.naturalWidth,im.naturalHeight];
    }return dims;
   }""")
@@ -47,7 +77,7 @@ def main():
     const results={};
     for(const [state,frames] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
       const image=new Image();
-      image.src='../art/v19/candidates/monsters/keyboard-piranha/hd/'+state+'.webp';
+      image.src='../art/v19/runtime/monsters/keyboard-piranha/'+state+'.webp';
       await image.decode();
       const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
       const ctx=canvas.getContext('2d',{willReadFrequently:true});
@@ -138,6 +168,7 @@ def main():
   assert '重新練習' in page.locator('#game-log').inner_text()
   assert '第 26 關' in page.locator('#wave').inner_text()
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='SIXTH_PLAYER_SAVE_UNCHANGED'
+  check_normal_battle(page)
   assert not errors,errors
   browser.close()
  print('PASS sixth ghost: original 16 human chibi sprite frames, paper to LEFT hits at 1255ms, real silhouette red flash, victory replay, official save preserved; still candidate 5/32.')

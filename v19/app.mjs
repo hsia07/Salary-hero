@@ -68,7 +68,7 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':trainingSpecies==='keyboard-piranha'?'加班遊魂文員（512px 高清 16 格人形怨靈候選）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':trainingSpecies==='keyboard-piranha'?'加班遊魂文員（512px 高清 16 格正式美術）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
@@ -167,36 +167,8 @@ async function loadCloudGhostCandidateArt(){
   notice.textContent='☁️ 雲端資料專員靈的 16 格透明逐格候選已載入（待機4／攻擊5／受擊3／死亡4），第 6 關朝左側勇者出招。正式已有 4/32。';
  }
 }
-async function loadClerkCandidateArt(){
- if(trainingSpecies!=='keyboard-piranha')return;
- const url=new URL('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk-hd-v19-22b',import.meta.url);
- const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('第六隻素材 HTTP '+r.status);return r.json()});
- if(record.id!=='keyboard-piranha'||record.approved!==false||record.previewOnly!==true||
-    record.tier!=='normal'||record.facing!=='left'||record.target!=='hero-on-left')
-  throw new Error('第六隻候選必須是面向勇者的普通怪，不能當菁英或 Boss');
- const poses={};
- for(const state of ['idle','attack','hurt','defeat']){
-  const frame=record.states?.[state];
-  if(!frame||frame.cell!==512||!frame.src.startsWith('../art/v19/candidates/monsters/keyboard-piranha/hd/'))
-   throw new Error('加班遊魂文員圖集路徑無效：'+state);
-  const image=await imageFrom(frame.src);
-  const pixels=validateSpritePixels(image,frame);
-  if(!pixels.ok)throw new Error('加班遊魂文員 '+state+' 圖片尺寸錯誤：'+pixels.reason);
-  const issues=inspectAtlasFrameArt(image,frame,state);
-  if(issues.length)throw new Error('加班遊魂文員 '+state+' 缺少獨立姿勢：'+issues.join('; '));
-  poses[state]={image,frame};
- }
- trainingCandidateArt.set('keyboard-piranha',poses);
- world.dataset.clerkArt='16-original-frames-loaded';
- world.dataset.clerkFacing='left';
- const notice=$('#monster-art-status');
- if(notice){
-  notice.dataset.candidate='true';
-  notice.textContent='👻 第六隻「加班遊魂文員」HD 高清 512px × 16 格已載入（待機4／攻擊5／受擊3／死亡4），面向左側勇者。正式仍為 5/32，待美術驗收。';
- }
-}
 async function loadApprovedMonsterArt(){
- const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=cloud-official-fifth-v19-20-20261110',import.meta.url);
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=clerk-official-v19-23',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
  const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
@@ -216,6 +188,11 @@ async function loadApprovedMonsterArt(){
    if(ok)approved.set(id,frames);
  }
  approvedMonsterArt=approved;
+ if(approved.has('keyboard-piranha')){
+  world.dataset.clerkArt='16-original-frames-loaded';
+  world.dataset.clerkFacing='left';
+  world.dataset.clerkApproval='official';
+ }
  if(trainingSpecies==='meeting-ghost'&&approved.has('meeting-ghost')){
   world.dataset.alienArt='16-frames-loaded';
   world.dataset.alienFacing='left';
@@ -237,10 +214,10 @@ async function loadApprovedMonsterArt(){
  }
  const notice=$('#monster-art-status');
  if(notice){
-   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')&&approved.has('chair-golem')&&approved.has('meeting-ghost')&&approved.has('deadline-clock')?'true':'false';
+   notice.dataset.loaded=String(approved.size===Object.keys(manifest.monsters).length);
    notice.dataset.approved=approved.has('chair-golem')&&approved.has('meeting-ghost')&&approved.has('deadline-clock')?'true':'false';
    const count=approved.size;
-   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id==='meeting-ghost'?'星際打卡實習生':id==='deadline-clock'?'雲端資料專員靈':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
+   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id==='meeting-ghost'?'星際打卡實習生':id==='deadline-clock'?'雲端資料專員靈':id==='keyboard-piranha'?'加班遊魂文員':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
     (activeNormalVariant?' 🔬 實驗換皮：'+activeNormalVariant.name+'，完全共用正式逐格動畫；不增加 32 種完成數。':'');
  }
  if(activeNormalVariant)render();
@@ -453,7 +430,7 @@ function drawStage(now){
    (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))||
    (fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
    (fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))||
-   (fx?.oldEnemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha')));
+   (fx?.oldEnemy?.typeId==='keyboard-piranha'&&approvedMonsterArt.has('keyboard-piranha')));
  const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='keyboard-piranha'?CLERK_REPORT_IMPACT_MS:fx?.oldEnemy?.typeId==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:fx?.oldEnemy?.typeId==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
@@ -527,7 +504,7 @@ function drawStage(now){
  const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem');
  const alienVictoryHold=fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost');
  const cloudVictoryHold=fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock');
- const clerkVictoryHold=fx?.oldEnemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha');
+ const clerkVictoryHold=fx?.oldEnemy?.typeId==='keyboard-piranha'&&approvedMonsterArt.has('keyboard-piranha');
  const victory=fx?.result?.type==='victory'&&animationMs<(clerkVictoryHold?CLERK_DEFEAT_END_MS:cloudVictoryHold?CLOUD_DEFEAT_END_MS:guardVictoryHold?GUARD_DEFEAT_END_MS:alienVictoryHold?ALIEN_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
@@ -554,7 +531,7 @@ function drawStage(now){
      return alienCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))
      return cloudCombatPoseAt(animationMs,hitResult);
-   if(enemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha'))
+   if(enemy?.typeId==='keyboard-piranha'&&approvedMonsterArt.has('keyboard-piranha'))
      return clerkCombatPoseAt(animationMs,hitResult);
    return monsterAnimationState(enemy,animationMs,hitResult);
  };
@@ -624,8 +601,8 @@ function drawStage(now){
      x:clock.x,originX:clock.originX,targetX:clock.targetX,travelsLeft:clock.travelsLeft});
  }
  // Human ghost clerk, floor 26: haunted documents fired from enemy right to hero left.
- if(fx?.wave&&trainingSpecies==='keyboard-piranha'&&fx?.oldEnemy?.typeId==='keyboard-piranha'&&
-    trainingCandidateArt.has('keyboard-piranha')&&fx.result?.type==='hit'){
+ if(fx?.wave&&fx?.oldEnemy?.typeId==='keyboard-piranha'&&
+    approvedMonsterArt.has('keyboard-piranha')&&fx.result?.type==='hit'){
   drawClerkReportFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,
      canRetaliate:fx.retaliationDamage>0,reducedMotion:motionReduced});
   const papers=clerkReportAt(animationMs,fx.retaliationDamage>0,{enemyX,enemyY,heroX,heroY});
@@ -685,8 +662,7 @@ function renderCombatBars(now){
  const caster=fx?.oldEnemy?.typeId;
  const illustrated=fx?.retaliation&&(hasIllustratedMonster(caster)||
    (caster==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
-   (caster==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))||
-   (caster==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha')));
+   (caster==='deadline-clock'&&approvedMonsterArt.has('deadline-clock')));
  const contactMs=illustrated&&['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'].includes(caster)
    ?(caster==='keyboard-piranha'?CLERK_REPORT_IMPACT_MS:caster==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:caster==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
    :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
@@ -867,7 +843,7 @@ world.addEventListener('pointerup',e=>{
  if(x>.48)attack();
 });
 function attackCooldownMs(){
- if(fx?.oldEnemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha')){
+ if(fx?.oldEnemy?.typeId==='keyboard-piranha'&&approvedMonsterArt.has('keyboard-piranha')){
    if(fx.result?.type==='victory')return CLERK_DEFEAT_END_MS;
    if(fx.retaliation)return CLERK_REPORT_IMPACT_MS+HIT_FEEDBACK_MS;
  }
@@ -1030,7 +1006,7 @@ function frame(now){
         report.charge>0?'報表詠唱':ms<405?'勇者揮擊':ms<850?'紅色受擊':'收招';
       const pose=world.dataset.clerkPose||'idle',frame=1+Number(world.dataset.clerkFrame||0);
       const red=Math.round(100*Number(JSON.parse(world.dataset.clerkFlash||'{}').red||0));
-      const message='👻 第六隻｜'+cue+'｜'+pose+' #'+frame+(red?'｜受擊紅閃 '+red+'%':'')+'｜候選 16 格・正式 5/32';
+      const message='👻 第六隻｜'+cue+'｜'+pose+' #'+frame+(red?'｜受擊紅閃 '+red+'%':'')+'｜16 格正式美術';
       if(readout.textContent!==message)readout.textContent=message;
     }
   }
@@ -1045,7 +1021,7 @@ function frame(now){
         clock.charge>0?'時鐘蓄能':ms<405?'勇者出招':ms<840?'受傷閃紅':'準備下次攻擊';
       const pose=world.dataset.cloudPose||'idle',frame=1+Number(world.dataset.cloudFrame||0);
       const flash=Math.round(100*Number(JSON.parse(world.dataset.cloudFlash||'{}').red||0));
-      const msg='☁️ '+cue+'｜'+pose+' #'+frame+(flash?'｜全身紅閃 '+flash+'%':'')+'｜正式 5/32';
+      const msg='☁️ '+cue+'｜'+pose+' #'+frame+(flash?'｜全身紅閃 '+flash+'%':'')+'｜16 格正式美術';
       if(readout.textContent!==msg)readout.textContent=msg;
     }
   }
@@ -1062,7 +1038,7 @@ function frame(now){
       const spriteIndex=1+Number(world.dataset.alienFrame||0);
       const flash=Math.round(100*Number(JSON.parse(world.dataset.alienFlash||'{}').red||0));
       const label='🛸 朝左｜'+cue+'｜'+pose+' #'+spriteIndex+(flash?'｜全身紅閃 '+flash+'%':'')+
-        (approvedMonsterArt.has('meeting-ghost')?'｜16 格正式圖集已載入':'｜正式圖集載入中')+'・正式 4/32';
+        (approvedMonsterArt.has('meeting-ghost')?'｜16 格正式圖集已載入':'｜正式圖集載入中');
       if(readout.textContent!==label)readout.textContent=label;
     }
   }
@@ -1118,7 +1094,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    initChibiV2Lab();
  }
  render();
- loadApprovedMonsterArt().then(()=>Promise.all([loadTrainingCandidateArt(),loadAlienCandidateArt(),loadCloudGhostCandidateArt(),loadClerkCandidateArt()])).catch(err=>{
+ loadApprovedMonsterArt().then(()=>Promise.all([loadTrainingCandidateArt(),loadAlienCandidateArt(),loadCloudGhostCandidateArt()])).catch(err=>{
    console.warn('正式或候選怪物逐格素材載入失敗，保留工程替身：',err);
    const notice=$('#monster-art-status');
    if(notice)notice.textContent='⚠️ 怪物圖片未成功載入：'+String(err.message||err)+'。目前只顯示工程替身。';

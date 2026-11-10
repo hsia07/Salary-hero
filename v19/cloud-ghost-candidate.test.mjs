@@ -35,7 +35,7 @@ test('candidate actually includes 16 committed WebP original poses with proper a
 });
 test('fifth creature is officially approved fifth monster with original 16 illustrated WebP poses',()=>{
  const official=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
- assert.equal(Object.keys(official.monsters).length,5);
+ assert.equal(Object.keys(official.monsters).length,6);
  assert.equal(official.monsters['meeting-ghost'].approved,true);
  const live=official.monsters['deadline-clock'];
  assert.equal(live.approved,true);

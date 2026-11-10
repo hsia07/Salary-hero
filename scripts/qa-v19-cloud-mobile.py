@@ -26,7 +26,7 @@ def main():
   assert '雲端資料專員靈' in page.locator('#enemy-name').inner_text()
   assert '第 6 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
-  assert '5/32' in page.locator('#monster-art-status').inner_text()
+  assert '6/32' in page.locator('#monster-art-status').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth>innerWidth+3') is False
   sizes=page.evaluate("""async()=>{
    const out={};
@@ -82,6 +82,6 @@ def main():
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='REAL_SAVE_UNCHANGED'
   assert not errors,errors
   browser.close()
- print('PASS: 390px real cloud ghost 16 original atlas frames, red/white silhouette hit, 1225ms left-going clock, HP timing and isolated save. Official fifth monster 5/32.')
+ print('PASS: 390px real cloud ghost 16 original atlas frames, red/white silhouette hit, 1225ms left-going clock, HP timing and isolated save. Official fifth monster 6/32.')
 
 if __name__=='__main__':main()

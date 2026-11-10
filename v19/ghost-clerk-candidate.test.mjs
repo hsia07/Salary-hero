@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {COMMON_ENEMIES,ALL_ENEMIES} from './roster.mjs';
-import {validateSpritePixels,inspectAtlasFrameArt} from './sprite-atlas.mjs';
+import {validateSpritePixels,validateMonsterAtlasRecord} from './sprite-atlas.mjs';
 
 const root=new URL('../art/v19/candidates/monsters/keyboard-piranha/',import.meta.url);
 const record=JSON.parse(readFileSync(new URL('manifest-candidate.json',root),'utf8'));
@@ -17,8 +17,10 @@ test('sixth monster is an independent human ghost office worker, never a palette
  assert.equal(record.approved,false);
  assert.equal(record.previewOnly,true);
  assert.equal(record.facing,'left');
- assert.equal(Object.keys(live.monsters).length,5);
- assert.equal(live.monsters['keyboard-piranha'],undefined);
+ assert.equal(Object.keys(live.monsters).length,6);
+ const approved=live.monsters['keyboard-piranha'];
+ assert.equal(approved.facing,'left');
+ assert.deepEqual(validateMonsterAtlasRecord(approved,'normal'),[]);
 });
 test('four actual transparent WebP sprite strips hold 16 uniquely illustrated frames',()=>{
  const expected={idle:4,attack:5,hurt:3,defeat:4};
@@ -48,6 +50,10 @@ test('high definition redrawn clerk really has 16 independently illustrated 512p
  let total=0;
  for(const [state,frame] of Object.entries(hd.states)){
    const bytes=readFileSync(new URL(state+'.webp',hdRoot));
+   const liveFrame=live.monsters[hd.id].states[state];
+   const liveURL=new URL(liveFrame.src,import.meta.url);
+   assert.deepEqual(liveFrame,{...frame,src:'../art/v19/runtime/monsters/keyboard-piranha/'+state+'.webp'});
+   assert.deepEqual(readFileSync(liveURL),bytes);
    assert.notDeepEqual(bytes,readFileSync(new URL(state+'.webp',root)));
    assert.equal(frame.cell,512);
    assert.equal(frame.frames,record.states[state].frames);

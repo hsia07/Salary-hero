@@ -28,7 +28,7 @@ a{color:#ffdb9b}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style></head><body>
 <main>
-<header><div><h1>👻 加班遊魂文員</h1><p style="margin:4px 0">第 6 隻普通怪・面向左邊勇者・獨立 16 格動作</p></div><span class="tag">美術候選｜正式 5／32</span></header>
+<header><div><h1>👻 加班遊魂文員</h1><p style="margin:4px 0">第 6 隻普通怪・面向左邊勇者・獨立 16 格動作</p></div><span class="tag">正式美術｜第 6 隻</span></header>
 <div class="arena"><canvas id="stage" width="720" height="450" aria-label="第六隻加班遊魂文員的原始逐格動畫"></canvas>
 <div class="controls">
 <button class="selected" data-state="idle">待機 4 格</button>
@@ -36,7 +36,7 @@ a{color:#ffdb9b}
 <button data-state="hurt">受擊紅閃 3 格</button>
 <button data-state="defeat">消散死亡 4 格</button>
 </div><div id="cue">正在載入透明原畫格……</div></div>
-<div class="notes"><b>造型定位：</b>邪惡又疲憊的紫黑髮人形上班族怨靈，歪領帶、加班頭帶、幽靈火、詛咒文件。攻擊真正朝左；四個動作分別使用獨立的原畫格，而不是整張圖擺動。<p>這次重新繪製成高清 512×512 單格：頭髮、眼神、襯衫、領帶、筆電和報表攻擊都更清晰，保留完整 16 格獨立姿勢。你確認前仍不計入正式完成數，也不更動遊戲存檔。</p><a href="./play.html?training=keyboard-piranha">前往第 26 關實際戰鬥</a></div>
+<div class="notes"><b>造型定位：</b>邪惡又疲憊的紫黑髮人形上班族怨靈，歪領帶、加班頭帶、幽靈火、詛咒文件。攻擊真正朝左；四個動作分別使用獨立的原畫格，而不是整張圖擺動。<p>這次重新繪製成高清 512×512 單格：頭髮、眼神、襯衫、領帶、筆電和報表攻擊都更清晰，保留完整 16 格獨立姿勢。已加入第 26 關正式戰鬥。此頁和練習場都與正式存檔分開。</p><a href="./play.html?training=keyboard-piranha">前往第 26 關練習戰</a></div>
 <section id="all" aria-label="完整 16 格畫格檢查"></section>
 </main>
 <script>
@@ -100,10 +100,10 @@ function paint(now){
  requestAnimationFrame(paint);
 }
 async function load(){
- const source=await fetch('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk22b');
- if(!source.ok)throw Error('candidate manifest HTTP '+source.status);
- const m=await source.json();
- if(m.id!=='keyboard-piranha'||m.approved!==false||Object.values(m.states).some(s=>s.cell!==512))throw Error('高清候選圖集識別錯誤');
+ const source=await fetch('../art/v19/runtime/monsters/manifest.json?art=clerk-official-v19-23');
+ if(!source.ok)throw Error('monster manifest HTTP '+source.status);
+ const m=(await source.json()).monsters?.['keyboard-piranha'];
+ if(m?.id!=='keyboard-piranha'||m.approved!==true||Object.values(m.states).some(s=>s.cell!==512))throw Error('高清正式圖集識別錯誤');
  for(const s of states){
   const frame=m.states[s],im=new Image();
   im.src=frame.src;await im.decode();
@@ -121,6 +121,6 @@ async function load(){
  }
  loaded=true;startState('idle');
 }
-load().catch(err=>{status.textContent='無法載入候選圖集：'+err.message});
+load().catch(err=>{status.textContent='無法載入正式圖集：'+err.message});
 requestAnimationFrame(paint);
 </script></body></html>

@@ -30,7 +30,7 @@ test('normal-tier mech approved 3/32 with original 16 WebP frames',()=>{
  assert.equal(c.tier,'normal');assert.equal(c.special,undefined);
  const live=m.monsters['chair-golem'];assert.equal(live.approved,true);
  assert.equal(live.userVisualApprovalDate,'2026-11-10');
- assert.equal(Object.keys(m.monsters).length,5);
+ assert.equal(Object.keys(m.monsters).length,6);
  for(const [name,{frames,sha}] of Object.entries(source)){
   const f=c.states[name];
   assert.equal(f.frames,frames);assert.equal(f.cell,384);assert.equal(f.ground_y,342);

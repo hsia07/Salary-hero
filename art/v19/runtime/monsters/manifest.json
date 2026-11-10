@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "5_species_illustrated_user_approved",
+  "status": "6_species_illustrated_user_approved",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
   "monsters": {
     "paper-gremlin": {
@@ -303,7 +303,69 @@
           "sha256": "951ef46b1c511f2e828dcfe1fa0445d23e4d9383e8a7e8f035c37a8c4a740451"
         }
       }
+    },
+    "keyboard-piranha": {
+      "id": "keyboard-piranha",
+      "approved": true,
+      "tier": "normal",
+      "facing": "left",
+      "userVisualApprovalDate": "2026-11-10",
+      "approvalScope": "Player accepted the HD clerk after the floor 26 rehearsal.",
+      "states": {
+        "idle": {
+          "src": "../art/v19/runtime/monsters/keyboard-piranha/idle.webp",
+          "frames": 4,
+          "cell": 512,
+          "ground_y": 455,
+          "durations": [
+            220,
+            190,
+            250,
+            180
+          ],
+          "sha256": "1179b37d49f66458c2314559fbfa83d39b4e6e10a05d5e67ade118b8c7ffd61b"
+        },
+        "attack": {
+          "src": "../art/v19/runtime/monsters/keyboard-piranha/attack.webp",
+          "frames": 5,
+          "cell": 512,
+          "ground_y": 455,
+          "durations": [
+            140,
+            155,
+            95,
+            155,
+            205
+          ],
+          "sha256": "7ab6f6c60960a4564606555aaa4138033f01b5e5b0f4424f2ea41ddb525c2af4"
+        },
+        "hurt": {
+          "src": "../art/v19/runtime/monsters/keyboard-piranha/hurt.webp",
+          "frames": 3,
+          "cell": 512,
+          "ground_y": 455,
+          "durations": [
+            95,
+            135,
+            235
+          ],
+          "sha256": "72b6b61e31016a9477b35b45f17e4b9015a0892474421e5f1cbccba3ec97714c"
+        },
+        "defeat": {
+          "src": "../art/v19/runtime/monsters/keyboard-piranha/defeat.webp",
+          "frames": 4,
+          "cell": 512,
+          "ground_y": 455,
+          "durations": [
+            165,
+            220,
+            320,
+            490
+          ],
+          "sha256": "e0ee297b929b7f2b688063933c467f1a11b8c980db236422ea46eb30d996d8d2"
+        }
+      }
     }
   },
-  "note": "Officially approved 5/32 normal enemies: paper-gremlin, coffee-mimic, chair-golem, meeting-ghost, deadline-clock. Sixth keyboard-piranha is in development."
+  "note": "Six approved illustrated monsters. The HD ghost clerk is available in normal combat and save-isolated rehearsal."
 }
