@@ -48,7 +48,7 @@ let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 let approvedMonsterArt=new Map();
 async function loadApprovedMonsterArt(){
- const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=illustrated-523ddc6',import.meta.url);
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=paper-combat-v19-4-20261110',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
  const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
