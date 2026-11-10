@@ -5,7 +5,8 @@ import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
-import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame} from './sprite-atlas.mjs';
+import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
+import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 const $=s=>document.querySelector(s);
@@ -179,7 +180,7 @@ function drawWeapon(x,y,t){
  *  The first wave loads the paper monster SVG; all other waves receive a Q版
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
 // 32 real monster actors: per-species anatomy/poses, not shared emoji bodies.
-function paintEnemy(enemy,now,visual={state:'idle',progress:0}){
+function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity){
  const approved=approvedMonsterArt.get(enemy.typeId);
  if(approved){
    const pose=approved[visual?.state]||approved.idle;
@@ -195,7 +196,16 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0}){
      const sourceFloor=Number.isFinite(frame.ground_y)?frame.ground_y:frame.cell*.903125;
      const frameX=(boxW-displaySize)*.5;
      const frameY=525-248-displaySize*sourceFloor/frame.cell;
-     if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle'))return;
+     if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle')){
+       // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
+       // actual hit/defeat; never tint the entire arena or the idle actor.
+       if(enemy.typeId==='paper-gremlin'&&(visual?.state==='hurt'||visual?.state==='defeat')){
+         const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
+         drawPaperHitTint(ctx,image,frame,frameIndex,
+           {x:frameX,y:frameY,w:displaySize,h:displaySize},combatMs,{reducedMotion:motionReduced});
+       }
+       return;
+     }
    }
  }
  // Unapproved prototype only; do not call this a sprite animation.
@@ -215,7 +225,10 @@ function drawStage(now){
  const phase=fx?Math.min((now-fx.start)/1000,2):3;
  const animationMs=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
- const attackDurationMs=chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680;
+ // The paper caster needs time to visibly launch its projectile BEFORE the
+ // hero reacts. Damage is computed by the engine; only the feedback is delayed.
+ const paperRetaliation=fx?.result?.type==='hit'&&fx?.oldEnemy?.typeId==='paper-gremlin'&&fx?.retaliationDamage>0&&approvedMonsterArt.has('paper-gremlin');
+ const attackDurationMs=paperRetaliation?PAPER_PROJECTILE_IMPACT_MS:(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
  const hurtVfx=hurtPlaybackAt(now,fx?.start??now,state.speed,attackDurationMs,
@@ -287,25 +300,33 @@ function drawStage(now){
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const victory=fx?.result?.type==='victory'&&animationMs<1100;
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
- const enemyX=458+Math.sin(time*1.75)*4+(attacking&&hitWindow?Math.sin(now/22)*7:0);
- const enemyY=248+Math.sin(time*2)*5;
+ const illustratedPaperInScene=approvedMonsterArt.has('paper-gremlin')&&(
+   state.enemy?.typeId==='paper-gremlin'||(victory&&fx?.oldEnemy?.typeId==='paper-gremlin'));
+ // No rigid-body bobble/shake on approved, separately illustrated poses.
+ const enemyX=458+(illustratedPaperInScene?0:Math.sin(time*1.75)*4)+(attacking&&hitWindow&&!illustratedPaperInScene?Math.sin(now/22)*7:0);
+ const enemyY=248+(illustratedPaperInScene?0:Math.sin(time*2)*5);
  // The defeated actor plays its own disintegration, while the next species
  // materializes in the SAME slot with no empty frame between waves.
  const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-900)/200)):1;
  const fadingOld=victory?1-enteringNew:0;
- const oldVisual=victory?monsterAnimationState(fx.oldEnemy,animationMs,fx.result):null;
+ const visualFor=(enemy,result)=>{
+   const hitResult=result?{...result,retaliationDamage:fx?.retaliationDamage||0}:null;
+   return enemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin')
+     ?paperCombatPoseAt(animationMs,hitResult)
+     :monsterAnimationState(enemy,animationMs,hitResult);
+ };
+ const oldVisual=victory?visualFor(fx.oldEnemy,fx.result):null;
  const currentVisual=!victory&&fx?.result?.type==='hit'
-   ?monsterAnimationState(state.enemy,animationMs,
-     {...fx.result,retaliationDamage:fx.retaliationDamage||0}):{state:'idle',progress:0};
+   ?visualFor(state.enemy,fx.result):{state:'idle',progress:0};
  const drawEnemy=(enemy,alpha,visual)=>{
    if(!enemy||alpha<=0)return;
    const pivotX=enemy.boss?107:enemy.tier==='elite'?97:88.5;
    const pivotY=enemy.boss?129:enemy.tier==='elite'?124:120;
    ctx.save();ctx.globalAlpha=alpha;
    ctx.translate(enemyX+pivotX,enemyY+pivotY);
-   ctx.rotate(Math.sin(time*1.1)*.018);
+   if(!approvedMonsterArt.has(enemy.typeId))ctx.rotate(Math.sin(time*1.1)*.018);
    ctx.translate(-pivotX,-pivotY);
-   paintEnemy(enemy,now,visual);
+   paintEnemy(enemy,now,visual,animationMs);
    ctx.restore();
    if(visual?.state!=='idle'&&visual?.state&&!approvedMonsterArt.has(enemy?.typeId)){
      ctx.save();ctx.globalAlpha=alpha;
@@ -317,6 +338,14 @@ function drawStage(now){
  shadow(enemyX+90,525,state.enemy.boss?100:84,17);
  if(victory)drawEnemy(fx.oldEnemy,fadingOld,oldVisual);
  drawEnemy(state.enemy,enteringNew,currentVisual);
+ if(fx?.wave&&approvedMonsterArt.has('paper-gremlin')&&
+   (fx?.oldEnemy?.typeId==='paper-gremlin')&&
+   (fx.result?.type==='hit'||fx.result?.type==='victory')){
+   drawPaperCombatFx(ctx,animationMs,{
+     enemyX,enemyY,heroX,heroY,reducedMotion:motionReduced,
+     attackAllowed:fx.result.type==='hit'&&fx.retaliationDamage>0
+   });
+ }
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
  if(slashActive){
@@ -504,6 +533,8 @@ world.addEventListener('pointerup',e=>{
 });
 function attackCooldownMs(){
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
+ if(fx?.retaliation&&fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))
+   return PAPER_PROJECTILE_IMPACT_MS+HIT_FEEDBACK_MS+70;
  return base+(fx?.retaliation?HIT_FEEDBACK_MS:0);
 }
 function attack(){
