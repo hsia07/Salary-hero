@@ -1,5 +1,5 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
-import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS} from './engine.mjs';
+import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
@@ -685,7 +685,9 @@ function render(){
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  const enemyTier=state.enemy.tier||'normal';
- $('#wave').textContent=(GAME_MODES.find(m=>m.id===state.activeMode)?.name||'社畜遠征')+' · 第 '+state.wave+' 關'+(trainingWave!==null?'（練習）':'');
+ const daily=state.activeMode==='dungeon'&&trainingWave===null?dailyDungeonFor():null;
+ $('#wave').textContent=(daily?daily.icon+' '+daily.name:(GAME_MODES.find(m=>m.id===state.activeMode)?.name||'社畜遠征'))+' · 第 '+state.wave+' 關'+(trainingWave!==null?'（練習）':'');
+ document.querySelector('#app')?.setAttribute('data-dungeon-theme',daily?.theme||'none');
  $('#wave').classList.toggle('boss',enemyTier==='boss');
  $('#wave').classList.toggle('elite',enemyTier==='elite');
  world.dataset.enemyTier=enemyTier;
@@ -698,7 +700,7 @@ function render(){
  if(trait){
    const skillCharge=enemyTier==='elite'?' · 反制 '+(state.enemy.turns||0)%3+'/3':
      enemyTier==='boss'?' · 狂暴 '+(state.enemy.turns||0)%4+'/4':'';
-   trait.textContent=state.enemy.family+' · '+state.enemy.traitText+skillCharge;
+   trait.textContent=state.enemy.family+' · '+state.enemy.traitText+skillCharge+(state.enemy.standIn?' · 普通怪暫代美術':'');
  }
  $('#game-log').textContent=state.log[0]||'冒險中';
  $('#auto').textContent='🤖 自動 '+(state.auto?'ON':'OFF');
@@ -731,6 +733,7 @@ function commit(action){
    lastAttack=performance.now();
  }else if(state.last?.type==='heal'||state.last?.type==='chest')fx={start:performance.now(),result:state.last,oldEnemy};
  save();render();
+ if(state.last?.fridayNote&&trainingWave===null)openPanel('letter');
 }
 const btn=(label,act,payload='',disabled=false)=>'<button class="panel-button" data-action="'+act+'" data-value="'+payload+'" '+(disabled?'disabled':'')+'>'+label+'</button>';
 function itemRow(it,kind){
@@ -741,11 +744,24 @@ function itemRow(it,kind){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='modes'){
-  body.innerHTML='<p>已開放普通怪循環版本：首領與菁英怪暫不進入正式戰鬥。每個模式各自紀錄關卡，裝備、等級與貨幣共用。</p>'+
-   GAME_MODES.map(mode=>'<div class="item"><div class="detail"><strong>'+mode.name+'</strong><small>'+mode.description+' · 第 '+state.modeWaves[mode.id]+' 關</small></div>'+btn(state.activeMode===mode.id?'進行中':'進入','mode',mode.id,state.activeMode===mode.id)+'</div>').join('');
+  const daily=dailyDungeonFor();
+  body.innerHTML='<div class="daily-feature theme-'+daily.theme+'"><span>📆 台灣時間 '+todayTW()+' · 今日開放</span><h3>'+daily.icon+' '+daily.name+'</h3><p>'+escapeHTML(daily.story)+'</p><strong>難度 '+Math.round(daily.hpScale*100)+'% · 獎勵 ×'+daily.rewardScale.toFixed(2)+'</strong>'+
+     (daily.weekday===5?'<p>📨 魔王有 55% 機率提前打卡，只留「下班去，下週一再戰」，你直接獲得通關獎勵。小兵與菁英也會經常放棄攻擊。</p>':'')+'</div>'+
+   GAME_MODES.map(mode=>'<div class="item"><div class="detail"><strong>'+mode.name+'</strong><small>'+escapeHTML(mode.description)+' · 第 '+state.modeWaves[mode.id]+' 關</small></div>'+btn(state.activeMode===mode.id?'進行中':'進入','mode',mode.id,state.activeMode===mode.id)+'</div>').join('')+
+   (state.fridayNote?btn('📨 閱讀魔王留下的下班信','letter'):'')+
+   '<h3>每週副本輪替表</h3><div class="weekday-grid">'+[1,2,3,4,5,6,0].map(day=>{
+     const d=DAILY_DUNGEONS[day],isToday=day===daily.weekday;
+     return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'今日':day===1?'高獎勵':day===5?'偷跑魔王':'每週輪替')+'</b></div>';
+   }).join('')+'</div><p class="mode-caveat">每日副本於台灣時間 00:00 更新並重新從第 1 關開始。普通怪使用現有逐格美術循環；菁英與 Boss 目前使用暫代造型，完整美術將後續補上。</p>';
+ }else if(type==='letter'){
+   const note=state.fridayNote;
+   body.innerHTML=note?
+    '<div class="boss-letter"><span>📨 週五魔王關 · '+note.wave+' 樓</span><h3>'+escapeHTML(note.headline)+'</h3><p>'+escapeHTML(note.message)+'</p><small>'+escapeHTML(note.signature)+'</small></div>'+
+    '<p class="letter-win">🏆 你明明還沒開打，卻莫名其妙贏了！</p><p>🪙 '+note.gold+' 金幣 · EXP '+note.xp+' · 💎 2 · 📦 寶箱 1 · 🎟️ 造型券 1，並恢復全部生命。</p>':
+    '<p>魔王這週還沒有留下任何信。星期五進入魔王關時有機率遇到。</p>';
  }else if(type==='skills'){
   body.innerHTML='<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
    GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
@@ -808,6 +824,7 @@ body.addEventListener('click',e=>{
  const act=b.dataset.action;
  if(act==='mode')commit({type:'mode',id:b.dataset.value});
  else if(act==='skill')skillAttack(b.dataset.value);
+ else if(act==='letter')renderPanel('letter');
  else if(act==='rename')openNameEditor();
  else if(act==='styles')renderPanel('styles');
  else if(act==='equipSkin')commit({type:'equipSkin',id:b.dataset.value});
@@ -1001,6 +1018,10 @@ function runDailyEncounterTrustee(){
  }
 }
 function payRender(){
+ if(ready&&trainingWave===null&&state.dailyDungeonDay!==todayTW()){
+   fx=null;lastAttack=performance.now();
+   commit('refreshDungeon');
+ }
  runDailyEncounterTrustee();
  const p=salaryAt(Date.now(),40000);
  $('#today').textContent=money(p.today,2);
@@ -1011,7 +1032,7 @@ function payRender(){
 }
 function frame(now){
  if(!document.hidden&&ready){
-  if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=HIT_FEEDBACK_MS)
+  if(state.auto&&!panel.open&&(!hurtPreviewStart||now-hurtPreviewStart>=HIT_FEEDBACK_MS)
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed)){
       if(state.pendingDrops.length){commit('claim');lastAttack=now;}
       else if(state.chests>0){commit('chest');lastAttack=now;}
