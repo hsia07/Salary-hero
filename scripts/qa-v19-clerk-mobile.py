@@ -12,14 +12,13 @@ KEY='salary-hero-v19-save-1'
 OUT=ROOT/'art/v19/runtime/qa'
 OUT.mkdir(parents=True,exist_ok=True)
 
-def check_normal_battle(page):
- # Start on a regular save at wave 26 so this checks the default route.
- page.clock.resume()
- page.evaluate("""async(key)=>{
-  const {initial,enemyFor}=await import(new URL('engine.mjs',location.href).href);
-  localStorage.setItem(key,JSON.stringify({...initial(),playerName:'測試勇者',
-   wave:26,enemy:enemyFor(26),maxHp:900,heroHp:900,auto:false,gold:123}));
- }""",KEY)
+def check_normal_battle(browser):
+ # A separate browser context starts with a normal wave 26 save.
+ page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=2,is_mobile=True,has_touch=True)
+ page.clock.install()
+ page.add_init_script("""localStorage.setItem('salary-hero-v19-save-1',JSON.stringify({
+  version:19,playerName:'測試勇者',wave:26,maxHp:900,heroHp:900,auto:false,gold:123
+ }));""")
  page.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
  page.wait_for_function("""()=>document.querySelector('#world')?.dataset.clerkApproval==='official'
   &&document.querySelector('#attack')?.disabled===false""",timeout=45000)
@@ -27,7 +26,7 @@ def check_normal_battle(page):
  assert '第 26 關' in page.locator('#wave').inner_text()
  assert '加班遊魂文員' in page.locator('#enemy-name').inner_text()
  assert '6/32' in page.locator('#monster-art-status').inner_text()
- page.clock.pause_at(page.evaluate('Date.now()')+1000)
+ page.clock.pause_at(page.evaluate('new Date(Date.now()+1000).toISOString()'))
  attack=page.locator('#attack')
  assert attack.is_enabled()
  attack.dispatch_event('click')
@@ -41,6 +40,7 @@ def check_normal_battle(page):
  assert saved['wave']==26 and saved['enemy']['typeId']=='keyboard-piranha'
  assert saved['enemy']['hp']<saved['enemy']['maxHp'] and saved['heroHp']<900
  assert saved['gold']==123
+ page.close()
 
 def main():
  errors=[]
@@ -118,7 +118,7 @@ def main():
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0]);assert initial==900
   # Advance Chromium's animation clock through the short projectile window.
   # Slow CI frames can jump directly from windup to impact on a wall clock.
-  page.clock.pause_at(page.evaluate('Date.now()')+1000)
+  page.clock.pause_at(page.evaluate('new Date(Date.now()+1000).toISOString()'))
   attack=page.locator('#attack')
   assert attack.is_enabled()
   attack.dispatch_event('click')
@@ -168,7 +168,7 @@ def main():
   assert '重新練習' in page.locator('#game-log').inner_text()
   assert '第 26 關' in page.locator('#wave').inner_text()
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='SIXTH_PLAYER_SAVE_UNCHANGED'
-  check_normal_battle(page)
+  check_normal_battle(browser)
   assert not errors,errors
   browser.close()
  print('PASS sixth ghost: original 16 human chibi sprite frames, paper to LEFT hits at 1255ms, real silhouette red flash, victory replay, official save preserved; still candidate 5/32.')
