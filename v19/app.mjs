@@ -1,7 +1,7 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
-import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor} from './engine.mjs';
+import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
-import {SKINS,skinById,taiwanWeekKey} from './skins.mjs';
+import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -752,17 +752,20 @@ function renderPanel(type){
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='modes'){
   const daily=dailyDungeonFor();
-  body.innerHTML='<div class="daily-feature theme-'+daily.theme+'"><span>📆 台灣時間 '+todayTW()+' · 今日開放</span><h3>'+daily.icon+' '+daily.name+'</h3><p>'+escapeHTML(daily.story)+'</p><strong>難度 '+Math.round(daily.hpScale*100)+'% · 金幣 ×'+daily.rewardScale.toFixed(2)+' · EXP ×'+daily.xpScale.toFixed(2)+'</strong>'+
-     (daily.weekday===5?'<p>📨 魔王有 55% 機率提前打卡，只留「下班去，下週一再戰」，你直接獲得通關獎勵。小兵與菁英也會經常放棄攻擊。</p>':'')+'</div>'+
+  const chaos=state.activeMode==='dungeon'&&daily.weekend?WEEKEND_CHAOS_EVENTS.find(x=>x.id===state.weekendChaosEvent?.id):null;
+  body.innerHTML='<div class="daily-feature theme-'+daily.theme+'"><span>📆 台灣時間 '+todayTW()+' · '+(daily.weekend?'週六日共同開放':'今日開放')+'</span><h3>'+daily.icon+' '+daily.name+'</h3><p>'+escapeHTML(daily.story)+'</p><strong>難度 '+Math.round(daily.hpScale*100)+'% · 金幣 ×'+daily.rewardScale.toFixed(2)+' · EXP ×'+daily.xpScale.toFixed(2)+'</strong>'+
+     (daily.weekday===5?'<p>📨 魔王有 55% 機率提前打卡，只留「下班去，下週一再戰」，你直接獲得通關獎勵。小兵與菁英也會經常放棄攻擊。</p>':'')+
+     (daily.weekend?'<p>🎪 週六、週日是同一個副本，進度不重置！每層都會出現不同荒謬事件；每四層由失控代理 AI 擔任魔王。</p>':'')+'</div>'+
+   (daily.weekend?'<div class="weekend-madness"><h3>🎲 失控辦公室事件</h3>'+(chaos?'<p class="weekend-current">目前樓層：'+chaos.icon+' '+escapeHTML(chaos.name)+'</p>':'')+WEEKEND_CHAOS_EVENTS.map(event=>'<p>'+event.icon+' <strong>'+escapeHTML(event.name)+'</strong> · '+escapeHTML(event.story)+'</p>').join('')+'</div>':'')+
    GAME_MODES.map(mode=>'<div class="item"><div class="detail"><strong>'+mode.name+'</strong><small>'+escapeHTML(mode.description)+' · 第 '+state.modeWaves[mode.id]+' 關</small></div>'+btn(state.activeMode===mode.id?'進行中':'進入','mode',mode.id,state.activeMode===mode.id)+'</div>').join('')+
    (state.fridayNote?btn('📨 閱讀魔王留下的下班信','letter'):'')+
    (state.specialChests?btn('🎁 開啟週末越獄特殊寶箱 ×'+state.specialChests,'weekendChest'):'')+
    (daily.weekday===5&&state.activityDaily.day===todayTW()&&state.activityDaily.wins>=4?btn('🎭 領取週五限定造型','claimSkinEvent','friday-weekend',state.activityClaims.includes('friday-weekend:'+taiwanWeekKey())):'')+
    '<div class="item"><div class="detail"><strong>冒險收穫</strong><small>📕 技能書 '+state.skillBooks+' · 🐾 寵物 Lv.'+state.petLevel+' · 🔧 強化材料 '+state.craftingMaterial+' · 💎 黎明礦石 '+state.rareMaterials+'</small></div></div>'+
-   '<h3>每週副本輪替表</h3><div class="weekday-grid">'+[1,2,3,4,5,6,0].map(day=>{
-     const d=DAILY_DUNGEONS[day],isToday=day===daily.weekday;
-     return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'今日':day===1?'高獎勵':day===5?'偷跑魔王':'每週輪替')+'</b></div>';
-   }).join('')+'</div><p class="mode-caveat">每日副本於台灣時間 00:00 更新並重新從第 1 關開始。普通怪使用現有逐格美術循環；菁英與 Boss 目前使用暫代造型，完整美術將後續補上。</p>';
+   '<h3>每週六大副本輪替表</h3><div class="weekday-grid">'+[1,2,3,4,5,6].map(day=>{
+     const d=DAILY_DUNGEONS[day],isToday=d.id===daily.id;
+     return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'本日':day===1?'高獎勵':day===5?'偷跑魔王':day===6?'週六／日':'每週輪替')+'</b></div>';
+   }).join('')+'</div><p class="mode-caveat">平日副本依台灣時間 00:00 換日重置；週六與週日是同一個副本，直到週一 00:00 才重置。普通怪使用現有逐格美術循環；菁英與 Boss 目前使用暫代造型。</p>';
  }else if(type==='letter'){
    const note=state.fridayNote;
    body.innerHTML=note?
