@@ -1,0 +1,39 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {COMMON_ENEMIES,ALL_ENEMIES} from './roster.mjs';
+import {validateSpritePixels,inspectAtlasFrameArt} from './sprite-atlas.mjs';
+
+const root=new URL('../art/v19/candidates/monsters/keyboard-piranha/',import.meta.url);
+const record=JSON.parse(readFileSync(new URL('manifest-candidate.json',root),'utf8'));
+const live=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
+test('sixth monster is an independent human ghost office worker, never a palette swap or boss',()=>{
+ assert.equal(ALL_ENEMIES.length,32);
+ assert.equal(COMMON_ENEMIES.length,16);
+ assert.equal(COMMON_ENEMIES.find(x=>x.id==='keyboard-piranha').name,'加班遊魂文員');
+ assert.equal(record.id,'keyboard-piranha');
+ assert.equal(record.tier,'normal');
+ assert.equal(record.approved,false);
+ assert.equal(record.previewOnly,true);
+ assert.equal(record.facing,'left');
+ assert.equal(Object.keys(live.monsters).length,5);
+ assert.equal(live.monsters['keyboard-piranha'],undefined);
+});
+test('four actual transparent WebP sprite strips hold 16 uniquely illustrated frames',()=>{
+ const expected={idle:4,attack:5,hurt:3,defeat:4};
+ assert.equal(Object.values(expected).reduce((a,b)=>a+b,0),16);
+ for(const [name,frames] of Object.entries(expected)){
+  const f=record.states[name];
+  assert.equal(f.frames,frames);
+  assert.equal(f.cell,384);
+  assert.equal(f.durations.length,frames);
+  assert.equal(f.ground_y,337);
+  assert.ok(f.src.includes('/keyboard-piranha/'+name+'.webp'));
+  const bytes=readFileSync(new URL(name+'.webp',root));
+  assert.equal(bytes.toString('ascii',0,4),'RIFF');
+  assert.equal(bytes.toString('ascii',8,12),'WEBP');
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),f.sha256);
+  assert.equal(validateSpritePixels({naturalWidth:384*frames,naturalHeight:384},f).ok,true);
+ }
+});
