@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initial,normalize,enemyFor,transition} from './engine.mjs';
+import {initial,normalize,enemyFor,loopEnemyFor,transition} from './engine.mjs';
 import {SKINS,SKIN_EVENTS,drawPool,SKIN_RARITIES} from './skins.mjs';
 
 const monday=Date.parse('2026-11-09T05:00:00Z');
@@ -27,7 +27,8 @@ test('tickets cannot be spent if empty and cannot be bought with game gold',()=>
  assert.equal(transition(s,{type:'buySkin',id:'alien'}).skinTickets,0);
 });
 test('boss battle grants one skin draw ticket',()=>{
- const s=initial();s.wave=4;s.enemy={...enemyFor(4),hp:1};
+ let s=transition(initial(),{type:'mode',id:'dungeon'},()=>.9,monday);
+ s.wave=4;s.modeWaves.dungeon=4;s.enemy={...loopEnemyFor(4,'dungeon',monday),hp:1};
  const n=transition(s,'attack',()=>.9,monday);
  assert.equal(n.wave,5);assert.equal(n.skinTickets,1);assert.equal(n.activityDaily.wins,1);
 });
@@ -85,7 +86,7 @@ test('weight disclosure corresponds to draw rules, excluding event skins',()=>{
  assert.ok(drawPool(['starter']).every(x=>x.source==='draw'));
 });
 test('old V19 saves retain combat, nickname and pay independence',()=>{
- const old=initial();delete old.skinTickets;delete old.ownedSkins;delete old.activeSkin;old.wave=11;old.gold=227;old.playerName='夏謙';
+ const old=initial();delete old.skinTickets;delete old.ownedSkins;delete old.activeSkin;delete old.modeWaves;delete old.activeMode;old.wave=11;old.gold=227;old.playerName='夏謙';
  const recovered=normalize(old);
  assert.equal(recovered.wave,11);assert.equal(recovered.gold,227);assert.equal(recovered.playerName,'夏謙');
  assert.deepEqual(recovered.ownedSkins,['starter']);
