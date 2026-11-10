@@ -54,15 +54,39 @@ def test_species(page,species,expected_name,expected_wave):
     hp_before=int(page.locator('#hero-hp-text').inner_text().split('/')[0])
     assert hp_before==900
     page.locator('#attack').click()
-    combat_age_at_least(page,500)
-    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'premature HP loss before projectile flies: '+str(page.locator('#world').get_attribute('data-hp-timing'))
-    capture_canvas(page,'training-'+species+'-hero-hit.png')
-    combat_age_at_least(page,1090)
-    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'HP changed before coffee/paper projectile contact: '+str(page.locator('#world').get_attribute('data-hp-timing'))
-    capture_canvas(page,'training-'+species+'-counterattack.png')
-    combat_age_at_least(page,1290)
-    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])<hp_before, 'visible HP should change AFTER projectile impact'
-    capture_canvas(page,'training-'+species+'-hurt-red-flash.png')
+    # Sample and snapshot entirely INSIDE Chromium's rAF. IPC/screenshot
+    # latency MUST NOT change which animation frame we claim to verify.
+    samples=page.evaluate("""() => new Promise((resolve,reject) => {
+      const canvas=document.querySelector('#world');
+      const points=[['hero-hit',520],['counterattack',1090],['hurt-red-flash',1310]];
+      const output=[];
+      let index=0;
+      const watchdog=setTimeout(()=>reject(Error('no combat timing frames')),9000);
+      function sample(){
+        const raw=canvas.dataset.hpTiming;
+        if(raw){
+          const d=JSON.parse(raw);
+          if(d.t>=points[index][1]){
+            const hp=Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]);
+            const image=canvas.toDataURL('image/png').split(',')[1];
+            output.push({label:points[index][0],t:d.t,hp,image,debug:d});
+            index++;
+          }
+        }
+        if(index===points.length){clearTimeout(watchdog);resolve(output);}
+        else requestAnimationFrame(sample);
+      }
+      requestAnimationFrame(sample);
+    })""")
+    assert len(samples)==3
+    for snap in samples:
+        (OUT/('training-'+species+'-'+snap['label']+'.png')).write_bytes(b64decode(snap['image']))
+    # Check the actual moment of the frame, not the time after a slow
+    # Playwright screenshot returns to Python.
+    before,flight,after=samples
+    assert before['t']<1215 and before['hp']==hp_before, repr(before['debug'])
+    assert flight['t']<1215 and flight['hp']==hp_before, repr(flight['debug'])
+    assert after['t']>=1215 and after['hp']<hp_before, repr(after['debug'])
     assert page.evaluate('(key)=>localStorage.getItem(key)',SAVE_KEY)=='UNCHANGED_REAL_PLAYER_SAVE'
 
 def main():
