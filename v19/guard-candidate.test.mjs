@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {ALL_ENEMIES} from './roster.mjs';
 import {validateSpritePixels} from './sprite-atlas.mjs';
 import {paperHitFlashAt,PAPER_HERO_HIT_MS} from './paper-combat.mjs';
-import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS} from './guard-combat.mjs';
+import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,GUARD_LOCK_START_MS,guardTargetLockAt,guardCombatCaptionAt} from './guard-combat.mjs';
 
 const root=new URL('../art/v19/candidates/monsters/chair-golem/',import.meta.url);
 const source={
@@ -77,4 +77,21 @@ test('low-FPS security armor has continuous red impact while approved paper/cup 
  assert.ok(paperHitFlashAt(PAPER_HERO_HIT_MS+190,{extendedRed:true}).red>0);
  assert.equal(paperHitFlashAt(PAPER_HERO_HIT_MS+226,{extendedRed:true}).red,0);
  assert.ok(paperHitFlashAt(PAPER_HERO_HIT_MS+136,{extendedRed:true,reducedMotion:true}).red<guard.red);
+});
+
+test('security target-lock is a separately animated warning that ends on actual beam contact',()=>{
+ assert.equal(guardTargetLockAt(GUARD_LOCK_START_MS-1).active,false);
+ const entering=guardTargetLockAt(GUARD_LOCK_START_MS);
+ assert.equal(entering.active,true);assert.ok(entering.strength>0);
+ const charging=guardTargetLockAt(1015),flying=guardTargetLockAt(1135);
+ assert.ok(charging.closing>entering.closing);
+ assert.ok(flying.closing>charging.closing);
+ assert.equal(guardTargetLockAt(GUARD_BEAM_IMPACT_MS).active,false);
+ assert.equal(guardTargetLockAt(1015,false).active,false);
+ assert.equal(guardCombatCaptionAt(500,{type:'hit',retaliationDamage:8}),'機兵受擊・紅白閃爍');
+ assert.match(guardCombatCaptionAt(1015,{type:'hit',retaliationDamage:8}),/鎖定/);
+ assert.match(guardCombatCaptionAt(1135,{type:'hit',retaliationDamage:8}),/飛行中/);
+ assert.match(guardCombatCaptionAt(1260,{type:'hit',retaliationDamage:8}),/勇者受擊/);
+ assert.match(guardCombatCaptionAt(1320,{type:'victory'}),/最後一格/);
+ assert.equal(guardCombatCaptionAt(1320,{type:'hit',retaliationDamage:0}),'反擊未觸發・等待下一擊');
 });
