@@ -81,7 +81,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
 <div class="chibi-art-state" id="chibi-art-state" role="status" hidden>正在檢查 Q 版高畫質主角……</div>
-<div class="monster-art-status" id="monster-art-status" role="status">⚠️ 怪物正式逐格美術：0/32。現有怪物為未核准的工程替身。</div>
+<div class="monster-art-status" id="monster-art-status" role="status">🎨 正在自動載入紙妖 16 格精緻 Q 版動畫……</div>
 <div class="chibi-quick-preview">
 <button id="hurt-demo-quick" type="button">💥 試播受擊動畫（不扣血）</button>
 <details class="art-advanced"><summary>素材檢查／進階測試</summary>
@@ -99,19 +99,13 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <button id="chibi-v2-clear" type="button">清除本機美術快取</button>
 <p id="chibi-v2-status" role="status">正在載入內建高清素材……</p>
 </section>
-<section class="chibi-v2-lab" aria-label="16 張紙妖候選圖本機遊戲測試">
-<strong>🗂️ 紙妖正式美術候選・實際遊戲測試</strong>
-<p>從候選素材包選擇 <code>paper-gremlin-16pose.png</code>（1280×1280）。只在本次瀏覽器期間，替換紙妖的戰鬥畫面，不更動正式美術認定、薪資或遊戲存檔。</p>
-<label for="paper-candidate-import">選擇本機紙妖 16 格透明 PNG：</label>
-<input id="paper-candidate-import" type="file" accept="image/png" />
-<button id="paper-candidate-clear" type="button">恢復原本畫面</button>
-<p id="paper-candidate-message" role="status">尚未選擇紙妖候選圖。也可以使用 <a href="./paper-trial.html">獨立試播頁</a>，不需要遊戲進度在紙妖關卡。</p>
-</section></details></div>
+</details></div>
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
 <nav class="tabs" aria-label="遊戲功能"><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
-<div class="footnote">🖼️ <a href="./paper-trial.html">影印室工讀紙妖・16 格逐格候選試播（選擇圖片測試，不改存檔）</a></div>\n<div class="footnote">怪物獨立畫稿尚未驗收，暫停把程序動作展示為「正式動畫」。</div>
+<div class="footnote">🖼️ <a href="./paper-trial.html">直接觀看紙妖 16 格動畫｜無須下載或上傳</a></div>
+<div class="footnote">紙妖實際繪製動畫已加入遊戲；其他怪物的獨立美術仍待製作。</div>
 <div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
@@ -122,4 +116,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=paper-trial-runtime-5a266c0-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=illustrated-paper-autoload-523ddc6-20261110"></script></body></html>
