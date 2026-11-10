@@ -1,5 +1,5 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
-import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice} from './engine.mjs';
+import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
@@ -710,12 +710,12 @@ function commit(action){
  if(!ready&&!['setName','toggleFavoriteStyle','equipSkin','drawSkin','claimSkinEvent'].includes(type))return;
  const oldEnemy={...state.enemy},wasWave=state.wave,oldHeroHp=state.heroHp;
  state=transition(state,action);
- if(trainingWave!==null&&type==='attack'&&state.last?.type==='victory'){
+ if(trainingWave!==null&&(type==='attack'||type==='skill')&&state.last?.type==='victory'){
    // Victory/defeat animation still uses fx.oldEnemy. The new combatant fades
    // back in after the 16-pose shatter; no persistent progress is awarded.
    state=repeatTrainingEnemy(state,trainingSpecies,enemyFor);
  }
- if(action==='attack'){
+ if(type==='attack'||type==='skill'){
    if(trainingSpecies==='chair-golem'){world.dataset.guardPeakRed='0';world.dataset.guardTintApplied='false';}
    if(trainingSpecies==='meeting-ghost'){world.dataset.alienRedPeak='0';world.dataset.alienTintApplied='false';}
    if(trainingSpecies==='keyboard-piranha'){world.dataset.clerkPeakRed='0';world.dataset.clerkTintApplied='false';}
@@ -735,9 +735,15 @@ function itemRow(it,kind){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
- if(type==='hero'){
+ if(type==='modes'){
+  body.innerHTML='<p>已開放普通怪循環版本：首領與菁英怪暫不進入正式戰鬥。每個模式各自紀錄關卡，裝備、等級與貨幣共用。</p>'+
+   GAME_MODES.map(mode=>'<div class="item"><div class="detail"><strong>'+mode.name+'</strong><small>'+mode.description+' · 第 '+state.modeWaves[mode.id]+' 關</small></div>'+btn(state.activeMode===mode.id?'進行中':'進入','mode',mode.id,state.activeMode===mode.id)+'</div>').join('');
+ }else if(type==='skills'){
+  body.innerHTML='<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
+   GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
+ }else if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
   body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · 普通→普通→菁英→Boss，Boss 勝利回滿血</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
   +btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
@@ -794,7 +800,9 @@ $('#panel-close').onclick=()=>panel.close();panel.addEventListener('close',()=>{
 body.addEventListener('click',e=>{
  const b=e.target.closest('button[data-action]');if(!b||b.disabled)return;
  const act=b.dataset.action;
- if(act==='rename')openNameEditor();
+ if(act==='mode')commit({type:'mode',id:b.dataset.value});
+ else if(act==='skill')skillAttack(b.dataset.value);
+ else if(act==='rename')openNameEditor();
  else if(act==='styles')renderPanel('styles');
  else if(act==='equipSkin')commit({type:'equipSkin',id:b.dataset.value});
  else if(act==='claimSkinEvent')commit({type:'claimSkinEvent',id:b.dataset.value});
@@ -855,6 +863,12 @@ function attackCooldownMs(){
    (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))))
    return (fx.oldEnemy.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)+HIT_FEEDBACK_MS+70;
  return base+(fx?.retaliation?HIT_FEEDBACK_MS:0);
+}
+function skillAttack(id){
+ if(!ready||state.skillCooldowns[id]>0)return;
+ const now=performance.now();
+ if(fx&&now-fx.start<attackCooldownMs()/state.speed)return;
+ commit({type:'skill',id});
 }
 function attack(){
  if(!ready)return;
