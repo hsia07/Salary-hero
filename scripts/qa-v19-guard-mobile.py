@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Real Chromium QA: the 16-frame third mech exists ONLY in practice.
 
-This is NOT a 3/32 signoff. Five unique elite special-skill frames and
-user's visual acceptance are prerequisites for promotion to official art.
+This is NOT a 3/32 signoff. The monster is a COMMON species; user's visual approval is still pending.
 """
 from pathlib import Path
 from base64 import b64decode
@@ -27,7 +26,7 @@ def main():
       document.querySelector('#attack')?.disabled===false;
   }""",timeout=40000)
   assert '打卡保全機兵' in page.locator('#enemy-name').inner_text()
-  assert '第 3 關' in page.locator('#wave').inner_text()
+  assert '第 5 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
   assert '候選' in page.locator('#monster-art-status').inner_text()
   assert '2／32' in page.locator('#monster-art-status').inner_text()
