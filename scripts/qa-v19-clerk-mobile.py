@@ -13,17 +13,17 @@ OUT=ROOT/'art/v19/runtime/qa'
 OUT.mkdir(parents=True,exist_ok=True)
 
 def check_normal_battle(browser):
- # A separate browser context starts with a normal wave 26 save.
+ # A separate browser context starts with a normal wave 6 save.
  page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=2,is_mobile=True,has_touch=True)
  page.clock.install()
  page.add_init_script("""localStorage.setItem('salary-hero-v19-save-1',JSON.stringify({
-  version:19,playerName:'測試勇者',wave:26,maxHp:900,heroHp:900,auto:false,gold:123
+  version:19,playerName:'測試勇者',wave:6,maxHp:900,heroHp:900,auto:false,gold:123
  }));""")
  page.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
  page.wait_for_function("""()=>document.querySelector('#world')?.dataset.clerkApproval==='official'
   &&document.querySelector('#attack')?.disabled===false""",timeout=45000)
  assert page.locator('#training-mode-notice').is_hidden()
- assert '第 26 關' in page.locator('#wave').inner_text()
+ assert '第 6 關' in page.locator('#wave').inner_text()
  assert '加班遊魂文員' in page.locator('#enemy-name').inner_text()
  assert '6/32' in page.locator('#monster-art-status').inner_text()
  page.clock.pause_at(page.evaluate('new Date(Date.now()+1000).toISOString()'))
@@ -37,7 +37,7 @@ def check_normal_battle(browser):
  assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])<900
  assert attack.is_disabled()
  saved=page.evaluate("key=>JSON.parse(localStorage.getItem(key))",KEY)
- assert saved['wave']==26 and saved['enemy']['typeId']=='keyboard-piranha'
+ assert saved['wave']==6 and saved['enemy']['typeId']=='keyboard-piranha'
  assert saved['enemy']['hp']<saved['enemy']['maxHp'] and saved['heroHp']<900
  assert saved['gold']==123
  page.close()
