@@ -14,10 +14,54 @@ export const ITEMS = Object.freeze([
   {id:'excalibur',name:'傳說・準時下班聖劍',tier:'傳說',attack:48,icon:'⚔️',cost:900}
 ]);
 export const ENCOUNTERS = Object.freeze([
- {id:'printer',name:'失控的影印魔像',icon:'🖨️',text:'影印機吐出了明天的週報。你要怎麼做？',choices:[{text:'拔掉插頭',gold:25,xp:24},{text:'把它帶去會議室',gold:45,xp:8}]},
- {id:'coffee',name:'神祕咖啡鍊金師',icon:'☕',text:'陌生人送你一瓶濃縮咖啡。',choices:[{text:'喝下去恢復精神',gold:10,xp:35,heal:30},{text:'轉賣給主管',gold:60,xp:5}]},
- {id:'dragon',name:'傳說・截止日巨龍',icon:'🐉',text:'牠守著一份永遠寫不完的專案。',choices:[{text:'挑戰最後期限',gold:130,xp:100},{text:'召喚自動化魔法',gold:80,xp:145}]}
+ {id:'printer',name:'失控的影印魔像',icon:'🖨️',theme:'office',rarity:'辦公室異變',text:'凌晨的影印機吐出了明天的週報，墨水卻在地板上拼出求救訊號。',choices:[
+  {text:'拔掉插頭，拯救被困的文件精靈',gold:25,xp:24,note:'穩定獎勵'},
+  {text:'把它帶去會議室對抗主管',gold:45,xp:8,note:'換取更多金幣'}
+ ]},
+ {id:'coffee',name:'神祕咖啡鍊金師',icon:'☕',theme:'pantry',rarity:'茶水間傳聞',text:'茶水間有一位陌生鍊金師，遞來一瓶會發光的三倍濃縮咖啡。',choices:[
+  {text:'喝下去，讓疲憊的身體恢復精神',gold:10,xp:35,heal:30,note:'額外恢復 30 生命'},
+  {text:'拿去找主管交換早退通行證',gold:60,xp:5,note:'較多金幣'}
+ ]},
+ {id:'dragon',name:'傳說・截止日巨龍',icon:'🐉',theme:'myth',rarity:'神話級邂逅',text:'深夜的天台裂開一道火紅裂隙，巨龍盤踞在一份永遠寫不完的專案上。',choices:[
+  {text:'挑戰最後期限，搶回被吞噬的時間',gold:130,xp:100,note:'高額金幣與經驗'},
+  {text:'召喚自動化法術，從空中繞過巨龍',gold:80,xp:145,note:'大量經驗'}
+ ]},
+ {id:'alien-shuttle',name:'銀河末班接駁船',icon:'🛸',theme:'alien',rarity:'異星奇遇',text:'外星企業的接駁船停在公司頂樓。船上所有時鐘都停在下班前一分鐘。',choices:[
+  {text:'潛入貨艙，竊取永不加班的時鐘',risk:{chance:.55,success:{gold:155,xp:48},failure:{gold:0,xp:24,damage:26}},note:'成功獲得大量金幣；失敗損失 26 生命'},
+  {text:'協助外星實習生解讀勞動契約',gold:53,xp:50,note:'安全而穩定'}
+ ]},
+ {id:'monkey-scroll',name:'花果山的神祕請假卷軸',icon:'🐒',theme:'myth',rarity:'西遊祕寶',text:'一隻戴工牌的猴兵擋住道路，身後的石門刻著「今日誰都不准加班」。',choices:[
+  {text:'試著闖過石門，取走神猴卷軸',risk:{chance:.43,success:{gold:175,xp:95,heal:18},failure:{gold:0,xp:35,damage:30}},note:'高風險，成功時恢復生命'},
+  {text:'幫猴兵完成輪班，取得通行符',gold:55,xp:65,heal:12,note:'恢復 12 生命'}
+ ]},
+ {id:'clockwork-elevator',name:'機械主管的禁忌電梯',icon:'🤖',theme:'mecha',rarity:'機械警報',text:'打卡後，電梯竟出現地下第 99 層。門內傳來機械主管的倒數聲。',choices:[
+  {text:'入侵控制核心，破解加班協定',risk:{chance:.65,success:{gold:100,xp:88,potions:1},failure:{gold:9,xp:25,damage:22}},note:'成功額外取得一瓶藥水'},
+  {text:'啟動緊急返回，把資料帶回辦公室',gold:42,xp:58,note:'安全離開'}
+ ]},
+ {id:'night-platform',name:'冥府末班通勤列車',icon:'🚉',theme:'nether',rarity:'幽冥事件',text:'月台上的電子告示牌寫著「加班終點站」，一班沒有駕駛的列車正在等候。',choices:[
+  {text:'踏上幽冥列車，尋找失落的薪水',risk:{chance:.52,success:{gold:135,xp:90},failure:{gold:5,xp:25,damage:32}},note:'成功帶回大量金幣；失敗受到驚嚇'},
+  {text:'守住月台，替徬徨的幽靈指路',gold:45,xp:75,heal:15,note:'額外恢復 15 生命'}
+ ]},
+ {id:'debug-cat',name:'午夜系統中的黑貓',icon:'🐈‍⬛',theme:'digital',rarity:'數位裂隙',text:'辦公電腦冒出一隻黑貓，牠尾巴一甩，整座公司像程式碼一樣散開。',choices:[
+  {text:'跟著黑貓跳進錯誤訊息的裂縫',risk:{chance:.60,success:{gold:90,xp:105,gems:1},failure:{gold:0,xp:28,damage:17}},note:'成功找到一顆寶石'},
+  {text:'留下來修補系統，幫黑貓找回家',gold:42,xp:62,heal:20,note:'額外恢復 20 生命'}
+ ]}
 ]);
+/** Calculate a single event outcome with one RNG call at most. Pure and testable. */
+export function encounterOutcome(event,choiceIndex,rng=Math.random){
+ const choice=event?.choices?.[choiceIndex];
+ if(!choice)return null;
+ const risk=choice.risk;
+ const roll=risk?Math.max(0,Math.min(.999999,Number(rng())||0)):null;
+ const won=risk?roll<risk.chance:true;
+ const reward=risk?(won?risk.success:risk.failure):choice;
+ const clean=(key)=>Math.max(0,Math.floor(Number(reward?.[key])||0));
+ return {outcome:risk?(won?'success':'failure'):'certain',
+  chance:risk?risk.chance:null,roll,
+  gold:clean('gold'),xp:clean('xp'),heal:clean('heal'),
+  damage:clean('damage'),potions:clean('potions'),gems:clean('gems'),
+  choiceText:choice.text};
+}
 export const STORAGE_KEY='salary-hero-v19-save-1';
 export function todayTW(now=Date.now()){
  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(now)).map(p=>[p.type,p.value]));
@@ -226,15 +270,31 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    notice(s,'✦ 遇到奇遇：'+ENCOUNTERS[index].name);break;
  }
  case 'encounterChoose':{
-   const e=ENCOUNTERS.find(x=>x.id===s.encounterPending),c=e?.choices[a.choice];
-   if(!c)break;
-   s.gold+=c.gold;awardXP(s,c.xp);if(c.heal)s.heroHp=Math.min(s.maxHp,s.heroHp+c.heal);
-   s.encounterHistory.unshift({day:s.encounterDay,id:e.id,choice:a.choice});
+   const e=ENCOUNTERS.find(x=>x.id===s.encounterPending);
+   // Invalid input cannot mint rewards or resolve another player's daily event.
+   if(!e||!Number.isInteger(a.choice))break;
+   const result=encounterOutcome(e,a.choice,rng);
+   if(!result)break;
+   const oldHp=s.heroHp;
+   // Encounter injuries never defeat or auto-respawn the hero; this is a risky
+   // side adventure, not a hidden battle. Level-up healing still works normally.
+   if(result.damage)s.heroHp=Math.max(1,s.heroHp-result.damage);
+   if(result.heal)s.heroHp=Math.min(s.maxHp,s.heroHp+result.heal);
+   s.gold+=result.gold;s.potions+=result.potions;s.gems+=result.gems;
+   awardXP(s,result.xp);
+   s.encounterHistory.unshift({day:s.encounterDay,id:e.id,choice:a.choice,
+    outcome:result.outcome,gold:result.gold,xp:result.xp,
+    damage:oldHp-Math.min(oldHp,s.heroHp),potions:result.potions,gems:result.gems});
    s.encounterHistory=s.encounterHistory.slice(0,80);
    s.encounterPending=null;
-   s.skinTickets++;
-   s.last={type:'encounter',id:e.id};
-   notice(s,'✨ 奇遇完成，獲得 '+c.gold+' 金幣、'+c.xp+' 經驗與 1 張造型券！');break;
+   s.skinTickets++; // Exactly one ticket/day, even after a failed risk.
+   s.last={type:'encounter',id:e.id,...result};
+   const resultText=result.outcome==='failure'?'💥 冒險失敗，勉強逃回辦公室！':
+     result.outcome==='success'?'🌟 奇遇成功，帶著寶物返回！':'✨ 奇遇完成！';
+   notice(s,resultText+' 🪙'+result.gold+'、EXP '+result.xp+
+      (result.damage?'，受傷 '+result.damage:'')+(result.heal?'，恢復 '+result.heal:'')+
+      (result.potions?'，藥水 +'+result.potions:'')+(result.gems?'，寶石 +'+result.gems:'')+'，造型券 +1。');
+   break;
  }
  default:break;
  }
