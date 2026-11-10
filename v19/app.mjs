@@ -10,6 +10,7 @@ import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAP
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
+import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy} from './training-mode.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
 const LOGICAL_WIDTH=720,LOGICAL_HEIGHT=620;
@@ -17,11 +18,19 @@ const PIXEL_SCALE=Math.max(1,Math.min(2,Math.ceil(window.devicePixelRatio||1)));
 world.width=LOGICAL_WIDTH*PIXEL_SCALE;
 world.height=LOGICAL_HEIGHT*PIXEL_SCALE;
 const panel=$('#panel'),body=$('#panel-content');
-const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.warn('存檔失敗',e)}};
+const trainingSpecies=new URLSearchParams(location.search).get('training');
+const trainingWave=trainingWaveFor(trainingSpecies);
+const save=()=>{
+ // Art rehearsal is an entirely separate simulated battle. It MUST NOT modify
+ // salary, inventory, currency, unlocks, level or any official save.
+ if(trainingWave!==null)return;
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.warn('存檔失敗',e)}
+};
 const format=n=>Number(n||0).toLocaleString('zh-TW');
 const money=(n,d=0)=>'NT$'+Number(n||0).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d});
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function loadGame(){
+ if(trainingWave!==null)return trainingStateFor(trainingSpecies,initial,enemyFor);
  let raw;try{raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')}catch{}
  if(raw?.version===19)return normalize(raw);
  const s=initial();
@@ -46,6 +55,13 @@ function loadGame(){
  return normalize(s);
 }
 let state=loadGame();save();
+const trainingNotice=$('#training-mode-notice');
+if(trainingNotice&&trainingWave!==null){
+ trainingNotice.hidden=false;
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':'影印室工讀紙妖';
+ const label=$('#training-monster-name');
+ if(label)label.textContent=name;
+}
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 let approvedMonsterArt=new Map();
 async function loadApprovedMonsterArt(){
@@ -433,6 +449,11 @@ function commit(action){
  if(!ready&&!['setName','toggleFavoriteStyle','equipSkin','drawSkin','claimSkinEvent'].includes(type))return;
  const oldEnemy={...state.enemy},wasWave=state.wave,oldHeroHp=state.heroHp;
  state=transition(state,action);
+ if(trainingWave!==null&&type==='attack'&&state.last?.type==='victory'){
+   // Victory/defeat animation still uses fx.oldEnemy. The new combatant fades
+   // back in after the 16-pose shatter; no persistent progress is awarded.
+   state=repeatTrainingEnemy(state,trainingSpecies,enemyFor);
+ }
  if(action==='attack'){
    fx={start:performance.now(),result:state.last,oldEnemy,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
