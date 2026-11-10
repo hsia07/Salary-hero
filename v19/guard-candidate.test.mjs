@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {ALL_ENEMIES} from './roster.mjs';
 import {validateSpritePixels} from './sprite-atlas.mjs';
+import {paperHitFlashAt,PAPER_HERO_HIT_MS} from './paper-combat.mjs';
 import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS} from './guard-combat.mjs';
 
 const root=new URL('../art/v19/candidates/monsters/chair-golem/',import.meta.url);
@@ -65,4 +66,15 @@ test('red scanner has actual launch, travel and impact with no postmortem beam',
  assert.equal(guardBeamAt(GUARD_BEAM_IMPACT_MS,false).active,false);
  assert.equal(guardBeamAt(GUARD_ATTACK_END_MS).active,false);
  assert.equal(GUARD_HERO_HIT_MS,405);
+});
+
+test('low-FPS security armor has continuous red impact while approved paper/cup pulses remain unchanged',()=>{
+ const age=136;
+ const original=paperHitFlashAt(PAPER_HERO_HIT_MS+age);
+ const guard=paperHitFlashAt(PAPER_HERO_HIT_MS+age,{extendedRed:true});
+ assert.equal(original.red,0,'original paper and coffee retain the approved two-flash gap');
+ assert.ok(guard.red>.5,'mechanical armor must still be visibly red at sparse mobile frame');
+ assert.ok(paperHitFlashAt(PAPER_HERO_HIT_MS+190,{extendedRed:true}).red>0);
+ assert.equal(paperHitFlashAt(PAPER_HERO_HIT_MS+226,{extendedRed:true}).red,0);
+ assert.ok(paperHitFlashAt(PAPER_HERO_HIT_MS+136,{extendedRed:true,reducedMotion:true}).red<guard.red);
 });
