@@ -25,7 +25,7 @@ test('left-facing fourth candidate preserves original 16 hand-drawn poses and im
  assert.equal(ELITE_ENEMIES.length,8);
  assert.equal(BOSSES.length,8);
  assert.equal(COMMON_ENEMIES.find(e=>e.id==='meeting-ghost')?.name,'星際打卡實習生');
- assert.equal(Object.keys(official.monsters).length,4);
+ assert.equal(Object.keys(official.monsters).length,5);
  assert.equal(official.monsters['meeting-ghost'].approved,true);
  assert.deepEqual(Object.entries(record.states).map(([s,f])=>[s,f.frames]),[
   ['idle',4],['attack',5],['hurt',3],['defeat',4]

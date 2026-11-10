@@ -33,9 +33,18 @@ test('candidate actually includes 16 committed WebP original poses with proper a
    assert.equal(validateSpritePixels({naturalWidth:384*n,naturalHeight:384},record).ok,true);
  }
 });
-test('fifth creature remains candidate while fourth is officially 4/32',()=>{
+test('fifth creature is officially approved fifth monster with original 16 illustrated WebP poses',()=>{
  const official=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
- assert.equal(Object.keys(official.monsters).length,4);
+ assert.equal(Object.keys(official.monsters).length,5);
  assert.equal(official.monsters['meeting-ghost'].approved,true);
- assert.equal(official.monsters['deadline-clock'],undefined);
+ const live=official.monsters['deadline-clock'];
+ assert.equal(live.approved,true);
+ assert.equal(live.userVisualApprovalDate,'2026-11-10');
+ for(const [name,record] of Object.entries(manifest.states)){
+  const released=readFileSync(new URL('../art/v19/runtime/monsters/deadline-clock/'+name+'.webp',import.meta.url));
+  const original=readFileSync(new URL(name+'.webp',root));
+  assert.deepEqual(released,original,'official fifth reuses original hand drawn pose frames');
+  assert.equal(createHash('sha256').update(released).digest('hex'),record.sha256);
+  assert.equal(live.states[name].frames,record.frames);
+ }
 });

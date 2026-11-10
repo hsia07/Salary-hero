@@ -32,7 +32,7 @@ test('old cute cup is archived as rejected candidate; only new evil cup ships of
  const old=JSON.parse(readFileSync(new URL('manifest-candidate.json',root),'utf8'));
  assert.equal(old.approved,false);
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
- assert.equal(Object.keys(m.monsters).length,4); // third guard officially approved
+ assert.equal(Object.keys(m.monsters).length,5); // third guard officially approved
  assert.ok(m.monsters['paper-gremlin']);
  assert.equal(m.monsters['coffee-mimic'].approved,true);
  assert.ok(m.monsters['coffee-mimic'].states.attack.src.endsWith('/runtime/monsters/coffee-mimic/attack.webp'));
