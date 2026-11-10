@@ -1,7 +1,64 @@
 {
   "version": 1,
-  "status": "awaiting_individually_approved_illustrated_sprite_sheets",
+  "status": "first_illustrated_monster_integrated_pending_user_visual_approval",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
-  "monsters": {},
-  "note": "No monsters are currently approved for production. Each entry must include independently drawn idle, attack, hurt, defeat (and elite/boss special) sprite sheets. Unapproved PNGs and poster mockups must never be listed."
+  "monsters": {
+    "paper-gremlin": {
+      "id": "paper-gremlin",
+      "approved": true,
+      "approvalScope": "user-requested in-game trial; final aesthetic approval still pending",
+      "source": "original 16-pose illustrated transparent sprite from user's accepted candidate, cleaned and aligned",
+      "states": {
+        "idle": {
+          "src": "../art/v19/runtime/monsters/paper-gremlin/idle.png",
+          "frames": 4,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            240,
+            180,
+            240,
+            140
+          ]
+        },
+        "attack": {
+          "src": "../art/v19/runtime/monsters/paper-gremlin/attack.png",
+          "frames": 5,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            110,
+            140,
+            105,
+            130,
+            180
+          ]
+        },
+        "hurt": {
+          "src": "../art/v19/runtime/monsters/paper-gremlin/hurt.png",
+          "frames": 3,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            140,
+            210,
+            230
+          ]
+        },
+        "defeat": {
+          "src": "../art/v19/runtime/monsters/paper-gremlin/defeat.png",
+          "frames": 4,
+          "cell": 320,
+          "ground_y": 289,
+          "durations": [
+            190,
+            190,
+            230,
+            420
+          ]
+        }
+      }
+    }
+  },
+  "note": "The paper-gremlin has four distinct illustrated PNG pose strips loaded automatically by the game. This is a deployed art candidate and awaits final user's visual verdict. Other 31 procedural monsters remain unapproved."
 }
