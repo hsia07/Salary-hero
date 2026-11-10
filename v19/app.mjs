@@ -26,6 +26,7 @@ world.height=LOGICAL_HEIGHT*PIXEL_SCALE;
 const panel=$('#panel'),body=$('#panel-content');
 const trainingSpecies=new URLSearchParams(location.search).get('training');
 const trainingWave=trainingWaveFor(trainingSpecies);
+if(trainingWave!==null)$('#app')?.setAttribute('data-training','1');
 // Costume experiments are explicitly training-only. Never change save, wave,
 // enemy ID, rarity, monster production approval, or player's inventory.
 const requestedNormalVariant=new URLSearchParams(location.search).get('skin');
@@ -767,7 +768,7 @@ function renderPanel(type){
    GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
  }else if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
-  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · 普通→普通→菁英→Boss，Boss 勝利回滿血</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
+  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
   +btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
@@ -805,7 +806,7 @@ function renderPanel(type){
  }else if(type==='collection'){
   const defeated=state.defeatedTypes||[];
   const groups=[['👾 普通怪',COMMON_ENEMIES],['✦ 菁英怪',ELITE_ENEMIES],['👑 Boss',BOSSES]];
-  body.innerHTML='<p>圖鑑進度 '+defeated.length+'/'+ALL_ENEMIES.length+' 種（普通 16、菁英 8、Boss 8）。四關一循環：普通→普通→菁英→Boss。未知種族保留剪影；部分專屬美術仍在製作。</p>'
+  body.innerHTML='<p>圖鑑進度 '+defeated.length+'/'+ALL_ENEMIES.length+' 種（普通 16、菁英 8、Boss 8）。每日副本以普通→普通→菁英→Boss 四關為一輪；菁英與 Boss 專屬美術尚待製作，目前暫借已完成普通怪動畫。未知種族保留剪影。</p>'
     +groups.map(([heading,monsters])=>'<h3>'+heading+'　'+monsters.filter(e=>defeated.includes(e.id)).length+'/'+monsters.length+'</h3>'
       +monsters.map(e=>{
         const known=defeated.includes(e.id);
