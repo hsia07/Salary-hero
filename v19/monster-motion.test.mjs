@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
-import {enemyFor,initial,normalize,transition} from './engine.mjs';
+import {enemyFor,loopEnemyFor,initial,normalize,transition} from './engine.mjs';
 import {MONSTER_ANIMATIONS,MONSTER_STATES,monsterVisualFor,monsterAnimationState,drawMonsterActor,drawMonsterVfx,validateMonsterRoster} from './monster-motion.mjs';
 
 test('every enemy has a unique name, an actual actor, and a unique attack direction',()=>{
@@ -28,10 +28,13 @@ test('each enemy is associated with its correct art and rank after repeated save
   assert.ok(e);
   assert.equal(enemy.faction,e.faction);
   assert.equal(monsterVisualFor(enemy).id,enemy.typeId);
-  const state=initial();state.wave=i;state.enemy=enemy;
+  // The full 32-character collection remains queryable, while the currently
+  // playable main adventure intentionally recycles six illustrated species.
+  const live=loopEnemyFor(i,'campaign');
+  const state=initial();state.wave=i;state.modeWaves.campaign=i;state.enemy=live;
   const reloaded=normalize(JSON.parse(JSON.stringify(state)));
-  assert.equal(reloaded.enemy.typeId,enemy.typeId);
-  assert.equal(reloaded.enemy.faction,enemy.faction);
+  assert.equal(reloaded.enemy.typeId,live.typeId);
+  assert.equal(reloaded.enemy.faction,live.faction);
  }
 });
 test('each individual monster visual runs all real animation states in a canvas-like context',()=>{
@@ -71,8 +74,10 @@ test('enemy visual injury, death and retaliation do not occur before combat cont
  assert.equal(monsterAnimationState(enemy,1100,{type:'victory'}).state,'idle');
 });
 test('boss and elite attack damage still comes from engine and never from visual effects',()=>{
- const s=initial();s.wave=3;s.enemy=enemyFor(3);
- const n=transition(s,'attack',()=>.99);
+ const now=Date.parse('2026-11-10T08:00:00Z');
+ let s=transition(initial(),{type:'mode',id:'dungeon'},()=>.99,now);
+ s.wave=3;s.modeWaves.dungeon=3;s.enemy=loopEnemyFor(3,'dungeon',now);
+ const n=transition(s,'attack',()=>.99,now);
  assert.equal(n.enemy.hp<s.enemy.hp,true);
  assert.equal(n.wave,3);
  assert.equal(s.enemy.turns,0);
