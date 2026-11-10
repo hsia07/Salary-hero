@@ -49,7 +49,9 @@ def main():
         page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=2,is_mobile=True,has_touch=True)
         errors=[]
         page.on('pageerror',lambda e:errors.append(str(e)))
-        page.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
+        # Seed the sentinel INSIDE rehearsal; navigating away from a normal
+        # gameplay tab could legitimately write its final save on pagehide.
+        page.goto(BASE+'/v19/play.html?training=coffee-mimic',wait_until='domcontentloaded')
         page.evaluate('(key)=>localStorage.setItem(key,"UNCHANGED_REAL_PLAYER_SAVE")',SAVE_KEY)
         test_species(page,'coffee-mimic','茶水間實習杯靈',2)
         test_species(page,'paper-gremlin','影印室工讀紙妖',1)
