@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
 import {initial,enemyFor,transition} from './engine.mjs';
 
-test('training accepts two approved enemies and the isolated third security-mech candidate only',()=>{
+test('training admits three approved monsters and one isolated fourth timing candidate',()=>{
  assert.equal(trainingWaveFor('paper-gremlin'),1);
  assert.equal(trainingWaveFor('coffee-mimic'),2);
  assert.equal(trainingWaveFor('chair-golem'),5);
+ assert.equal(trainingWaveFor('meeting-ghost'),50);
  for(const invalid of ['',null,'../../secrets','printer-minion','paper-gremlin?x=1','__proto__']){
    assert.equal(trainingWaveFor(invalid),null);
    assert.equal(trainingStateFor(invalid,initial,enemyFor),null);
@@ -16,6 +17,7 @@ test('safe practice starts in front of the correct illustrated enemy with auto O
  const paper=trainingStateFor('paper-gremlin',initial,enemyFor);
  const coffee=trainingStateFor('coffee-mimic',initial,enemyFor);
  const guard=trainingStateFor('chair-golem',initial,enemyFor);
+ const alien=trainingStateFor('meeting-ghost',initial,enemyFor);
  assert.equal(paper.wave,1);
  assert.equal(paper.enemy.typeId,'paper-gremlin');
  assert.equal(coffee.wave,2);
@@ -23,6 +25,9 @@ test('safe practice starts in front of the correct illustrated enemy with auto O
  assert.equal(guard.wave,5);
  assert.equal(guard.enemy.typeId,'chair-golem');
  assert.equal(guard.enemy.tier,'normal');
+ assert.equal(alien.enemy.typeId,'meeting-ghost');
+ assert.equal(alien.wave,50);
+ assert.equal(alien.auto,false);
  assert.equal(coffee.auto,false);
  assert.equal(coffee.speed,1);
  assert.equal(coffee.playerName,'練習勇者');
@@ -73,4 +78,17 @@ test('one-tap finisher is a genuine normal engine victory only inside an approve
  assert.equal(primeTrainingFinisher(original,'another-id'),original);
  const mismatched={...original,wave:2};
  assert.equal(primeTrainingFinisher(mismatched,'chair-golem'),mismatched);
+});
+
+test('alien rehearsals attack and finish at correct original species without saving progress',()=>{
+ const real=initial(),practice=trainingStateFor('meeting-ghost',initial,enemyFor);
+ assert.equal(practice.wave,50);assert.equal(practice.enemy.typeId,'meeting-ghost');
+ const hit=transition(practice,'attack',()=>.95);
+ assert.ok(hit.enemy.hp<practice.enemy.hp);
+ const primed=primeTrainingFinisher(practice,'meeting-ghost');
+ const win=transition(primed,'attack',()=>.95);
+ assert.equal(win.last.type,'victory');
+ const renewed=repeatTrainingEnemy(win,'meeting-ghost',enemyFor);
+ assert.equal(renewed.wave,50);assert.equal(renewed.enemy.hp,126);
+ assert.equal(real.wave,1);assert.equal(real.gold,0);
 });
