@@ -67,7 +67,7 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（朝左・16 格逐格候選，未正式核准）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（朝左・16 格透明候選，未正式核准）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（朝左・16 格透明候選，未正式核准）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
@@ -111,7 +111,7 @@ async function loadTrainingCandidateArt(){
  }
 }
 async function loadAlienCandidateArt(){
- if(trainingSpecies!=='meeting-ghost')return;
+ if(trainingSpecies!=='meeting-ghost'||approvedMonsterArt.has('meeting-ghost'))return;
  const url=new URL('../art/v19/candidates/monsters/meeting-ghost/manifest-candidate.json?v=alien-left-v19-17',import.meta.url);
  const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('外星人候選素材 HTTP '+r.status);return r.json()});
  if(record.id!=='meeting-ghost'||record.approved!==false||record.previewOnly!==true||
@@ -163,11 +163,11 @@ async function loadCloudGhostCandidateArt(){
  const notice=$('#monster-art-status');
  if(notice){
   notice.dataset.candidate='true';
-  notice.textContent='☁️ 雲端資料專員靈的 16 格透明逐格候選已載入（待機4／攻擊5／受擊3／死亡4），第 6 關朝左側勇者出招。正式仍為 3/32。';
+  notice.textContent='☁️ 雲端資料專員靈的 16 格透明逐格候選已載入（待機4／攻擊5／受擊3／死亡4），第 6 關朝左側勇者出招。正式已有 4/32。';
  }
 }
 async function loadApprovedMonsterArt(){
- const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=guard-official-20261110',import.meta.url);
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=alien-official-fourth-v19-19-20261110',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
  const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
@@ -187,6 +187,11 @@ async function loadApprovedMonsterArt(){
    if(ok)approved.set(id,frames);
  }
  approvedMonsterArt=approved;
+ if(trainingSpecies==='meeting-ghost'&&approved.has('meeting-ghost')){
+  world.dataset.alienArt='16-frames-loaded';
+  world.dataset.alienFacing='left';
+  world.dataset.alienApproval='official';
+ }
  activeNormalVariant=trainingWave!==null
   ?normalVariantFor(trainingSpecies,requestedNormalVariant,[...approved.keys()]):null;
  if(activeNormalVariant){
@@ -198,10 +203,10 @@ async function loadApprovedMonsterArt(){
  }
  const notice=$('#monster-art-status');
  if(notice){
-   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')&&approved.has('chair-golem')?'true':'false';
+   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')&&approved.has('chair-golem')&&approved.has('meeting-ghost')?'true':'false';
    notice.dataset.approved=approved.has('chair-golem')?'true':'false';
    const count=approved.size;
-   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
+   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id==='meeting-ghost'?'星際打卡實習生':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
     (activeNormalVariant?' 🔬 實驗換皮：'+activeNormalVariant.name+'，完全共用正式逐格動畫；不增加 32 種完成數。':'');
  }
  if(activeNormalVariant)render();
@@ -401,7 +406,7 @@ function drawStage(now){
   ((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
    (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))||
-   (fx?.oldEnemy?.typeId==='meeting-ghost'&&trainingSpecies==='meeting-ghost')||
+   (fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
    (fx?.oldEnemy?.typeId==='deadline-clock'&&trainingSpecies==='deadline-clock'));
  const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:fx?.oldEnemy?.typeId==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
@@ -474,7 +479,7 @@ function drawStage(now){
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem');
- const alienVictoryHold=fx?.oldEnemy?.typeId==='meeting-ghost'&&trainingCandidateArt.has('meeting-ghost');
+ const alienVictoryHold=fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost');
  const cloudVictoryHold=fx?.oldEnemy?.typeId==='deadline-clock'&&trainingCandidateArt.has('deadline-clock');
  const victory=fx?.result?.type==='victory'&&animationMs<(cloudVictoryHold?CLOUD_DEFEAT_END_MS:guardVictoryHold?GUARD_DEFEAT_END_MS:alienVictoryHold?ALIEN_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
@@ -497,7 +502,7 @@ function drawStage(now){
    if(enemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))return paperCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))return coffeeCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))return guardCombatPoseAt(animationMs,hitResult);
-   if(enemy?.typeId==='meeting-ghost'&&trainingSpecies==='meeting-ghost')
+   if(enemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))
      return alienCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='deadline-clock'&&trainingSpecies==='deadline-clock')
      return cloudCombatPoseAt(animationMs,hitResult);
@@ -548,7 +553,7 @@ function drawStage(now){
  }
  // Fourth species rehearsal: separate purple stamp charge, projectile and
  // impact. The alien's actor art is NOT promoted or counted in the 3/32.
- if(fx?.wave&&trainingSpecies==='meeting-ghost'&&fx?.oldEnemy?.typeId==='meeting-ghost'&&
+ if(fx?.wave&&approvedMonsterArt.has('meeting-ghost')&&fx?.oldEnemy?.typeId==='meeting-ghost'&&
     fx.result?.type==='hit'){
    drawAlienStampFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,
       reducedMotion:motionReduced,canRetaliate:fx.retaliationDamage>0});
@@ -619,7 +624,7 @@ function renderCombatBars(now){
  const elapsed=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const caster=fx?.oldEnemy?.typeId;
  const illustrated=fx?.retaliation&&(hasIllustratedMonster(caster)||
-   (caster==='meeting-ghost'&&trainingSpecies==='meeting-ghost')||
+   (caster==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
    (caster==='deadline-clock'&&trainingSpecies==='deadline-clock'));
  const contactMs=illustrated&&['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock'].includes(caster)
    ?(caster==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:caster==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
@@ -976,7 +981,7 @@ function frame(now){
       const spriteIndex=1+Number(world.dataset.alienFrame||0);
       const flash=Math.round(100*Number(JSON.parse(world.dataset.alienFlash||'{}').red||0));
       const label='🛸 朝左｜'+cue+'｜'+pose+' #'+spriteIndex+(flash?'｜全身紅閃 '+flash+'%':'')+
-        (trainingCandidateArt.has('meeting-ghost')?'｜16 格候選已載入':'｜候選圖載入中')+'・正式 3/32';
+        (approvedMonsterArt.has('meeting-ghost')?'｜16 格正式圖集已載入':'｜正式圖集載入中')+'・正式 4/32';
       if(readout.textContent!==label)readout.textContent=label;
     }
   }
