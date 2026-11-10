@@ -254,7 +254,9 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
          // Browser QA reports what the player ACTUALLY sees, not a guessed timer.
          world.dataset.guardPose=visual?.state||'idle';
          world.dataset.guardFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
-         world.dataset.guardFlash=JSON.stringify(paperHitFlashAt(combatMs,{reducedMotion:motionReduced}));
+         const visualFlash=paperHitFlashAt(combatMs,{reducedMotion:motionReduced});
+         world.dataset.guardFlash=JSON.stringify(visualFlash);
+         world.dataset.guardPeakRed=String(Math.max(Number(world.dataset.guardPeakRed)||0,visualFlash.red));
        }
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
@@ -528,6 +530,7 @@ function commit(action){
    state=repeatTrainingEnemy(state,trainingSpecies,enemyFor);
  }
  if(action==='attack'){
+   if(trainingSpecies==='chair-golem')world.dataset.guardPeakRed='0';
    fx={start:performance.now(),result:state.last,oldEnemy,oldHeroHp,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
       retaliationDamage:Math.max(0,Number(state.last?.retaliationDamage??(oldHeroHp-state.heroHp)))};
