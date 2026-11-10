@@ -169,7 +169,7 @@ async function loadCloudGhostCandidateArt(){
 }
 async function loadClerkCandidateArt(){
  if(trainingSpecies!=='keyboard-piranha')return;
- const url=new URL('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk-hd-v19-22',import.meta.url);
+ const url=new URL('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk-hd-v19-22b',import.meta.url);
  const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('第六隻素材 HTTP '+r.status);return r.json()});
  if(record.id!=='keyboard-piranha'||record.approved!==false||record.previewOnly!==true||
     record.tier!=='normal'||record.facing!=='left'||record.target!=='hero-on-left')

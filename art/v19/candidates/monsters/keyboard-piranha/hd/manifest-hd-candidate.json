@@ -8,26 +8,26 @@
   "facing": "left",
   "target": "hero-on-left",
   "artStyle": "HD redrawn chibi human ghost office clerk, messy dark violet hair, readable 加班 headband, evil lilac eyes, crooked tie, cursed papers, expressive real injury and collapse poses",
-  "sourceQuality": "New 16 independently redrawn high-resolution transparent 512px cells, not simple enlargement of old low res. Awaiting player visual approval.",
+  "sourceQuality": "Second-pass high-definition redraw, 16 unique 512px transparent frames with protected safe margins. Audit uses strict real silhouette bounds; still candidate.",
   "states": {
     "idle": {
       "src": "../art/v19/candidates/monsters/keyboard-piranha/hd/idle.webp",
       "frames": 4,
       "cell": 512,
-      "ground_y": 484,
+      "ground_y": 455,
       "durations": [
         220,
         190,
         250,
         180
       ],
-      "sha256": "1b6e4ed658a66bd1b0c8ee1846f59de7d677d37defdd5b450adf856f9c4b8aa1"
+      "sha256": "1179b37d49f66458c2314559fbfa83d39b4e6e10a05d5e67ade118b8c7ffd61b"
     },
     "attack": {
       "src": "../art/v19/candidates/monsters/keyboard-piranha/hd/attack.webp",
       "frames": 5,
       "cell": 512,
-      "ground_y": 484,
+      "ground_y": 455,
       "durations": [
         140,
         155,
@@ -35,32 +35,32 @@
         155,
         205
       ],
-      "sha256": "deeb14fe93d8a349e6c6e963a3933d07aff0ccd8fe49f25dddf8ab2c5fd9d9b5"
+      "sha256": "7ab6f6c60960a4564606555aaa4138033f01b5e5b0f4424f2ea41ddb525c2af4"
     },
     "hurt": {
       "src": "../art/v19/candidates/monsters/keyboard-piranha/hd/hurt.webp",
       "frames": 3,
       "cell": 512,
-      "ground_y": 484,
+      "ground_y": 455,
       "durations": [
         95,
         135,
         235
       ],
-      "sha256": "c63a30cd32b8c18dc5309676326db7eec5a3ae9f685ebcd3002ffec65abb58ba"
+      "sha256": "72b6b61e31016a9477b35b45f17e4b9015a0892474421e5f1cbccba3ec97714c"
     },
     "defeat": {
       "src": "../art/v19/candidates/monsters/keyboard-piranha/hd/defeat.webp",
       "frames": 4,
       "cell": 512,
-      "ground_y": 484,
+      "ground_y": 455,
       "durations": [
         165,
         220,
         320,
         490
       ],
-      "sha256": "c602bd74816431b8ab2f0f216e19d6a283c496a4182576692b38d1bfff18c9c9"
+      "sha256": "e0ee297b929b7f2b688063933c467f1a11b8c980db236422ea46eb30d996d8d2"
     }
   }
 }

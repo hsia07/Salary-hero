@@ -100,7 +100,7 @@ function paint(now){
  requestAnimationFrame(paint);
 }
 async function load(){
- const source=await fetch('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk22');
+ const source=await fetch('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk22b');
  if(!source.ok)throw Error('candidate manifest HTTP '+source.status);
  const m=await source.json();
  if(m.id!=='keyboard-piranha'||m.approved!==false||Object.values(m.states).some(s=>s.cell!==512))throw Error('高清候選圖集識別錯誤');
