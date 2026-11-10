@@ -88,9 +88,9 @@ export function autoEncounterChoice(event){
 export const GAME_MODES=Object.freeze([
  {id:'campaign',name:'🏙️ 社畜遠征',description:'一般冒險 · 普通怪循環，永久推進'},
  {id:'tower',name:'🗼 無限之塔',description:'每四波補滿生命，持續挑戰更高樓層'},
- {id:'dungeon',name:'📆 每日副本',description:'星期一至日七種副本，以台灣時間每日更換'}
+ {id:'dungeon',name:'📆 每日副本',description:'平日五種獨立副本，週六與週日共用一個瘋狂週末副本'}
 ]);
-/** Seven fixed weekly dungeons. Weekday is Taiwan-local: 0=Sun, 1=Mon ... 6=Sat. */
+/** Six distinct weekly dungeons in seven weekday slots; Sat and Sun share one. */
 const WEEKEND_DUNGEON=Object.freeze({weekday:6,weekend:true,id:'weekend-chaos',name:'週末・全員下班！無人公司大暴走',icon:'🎪',theme:'weekend',story:'全公司下班，只剩升職失控的自動化機器！每層可能空蕩蕩、免費咖啡、彩紙風暴、金庫大開，甚至 AI 主管失控。週六、週日接續同一份進度。',hpScale:1.08,attackScale:1.06,rewardScale:1.35,xpScale:1.25,slackChance:.14});
 export const DAILY_DUNGEONS=Object.freeze([
  WEEKEND_DUNGEON,
@@ -399,12 +399,12 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    notice(s,'⚒️ 裝備鍛造成 +'+s.forgeLevel+'！每次攻擊額外增加 '+s.forgeLevel*2+' 基礎傷害。');break;
  }
  case 'weekendChest':{
-   if(s.specialChests<=0){notice(s,'目前沒有週末越獄特殊寶箱。');break;}
+   if(s.specialChests<=0){notice(s,'目前沒有特殊副本寶箱。');break;}
    s.specialChests--;s.gold+=160;s.gems+=2;s.potions++;
    const epic=Number(rng())<.3;
    s.pendingDrops.push(epic?'notice':'laptop');
    s.last={type:'weekendChest',epic};
-   notice(s,'🎁 週末越獄寶箱！金幣 +160、寶石 +2、藥水 +1，另獲'+(epic?'史詩':'稀有')+'裝備。');
+   notice(s,'🎁 副本特殊寶箱！金幣 +160、寶石 +2、藥水 +1，另獲'+(epic?'史詩':'稀有')+'裝備。');
    break;
  }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
