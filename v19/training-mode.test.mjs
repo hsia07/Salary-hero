@@ -9,6 +9,7 @@ test('training admits three approved monsters and one isolated fourth timing can
  assert.equal(trainingWaveFor('chair-golem'),5);
  assert.equal(trainingWaveFor('meeting-ghost'),50);
  assert.equal(trainingWaveFor('deadline-clock'),6);
+ assert.equal(trainingWaveFor('keyboard-piranha'),26);
  for(const invalid of ['',null,'../../secrets','printer-minion','paper-gremlin?x=1','__proto__']){
    assert.equal(trainingWaveFor(invalid),null);
    assert.equal(trainingStateFor(invalid,initial,enemyFor),null);
@@ -106,4 +107,23 @@ test('fifth ghost has isolated wave 6 training with real attack/victory and no s
  const repeat=repeatTrainingEnemy(won,'deadline-clock',enemyFor);
  assert.equal(repeat.wave,6);assert.equal(repeat.enemy.typeId,'deadline-clock');
  assert.equal(repeat.enemy.hp,126);assert.equal(real.wave,1);assert.equal(real.gold,0);
+});
+
+test('sixth human ghost clerk uses isolated real wave 26 rules and does not mutate normal save',()=>{
+ const normal=initial(),practice=trainingStateFor('keyboard-piranha',initial,enemyFor);
+ assert.equal(practice.wave,26);
+ assert.equal(practice.enemy.typeId,'keyboard-piranha');
+ assert.equal(practice.enemy.tier,'normal');
+ assert.equal(practice.auto,false);
+ const battle=transition(practice,'attack',()=>.99);
+ assert.ok(battle.enemy.hp<practice.enemy.hp);
+ const finisher=primeTrainingFinisher(practice,'keyboard-piranha');
+ const won=transition(finisher,'attack',()=>.99);
+ assert.equal(won.last.type,'victory');
+ const replay=repeatTrainingEnemy(won,'keyboard-piranha',enemyFor);
+ assert.equal(replay.wave,26);
+ assert.equal(replay.enemy.typeId,'keyboard-piranha');
+ assert.equal(replay.enemy.hp,126);
+ assert.equal(normal.wave,1);
+ assert.equal(normal.gold,0);
 });
