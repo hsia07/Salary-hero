@@ -12,7 +12,7 @@ export function trainingStateFor(species,initial,enemyFor){
  const s=initial();
  const target=enemyFor(wave);
  const maxHp=126;
- return {...s,playerName:'練習勇者',auto:false,speed:1,wave,heroHp:900,maxHp:900,
+ return {...s,playerName:'練習勇者',auto:false,speed:1,trainingIsolated:true,wave,heroHp:900,maxHp:900,
   enemy:{...target,hp:maxHp,maxHp},potions:3,log:['🎮 實戰練習：測試 '+target.name+'；不會修改正式遊戲存檔。'],
   last:null};
 }
