@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {ALL_ENEMIES} from './roster.mjs';
 import {validateSpritePixels} from './sprite-atlas.mjs';
 import {paperHitFlashAt,PAPER_HERO_HIT_MS} from './paper-combat.mjs';
-import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,GUARD_LOCK_START_MS,guardTargetLockAt,guardCombatCaptionAt} from './guard-combat.mjs';
+import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,GUARD_LOCK_START_MS,guardTargetLockAt,guardCombatCaptionAt,guardArmorFlashAt,GUARD_ARMOR_FLASH_END_MS} from './guard-combat.mjs';
 
 const root=new URL('../art/v19/candidates/monsters/chair-golem/',import.meta.url);
 const source={
@@ -94,4 +94,16 @@ test('security target-lock is a separately animated warning that ends on actual 
  assert.match(guardCombatCaptionAt(1260,{type:'hit',retaliationDamage:8}),/勇者受擊/);
  assert.match(guardCombatCaptionAt(1320,{type:'victory'}),/最後一格/);
  assert.equal(guardCombatCaptionAt(1320,{type:'hit',retaliationDamage:0}),'反擊未觸發・等待下一擊');
+});
+
+test('mech has its own continuous armor response with no ghost flash before or after impact',()=>{
+ assert.equal(guardArmorFlashAt(GUARD_HERO_HIT_MS-1).active,false);
+ assert.ok(guardArmorFlashAt(GUARD_HERO_HIT_MS+12).white>.5);
+ for(const age of [47,95,136,170,205,225]){
+  const flash=guardArmorFlashAt(GUARD_HERO_HIT_MS+age);
+  assert.ok(flash.red>.3,'visible red armor even on 136ms low-FPS cadence: '+age);
+ }
+ assert.equal(guardArmorFlashAt(GUARD_HERO_HIT_MS+GUARD_ARMOR_FLASH_END_MS).active,false);
+ const reduced=guardArmorFlashAt(GUARD_HERO_HIT_MS+136,{reducedMotion:true});
+ assert.ok(reduced.red>0&&reduced.red<guardArmorFlashAt(GUARD_HERO_HIT_MS+136).red);
 });
