@@ -31,7 +31,7 @@ function draw(now){
   const frame=poseFrame(name,elapsed),sprite=frames[name],rect={x:281,y:37,w:350,h:350};
   ctx.drawImage(sprite,frame*384,0,384,384,rect.x,rect.y,rect.w,rect.h);
   if(name==='hurt'){
-   drawPaperHitTint(ctx,sprite,{cell:384},frame,rect,GUARD_HERO_HIT_MS+elapsed);
+   drawPaperHitTint(ctx,sprite,{cell:384},frame,rect,GUARD_HERO_HIT_MS+elapsed,{extendedRed:true});
    drawGuardCombatFx(ctx,GUARD_HERO_HIT_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:false});
   }else if(name==='attack'){
    drawGuardCombatFx(ctx,GUARD_ATTACK_START_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:true});
