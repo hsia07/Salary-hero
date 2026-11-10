@@ -25,7 +25,7 @@
 .controls button,.mini-actions button{color:#fff1c9;border:2px solid #d6ac69;border-radius:10px;background:linear-gradient(#70455d,#38233f);padding:10px 4px;font-weight:850;font-size:13px;box-shadow:0 3px 0 #160d24}
 .controls button:active,.mini-actions button:active{transform:translateY(2px);box-shadow:0 1px 0 #160d24}
 .controls .attack{background:linear-gradient(#bb7354,#66334d);border-color:#ffdd96}
-.mini-actions{padding:0 10px 11px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.mini-actions{padding:0 10px 11px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
 .mini-actions button{padding:7px 3px;font-size:11px;border-width:1px;background:#382846}
 .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:8px 6px calc(10px + env(safe-area-inset-bottom));gap:5px;border-top:2px solid #dbac6a;background:linear-gradient(#492c47,#25192f)}
 .tabs button{min-width:0;border:1px solid #c89b66;border-radius:10px;background:linear-gradient(#66405b,#34243e);color:#ffe8bb;min-height:59px;padding:6px 2px;font-size:11px;font-weight:850}
@@ -154,7 +154,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
-<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.25</div></div>
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.26</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
 <div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
 <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
@@ -204,7 +204,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 </details></div></details>
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
-<section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
+<section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button><button id="weekend-chest">🎁 週末箱 (0)</button></section>
 <nav class="tabs" aria-label="遊戲功能"><button data-panel="modes"><span>📆</span>副本</button><button data-panel="skills"><span>✨</span>技能</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
 
 
@@ -221,4 +221,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=weekday-dungeon-v19-25"></script></body></html>
+<script type="module" src="./app.mjs?v=original-weekly-v19-26"></script></body></html>
