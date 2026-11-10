@@ -13,6 +13,58 @@ export const GUARD_DEFEAT_FADE_START_MS=1280;
 export const GUARD_DEFEAT_END_MS=1550;
 export const GUARD_ATTACK_POSE_MS=Object.freeze([145,155,75,115,160]);
 export const GUARD_LOCK_START_MS=930;
+export const GUARD_ARMOR_FLASH_END_MS=260;
+/** Per-species clock-in mech armor response. Unlike the paper sprite's two
+ * flickers, heavy metal remains crimson continuously across low mobile FPS.
+ * This timing never moves/rotates the whole character and preserves the 16 poses.
+ */
+export function guardArmorFlashAt(elapsed,{reducedMotion=false}={}){
+ const age=Number(elapsed)-GUARD_HERO_HIT_MS;
+ if(!Number.isFinite(age)||age<0||age>=GUARD_ARMOR_FLASH_END_MS)
+  return {white:0,red:0,active:false};
+ let white=0,red=0;
+ if(age<42)white=.88*(1-age/42);
+ if(age>=42&&age<205)red=.90-.22*(age-42)/163;
+ if(age>=205)red=.68*(1-(age-205)/55);
+ return {white:reducedMotion?white*.55:white,
+  red:reducedMotion?red*.58:red,active:white>0||red>0};
+}
+const armorTintCache=new WeakMap();
+function guardTintFrame(image,frame,index,color){
+ let t=armorTintCache.get(image);
+ if(!t){t=new Map();armorTintCache.set(image,t);}
+ const key=index+':'+color;
+ if(t.has(key))return t.get(key);
+ const canvas=document.createElement('canvas');
+ canvas.width=frame.cell;canvas.height=frame.cell;
+ const local=canvas.getContext('2d');
+ local.drawImage(image,index*frame.cell,0,frame.cell,frame.cell,0,0,frame.cell,frame.cell);
+ local.globalCompositeOperation='source-in';
+ local.fillStyle=color;
+ local.fillRect(0,0,frame.cell,frame.cell);
+ t.set(key,canvas);
+ return canvas;
+}
+/** Alpha-perfect original-pose armor flash, only on the actual enemy hit.
+ * The function reports true ONLY when it actually painted a tinted frame.
+ */
+export function drawGuardArmorTint(ctx,image,frame,index,rect,elapsed,options={}){
+ const flash=guardArmorFlashAt(elapsed,options);
+ if(!flash.active||!image||!frame||!rect)return false;
+ ctx.save();
+ if(flash.white>0){
+  ctx.globalAlpha*=flash.white;
+  ctx.drawImage(guardTintFrame(image,frame,index,'#fff7e5'),rect.x,rect.y,rect.w,rect.h);
+ }
+ ctx.restore();
+ if(flash.red>0){
+  ctx.save();
+  ctx.globalAlpha*=flash.red;
+  ctx.drawImage(guardTintFrame(image,frame,index,'#ff263c'),rect.x,rect.y,rect.w,rect.h);
+  ctx.restore();
+ }
+ return true;
+}
 const clamp=(n,min=0,max=1)=>Math.max(min,Math.min(max,n));
 export function guardCombatPoseAt(elapsed,result){
  const t=Number(elapsed);
