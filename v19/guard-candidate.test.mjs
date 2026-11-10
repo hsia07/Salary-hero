@@ -26,7 +26,7 @@ test('elite mech is candidate ONLY, never fake approved 3/32',()=>{
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
  assert.ok(ALL_ENEMIES.find(e=>e.id==='chair-golem'&&e.name==='打卡保全機兵'));
  assert.equal(c.id,'chair-golem');assert.equal(c.approved,false);assert.equal(c.previewOnly,true);
- assert.equal(c.special.approved,false);assert.equal(c.special.missingUniquePoses,5);
+ assert.equal(c.tier,'normal');assert.equal(c.special,undefined);
  assert.equal(m.monsters['chair-golem'],undefined);assert.equal(Object.keys(m.monsters).length,2);
  for(const [name,{frames,sha}] of Object.entries(source)){
   const f=c.states[name];
