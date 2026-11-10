@@ -8,7 +8,7 @@ import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-m
 import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
-import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS} from './guard-combat.mjs';
+import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardCombatCaptionAt} from './guard-combat.mjs?v=scan-lock-v19-9';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
@@ -63,6 +63,8 @@ if(trainingNotice&&trainingWave!==null){
  const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（美術候選）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
+ const readout=$('#training-animation-readout');
+ if(readout)readout.hidden=trainingSpecies!=='chair-golem';
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 $('#training-finish')?.addEventListener('click',()=>{
@@ -779,6 +781,20 @@ function frame(now){
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
   drawStage(now);
   renderCombatBars(now);
+  if(trainingSpecies==='chair-golem'){
+    const readout=$('#training-animation-readout');
+    if(readout){
+      const elapsed=fx?.wave?Math.max(0,(now-fx.start)*state.speed):Infinity;
+      const active=Number.isFinite(elapsed)&&elapsed<GUARD_DEFEAT_END_MS;
+      const cue=guardCombatCaptionAt(elapsed,active?fx?.result:null);
+      const pose=active?(world.dataset.guardPose||'idle'):'idle';
+      const index=active?Number(world.dataset.guardFrame||0)+1:1;
+      const flash=active?JSON.parse(world.dataset.guardFlash||'{}'):null;
+      const strength=Math.round(100*Math.max(0,Number(flash?.red)||0));
+      const status='🚨 '+cue+'｜動作 '+pose+' #'+index+(strength>0?'｜全身紅閃 '+strength+'%':'');
+      if(readout.textContent!==status)readout.textContent=status;
+    }
+  }
  }
  requestAnimationFrame(frame);
 }
