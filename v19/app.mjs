@@ -433,7 +433,8 @@ function drawStage(now){
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem');
- const victory=fx?.result?.type==='victory'&&animationMs<(guardVictoryHold?GUARD_DEFEAT_END_MS:1100);
+ const alienVictoryHold=fx?.oldEnemy?.typeId==='meeting-ghost'&&trainingCandidateArt.has('meeting-ghost');
+ const victory=fx?.result?.type==='victory'&&animationMs<(guardVictoryHold?GUARD_DEFEAT_END_MS:alienVictoryHold?ALIEN_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
    (victory&&hasIllustratedMonster(fx?.oldEnemy?.typeId));
@@ -443,9 +444,10 @@ function drawStage(now){
  // The defeated actor plays its own disintegration, while the next species
  // materializes in the SAME slot with no empty frame between waves.
  const guardShattering=victory&&guardVictoryHold;
- const enteringNew=victory
-   ?Math.max(0,Math.min(1,(animationMs-(guardShattering?GUARD_DEFEAT_FADE_START_MS:900))/(guardShattering?GUARD_DEFEAT_END_MS-GUARD_DEFEAT_FADE_START_MS:200)))
-   :1;
+ const alienShattering=victory&&alienVictoryHold;
+ const fadeStart=guardShattering?GUARD_DEFEAT_FADE_START_MS:alienShattering?1450:900;
+ const fadeEnd=guardShattering?GUARD_DEFEAT_END_MS:alienShattering?ALIEN_DEFEAT_END_MS:1100;
+ const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-fadeStart)/(fadeEnd-fadeStart))):1;
  const fadingOld=victory?1-enteringNew:0;
  const visualFor=(enemy,result)=>{
    const hitResult=result?{...result,retaliationDamage:fx?.retaliationDamage||0}:null;
@@ -506,8 +508,10 @@ function drawStage(now){
    drawAlienStampFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,
       reducedMotion:motionReduced,canRetaliate:fx.retaliationDamage>0});
    const stamp=alienStampAt(animationMs,fx.retaliationDamage>0);
+   const route=alienStampRouteAt(animationMs,{enemyX,enemyY,heroX,heroY});
    world.dataset.alienStamp=JSON.stringify({elapsed:Math.floor(animationMs),
-      charge:stamp.charge,projectile:stamp.projectile,impact:stamp.impact});
+      charge:stamp.charge,projectile:stamp.projectile,impact:stamp.impact,
+      originX:route.originX,targetX:route.targetX,x:route.x,travelsLeft:route.travelsLeft});
  }
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
@@ -897,7 +901,11 @@ function frame(now){
       const cue=!inFlight?'待機':fx.result?.type==='victory'?'擊倒':
         activeStamp.projectile?'印章飛行中':activeStamp.impact>0?'印章命中勇者':
         activeStamp.charge>0?'蓄力詠唱':ms<405?'勇者出手':ms<845?'外星人受擊':'動作收招';
-      const label='🛸 第四隻時序：'+cue+'｜正式角色美術未整合';
+      const pose=world.dataset.alienPose||'idle';
+      const spriteIndex=1+Number(world.dataset.alienFrame||0);
+      const flash=Math.round(100*Number(JSON.parse(world.dataset.alienFlash||'{}').red||0));
+      const label='🛸 朝左｜'+cue+'｜'+pose+' #'+spriteIndex+(flash?'｜全身紅閃 '+flash+'%':'')+
+        (trainingCandidateArt.has('meeting-ghost')?'｜16 格候選已載入':'｜候選圖載入中')+'・正式 3/32';
       if(readout.textContent!==label)readout.textContent=label;
     }
   }
