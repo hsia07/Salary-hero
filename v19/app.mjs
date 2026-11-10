@@ -867,6 +867,10 @@ world.addEventListener('pointerup',e=>{
  if(x>.48)attack();
 });
 function attackCooldownMs(){
+ if(fx?.oldEnemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha')){
+   if(fx.result?.type==='victory')return CLERK_DEFEAT_END_MS;
+   if(fx.retaliation)return CLERK_REPORT_IMPACT_MS+HIT_FEEDBACK_MS;
+ }
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
  if(fx?.result?.type==='victory'&&fx.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))
    return GUARD_DEFEAT_END_MS+40; // Never skip the final disintegrated pose.

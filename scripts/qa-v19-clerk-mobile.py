@@ -18,6 +18,7 @@ def main():
   browser=p.chromium.launch(headless=True,args=['--disable-dev-shm-usage'])
   page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=2,is_mobile=True,has_touch=True)
   page.on('pageerror',lambda e:errors.append(str(e)))
+  page.clock.install()
   page.goto(BASE+'/v19/play.html?training=keyboard-piranha',wait_until='domcontentloaded')
   page.wait_for_function("""()=>{
    const s=document.querySelector('#monster-art-status'),w=document.querySelector('#world');
@@ -85,27 +86,27 @@ def main():
 
   page.evaluate('(key)=>localStorage.setItem(key,"SIXTH_PLAYER_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0]);assert initial==900
-  page.locator('#attack').click()
-  captures=page.evaluate("""()=>new Promise((resolve,reject)=>{
-   const c=document.querySelector('#world'),goals=[550,1040,1200,1390],results=[];let i=0;
-   const watchdog=setTimeout(()=>reject(Error('sixth report hit not sampled')),9000);
-   function frame(){
-    const raw=c.dataset.hpTiming;
-    if(raw){
-     const t=JSON.parse(raw);
-     if(t.t>=goals[i]){
-      const r=JSON.parse(c.dataset.clerkPaper||'{}');
-      results.push({t:t.t,hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
-       contactMs:t.contactMs,pose:c.dataset.clerkPose,frame:Number(c.dataset.clerkFrame),
-       peakRed:Number(c.dataset.clerkPeakRed||0),tinted:c.dataset.clerkTintApplied==='true',paper:r});
-      i++;
-     }
-    }
-    if(i===goals.length){clearTimeout(watchdog);resolve(results);}
-    else requestAnimationFrame(frame);
-   }
-   requestAnimationFrame(frame);
-  })""")
+  # Advance Chromium's animation clock through the short projectile window.
+  # Slow CI frames can jump directly from windup to impact on a wall clock.
+  page.clock.pause_at(page.evaluate('Date.now()')+1000)
+  attack=page.locator('#attack')
+  assert attack.is_enabled()
+  attack.dispatch_event('click')
+  captures=[]
+  for delta in (560,480,160,80):
+   page.clock.run_for(delta)
+   captures.append(page.evaluate("""()=>{
+    const canvas=document.querySelector('#world');
+    return {
+     ...JSON.parse(canvas.dataset.hpTiming),
+     hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
+     pose:canvas.dataset.clerkPose,
+     peakRed:Number(canvas.dataset.clerkPeakRed||0),
+     tinted:canvas.dataset.clerkTintApplied==='true',
+     paper:JSON.parse(canvas.dataset.clerkPaper),
+     attackLocked:document.querySelector('#attack').disabled,
+    };
+   }"""))
   early,windup,flight,contact=captures
   assert early['hp']==initial and early['pose']=='hurt',early
   assert early['peakRed']>.3 and early['tinted'],early
@@ -114,14 +115,25 @@ def main():
   assert flight['paper'].get('projectile') is True,flight
   assert flight['paper'].get('travelsLeft') is True,flight
   assert flight['paper']['originX']>flight['paper']['x']>flight['paper']['targetX'],flight
-  assert contact['contactMs']==1255,contact
+  assert flight['t']<1255<=contact['t'],captures
+  assert contact['contactMs']==1255 and contact['paper']['impact']>0,contact
   assert contact['hp']<initial,contact
+  assert contact['attackLocked'],contact
   b64=page.locator('#world').evaluate('(canvas)=>canvas.toDataURL("image/png").split(",")[1]')
   (OUT/'training-sixth-clerk-reports.png').write_bytes(b64decode(b64))
+  page.clock.run_for(900)
+  assert attack.is_enabled()
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='SIXTH_PLAYER_SAVE_UNCHANGED'
-  page.locator('#training-finish').click()
-  page.locator('#attack').click()
-  page.wait_for_function("""()=>document.querySelector('#game-log')?.textContent?.includes('重新練習')""",timeout=6500)
+  page.locator('#training-finish').dispatch_event('click')
+  assert attack.is_enabled()
+  attack.dispatch_event('click')
+  page.clock.run_for(1650)
+  assert page.locator('#world').get_attribute('data-clerk-pose')=='defeat'
+  assert page.locator('#world').get_attribute('data-clerk-frame')=='3'
+  assert attack.is_disabled()
+  page.clock.run_for(200)
+  assert attack.is_enabled()
+  assert '重新練習' in page.locator('#game-log').inner_text()
   assert '第 26 關' in page.locator('#wave').inner_text()
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='SIXTH_PLAYER_SAVE_UNCHANGED'
   assert not errors,errors
