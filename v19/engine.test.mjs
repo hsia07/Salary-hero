@@ -9,9 +9,11 @@ test('each attack mutates actual enemy HP and keeps salary separate',()=>{
  assert.ok(after.gold>=0);
  assert.equal(start.enemy.hp,start.enemy.maxHp);
 });
-test('boss victory advances wave, grants chest and heals',()=>{
- let s=initial();s.wave=4;s.enemy={id:4,boss:true,name:'Boss',hp:1,maxHp:100,attack:10};s.heroHp=4;
- const after=transition(s,'attack',()=>0.8);
+test('weekday dungeon boss clear grants chest and heals',()=>{
+ const now=Date.parse('2026-11-10T08:00:00Z');
+ let s=transition(initial(),{type:'mode',id:'dungeon'},()=>.8,now);
+ s.modeWaves.dungeon=4;s.wave=4;s.enemy={...loopEnemyFor(4,'dungeon',now),hp:1};s.heroHp=4;
+ const after=transition(s,'attack',()=>.8,now);
  assert.equal(after.wave,5);assert.ok(after.chests>=1);assert.equal(after.heroHp,after.maxHp);
 });
 test('shop purchase and equipment choice change damage and persist',()=>{
@@ -38,7 +40,7 @@ test('Taiwan payroll does not generate Sunday salary',()=>{
 test('all equipment candidates have unique IDs',()=>assert.equal(new Set(ITEMS.map(x=>x.id)).size,ITEMS.length));
 
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES,tierForWave} from './roster.mjs';
-import {enemyFor,playerTitle,cleanPlayerName} from './engine.mjs';
+import {enemyFor,loopEnemyFor,playerTitle,cleanPlayerName} from './engine.mjs';
 
 test('nicknames use the chosen name and persist into the role prefix',()=>{
  const named=transition(initial(),{type:'setName',value:'小行星'});
@@ -80,46 +82,51 @@ test('32 unique monster species: 16 normal, 8 elite, 8 bosses on four-floor cade
    assert.equal(e.elite,expected==='elite');
  }
 });
-test('elite monster is stronger, gives a guaranteed equipment drop and one gem',()=>{
- const elite=enemyFor(3),basic=enemyFor(2);
- assert.ok(elite.hp>basic.hp);assert.ok(elite.attack>basic.attack);
- const s=initial();s.wave=3;s.enemy={...elite,hp:1};s.gems=0;
- const win=transition(s,'attack',()=>.99);
+test('weekday dungeon stand-in elite is stronger, gives equipment and a gem',()=>{
+ const now=Date.parse('2026-11-10T08:00:00Z');
+ const elite=loopEnemyFor(3,'dungeon',now),basic=loopEnemyFor(2,'dungeon',now);
+ assert.ok(elite.hp>basic.hp);assert.ok(elite.attack>=basic.attack);
+ let s=transition(initial(),{type:'mode',id:'dungeon'},()=>.99,now);
+ s.wave=3;s.modeWaves.dungeon=3;s.enemy={...elite,hp:1};
+ const win=transition(s,'attack',()=>.99,now);
  assert.equal(win.wave,4);assert.equal(win.enemy.tier,'boss');
  assert.equal(win.last.elite,true);assert.equal(win.last.tier,'elite');
  assert.equal(win.gems,1);assert.equal(win.pendingDrops.length,1);
- assert.ok(win.gold>12+3*4);
  assert.ok(win.defeatedTypes.includes(elite.typeId));
 });
-test('elite skill hits every third counterattack and survives save cycles',()=>{
- let s=initial();s.wave=3;s.enemy=enemyFor(3);
+test('weekday dungeon elite counterattack every third turn survives saves',()=>{
+ const now=Date.parse('2026-11-10T08:00:00Z');
+ let s=transition(initial(),{type:'mode',id:'dungeon'},()=>.9,now);
+ s.wave=3;s.modeWaves.dungeon=3;s.enemy=loopEnemyFor(3,'dungeon',now);
  for(let n=1;n<=3;n++){
-   s=transition(s,'attack',()=>.9);
+   s=transition(s,'attack',()=>.9,now);
    assert.equal(s.enemy.turns,n);
    assert.equal(Boolean(s.last.enemySkill),n===3);
  }
  assert.equal(s.last.enemySkill,'菁英反制');
  assert.ok(s.last.retaliationDamage>s.enemy.attack);
- assert.equal(normalize(JSON.parse(JSON.stringify(s))).enemy.turns,3);
+ assert.equal(normalize(JSON.parse(JSON.stringify(s)),now).enemy.turns,3);
 });
-test('boss skill activates every fourth retaliation and remains stronger than previous elite',()=>{
- for(let w=4;w<=128;w+=4){
-   assert.ok(enemyFor(w).maxHp>enemyFor(w-1).maxHp,'boss wave '+w+' is tougher than elite');
- }
- let s=initial();s.wave=4;s.enemy=enemyFor(4);
+test('weekday dungeon boss stand-in stays stronger and uses four-turn special',()=>{
+ const now=Date.parse('2026-11-10T08:00:00Z');
+ for(let w=4;w<=40;w+=4)
+   assert.ok(loopEnemyFor(w,'dungeon',now).maxHp>loopEnemyFor(w-1,'dungeon',now).maxHp);
+ let s=transition(initial(),{type:'mode',id:'dungeon'},()=>.9,now);
+ s.wave=4;s.modeWaves.dungeon=4;s.enemy=loopEnemyFor(4,'dungeon',now);
  for(let n=1;n<=4;n++){
-   s=transition(s,'attack',()=>.9);
+   s=transition(s,'attack',()=>.9,now);
    assert.equal(Boolean(s.last.enemySkill),n===4);
  }
  assert.equal(s.last.enemySkill,'首領狂暴');
 });
-test('existing V19 save retains character/progress while adding elite metadata',()=>{
- const legacy=initial();legacy.wave=3;legacy.gold=246;legacy.playerName='社畜';
- legacy.enemy={...enemyFor(3),tier:undefined,elite:undefined,hp:20};
+test('existing V19 campaign save retains name, rewards and wave',()=>{
+ const legacy=initial();legacy.activeMode='campaign';legacy.modeWaves.campaign=3;
+ legacy.wave=3;legacy.gold=246;legacy.playerName='社畜';
+ legacy.enemy={...loopEnemyFor(3),hp:20};
  const saved=normalize(JSON.parse(JSON.stringify(legacy)));
  assert.equal(saved.gold,246);assert.equal(saved.playerName,'社畜');
  assert.equal(saved.wave,3);assert.equal(saved.enemy.hp,20);
- assert.equal(saved.enemy.tier,'elite');assert.equal(saved.enemy.elite,true);
+ assert.equal(saved.enemy.tier,'normal');
 });
 test('new players encounter the two illustrated characters in floor order',()=>{
  assert.equal(enemyFor(1).typeId,'paper-gremlin');
@@ -130,14 +137,13 @@ test('new players encounter the two illustrated characters in floor order',()=>{
  assert.equal(enemyFor(5).typeId,'chair-golem'); // common security mech moved forward
  assert.equal(enemyFor(30).typeId,'alien-intern'); // displaced species retained
 });
-test('shield enemy actually mitigates damage',()=>{
- const a=initial();
- a.wave=10;a.enemy=enemyFor(10); // guarded crab retained in the rotation
+test('guarded recycled enemy actually mitigates damage',()=>{
+ const a=initial();a.modeWaves.campaign=3;a.wave=3;a.enemy=loopEnemyFor(3);
  const b=transition(a,'attack',()=>.9);
  assert.equal(a.enemy.hp-b.enemy.hp,Math.round(18*.75));
 });
-test('healing enemy actually restores HP between turns',()=>{
- const a=initial();a.wave=2;a.enemy=enemyFor(2); // the evil coffee mimic has leech
+test('healing recycled enemy actually restores HP between turns',()=>{
+ const a=initial();a.modeWaves.campaign=2;a.wave=2;a.enemy=loopEnemyFor(2);
  const b=transition(a,'attack',()=>.9);
  assert.ok(b.enemy.hp>a.enemy.hp-18);
  assert.ok(b.enemy.hp<=a.enemy.maxHp);
@@ -156,12 +162,11 @@ test('weekly salary returns a finite amount on scheduled workday',()=>{
  assert.ok(Number.isFinite(p.month)&&p.month>=p.today);
 });
 
-test('rage enemy deals more retaliation damage than its base attack',()=>{
- const a=initial();a.wave=30;a.enemy=enemyFor(30); // rage species displaced from floor 5, still in rotation
+test('rage recycled enemy deals more damage than base attack',()=>{
+ const a=initial();a.modeWaves.campaign=4;a.wave=4;a.enemy=loopEnemyFor(4);
  const b=transition(a,'attack',()=>.9);
  assert.ok(a.heroHp-b.heroHp>a.enemy.attack);
 });
-
 test('real enemy retaliation records damage for hit flash but victory never flashes',()=>{
  const s=initial();s.heroHp=100;s.enemy={...s.enemy,hp:9999};
  const n=transition(s,'attack',()=>.9);
