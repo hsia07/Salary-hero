@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "id": "keyboard-piranha",
+  "name": "加班遊魂文員",
+  "tier": "normal",
+  "approved": false,
+  "previewOnly": true,
+  "facing": "left",
+  "target": "hero-on-left",
+  "artStyle": "Evil Japanese chibi overtime office ghost, messy purple hair, crooked tie, sinister purple eyes, haunted laptop, floating reports, cyan ghost flames and red impact variants",
+  "sourceQuality": "Sixth illustrated animation candidate cleaned from a design sprite montage. More limited native resolution than the official security mech; not counted as completed until visual approval.",
+  "states": {
+    "idle": {
+      "src": "../art/v19/candidates/monsters/keyboard-piranha/idle.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 337,
+      "durations": [
+        220,
+        190,
+        250,
+        180
+      ],
+      "sha256": "8fea65e707143528b4319cc4fb4b5d94c54f3ad2fe2f3d61a43940b39fb918d0"
+    },
+    "attack": {
+      "src": "../art/v19/candidates/monsters/keyboard-piranha/attack.webp",
+      "frames": 5,
+      "cell": 384,
+      "ground_y": 337,
+      "durations": [
+        140,
+        155,
+        95,
+        155,
+        205
+      ],
+      "sha256": "ea39894464c829c071d5906f9590fcdbd4912518d263d19f7e53339867a03e8b"
+    },
+    "hurt": {
+      "src": "../art/v19/candidates/monsters/keyboard-piranha/hurt.webp",
+      "frames": 3,
+      "cell": 384,
+      "ground_y": 337,
+      "durations": [
+        95,
+        135,
+        235
+      ],
+      "sha256": "0a90b078be8b310f870f75cca8b60401f07a6ea0e061bfd480a9b1bbb38f9848"
+    },
+    "defeat": {
+      "src": "../art/v19/candidates/monsters/keyboard-piranha/defeat.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 337,
+      "durations": [
+        165,
+        220,
+        320,
+        490
+      ],
+      "sha256": "8fc2190ba4602b20c349d4893a72aa66045f6a8d1769934228b6aab15d1df3d5"
+    }
+  },
+  "notes": "Four original idle, five throwing, three impact, four defeat/disintegration drawings. Alpha cleaned; first-stage test only. Not permitted in production encounter map without user approval."
+}
