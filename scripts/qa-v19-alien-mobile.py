@@ -26,7 +26,19 @@ def main():
   assert '第 50 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
   assert '3/32' in page.locator('#monster-art-status').inner_text()
-  assert '正式美術尚未整合' in page.locator('#training-mode-notice').inner_text()
+  assert '朝左・16 格逐格候選' in page.locator('#training-mode-notice').inner_text()
+  page.wait_for_function("""() => {
+    const w=document.querySelector('#world'),label=document.querySelector('#monster-art-status');
+    return w?.dataset.alienArt==='16-frames-loaded'&&w?.dataset.alienFacing==='left'&&
+           label?.dataset.candidate==='true'&&label.textContent.includes('3/32');
+  }""",timeout=20000)
+  dimensions=page.evaluate("""async()=>{
+    const r={};for(const [state,frames] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
+      const image=new Image();image.src='../art/v19/candidates/monsters/meeting-ghost/'+state+'.webp';
+      await image.decode();r[state]=[image.naturalWidth,image.naturalHeight];
+    }return r;
+  }""")
+  assert dimensions=={s:[384*n,384] for s,n in [('idle',4),('attack',5),('hurt',3),('defeat',4)]},dimensions
   assert page.evaluate('document.documentElement.scrollWidth > window.innerWidth+3') is False
   page.evaluate('(k)=>localStorage.setItem(k,"ORIGINAL_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0])
@@ -34,7 +46,7 @@ def main():
   page.locator('#attack').click()
   snapshots=page.evaluate("""()=>new Promise((resolve,reject)=>{
     const canvas=document.querySelector('#world');
-    const samples=[],goals=[1000,1150,1320];
+    const samples=[],goals=[530,1000,1150,1320];
     let idx=0;
     const timer=setTimeout(()=>reject(Error('alien combat timed out')),9000);
     function frame(){
@@ -45,6 +57,9 @@ def main():
           const spell=JSON.parse(canvas.dataset.alienStamp||'{}');
           samples.push({t:timing.t,contactMs:timing.contactMs,
             hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
+            pose:canvas.dataset.alienPose,frame:Number(canvas.dataset.alienFrame),
+            peakRed:Number(canvas.dataset.alienRedPeak||0),
+            tintApplied:canvas.dataset.alienTintApplied==='true',
             spell});
           idx++;
         }
@@ -54,10 +69,15 @@ def main():
     }
     requestAnimationFrame(frame);
   })""")
-  early,travel,contact=snapshots
+  hurt,early,travel,contact=snapshots
+  assert hurt['hp']==initial,hurt
+  assert hurt['pose']=='hurt' and hurt['peakRed']>.3 and hurt['tintApplied'],hurt
   assert early['hp']==initial,early
+  assert early['pose']=='attack',early
   assert travel['hp']==initial,travel
   assert travel['spell'].get('projectile') is True,travel
+  assert travel['spell'].get('travelsLeft') is True,travel
+  assert travel['spell']['originX']>travel['spell']['x']>travel['spell']['targetX'],travel
   assert contact['hp']<initial,contact
   assert contact['contactMs']==1215,contact
   assert page.evaluate('(k)=>localStorage.getItem(k)',KEY)=='ORIGINAL_SAVE_UNCHANGED'
@@ -69,8 +89,8 @@ def main():
   """,timeout=5000)
   assert '第 50 關' in page.locator('#wave').inner_text()
   assert page.evaluate('(k)=>localStorage.getItem(k)',KEY)=='ORIGINAL_SAVE_UNCHANGED'
-  page.locator('#world').screenshot(path=str(OUT/'training-fourth-alien-timing.png'))
+  page.locator('#world').screenshot(path=str(OUT/'training-fourth-alien-left-facing.png'))
   browser.close()
- print('PASS: alien practice wave 50, 1215ms projectile impact, delayed displayed HP, repeat finisher and unchanged official save. Artwork NOT approved.')
+ print('PASS: alien practice wave 50, 1215ms projectile impact, delayed displayed HP, repeat finisher and unchanged official save. Candidate 16-frame image staged and left-facing; not officially approved.')
 
 if __name__=='__main__':main()
