@@ -94,7 +94,7 @@ export const GAME_MODES=Object.freeze([
 const WEEKEND_DUNGEON=Object.freeze({weekday:6,weekend:true,id:'weekend-chaos',name:'週末・全員下班！無人公司大暴走',icon:'🎪',theme:'weekend',story:'全公司下班，只剩升職失控的自動化機器！每層可能空蕩蕩、免費咖啡、彩紙風暴、金庫大開，甚至 AI 主管失控。週六、週日接續同一份進度。',hpScale:1.08,attackScale:1.06,rewardScale:1.35,xpScale:1.25,slackChance:.14});
 export const DAILY_DUNGEONS=Object.freeze([
  WEEKEND_DUNGEON,
- {weekday:1,id:'monday-hell',name:'星期一・地獄星期一：社畜輪迴',icon:'🔥',theme:'hell',story:'地獄星期一！高難度、高報酬，經驗值 +100%、稀有掉率提升，首通 Boss 保證史詩裝備。',hpScale:1.65,attackScale:1.4,rewardScale:1.25,xpScale:2,slackChance:0},
+ {weekday:1,id:'monday-hell',name:'星期一・厭世',icon:'🔥',theme:'hell',story:'厭世氣息籠罩整棟公司：怪物血量 ×1.65、攻擊 ×1.4，經驗值翻倍，稀有與史詩裝備掉率提高。首通魔王保證一件史詩裝備。',hpScale:1.65,attackScale:1.4,rewardScale:1.25,xpScale:2,slackChance:0},
  {weekday:2,id:'tuesday-meeting',name:'星期二・會議室異次元',icon:'📋',theme:'office',story:'走不完的會議迷宮，擊破四關可獲技能書，奇遇事件也可能改寫命運。',hpScale:1.02,attackScale:1,rewardScale:1,xpScale:1.05,slackChance:.06},
  {weekday:3,id:'wednesday-breakdown',name:'星期三・週三精神崩潰邊緣',icon:'🫠',theme:'alien',story:'精神壓力化成怪物。突破副本可獲得寵物經驗與強化素材。',hpScale:1.1,attackScale:1.1,rewardScale:1.08,xpScale:1.1,slackChance:.1},
  {weekday:4,id:'thursday-overtime',name:'星期四・黎明前的加班',icon:'🌃',theme:'digital',story:'離黎明只差一點，擊敗怪物收集鍛造素材，Boss 掉落稀有材料。',hpScale:1.18,attackScale:1.1,rewardScale:1.16,xpScale:1.12,slackChance:.08},
@@ -297,7 +297,8 @@ function lootRoll(s,rng,guaranteed=false,now=Date.now()){
  const mondayRare=s.activeMode==='dungeon'&&!s.trainingIsolated&&weekdayTaiwan(now)===1;
  const chance=Math.max(0,Math.min(0.999999,Number(rng())||0));
  if(guaranteed || chance<(mondayRare?.48:.23) || s.cleared%4===0){
-   const id=s.cleared>=16&&chance<.025?'excalibur':s.cleared>=6&&chance<.10?'notice':'laptop';
+   // Monday boosts both the total drop rate and the chance of truly rare tiers.
+   const id=s.cleared>=16&&chance<(mondayRare?.06:.025)?'excalibur':s.cleared>=6&&chance<(mondayRare?.22:.10)?'notice':'laptop';
    s.pendingDrops.push(id);notice(s,'🎁 敵人掉落 '+ITEMS.find(it=>it.id===id).name+'！');
  }
 }
@@ -452,7 +453,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
          const key='monday-epic:'+todayTW(now);
          if(!s.weeklyDungeonClaims.includes(key)){
            s.weeklyDungeonClaims.push(key);s.pendingDrops.push('notice');
-           notice(s,'🔥 地獄星期一首通！保證史詩：黃金離職通知書。');
+           notice(s,'🔥 厭世星期一首通！保證史詩：黃金離職通知書。');
          }
        }
        s.heroHp=s.maxHp;
