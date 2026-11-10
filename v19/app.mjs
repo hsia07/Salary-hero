@@ -422,6 +422,7 @@ function renderCombatBars(now){
    ?(caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
    :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const view=visibleCombatHealthAt(state,fx,elapsed,{retaliationContactMs:contactMs});
+ if(trainingWave!==null)world.dataset.hpTiming=JSON.stringify({t:Math.floor(elapsed),stateType:fx?.result?.type||null,retaliation:!!fx?.retaliation,caster,illustrated:!!illustrated,contactMs,oldHeroHp:fx?.oldHeroHp,realHeroHp:state.heroHp,visibleHeroHp:view.heroHp});
  const key=[view.heroHp,view.enemyHp,view.maxHero,view.maxEnemy].join('|');
  if(key===lastCombatBarKey)return;
  lastCombatBarKey=key;
