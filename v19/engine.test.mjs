@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ITEMS,ENCOUNTERS,encounterOutcome,initial,normalize,transition,todayTW,salaryAt} from './engine.mjs';
+import {ITEMS,ENCOUNTERS,encounterOutcome,autoEncounterChoice,initial,normalize,transition,todayTW,salaryAt} from './engine.mjs';
 import {shouldRecoil} from './hurt-timing.mjs';
 
 test('each attack mutates actual enemy HP and keeps salary separate',()=>{
@@ -235,4 +235,29 @@ test('winning hidden story risk earns item boosts and one ticket, safe choice do
  const next=transition(start,{type:'encounterChoose',choice:1},()=>{throw Error('safe story should not roll')},now);
  assert.equal(next.potions,2);assert.equal(next.gold,42);
  assert.equal(next.skinTickets,1);
+});
+
+test('balanced encounter trustee is opt-in and keeps old saves manual',()=>{
+ const old=initial();delete old.autoEncounter;
+ assert.equal(normalize(old).autoEncounter,false);
+ const on=transition(old,{type:'autoEncounter',value:true});
+ assert.equal(on.autoEncounter,true);
+ assert.equal(normalize(JSON.parse(JSON.stringify(on))).autoEncounter,true);
+ const off=transition(on,{type:'autoEncounter',value:false});
+ assert.equal(off.autoEncounter,false);
+});
+test('balanced trustee prefers reliable outcomes unless risk has meaningful expected advantage',()=>{
+ assert.equal(autoEncounterChoice(ENCOUNTERS.find(x=>x.id==='alien-shuttle')),1);
+ assert.equal(autoEncounterChoice(ENCOUNTERS.find(x=>x.id==='monkey-scroll')),1);
+ assert.equal(autoEncounterChoice(ENCOUNTERS.find(x=>x.id==='clockwork-elevator')),0);
+ assert.equal(autoEncounterChoice(ENCOUNTERS.find(x=>x.id==='debug-cat')),0);
+ assert.equal(autoEncounterChoice(ENCOUNTERS.find(x=>x.id==='dragon')),1);
+ assert.equal(autoEncounterChoice({choices:[]}),-1);
+});
+test('daily history records HP lost even if rewards level hero up',()=>{
+ const now=Date.parse('2026-11-13T05:00:00Z'),s=initial();
+ s.heroHp=13;s.xp=79;s.encounterDay=todayTW(now);s.encounterPending='night-platform';
+ const after=transition(s,{type:'encounterChoose',choice:0},()=>.99,now);
+ assert.equal(after.last.outcome,'failure');
+ assert.equal(after.encounterHistory[0].damage,12);
 });
