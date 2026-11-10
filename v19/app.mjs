@@ -10,7 +10,7 @@ import {normalVariantFor,drawNormalVariantFrame} from './monster-variants.mjs?v=
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
 import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardArmorFlashAt,drawGuardArmorTint,guardCombatCaptionAt} from './guard-combat.mjs?v=armor-red-v19-12';
-import {alienCombatPoseAt,drawAlienStampFx,alienStampAt,ALIEN_STAMP_IMPACT_MS,ALIEN_DEFEAT_END_MS} from './alien-combat.mjs?v=alien-timing-v19-16';
+import {alienCombatPoseAt,drawAlienStampFx,alienStampAt,alienStampRouteAt,alienInjuryAt,drawAlienInjuryTint,ALIEN_STAMP_IMPACT_MS,ALIEN_DEFEAT_END_MS} from './alien-combat.mjs?v=alien-facing-left-v19-17';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
@@ -66,7 +66,7 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（動畫時序測試，正式美術尚未整合）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（朝左・16 格逐格候選，未正式核准）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
@@ -107,6 +107,34 @@ async function loadTrainingCandidateArt(){
  if(status){
    status.dataset.candidate='true';
    status.textContent='🧪 打卡保全機兵（普通怪物）16 格候選美術已載入，可在第 5 關練習實戰；正式核准仍為 2／32，等待你確認攻擊與受傷效果。';
+ }
+}
+async function loadAlienCandidateArt(){
+ if(trainingSpecies!=='meeting-ghost')return;
+ const url=new URL('../art/v19/candidates/monsters/meeting-ghost/manifest-candidate.json?v=alien-left-v19-17',import.meta.url);
+ const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('外星人候選素材 HTTP '+r.status);return r.json()});
+ if(record.id!=='meeting-ghost'||record.approved!==false||record.previewOnly!==true||
+    record.facing!=='left'||record.target!=='hero-on-left'||record.tier!=='normal')
+   throw new Error('外星人素材朝向或候選核准狀態不正確');
+ const poses={};
+ for(const state of ['idle','attack','hurt','defeat']){
+   const frame=record.states?.[state];
+   if(!frame||frame.cell!==384||!frame.src.startsWith('../art/v19/candidates/monsters/meeting-ghost/'))
+     throw new Error('外星人圖集來源不正確：'+state);
+   const image=await imageFrom(frame.src);
+   const pixels=validateSpritePixels(image,frame);
+   if(!pixels.ok)throw new Error('外星人圖集格式錯誤 '+state+': '+pixels.reason);
+   const issues=inspectAtlasFrameArt(image,frame,state);
+   if(issues.length)throw new Error('外星人姿勢不合格 '+state+': '+issues.join('; '));
+   poses[state]={image,frame};
+ }
+ trainingCandidateArt.set('meeting-ghost',poses);
+ world.dataset.alienFacing='left';
+ world.dataset.alienArt='16-frames-loaded';
+ const notice=$('#monster-art-status');
+ if(notice){
+   notice.dataset.candidate='true';
+   notice.textContent='🛸 星際打卡實習生已載入 16 格朝左透明候選動畫（待機 4／攻擊 5／受擊 3／死亡 4），面向左側勇者。正式完成仍為 3/32，這隻尚未美術核准。';
  }
 }
 async function loadApprovedMonsterArt(){
@@ -271,6 +299,14 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      const frameY=525-248-displaySize*sourceFloor/frame.cell;
      const skin=activeNormalVariant?.baseTypeId===enemy.typeId?activeNormalVariant:null;
      if(drawNormalVariantFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle',skin)){
+        if(trainingSpecies==='meeting-ghost'&&enemy.typeId==='meeting-ghost'&&
+           !(fx?.result?.type==='victory'&&visual?.state==='idle')){
+          world.dataset.alienPose=visual?.state||'idle';
+          world.dataset.alienFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
+          const flash=alienInjuryAt(combatMs,{reducedMotion:motionReduced});
+          world.dataset.alienFlash=JSON.stringify(flash);
+          world.dataset.alienRedPeak=String(Math.max(Number(world.dataset.alienRedPeak)||0,flash.red));
+        }
        if(trainingSpecies==='chair-golem'&&enemy.typeId==='chair-golem'&&
           // During the crossfade both outgoing and incoming are the SAME
           // species. Track the still-visible dying mech, not the freshly
@@ -285,12 +321,15 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
        }
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
-       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem')&&(visual?.state==='hurt'||visual?.state==='defeat')){
+       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem'||enemy.typeId==='meeting-ghost')&&(visual?.state==='hurt'||visual?.state==='defeat')){
          const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
          const rect={x:frameX,y:frameY,w:displaySize,h:displaySize};
          if(enemy.typeId==='chair-golem'){
            const tinted=drawGuardArmorTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
            if(trainingSpecies==='chair-golem'&&tinted)world.dataset.guardTintApplied='true';
+         }else if(enemy.typeId==='meeting-ghost'){
+           const tinted=drawAlienInjuryTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
+           if(trainingSpecies==='meeting-ghost'&&tinted)world.dataset.alienTintApplied='true';
          }else{
            drawPaperHitTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
          }
@@ -576,6 +615,7 @@ function commit(action){
  }
  if(action==='attack'){
    if(trainingSpecies==='chair-golem'){world.dataset.guardPeakRed='0';world.dataset.guardTintApplied='false';}
+   if(trainingSpecies==='meeting-ghost'){world.dataset.alienRedPeak='0';world.dataset.alienTintApplied='false';}
    fx={start:performance.now(),result:state.last,oldEnemy,oldHeroHp,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
       retaliationDamage:Math.max(0,Number(state.last?.retaliationDamage??(oldHeroHp-state.heroHp)))};
@@ -913,7 +953,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    initChibiV2Lab();
  }
  render();
- loadApprovedMonsterArt().then(()=>loadTrainingCandidateArt()).catch(err=>{
+ loadApprovedMonsterArt().then(()=>Promise.all([loadTrainingCandidateArt(),loadAlienCandidateArt()])).catch(err=>{
    console.warn('正式或候選怪物逐格素材載入失敗，保留工程替身：',err);
    const notice=$('#monster-art-status');
    if(notice)notice.textContent='⚠️ 怪物圖片未成功載入：'+String(err.message||err)+'。目前只顯示工程替身。';
