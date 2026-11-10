@@ -15,6 +15,9 @@ on:
       - "v19/paper-art.test.mjs"
       - "v19/paper-combat.mjs"
       - "v19/paper-combat.test.mjs"
+      - "v19/coffee-candidate.test.mjs"
+      - "v19/cup-trial.html"
+      - "art/v19/candidates/monsters/coffee-mimic/**"
       - "v19/paper-trial.html"
       - "art/v19/runtime/monsters/**"
       - "v19/monster-gallery.html"
@@ -55,4 +58,4 @@ jobs:
           node --check v19/hurt-timing.mjs
           node --check v19/hurt-effects.mjs
       - name: Run all engine and cosmetics rules tests
-        run: node --test v19/paper-combat.test.mjs v19/paper-art.test.mjs v19/sprite-atlas.test.mjs v19/monster-motion.test.mjs v19/engine.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs
+        run: node --test v19/coffee-candidate.test.mjs v19/paper-combat.test.mjs v19/paper-art.test.mjs v19/sprite-atlas.test.mjs v19/monster-motion.test.mjs v19/engine.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs
