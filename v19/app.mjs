@@ -679,7 +679,7 @@ function render(){
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  const enemyTier=state.enemy.tier||'normal';
- $('#wave').textContent='第 '+state.wave+' 關 · '+(enemyTier==='boss'?'👑 Boss 戰':enemyTier==='elite'?'✦ 菁英挑戰':'普通戰鬥');
+ $('#wave').textContent=(GAME_MODES.find(m=>m.id===state.activeMode)?.name||'社畜遠征')+' · 第 '+state.wave+' 關'+(trainingWave!==null?'（練習）':'');
  $('#wave').classList.toggle('boss',enemyTier==='boss');
  $('#wave').classList.toggle('elite',enemyTier==='elite');
  world.dataset.enemyTier=enemyTier;
@@ -1007,10 +1007,15 @@ function frame(now){
  if(!document.hidden&&ready){
   if(state.auto&&(!hurtPreviewStart||now-hurtPreviewStart>=HIT_FEEDBACK_MS)
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed)){
+      if(state.pendingDrops.length){commit('claim');lastAttack=now;}
+      else if(state.chests>0){commit('chest');lastAttack=now;}
+      else if(state.heroHp<state.maxHp*.32&&state.potions>0){commit('heal');lastAttack=now;}
+      else {
       const pick=state.heroHp<state.maxHp*.6&&state.skillCooldowns.drain===0?'drain':
        state.heroHp<state.maxHp*.35&&state.skillCooldowns.guard===0?'guard':
        state.skillCooldowns.burst===0?'burst':null;
       if(pick)skillAttack(pick);else attack();
+      }
     }
   drawStage(now);
   renderCombatBars(now);
