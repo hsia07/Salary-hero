@@ -25,8 +25,8 @@ test('left-facing fourth candidate preserves original 16 hand-drawn poses and im
  assert.equal(ELITE_ENEMIES.length,8);
  assert.equal(BOSSES.length,8);
  assert.equal(COMMON_ENEMIES.find(e=>e.id==='meeting-ghost')?.name,'星際打卡實習生');
- assert.equal(Object.keys(official.monsters).length,3);
- assert.equal(official.monsters['meeting-ghost'],undefined);
+ assert.equal(Object.keys(official.monsters).length,4);
+ assert.equal(official.monsters['meeting-ghost'].approved,true);
  assert.deepEqual(Object.entries(record.states).map(([s,f])=>[s,f.frames]),[
   ['idle',4],['attack',5],['hurt',3],['defeat',4]
  ]);
@@ -41,5 +41,11 @@ test('left-facing fourth candidate preserves original 16 hand-drawn poses and im
   assert.equal(frame.ground_y,342);
   assert.equal(frame.durations.length,frame.frames);
   assert.equal(validateSpritePixels({naturalWidth:384*frame.frames,naturalHeight:384},frame).ok,true);
+  const live=official.monsters['meeting-ghost'].states[state];
+  assert.equal(live.frames,frame.frames);assert.equal(live.cell,384);
+  assert.ok(live.src.includes('/runtime/monsters/meeting-ghost/'));
+  const binary=readFileSync(new URL('../art/v19/runtime/monsters/meeting-ghost/'+state+'.webp',import.meta.url));
+  assert.deepEqual(binary,bytes,'official sprites preserve all sixteen original drawn frames');
+  assert.equal(createHash('sha256').update(binary).digest('hex'),sha);
  }
 });
