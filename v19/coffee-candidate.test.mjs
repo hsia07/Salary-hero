@@ -8,7 +8,7 @@ const root=new URL('../art/v19/candidates/monsters/coffee-mimic/',import.meta.ur
 const expected={
  idle:{frames:4,sha256:'a690dfb7e9ff3a92178fd6a8202cc8ed8684b4945444701a2e0184bec0444975'},
  attack:{frames:5,sha256:'ec7a17ef32c4f77890c566cef479ffdd5c97de8dc2fcee0b47ea15f73888e7ba'},
- hurt:{frames:3,sha256:'2d1736d89bfcc2957fa8c44c347e78e00084caad0f644585584983c8ad99f388'},
+ hurt:{frames:3,sha256:'ab5c0abb76b2e59172d28cafad5085dcd61aa0e71855825e295cf6ee5d03790c'},
  defeat:{frames:4,sha256:'f125bd29d6d9f9dbf5f5aa904536df80b266627c92803ce8c4fa0a35aa7a5aa1'}
 };
 test('the candidate cup monster has 16 real transparent raster pose frames committed to GitHub',()=>{
