@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {ALL_ENEMIES} from './roster.mjs';
 import {validateSpritePixels} from './sprite-atlas.mjs';
-import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS} from './guard-combat.mjs';
+import {guardCombatPoseAt,guardBeamAt,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS,GUARD_BEAM_LAUNCH_MS,GUARD_BEAM_IMPACT_MS,GUARD_ATTACK_END_MS,GUARD_ATTACK_POSE_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS} from './guard-combat.mjs';
 
 const root=new URL('../art/v19/candidates/monsters/chair-golem/',import.meta.url);
 const source={
@@ -49,7 +49,11 @@ test('guard plays unique attack/hurt/shatter poses with no projectile on victory
  assert.equal(guardCombatPoseAt(950,{type:'hit',retaliationDamage:0}).state,'idle');
  assert.equal(guardCombatPoseAt(405,{type:'victory'}).state,'defeat');
  assert.equal(guardCombatPoseAt(1189,{type:'victory'}).state,'defeat');
- assert.equal(guardCombatPoseAt(1190,{type:'victory'}).state,'idle');
+ assert.equal(guardCombatPoseAt(1190,{type:'victory'}).state,'defeat');
+ assert.equal(guardCombatPoseAt(1300,{type:'victory'}).progress,1);
+ assert.ok(GUARD_DEFEAT_FADE_START_MS>1100,'dead mech should hold intact for review before fading');
+ assert.equal(guardCombatPoseAt(GUARD_DEFEAT_END_MS-1,{type:'victory'}).state,'defeat');
+ assert.equal(guardCombatPoseAt(GUARD_DEFEAT_END_MS,{type:'victory'}).state,'idle');
 });
 test('red scanner has actual launch, travel and impact with no postmortem beam',()=>{
  assert.ok(GUARD_BEAM_LAUNCH_MS>GUARD_ATTACK_START_MS);
