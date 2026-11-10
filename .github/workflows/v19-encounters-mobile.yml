@@ -8,6 +8,8 @@ on:
       - 'v19/app.mjs'
       - 'v19/play.html'
       - 'scripts/qa-v19-encounters-mobile.py'
+      - 'scripts/qa-v19-lite-armory-mobile.py'
+      - 'v19/lite-equipment.mjs'
       - '.github/workflows/v19-encounters-mobile.yml'
   workflow_dispatch:
 
@@ -44,10 +46,14 @@ jobs:
           exit 1
       - name: Real 390px Chromium adventure interaction QA
         run: python scripts/qa-v19-encounters-mobile.py
+      - name: Real 390px Chromium Lite equipment and save QA
+        run: python scripts/qa-v19-lite-armory-mobile.py
       - name: Save encounter scene screenshot for review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: v19-adventure-storybook-mobile
-          path: art/v19/runtime/qa/encounter-storybook-mobile.png
+          path: |
+            art/v19/runtime/qa/encounter-storybook-mobile.png
+            art/v19/runtime/qa/lite-armory-mobile.png
           if-no-files-found: warn
