@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Real Chromium QA: the 16-frame third mech exists ONLY in practice.
 
-This is NOT a 3/32 signoff. The monster is a COMMON species; user's visual approval is still pending.
+Player approved this mech, now registered as third official original species.
 """
 from pathlib import Path
 from base64 import b64decode
@@ -22,18 +22,18 @@ def main():
   page.evaluate('(key)=>localStorage.setItem(key,"TRUE_PLAYER_SAVE_UNCHANGED")',KEY)
   page.wait_for_function("""() => {
     const s=document.querySelector('#monster-art-status');
-    return s?.dataset?.loaded==='true' && s?.dataset?.candidate==='true' &&
+    return s?.dataset?.loaded==='true' && s?.dataset?.approved==='true' &&
       document.querySelector('#attack')?.disabled===false;
   }""",timeout=40000)
   assert '打卡保全機兵' in page.locator('#enemy-name').inner_text()
   assert '第 5 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
-  assert '候選' in page.locator('#monster-art-status').inner_text()
-  assert '2／32' in page.locator('#monster-art-status').inner_text()
-  assert '候選' in page.locator('#training-mode-notice').inner_text()
+  assert '打卡保全機兵' in page.locator('#monster-art-status').inner_text()
+  assert '3/32' in page.locator('#monster-art-status').inner_text()
+  assert '正式美術' in page.locator('#training-mode-notice').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth>window.innerWidth+3') is False
   image_size=page.evaluate("""async () => {
-    const im=new Image();im.src='../art/v19/candidates/monsters/chair-golem/attack.webp';
+    const im=new Image();im.src='../art/v19/runtime/monsters/chair-golem/attack.webp';
     await im.decode();return [im.naturalWidth,im.naturalHeight];
   }""")
   assert image_size==[1920,384],f'not genuine 5×384 WebP: {image_size}'
@@ -112,6 +112,6 @@ def main():
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='TRUE_PLAYER_SAVE_UNCHANGED'
   assert not errors,'browser runtime errors: '+repr(errors)
   browser.close()
-  print('PASS: 390px browser, true 16-frame mech battle, red body flash, final shattered frame held, beam-impact HP timing, no actual save writes; candidate only.')
+  print('PASS: 390px browser, true 16-frame mech battle, red body flash, final shattered frame held, beam-impact HP timing, no actual save writes; approved third official sprite species.')
 
 if __name__=='__main__': main()
