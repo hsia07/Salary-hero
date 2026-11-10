@@ -5,7 +5,7 @@ import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
-import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
+import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame} from './sprite-atlas.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 const $=s=>document.querySelector(s);
@@ -46,9 +46,8 @@ function loadGame(){
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 let approvedMonsterArt=new Map();
-let trialPaperAtlas=null; // Browser-session-only image selected by player; never saved as approved art.
 async function loadApprovedMonsterArt(){
- const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url);
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=illustrated-523ddc6',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
  const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
@@ -69,9 +68,12 @@ async function loadApprovedMonsterArt(){
  }
  approvedMonsterArt=approved;
  const notice=$('#monster-art-status');
- if(notice)notice.textContent=approved.size
-   ?'🎨 已核准正式逐格怪物：'+approved.size+'/32；其他怪物仍使用未核准的工程替身'
-   :'⚠️ 怪物正式逐格美術：0/32。現有怪物是未核准工程替身，並非真正的逐格動畫。';
+ if(notice){
+   notice.dataset.loaded=approved.has('paper-gremlin')?'true':'false';
+   notice.textContent=approved.has('paper-gremlin')
+     ?'✓ 已自動載入「影印室工讀紙妖」16 張獨立繪製動畫（待機／攻擊／受傷／死亡），不必下載素材。其他 31 隻仍是工程替身。'
+     :'⚠️ 紙妖圖片未成功載入；本場暫顯示工程替身，請重新整理。';
+ }
 }
 const artMode=new URLSearchParams(location.search).get('art');
 // High-resolution Q版 is now the normal V19 hero art, not a hidden opt-in.
@@ -178,24 +180,6 @@ function drawWeapon(x,y,t){
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
 // 32 real monster actors: per-species anatomy/poses, not shared emoji bodies.
 function paintEnemy(enemy,now,visual={state:'idle',progress:0}){
- // Candidate preview is deliberately ephemeral: it works on wave 1 when the
- // local image has been selected, but cannot alter the official art manifest.
- if(enemy.typeId==='paper-gremlin'&&trialPaperAtlas){
-   const poses={
-     idle:{indices:[0,1,2,3],durations:[240,180,240,140]},
-     attack:{indices:[4,5,6,7,8],durations:[110,140,105,130,180]},
-     hurt:{indices:[9,10,11],durations:[140,210,230]},
-     defeat:{indices:[12,13,14,15],durations:[190,190,230,420]}
-   };
-   const action=poses[visual?.state]||poses.idle;
-   const elapsed=visual?.state==='idle'?now:
-      action.durations.reduce((a,b)=>a+b,0)*Math.max(0,Math.min(1,visual?.progress||0));
-   const index=action.indices[spriteFrameIndex(action.durations,elapsed,visual?.state==='idle')];
-   const size=282,frameX=(177-size)/2,frameY=525-248-size*289/320;
-   ctx.drawImage(trialPaperAtlas,(index%4)*320,Math.floor(index/4)*320,320,320,
-      frameX,frameY,size,size);
-   return;
- }
  const approved=approvedMonsterArt.get(enemy.typeId);
  if(approved){
    const pose=approved[visual?.state]||approved.idle;
@@ -301,13 +285,13 @@ function drawStage(now){
  }
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
- const victory=fx?.result?.type==='victory'&&animationMs<1050;
+ const victory=fx?.result?.type==='victory'&&animationMs<1100;
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const enemyX=458+Math.sin(time*1.75)*4+(attacking&&hitWindow?Math.sin(now/22)*7:0);
  const enemyY=248+Math.sin(time*2)*5;
  // The defeated actor plays its own disintegration, while the next species
  // materializes in the SAME slot with no empty frame between waves.
- const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-570)/260)):1;
+ const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-900)/200)):1;
  const fadingOld=victory?1-enteringNew:0;
  const oldVisual=victory?monsterAnimationState(fx.oldEnemy,animationMs,fx.result):null;
  const currentVisual=!victory&&fx?.result?.type==='hit'
@@ -323,7 +307,7 @@ function drawStage(now){
    ctx.translate(-pivotX,-pivotY);
    paintEnemy(enemy,now,visual);
    ctx.restore();
-   if(visual?.state!=='idle'&&visual?.state){
+   if(visual?.state!=='idle'&&visual?.state&&!approvedMonsterArt.has(enemy?.typeId)){
      ctx.save();ctx.globalAlpha=alpha;
      drawMonsterVfx(ctx,enemy,visual.state,visual.progress,
        {enemyX,enemyY,heroX:heroX+70,heroY:heroY+110,now});
@@ -636,37 +620,6 @@ async function initChibiV2Lab(){
  }catch(error){console.warn('讀取本機美術測試圖失敗',error)}
  report('✓ 網站已內建高解析度七姿勢攻擊。可直接點「手動攻擊」，不需要上傳檔案。');
 }
-function initPaperCandidateImport(){
- const input=$('#paper-candidate-import'),status=$('#paper-candidate-message'),clear=$('#paper-candidate-clear');
- if(!input)return;
- const report=message=>{if(status)status.textContent=message;};
- input.addEventListener('change',()=>{
-   const file=input.files?.[0];if(!file)return;
-   if(file.size>12000000){report('❌ 圖檔超過 12 MB');return;}
-   const url=URL.createObjectURL(file),img=new Image();
-   img.onload=()=>{
-     URL.revokeObjectURL(url);
-     if(img.naturalWidth!==1280||img.naturalHeight!==1280){
-       report('❌ 圖集尺寸必須是 1280×1280；收到 '+img.naturalWidth+'×'+img.naturalHeight);return;
-     }
-     const verify=document.createElement('canvas');verify.width=1;verify.height=1;
-     const verifyCtx=verify.getContext('2d',{willReadFrequently:true});
-     verifyCtx.drawImage(img,0,0,1,1,0,0,1,1);
-     if(verifyCtx.getImageData(0,0,1,1).data[3]>12){
-       report('❌ 左上角不透明，可能是宣傳海報而不是透明遊戲素材');return;
-     }
-     trialPaperAtlas=img;
-     report('✓ 本機已載入紙妖 16 格候選圖；遇到「影印室工讀紙妖」時會使用真正畫格（不修改存檔或正式怪物進度）。');
-   };
-   img.onerror=()=>{URL.revokeObjectURL(url);report('❌ 圖片無法載入');};
-   img.src=url;
- });
- clear?.addEventListener('click',()=>{
-   trialPaperAtlas=null;input.value='';
-   report('已恢復目前的遊戲怪物美術；戰鬥進度和薪資均不受影響。');
- });
-}
-initPaperCandidateImport();
 function payRender(){
  const p=salaryAt(Date.now(),40000);
  $('#today').textContent=money(p.today,2);
