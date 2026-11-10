@@ -29,7 +29,7 @@ def main():
   assert '第 5 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
   assert '打卡保全機兵' in page.locator('#monster-art-status').inner_text()
-  assert '3/32' in page.locator('#monster-art-status').inner_text()
+  assert '4/32' in page.locator('#monster-art-status').inner_text()
   assert '正式美術' in page.locator('#training-mode-notice').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth>window.innerWidth+3') is False
   image_size=page.evaluate("""async () => {
