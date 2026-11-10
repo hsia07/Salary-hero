@@ -66,7 +66,9 @@ test('enemy visual injury, death and retaliation do not occur before combat cont
  assert.equal(monsterAnimationState(enemy,950,{type:'hit',retaliationDamage:0}).state,'idle');
  assert.equal(monsterAnimationState(enemy,500,{type:'victory'}).state,'defeat');
  assert.equal(monsterAnimationState(enemy,300,{type:'victory'}).state,'idle');
- assert.equal(monsterAnimationState(enemy,950,{type:'victory'}).state,'idle');
+ assert.equal(monsterAnimationState(enemy,950,{type:'victory'}).state,'defeat');
+ assert.equal(monsterAnimationState(enemy,950,{type:'victory'}).progress,1);
+ assert.equal(monsterAnimationState(enemy,1100,{type:'victory'}).state,'idle');
 });
 test('boss and elite attack damage still comes from engine and never from visual effects',()=>{
  const s=initial();s.wave=3;s.enemy=enemyFor(3);
