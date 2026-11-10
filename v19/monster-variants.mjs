@@ -22,6 +22,11 @@ const PREVIEW_VARIANTS=[
  {id:'venom-coffee',baseTypeId:'coffee-mimic',name:'毒霧夜班杯靈',
   hue:82,saturation:1.43,brightness:.99,accent:'#9be5aa',
   description:'綠色藥劑杯靈（正式毒霧部件尚未繪製）'}
+ ,
+ {id:'hazard-mech',baseTypeId:'chair-golem',name:'警報赤紅保全機兵',hue:110,saturation:1.4,brightness:1.05,accent:'#ff7a8c',description:'換色機兵試玩版'},
+ {id:'void-intern',baseTypeId:'meeting-ghost',name:'虛空外星實習生',hue:120,saturation:1.25,brightness:.94,accent:'#d28aff',description:'異星幽光換色版'},
+ {id:'frost-cloud',baseTypeId:'deadline-clock',name:'霜藍雲端專員靈',hue:170,saturation:1.3,brightness:1.06,accent:'#9adfff',description:'冰霜資料換色版'},
+ {id:'cursed-clerk',baseTypeId:'keyboard-piranha',name:'詛咒赤影遊魂文員',hue:300,saturation:1.3,brightness:.98,accent:'#ff8fa8',description:'幽冥換色試玩版'}
 ];
 export const NORMAL_VARIANT_PREVIEWS=Object.freeze(
  PREVIEW_VARIANTS.map(record=>Object.freeze({...record,previewOnly:true,approved:false})));
