@@ -173,7 +173,7 @@ export function normalize(raw,now=Date.now()){
  const week=taiwanWeekKey(now);
  n.weeklyDungeonProgress={week,completed:raw.weeklyDungeonProgress?.week===week?[...new Set((Array.isArray(raw.weeklyDungeonProgress.completed)?raw.weeklyDungeonProgress.completed:[]).filter(id=>new Set(DAILY_DUNGEONS.map(x=>x.id)).has(id)))]:[]};
  n.wave=n.modeWaves[n.activeMode];
- n.skillCooldowns=Object.fromEntries(GAME_SKILLS.map(k=>[k.id,Math.max(0,Math.min(k.cooldown,Math.floor(Number(raw.skillCooldowns?.[k.id])||0)))]));
+ n.skillCooldowns=Object.fromEntries(GAME_SKILLS.map(k=>[k.id,Math.max(0,Math.min(k.cooldown+1,Math.floor(Number(raw.skillCooldowns?.[k.id])||0)))]));
  n.styleWishlist=[...new Set((Array.isArray(raw.styleWishlist)?raw.styleWishlist:[]).filter(id=>HERO_STYLES.some(s=>s.id===id)))];
  n.defeatedTypes=[...new Set((Array.isArray(raw.defeatedTypes)?raw.defeatedTypes:[]).filter(id=>ALL_ENEMIES.some(s=>s.id===id)))];
  n.ownedSkins=[...new Set(['starter',...(Array.isArray(raw.ownedSkins)?raw.ownedSkins:[]).filter(id=>SKINS.some(s=>s.id===id))])];
@@ -444,7 +444,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
    const currentDungeon=s.activeMode==='dungeon'&&!s.trainingIsolated?dailyDungeonFor(now):null;
    const wednesdayRage=currentDungeon?.weekday===3&&s.heroHp<s.maxHp*.5;
-   const crit=Number(rng())<(.16+(wednesdayRage?.25:0)),baseDamage=Math.round((weapon.attack+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*(crit?1.7:1));
+   const crit=Number(rng())<(.16+(wednesdayRage ? .25 : 0)),baseDamage=Math.round((weapon.attack+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*(crit?1.7:1));
    const boosted=skill?.id==='burst'?Math.round(baseDamage*(2+s.skillRank*.15)):baseDamage;
    const damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
    for(const key of GAME_SKILLS)s.skillCooldowns[key.id]=Math.max(0,s.skillCooldowns[key.id]-1);
