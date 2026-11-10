@@ -66,7 +66,7 @@ export function tierForWave(wave){
 export function enemyDesignFor(wave){
  const w=Math.max(1,Math.floor(Number(wave)||1)),tier=tierForWave(w);
  // Preserve the full 16-common permutation, 8 elites and 8 bosses.
- // Paper gremlin appears at 1, coffee mimic at 2; the previewable security mech
+ // Paper gremlin appears at 1, coffee mimic at 2; the approved security mech
  // now appears at floor 5 (a COMMON slot), not in the elite slot at floor 3.
  // Swaps preserve every other monster without deleting a single species.
  const rawIndex=((w-1)*7+Math.floor((w-1)/4))%COMMON_ENEMIES.length;
