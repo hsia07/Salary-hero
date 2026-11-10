@@ -107,9 +107,9 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .training-fight-links a{display:block;border:1px solid #efc187;background:linear-gradient(135deg,#6e3d4d,#2e2b48);color:#fff0c6;text-decoration:none;text-align:center;border-radius:9px;font-size:12px;font-weight:800;padding:11px 5px;line-height:1.4}
 .art-advanced summary{font-size:12px;color:#d9bca3;padding:7px 0 4px;cursor:pointer}
 .art-advanced .chibi-v2-lab{padding:9px;margin-top:6px;border:1px solid #be9872;border-radius:9px}
-</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
+.tabs{grid-template-columns:repeat(7,minmax(0,1fr))}.tabs button{font-size:clamp(10px,2.4vw,12px);padding-inline:1px}.tabs button span{display:block;font-size:16px}\n</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
-<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.22</div></div>
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.24</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
 <div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
 <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
@@ -160,12 +160,12 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
-<nav class="tabs" aria-label="遊戲功能"><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
+<nav class="tabs" aria-label="遊戲功能"><button data-panel="modes"><span>🗼</span>模式</button><button data-panel="skills"><span>✨</span>技能</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
 <div class="footnote">🖼️ <a href="./paper-trial.html">直接觀看紙妖 16 格動畫｜無須下載或上傳</a></div>
 <div class="footnote">☕ <a href="./coffee-trial.html">直接觀看邪惡杯靈 16 格動畫｜無須下載或上傳</a></div>
 <div class="footnote">🚨 <a href="./guard-trial.html">打卡保全機兵・16 格正式動畫（已認可）</a></div>
 <div class="footnote">🛸 <a href="./alien-trial.html">第 4 隻・星際打卡實習生｜朝左正式逐格試播（16 格）</a></div>
-<div class="footnote">已正式完成 6／32 種 Q 版逐格怪物。第六隻「加班遊魂文員」已加入第 26 關正式戰鬥。</div>
+<div class="footnote">目前搶先遊玩：普通怪循環 + 三種模式 + 三種主動技能，菁英與 Boss 暫緩。</div><div class="footnote">已正式完成 6／32 種 Q 版逐格怪物。第六隻「加班遊魂文員」已加入第 26 關正式戰鬥。</div>
 <div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
@@ -176,4 +176,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=clerk-official-v19-23"></script></body></html>
+<script type="module" src="./app.mjs?v=playable-modes-v19-24"></script></body></html>
