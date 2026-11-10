@@ -65,7 +65,7 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（美術候選）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
@@ -84,7 +84,7 @@ const hasIllustratedMonster=(id)=>approvedMonsterArt.has(id)||trainingCandidateA
 async function loadTrainingCandidateArt(){
  // This 16-pose elite sprite may ONLY appear under the explicit, save-isolated
  // training URL. It is NOT in the approved 2/32 production monster manifest.
- if(trainingSpecies!=='chair-golem')return;
+ if(trainingSpecies!=='chair-golem'||approvedMonsterArt.has('chair-golem'))return;
  const url=new URL('../art/v19/candidates/monsters/chair-golem/manifest-candidate.json?v=security-20261110',import.meta.url);
  const candidate=await fetch(url).then(r=>{if(!r.ok)throw new Error('security candidate manifest HTTP '+r.status);return r.json()});
  if(candidate.id!=='chair-golem'||candidate.approved!==false||candidate.previewOnly!==true)
@@ -109,7 +109,7 @@ async function loadTrainingCandidateArt(){
  }
 }
 async function loadApprovedMonsterArt(){
- const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=evil-coffee-v19-5-20261110',import.meta.url);
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=guard-official-20261110',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
  const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
@@ -140,9 +140,10 @@ async function loadApprovedMonsterArt(){
  }
  const notice=$('#monster-art-status');
  if(notice){
-   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')?'true':'false';
+   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')&&approved.has('chair-golem')?'true':'false';
+   notice.dataset.approved=approved.has('chair-golem')?'true':'false';
    const count=approved.size;
-   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
+   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
     (activeNormalVariant?' 🔬 實驗換皮：'+activeNormalVariant.name+'，完全共用正式逐格動畫；不增加 32 種完成數。':'');
  }
  if(activeNormalVariant)render();
@@ -319,7 +320,7 @@ function drawStage(now){
  const illustratedCaster=fx?.result?.type==='hit'&&fx?.retaliationDamage>0&&
   ((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
-   (fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem')));
+   (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem')));
  const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
@@ -390,7 +391,7 @@ function drawStage(now){
  }
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
- const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem');
+ const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem');
  const victory=fx?.result?.type==='victory'&&animationMs<(guardVictoryHold?GUARD_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
@@ -409,7 +410,7 @@ function drawStage(now){
    const hitResult=result?{...result,retaliationDamage:fx?.retaliationDamage||0}:null;
    if(enemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))return paperCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))return coffeeCombatPoseAt(animationMs,hitResult);
-   if(enemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))return guardCombatPoseAt(animationMs,hitResult);
+   if(enemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))return guardCombatPoseAt(animationMs,hitResult);
    return monsterAnimationState(enemy,animationMs,hitResult);
  };
  const oldVisual=victory?visualFor(fx.oldEnemy,fx.result):null;
@@ -449,7 +450,7 @@ function drawStage(now){
    drawCoffeeCombatFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,reducedMotion:motionReduced,
      canRetaliate:fx.result.type==='hit'&&fx.retaliationDamage>0});
  }
- if(fx?.wave&&trainingCandidateArt.has('chair-golem')&&fx?.oldEnemy?.typeId==='chair-golem'&&
+ if(fx?.wave&&approvedMonsterArt.has('chair-golem')&&fx?.oldEnemy?.typeId==='chair-golem'&&
     (fx.result?.type==='hit'||fx.result?.type==='victory')){
    drawGuardCombatFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,reducedMotion:motionReduced,
      canRetaliate:fx.result.type==='hit'&&fx.retaliationDamage>0,
@@ -685,11 +686,11 @@ world.addEventListener('pointerup',e=>{
 });
 function attackCooldownMs(){
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
- if(fx?.result?.type==='victory'&&fx.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))
+ if(fx?.result?.type==='victory'&&fx.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))
    return GUARD_DEFEAT_END_MS+40; // Never skip the final disintegrated pose.
  if(fx?.retaliation&&((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
-   (fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))))
+   (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))))
    return (fx.oldEnemy.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)+HIT_FEEDBACK_MS+70;
  return base+(fx?.retaliation?HIT_FEEDBACK_MS:0);
 }
