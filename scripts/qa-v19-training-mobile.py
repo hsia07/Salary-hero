@@ -5,12 +5,27 @@ Starts against two genuinely illustrated sprites and asserts the normal V19
 localStorage save is byte-for-byte unchanged after attacking in rehearsal.
 """
 from pathlib import Path
+from base64 import b64decode
 from playwright.sync_api import sync_playwright
 
 BASE='http://127.0.0.1:8766'
 OUT=Path(__file__).resolve().parents[1]/'art/v19/runtime/qa'
 OUT.mkdir(parents=True,exist_ok=True)
 SAVE_KEY='salary-hero-v19-save-1'
+
+def combat_age_at_least(page,t):
+    page.wait_for_function("""(minimum) => {
+      const raw=document.querySelector('#world')?.dataset?.hpTiming;
+      if(!raw)return false;
+      return Number(JSON.parse(raw).t)>=minimum;
+    }""",arg=t,timeout=9000)
+
+def capture_canvas(page,name):
+    # Avoid Playwright's screenshot stability waits, which can advance combat
+    # several seconds and make a "520ms" capture actually show t=3,189ms.
+    b64=page.locator('#world').evaluate(
+        '(c)=>c.toDataURL("image/png").split(",")[1]')
+    (OUT/name).write_bytes(b64decode(b64))
 
 def test_species(page,species,expected_name,expected_wave):
     page.goto(BASE+'/v19/play.html?training='+species,wait_until='domcontentloaded')
@@ -35,19 +50,19 @@ def test_species(page,species,expected_name,expected_wave):
       return [img.naturalWidth,img.naturalHeight];
     }""",species)
     assert frames==[1600,320],f'actual animation pixels missing {species}: {frames}'
-    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-idle.png')))
+    capture_canvas(page,'training-'+species+'-idle.png')
     hp_before=int(page.locator('#hero-hp-text').inner_text().split('/')[0])
     assert hp_before==900
     page.locator('#attack').click()
-    page.wait_for_timeout(520)
-    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hero-hit.png')))
+    combat_age_at_least(page,500)
     assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'premature HP loss before projectile flies: '+str(page.locator('#world').get_attribute('data-hp-timing'))
-    page.wait_for_timeout(610)
-    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-counterattack.png')))
+    capture_canvas(page,'training-'+species+'-hero-hit.png')
+    combat_age_at_least(page,1090)
     assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'HP changed before coffee/paper projectile contact: '+str(page.locator('#world').get_attribute('data-hp-timing'))
-    page.wait_for_timeout(180)
-    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hurt-red-flash.png')))
+    capture_canvas(page,'training-'+species+'-counterattack.png')
+    combat_age_at_least(page,1290)
     assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])<hp_before, 'visible HP should change AFTER projectile impact'
+    capture_canvas(page,'training-'+species+'-hurt-red-flash.png')
     assert page.evaluate('(key)=>localStorage.getItem(key)',SAVE_KEY)=='UNCHANGED_REAL_PLAYER_SAVE'
 
 def main():
