@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "id": "deadline-clock",
+  "name": "雲端資料專員靈",
+  "tier": "normal",
+  "approved": false,
+  "previewOnly": true,
+  "userVisualApproval": "PENDING",
+  "facing": "left",
+  "target": "hero-on-left",
+  "candidateQuality": "Alpha-cleaned 16 original illustrated poses; must pass mobile art QA before official promotion",
+  "artStyle": "evil grey-violet chibi cloud office spirit with deadline clock, floating cloud/storage symbols, violet clock projectile, separate injury and dissolve drawings; normal monster, not a boss",
+  "states": {
+    "idle": {
+      "src": "../art/v19/candidates/monsters/deadline-clock/idle.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 339,
+      "durations": [
+        250,
+        190,
+        245,
+        175
+      ],
+      "sha256": "ed7ed51b218ad235e35c761e7b30fe84db3eccfff12536e6e396dee74787b276"
+    },
+    "attack": {
+      "src": "../art/v19/candidates/monsters/deadline-clock/attack.webp",
+      "frames": 5,
+      "cell": 384,
+      "ground_y": 339,
+      "durations": [
+        155,
+        145,
+        100,
+        100,
+        170
+      ],
+      "sha256": "3904b4deb004f405b52aaaab65e3c72fe60b32fe326ca37e78a1d30aa130a0f0"
+    },
+    "hurt": {
+      "src": "../art/v19/candidates/monsters/deadline-clock/hurt.webp",
+      "frames": 3,
+      "cell": 384,
+      "ground_y": 339,
+      "durations": [
+        115,
+        130,
+        185
+      ],
+      "sha256": "aeddb2edc5522245bf4fe6bb2c832aa0517f6fef13e0cfde6233692c90fd0d0c"
+    },
+    "defeat": {
+      "src": "../art/v19/candidates/monsters/deadline-clock/defeat.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 339,
+      "durations": [
+        180,
+        245,
+        300,
+        445
+      ],
+      "sha256": "951ef46b1c511f2e828dcfe1fa0445d23e4d9383e8a7e8f035c37a8c4a740451"
+    }
+  },
+  "sourceNote": "Cleaned almost-invisible magenta/blue pixel RGB and preserved original separate poses from previous illustration; no recoloring of any pre-existing monster. Base 32 official progress remains 3/32.",
+  "approvalNotes": "Requires player visual review, Chromium live test and polish of projectile clipping before official count increases."
+}
