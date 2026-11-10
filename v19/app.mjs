@@ -184,9 +184,15 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0}){
      const {image,frame}=pose,durations=frame.durations;
      const duration=durations.reduce((a,b)=>a+b,0);
      const elapsed=visual?.state==='idle'?now:duration*Math.max(0,Math.min(1,visual?.progress||0));
-     const w=enemy.boss?214:enemy.tier==='elite'?194:177;
-     const h=enemy.boss?258:enemy.tier==='elite'?248:240;
-     if(drawMonsterAtlasFrame(ctx,image,frame,0,0,w,h,elapsed,visual?.state==='idle'))return;
+     // Production art uses a square transparent canvas. Ground its FOOT baseline
+     // at the arena floor instead of positioning the image's top like the old
+     // placeholder actor (which made approved sprites appear to float).
+     const boxW=enemy.boss?214:enemy.tier==='elite'?194:177;
+     const displaySize=enemy.boss?316:enemy.tier==='elite'?295:282;
+     const sourceFloor=Number.isFinite(frame.ground_y)?frame.ground_y:frame.cell*.903125;
+     const frameX=(boxW-displaySize)*.5;
+     const frameY=525-248-displaySize*sourceFloor/frame.cell;
+     if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle'))return;
    }
  }
  // Unapproved prototype only; do not call this a sprite animation.
