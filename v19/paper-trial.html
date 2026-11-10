@@ -31,7 +31,7 @@ function currentFrame(now){
  if(combo){let t=now-comboStart,selected='defeat';
   for(const m of ['idle','attack','hurt','defeat']){const len=total(states[m]);if(t<len){selected=m;break;}t-=len;}
   if(selected!==mode){mode=selected;}
-  if(now-comboStart>2200)combo=false;
+  if(now-comboStart>=Object.values(states).reduce((sum,s)=>sum+total(s),0))combo=false;
   const s=states[mode];return Math.max(0,Math.min(s.ids.length-1, indexAt(s,t)));
  }
  const s=states[mode],t=now-start;
@@ -45,7 +45,7 @@ function draw(now){
  ctx.fillStyle='#5c4059';ctx.beginPath();ctx.ellipse(357,374,302,37,0,0,Math.PI*2);ctx.fill();
  ctx.fillStyle='#2113299e';ctx.beginPath();ctx.ellipse(372,372,113,14,0,0,Math.PI*2);ctx.fill();
  if(image){const s=states[mode],i=s.ids[currentFrame(now)],x=i%4*320,y=Math.floor(i/4)*320;
-  ctx.drawImage(image,x,y,320,320,207,22,334,334);
+  ctx.drawImage(image,x,y,320,320,207,72,334,334);
  }else{ctx.fillStyle='#e9cfb4';ctx.textAlign='center';ctx.font='20px system-ui';ctx.fillText('請先選擇 16 格透明 PNG',360,198);}
  requestAnimationFrame(draw);
 }
