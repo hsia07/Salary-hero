@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "2_species_illustrated_art_integrated_user_gameplay_review_pending_for_coffee",
+  "status": "3_species_illustrated_user_approved",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
   "monsters": {
     "paper-gremlin": {
@@ -116,7 +116,68 @@
           ]
         }
       }
+    },
+    "chair-golem": {
+      "id": "chair-golem",
+      "approved": true,
+      "userVisualApprovalDate": "2026-11-10",
+      "approvalScope": "User accepted all key security mech animations; 16 original distinct frames with actual hit flash and distinctive guard counterattack.",
+      "source": "User-approved original WebP binary sprite Git blobs, copied bit-for-bit from candidate",
+      "states": {
+        "idle": {
+          "src": "../art/v19/runtime/monsters/chair-golem/idle.webp",
+          "frames": 4,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            250,
+            185,
+            240,
+            165
+          ],
+          "sha256": "20cd175c8d316cb4c7a4fb55d60b3f24875c422073a5cb0364de61e4dbb686ad"
+        },
+        "attack": {
+          "src": "../art/v19/runtime/monsters/chair-golem/attack.webp",
+          "frames": 5,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            145,
+            155,
+            75,
+            115,
+            160
+          ],
+          "sha256": "8a845134b5bb8ab84e1b5f62fde99ea74188912a9d691b7bf4104e2289e09c17"
+        },
+        "hurt": {
+          "src": "../art/v19/runtime/monsters/chair-golem/hurt.webp",
+          "frames": 3,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            95,
+            125,
+            205
+          ],
+          "sha256": "c987520bc047819ee4854b48153946b199cb2b7a4812f5d63af20b795df1a22b"
+        },
+        "defeat": {
+          "src": "../art/v19/runtime/monsters/chair-golem/defeat.webp",
+          "frames": 4,
+          "cell": 384,
+          "ground_y": 342,
+          "durations": [
+            145,
+            200,
+            265,
+            445
+          ],
+          "sha256": "473bc976630711e15aa435380bae66db9d5578c3c734b07e38ed1f24a5e001ac"
+        }
+      }
     }
   },
-  "note": "Paper gremlin approved V19.4; evil coffee-cup design approved, gameplay pose feedback pending. Other 30 monsters are engineering stand-ins."
+  "note": "3/32 approved originals; other 29 species still unillustrated."
 }
