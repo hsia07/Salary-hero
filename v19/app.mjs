@@ -2,6 +2,7 @@
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
+import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -746,6 +747,28 @@ function itemRow(it,kind){
  const text=kind==='shop'?(owned?'已擁有':'購買 '+it.cost+'🪙'):(equipped?'裝備中':owned?'穿上':'未解鎖');
  return '<div class="item '+(!owned&&kind!=='shop'?'muted':'')+'"><div class="symbol">'+(owned?it.icon:'◈')+'</div><div class="detail"><strong>'+it.name+'</strong><small>'+it.tier+' · ⚔️ 攻擊 '+it.attack+'</small></div><button data-action="'+action+'" data-value="'+it.id+'" '+(disabled?'disabled':'')+'>'+text+'</button></div>';
 }
+let liteSalvagePending=null;
+function renderLiteEquipment(){
+ const stats=liteEquipmentStats(state);
+ const slotPanels=LITE_SLOTS.map(slot=>{
+   const item=state.liteInventory.find(it=>it.instanceId===state.liteLoadout?.[slot.id]);
+   const base=item?liteBase(item.templateId):null;
+   return '<div class="lite-slot"><span>'+slot.name+'</span><strong>'+(base?escapeHTML(base.name):'空位')+'</strong>'+(item?'<button data-action="liteUnequip" data-value="'+slot.id+'">卸下</button>':'')+'</div>';
+ }).join('');
+ const summary='<div class="lite-stats">⚔️ 裝備攻擊 '+(stats.weaponAttack||0)+'＋'+stats.attack+'　❤️ 生命 +'+stats.hp+'　🛡️ 護甲 '+stats.armor+'<p>暴擊 +'+(stats.crit*100).toFixed(1)+'% · 吸血 +'+(stats.lifeSteal*100).toFixed(1)+'% · 額外減傷 '+(stats.damageReduction*100).toFixed(1)+'%</p></div>';
+ const activeSets=LITE_SETS.filter(set=>stats.sets[set.id]>=2);
+ const sets='<div class="lite-sets"><h3>✦ 套裝協定</h3>'+(activeSets.length?activeSets.map(set=>'<p>✦ <strong>'+escapeHTML(set.name)+'</strong> · '+escapeHTML(set.description)+'</p>').join(''):'<p>穿戴同系列兩件裝備即可啟動戰鬥特效。</p>')+'</div>';
+ const items=[...state.liteInventory].reverse().map(item=>{
+   const base=liteBase(item.templateId);if(!base)return '';
+   const isEquipped=Object.values(state.liteLoadout).includes(item.instanceId);
+   const rarity=liteRarity(item.rarity);
+   const actions='<div class="lite-item-actions">'+btn(isEquipped?'穿戴中':'穿上','liteEquip',item.instanceId,isEquipped)+
+     btn(item.locked?'🔒 解鎖':'🔓 鎖定','liteLock',item.instanceId)+
+     btn(liteSalvagePending===item.instanceId?'確定分解':'分解','liteSalvage',item.instanceId,item.locked||isEquipped)+'</div>';
+   return '<article class="lite-item" data-rarity="'+rarity.id+'"><div class="lite-item-heading"><div><span class="lite-rarity">'+rarity.name+' · Lv.'+item.itemLevel+'</span><strong>'+escapeHTML(base.name)+'</strong></div><small>'+LITE_SLOTS.find(x=>x.id===base.slot)?.name+(base.setId?' · '+LITE_SETS.find(x=>x.id===base.setId)?.name:'')+'</small></div><div class="lite-item-stats">'+escapeHTML(liteStatLine(item))+'</div><div class="lite-item-affixes">'+escapeHTML(liteAffixLine(item)||'無附加詞條')+'</div>'+actions+'</article>';
+ }).join('');
+ return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+'<h3>戰利品背包</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+'</div>';
+}
 function renderPanel(type){
  currentPanel=type;
  const headers={letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
@@ -783,7 +806,7 @@ function renderPanel(type){
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
  } else if(type==='equipment'){
-  body.innerHTML='<p>更換裝備立即影響實際傷害，戰場中的武器外觀也會切換。</p><p>⚒️ 鍛造 +'+state.forgeLevel+'/10 · 強化素材 '+state.craftingMaterial+' · 黎明礦石 '+state.rareMaterials+'</p>'+btn('⚒️ 消耗材料鍛造武器','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>有 '+state.pendingDrops.length+' 件掉寶待領取。</p>'+btn('領取掉寶','claim'):'');
+  body.innerHTML=renderLiteEquipment()+'<details class="lite-legacy-shop"><summary>原有武器與鍛造（保留舊存檔）</summary><p>⚒️ 鍛造 +'+state.forgeLevel+'/10 · 強化素材 '+state.craftingMaterial+' · 黎明礦石 '+state.rareMaterials+'</p>'+btn('⚒️ 消耗材料鍛造武器','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>舊版掉寶 '+state.pendingDrops.length+' 件待領取。</p>'+btn('領取掉寶','claim'):'')+'</details>';
  } else if(type==='shop'){
   body.innerHTML='<p>目前持有 <b>🪙 '+format(state.gold)+'</b>。購買立即扣款並裝備；進度會存檔。</p>'+ITEMS.filter(it=>it.cost).map(it=>itemRow(it,'shop')).join('');
  } else if(type==='adventure'){
@@ -845,6 +868,14 @@ body.addEventListener('click',e=>{
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
  else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(act==='liteEquip'||act==='liteUnequip'||act==='liteLock'){
+   liteSalvagePending=null;commit({type:act,id:b.dataset.value});
+ }
+ else if(act==='liteSalvage'){
+   const id=b.dataset.value;
+   if(liteSalvagePending===id){liteSalvagePending=null;commit({type:'liteSalvage',id});}
+   else{liteSalvagePending=id;renderPanel('equipment');}
+ }
  else if(act==='equip'||act==='buy')commit({type:act,id:b.dataset.value});
  else commit(act);
 });
