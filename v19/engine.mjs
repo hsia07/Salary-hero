@@ -543,8 +543,9 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      }
      if(elite){s.gems+=1;notice(s,'💠 菁英擊敗！獲得額外 1 顆寶石，必定掉落裝備。');}
      lootRoll(s,rng,elite,now);
+     let liteDrop=null;
      if(!s.trainingIsolated){
-       const liteDrop=liteRollDrop(s,rng,dead.tier,dungeon?.weekday===1);
+       liteDrop=liteRollDrop(s,rng,dead.tier,dungeon?.weekday===1);
        if(liteDrop){const base=liteBase(liteDrop.templateId);
          notice(s,'✨ 新裝備：'+liteRarity(liteDrop.rarity).name+'・'+base.name+'（'+LITE_SLOTS.find(x=>x.id===base.slot).name+'），已放入背包。');
        }
@@ -563,7 +564,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
      const fridayNote=maybeFridayBossEscaped(s,rng,now);
      const weekendEvent=maybeWeekendChaos(s,rng,now);
-     s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave,fridayNote,weekendEvent};
+     s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave,fridayNote,weekendEvent,liteDrop:liteDrop?.instanceId||null};
      
    }else{
      // Enemy turns survive save/normalize, so special moves trigger consistently.
