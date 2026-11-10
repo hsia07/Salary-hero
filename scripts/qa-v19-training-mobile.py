@@ -40,7 +40,7 @@ def test_species(page,species,expected_name,expected_wave):
     assert 'OFF' in page.locator('#auto').inner_text(),'training must not autoplay'
     assert page.evaluate('document.documentElement.scrollWidth > window.innerWidth+3') is False
     assert page.evaluate('(key)=>localStorage.getItem(key)',SAVE_KEY)=='UNCHANGED_REAL_PLAYER_SAVE'
-    assert '3/32' in page.locator('#monster-art-status').inner_text()
+    assert '4/32' in page.locator('#monster-art-status').inner_text()
     # Validate the actual raster art decodes in-browser, not just in a manifest.
     frames=page.evaluate("""async (name) => {
       const suffix=name==='coffee-mimic'?'.webp':'.png';
