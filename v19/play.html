@@ -69,6 +69,11 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .chibi-quick-preview{padding:6px 12px 9px;background:#2d1c3d}
 #hurt-demo-quick{width:100%;background:linear-gradient(#aa5968,#623b54);border:1px solid #d9a66f;border-radius:8px;color:#ffebcd;font-size:13px;font-weight:700;padding:8px}
 .paper-art-preview{display:block;text-align:center;background:linear-gradient(135deg,#855142,#4a2e46);color:#ffebc9;border:1px solid #ecc48e;border-radius:8px;font-size:13px;font-weight:750;padding:10px;margin:0 0 8px;text-decoration:none}
+.training-mode-notice{padding:12px 14px;background:linear-gradient(100deg,#75412c,#3f2845);border-bottom:2px solid #e8ae62;text-align:center;font-size:13px;line-height:1.55;color:#ffeed1}
+.training-mode-notice[hidden]{display:none}
+.training-mode-notice a{display:inline-block;color:#fff5ba;font-weight:800;margin-top:5px;text-decoration:underline}
+.training-fight-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:4px 0 8px}
+.training-fight-links a{display:block;border:1px solid #efc187;background:linear-gradient(135deg,#6e3d4d,#2e2b48);color:#fff0c6;text-decoration:none;text-align:center;border-radius:9px;font-size:12px;font-weight:800;padding:11px 5px;line-height:1.4}
 .art-advanced summary{font-size:12px;color:#d9bca3;padding:7px 0 4px;cursor:pointer}
 .art-advanced .chibi-v2-lab{padding:9px;margin-top:6px;border:1px solid #be9872;border-radius:9px}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
@@ -78,12 +83,21 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
 <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
 </header>
+<div id="training-mode-notice" class="training-mode-notice" role="status" hidden>
+ <strong>⚔️ 實戰練習：<span id="training-monster-name">怪物</span></strong>
+ <div>可攻擊、被反擊、擊倒並重戰。這裡的戰鬥不會改變正式遊戲存檔、裝備或薪資。</div>
+ <a href="./play.html">返回原本的遊戲進度</a>
+</div>
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
 <div class="chibi-art-state" id="chibi-art-state" role="status" hidden>正在檢查 Q 版高畫質主角……</div>
 <div class="monster-art-status" id="monster-art-status" role="status">🎨 正在自動載入紙妖與邪惡杯靈兩套 Q 版逐格動畫……</div>
 <div class="chibi-quick-preview">
+<div class="training-fight-links" aria-label="不更改遊戲存檔的實戰練習">
+ <a href="./play.html?training=paper-gremlin">⚔️ 紙妖<br>直接實戰</a>
+ <a href="./play.html?training=coffee-mimic">☕ 邪惡杯靈<br>直接實戰</a>
+</div>
 <a class="paper-art-preview" href="./paper-trial.html">⚔️ 試播紙妖：攻擊紙刃＋受傷白亮紅閃（免下載）</a>
 <a class="paper-art-preview" href="./coffee-trial.html">☕ 試播邪惡杯靈：噴咖啡＋受傷紅閃＋杯身碎裂（免下載）</a>
 <button id="hurt-demo-quick" type="button">💥 試播主角受擊動畫（不扣血）</button>
@@ -120,4 +134,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=evil-coffee-autoload-59a2b7-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=two-illustrated-monsters-training-20261110"></script></body></html>
