@@ -35,6 +35,29 @@ test('Monday has harder enemies, double XP, higher rare-drop rate and gold bonus
  const m=transition(monday,'attack',()=>.99,MON),t=transition(tuesday,'attack',()=>.99,TUE);
  assert.ok(m.gold>t.gold);assert.ok(m.xp>t.xp);
 });
+test('Monday 厭世 applies exact enemy and XP modifiers',()=>{
+ const rule=dailyDungeonFor(MON);
+ assert.equal(rule.name,'星期一・厭世');
+ assert.equal(rule.hpScale,1.65);
+ assert.equal(rule.attackScale,1.4);
+ assert.equal(rule.xpScale,2);
+});
+test('Monday 厭世 really increases epic and legendary drop tier odds',()=>{
+ const fight=(now,wave,cleared,roll)=>{
+   let s=enterDaily(now);
+   s.wave=wave;s.modeWaves.dungeon=wave;s.cleared=cleared;
+   s.enemy={...loopEnemyFor(wave,'dungeon',now),hp:1};
+   return transition(s,'attack',()=>roll,now);
+ };
+ const mondayEpic=fight(MON,7,6,.15);
+ const tuesdayEpic=fight(TUE,7,6,.15);
+ assert.ok(mondayEpic.pendingDrops.includes('notice'));
+ assert.ok(!tuesdayEpic.pendingDrops.includes('notice'));
+ const mondayLegend=fight(MON,17,16,.04);
+ const tuesdayLegend=fight(TUE,17,16,.04);
+ assert.ok(mondayLegend.pendingDrops.includes('excalibur'));
+ assert.ok(!tuesdayLegend.pendingDrops.includes('excalibur'));
+});
 test('weekday dungeons have stand-in elite on 3 and stand-in boss on 4',()=>{
  assert.equal(loopEnemyFor(1,'dungeon',TUE).tier,'normal');
  assert.equal(loopEnemyFor(2,'dungeon',TUE).tier,'normal');
