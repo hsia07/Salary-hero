@@ -90,13 +90,13 @@ export const GAME_MODES=Object.freeze([
 ]);
 /** Seven fixed weekly dungeons. Weekday is Taiwan-local: 0=Sun, 1=Mon ... 6=Sat. */
 export const DAILY_DUNGEONS=Object.freeze([
- {weekday:0,id:'sunday-dream',name:'星期日・週末夢境',icon:'🌙',theme:'dream',story:'週日午後的公司像在做夢，怪物也在半夢半醒地巡邏。',hpScale:.92,attackScale:.9,rewardScale:1.1,slackChance:.16},
- {weekday:1,id:'monday-hell',name:'星期一・地獄總部',icon:'🔥',theme:'hell',story:'地獄星期一，全公司警報齊鳴。怪物更硬、更兇，但獎金特別豐厚！',hpScale:1.65,attackScale:1.4,rewardScale:2,slackChance:0},
- {weekday:2,id:'tuesday-office',name:'星期二・失控影印室',icon:'🖨️',theme:'office',story:'星期二的文件失控了，長出尖牙的公文四處亂飛。',hpScale:1,attackScale:1,rewardScale:1,slackChance:.06},
- {weekday:3,id:'wednesday-alien',name:'星期三・銀河客服站',icon:'🛸',theme:'alien',story:'外星客訴跨星系而來，連打卡鐘都被改成宇宙時間。',hpScale:1.12,attackScale:1.08,rewardScale:1.18,slackChance:.08},
- {weekday:4,id:'thursday-data',name:'星期四・資料深淵',icon:'🌀',theme:'digital',story:'星期四伺服器陷入異界，報表與幽靈在資料流裡交戰。',hpScale:1.18,attackScale:1.1,rewardScale:1.25,slackChance:.1},
- {weekday:5,id:'friday-escape',name:'星期五・準時下班大逃亡',icon:'🏃',theme:'friday',story:'小兵上班滑手機，菁英只想關電腦，魔王甚至可能已經下班。',hpScale:.85,attackScale:.7,rewardScale:1.2,slackChance:.48,bossSkipChance:.55},
- {weekday:6,id:'saturday-night',name:'星期六・冥府夜班列車',icon:'🚉',theme:'night',story:'週六沒有人想值班，幽冥列車卻帶來一車又一車的夜班妖怪。',hpScale:1.22,attackScale:1.16,rewardScale:1.32,slackChance:.12}
+ {weekday:0,id:'sunday-lazy',name:'星期日・勇者的合法耍廢日',icon:'🌙',theme:'dream',story:'休假也能輕鬆進入自選支線副本，或在公會整理裝備和家園。',hpScale:.9,attackScale:.88,rewardScale:1,xpScale:1,slackChance:.15},
+ {weekday:1,id:'monday-hell',name:'星期一・地獄星期一：社畜輪迴',icon:'🔥',theme:'hell',story:'地獄星期一！高難度、高報酬，經驗值 +100%、稀有掉率提升，首通 Boss 保證史詩裝備。',hpScale:1.65,attackScale:1.4,rewardScale:1.25,xpScale:2,slackChance:0},
+ {weekday:2,id:'tuesday-meeting',name:'星期二・會議室異次元',icon:'📋',theme:'office',story:'走不完的會議迷宮，擊破四關可獲技能書，奇遇事件也可能改寫命運。',hpScale:1.02,attackScale:1,rewardScale:1,xpScale:1.05,slackChance:.06},
+ {weekday:3,id:'wednesday-breakdown',name:'星期三・週三精神崩潰邊緣',icon:'🫠',theme:'alien',story:'精神壓力化成怪物。突破副本可獲得寵物經驗與強化素材。',hpScale:1.1,attackScale:1.1,rewardScale:1.08,xpScale:1.1,slackChance:.1},
+ {weekday:4,id:'thursday-overtime',name:'星期四・黎明前的加班',icon:'🌃',theme:'digital',story:'離黎明只差一點，擊敗怪物收集鍛造素材，Boss 掉落稀有材料。',hpScale:1.18,attackScale:1.1,rewardScale:1.16,xpScale:1.12,slackChance:.08},
+ {weekday:5,id:'friday-escape',name:'星期五・週末越獄大作戰',icon:'🏃',theme:'friday',story:'魔王「我只想下班」可能只留張紙條就跑路；小兵、菁英也只想摸魚。金幣 +200%、週五特殊寶箱與限定造型。',hpScale:.85,attackScale:.7,rewardScale:3,xpScale:1.1,slackChance:.48,bossSkipChance:.55},
+ {weekday:6,id:'saturday-lazy',name:'星期六・勇者的合法耍廢日',icon:'🛋️',theme:'night',story:'放假不用打卡，整理裝備與家園，想玩時再進入自己的奇幻支線副本。',hpScale:.93,attackScale:.92,rewardScale:1,xpScale:1,slackChance:.2}
 ]);
 export function dailyDungeonFor(now=Date.now()){return DAILY_DUNGEONS[weekdayTaiwan(now)];}
 export const FRIDAY_BOSS_NOTE=Object.freeze({headline:'下班去',message:'下週一再戰',signature:'— 魔王（已經打卡）'});
@@ -117,7 +117,7 @@ export function loopEnemyFor(wave,mode='campaign',now=Date.now()){
  const multiplier=(tier==='elite'?1.65:tier==='boss'?2.65:1);
  const hp=Math.max(12,Math.round((45+n*9)*(mode==='tower'?1.15:daily?daily.hpScale:1)*multiplier));
  const atk=Math.max(1,Math.round((3+Math.floor(n/4)+(mode==='tower'?2:0))*(daily?.attackScale||1)*(tier==='boss'?1.5:tier==='elite'?1.2:1)));
- const prefix=daily?(tier==='boss'?(daily.weekday===5?'週五快閃魔王・':'代班魔王・'):tier==='elite'?(daily.weekday===5?'摸魚菁英・':'代班菁英・'):''):'';
+ const prefix=daily?(tier==='boss'?(daily.weekday===5?'我只想下班・':'代班魔王・'):tier==='elite'?(daily.weekday===5?'摸魚菁英・':'代班菁英・'):''):'';
  return {id:n,typeId:design.id,tier,boss:tier==='boss',elite:tier==='elite',name:prefix+design.name,icon:design.icon,
   family:design.family,faction:design.faction,sprite:design.sprite||null,shape:design.shape||null,
   accent:design.accent,trait:design.trait,traitText:design.traitText,
@@ -138,7 +138,7 @@ export function enemyFor(wave){
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
-   playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),fridayBossRolls:{},fridayNote:null,
+   playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),fridayBossRolls:{},fridayNote:null,weeklyDungeonClaims:[],specialChests:0,skillBooks:0,skillRank:0,petXp:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
@@ -155,6 +155,7 @@ export function normalize(raw,now=Date.now()){
  if(dungeonDayChanged)n.modeWaves.dungeon=1;
  n.fridayBossRolls=dungeonDayChanged?{}:Object.fromEntries(Object.entries(raw.fridayBossRolls||{}).filter(([k,v])=>k.startsWith(today+':')&&(v===true||v===false)).slice(-32));
  n.fridayNote=raw.fridayNote&&raw.fridayNote.day===today?raw.fridayNote:null;
+ n.weeklyDungeonClaims=[...new Set((Array.isArray(raw.weeklyDungeonClaims)?raw.weeklyDungeonClaims:[]).filter(x=>typeof x==='string'&&x.length<=50))].slice(-60);
  n.wave=n.modeWaves[n.activeMode];
  n.skillCooldowns=Object.fromEntries(GAME_SKILLS.map(k=>[k.id,Math.max(0,Math.min(k.cooldown,Math.floor(Number(raw.skillCooldowns?.[k.id])||0)))]));
  n.styleWishlist=[...new Set((Array.isArray(raw.styleWishlist)?raw.styleWishlist:[]).filter(id=>HERO_STYLES.some(s=>s.id===id)))];
@@ -171,7 +172,10 @@ export function normalize(raw,now=Date.now()){
  n.owned=[...new Set((Array.isArray(raw.owned)?raw.owned:[]).filter(x=>ITEMS.some(it=>it.id===x)).concat('briefcase'))];
  n.equipped=n.owned.includes(raw.equipped)?raw.equipped:'briefcase';
  n.level=Math.max(1,Math.min(500,Math.floor(Number(n.level)||1)));
- for(const k of ['xp','gold','gems','potions','chests','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
+ for(const k of ['xp','gold','gems','potions','chests','specialChests','skillBooks','petXp','craftingMaterial','rareMaterials','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
+ n.skillRank=Math.max(0,Math.min(5,Math.floor(Number(raw.skillRank)||0)));
+ n.forgeLevel=Math.max(0,Math.min(10,Math.floor(Number(raw.forgeLevel)||0)));
+ n.petLevel=Math.max(1,Math.min(50,Math.floor(Number(raw.petLevel)||1)));
  n.maxHp=Math.max(1,Number(n.maxHp)||110);
  n.heroHp=Math.max(0,Math.min(n.maxHp,Number(n.heroHp)||0));
  if(raw.trainingIsolated===true&&raw.enemy&&Number(raw.enemy.hp)>0){
@@ -210,11 +214,11 @@ function maybeFridayBossEscaped(s,rng,now){
  const reward=Math.round((70+skippedFloor*9)*dailyDungeonFor(now).rewardScale);
  const xp=Math.round(75*dailyDungeonFor(now).rewardScale);
  s.gold+=reward;s.cleared++;awardXP(s,xp);
- s.gems+=2;s.chests++;s.skinTickets++;s.heroHp=s.maxHp;
+ s.gems+=2;s.chests++;s.skinTickets++;s.specialChests++;s.heroHp=s.maxHp;
  const day=todayTW(now);
  if(s.activityDaily.day!==day)s.activityDaily={day,wins:0,bosses:0};
  s.activityDaily.wins++;s.activityDaily.bosses++;
- lootRoll(s,rng,true);
+ lootRoll(s,rng,true,now);
  const note={...FRIDAY_BOSS_NOTE,day,wave:skippedFloor,gold:reward,xp};
  s.fridayNote=note;
  s.wave++;s.modeWaves.dungeon=s.wave;
@@ -227,9 +231,10 @@ function awardXP(s,amount){
  s.xp+=amount;
  while(s.xp>=50+s.level*30){s.xp-=50+s.level*30;s.level++;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);notice(s,'✨ 升到 Lv.'+s.level+'，生命上限增加！');}
 }
-function lootRoll(s,rng,guaranteed=false){
+function lootRoll(s,rng,guaranteed=false,now=Date.now()){
+ const mondayRare=s.activeMode==='dungeon'&&!s.trainingIsolated&&weekdayTaiwan(now)===1;
  const chance=Math.max(0,Math.min(0.999999,Number(rng())||0));
- if(guaranteed || chance<.23 || s.cleared%4===0){
+ if(guaranteed || chance<(mondayRare?.48:.23) || s.cleared%4===0){
    const id=s.cleared>=16&&chance<.025?'excalibur':s.cleared>=6&&chance<.10?'notice':'laptop';
    s.pendingDrops.push(id);notice(s,'🎁 敵人掉落 '+ITEMS.find(it=>it.id===id).name+'！');
  }
@@ -336,25 +341,42 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(s.enemy.hp===0){
      const dead=s.enemy,boss=dead.boss,elite=dead.tier==='elite';
      const baseReward=boss?70+s.wave*9:elite?36+s.wave*7:12+s.wave*4;
-     const reward=Math.round(baseReward*(s.trainingIsolated||s.activeMode!=='dungeon'?1:dailyDungeonFor(now).rewardScale));
+     const dungeon=s.activeMode==='dungeon'&&!s.trainingIsolated?dailyDungeonFor(now):null;
+     const reward=Math.round(baseReward*(dungeon?.rewardScale||1));
      if(!s.defeatedTypes.includes(dead.typeId))s.defeatedTypes.push(dead.typeId);
      s.gold+=reward;s.cleared++;
      const earnedXP=boss?75:elite?38+s.wave*4:12+s.wave*2;
-     awardXP(s,Math.round(earnedXP*(s.trainingIsolated||s.activeMode!=='dungeon'?1:dailyDungeonFor(now).rewardScale)));
+     awardXP(s,Math.round(earnedXP*(dungeon?.xpScale||1)));
+     if(dungeon?.weekday===4)s.craftingMaterial++;
+     if(dungeon?.weekday===3)s.petXp+=12;
+     while(s.petXp>=50+s.petLevel*30){s.petXp-=50+s.petLevel*30;s.petLevel++;notice(s,'🐾 寵物升級！Lv.'+s.petLevel);}
      const today=todayTW(now);
      if(s.activityDaily.day!==today)s.activityDaily={day:today,wins:0,bosses:0};
      s.activityDaily.wins++;
      if(boss){
        s.activityDaily.bosses++;
        s.gems+=2;s.chests+=1;s.skinTickets++;
+       if(dungeon?.weekday===5){s.specialChests++;notice(s,'🎁 週末越獄寶箱 +1！');}
+       if(dungeon?.weekday===4){s.rareMaterials++;notice(s,'🔧 黎明礦石 +1！');}
+       if(dungeon?.weekday===1){
+         const key='monday-epic:'+todayTW(now);
+         if(!s.weeklyDungeonClaims.includes(key)){
+           s.weeklyDungeonClaims.push(key);s.pendingDrops.push('notice');
+           notice(s,'🔥 地獄星期一首通！保證史詩：黃金離職通知書。');
+         }
+       }
        s.heroHp=s.maxHp;
        notice(s,'🏆 首領擊敗！生命回滿，獲得寶箱、寶石與 1 張造型券。');
      }
      if(elite){s.gems+=1;notice(s,'💠 菁英擊敗！獲得額外 1 顆寶石，必定掉落裝備。');}
-     lootRoll(s,rng,elite);s.wave++;s.modeWaves[s.activeMode]=s.wave;
+     lootRoll(s,rng,elite,now);s.wave++;s.modeWaves[s.activeMode]=s.wave;
      if(s.activeMode==='tower'&&(s.wave-1)%4===0){s.heroHp=s.maxHp;s.chests++;notice(s,'🗼 四層突破！恢復全部生命，獲得寶箱。');}
      if(s.activeMode==='dungeon'&&(s.wave-1)%4===0){
-       s.heroHp=s.maxHp;s.gems+=1;notice(s,'🏅 今日副本四關結算：生命回滿，寶石 +1。');
+       s.heroHp=s.maxHp;s.gems+=1;
+       if(dungeon?.weekday===2){s.skillBooks++;notice(s,'📕 會議室技能書 +1！');}
+       if(dungeon?.weekday===3){s.craftingMaterial+=2;s.petXp+=30;notice(s,'🐾 寵物經驗 +30、強化材料 +2！');}
+       if(dungeon?.weekday===4){s.rareMaterials++;notice(s,'⚒️ 副本結算：稀有材料 +1！');}
+       notice(s,'🏅 今日副本四關結算：生命回滿，寶石 +1。');
      }
      s.enemy=loopEnemyFor(s.wave,s.activeMode,now);
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
