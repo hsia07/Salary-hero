@@ -1,15 +1,16 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>薪水勇者｜影印室工讀紙妖逐格動畫試玩</title>
 <style>:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color-scheme:dark;background:#160f22;color:#fff0d6}*{box-sizing:border-box}body{margin:0;padding:17px;background:radial-gradient(ellipse at top,#39243e,#160f22 70%)}main{max-width:780px;margin:0 auto}a{color:#fbd99e}h1{font-size:24px;margin:12px 0 7px}p{font-size:13px;color:#d4c0d8;line-height:1.6}h2{font-size:15px}section{border:1px solid #977a96;background:#291f38;border-radius:14px;padding:13px;margin:12px 0}input{max-width:100%;font-size:13px}canvas{display:block;width:100%;aspect-ratio:720/420;height:auto;background:radial-gradient(circle at 60% 30%,#62566e,#242034 66%);border-radius:11px}button{background:#64415a;border:1px solid #c6a28c;color:#ffe5bc;border-radius:10px;padding:10px 13px;font-weight:700;margin:3px;cursor:pointer}button[aria-pressed=true]{background:#986451}button:disabled{opacity:.4}#status{font-size:12px;color:#eac8a8}small{font-size:11px;color:#c7b4ca}</style></head><body><main><a href="./play.html">返回《薪水勇者》</a>
-<h1>紙妖 Q 版逐格動畫・現場驗收</h1><p>這是 V19 已內建的第一隻 Q 版逐格美術候選，可以直接檢查待機、攻擊、受傷及死亡。 現在會自動從遊戲讀取真實 PNG 圖片，**不用下載、不用選檔、也不用重開存檔**。</p>
+<h1>紙妖 Q 版逐格動畫・現場驗收</h1><p>這是 V19 已內建的第一隻 Q 版逐格美術候選，可以直接檢查待機、實際紙刃飛行、全身白亮紅閃受擊及死亡。 現在會自動從遊戲讀取真實 PNG 圖片，**不用下載、不用選檔、也不用重開存檔**。</p>
 <section><h2>已內建 16 張精緻 Q 版動畫</h2><p id="status" role="status">正在從 GitHub Pages 載入紙妖的四組透明 PNG 圖片……</p></section>
-<section><canvas id="world" width="720" height="420"></canvas><div id="controls"><button data-m="idle" disabled>待機 4</button><button data-m="attack" disabled>攻擊 5</button><button data-m="hurt" disabled>受傷 3</button><button data-m="defeat" disabled>死亡 4</button><button id="sequence" disabled>連續播放</button></div></section>
+<section><canvas id="world" width="720" height="420"></canvas><div id="controls"><button data-m="idle" disabled>待機 4</button><button data-m="attack" disabled>攻擊 5・紙刃</button><button data-m="hurt" disabled>受傷 3・紅閃</button><button data-m="defeat" disabled>死亡 4</button><button id="sequence" disabled>連續播放</button></div></section>
 <p><small>每次播放直接切換 GitHub 內建的真正圖片影格，沒有對整張角色圖進行搖晃、旋轉或平移。美術仍保留最終視覺驗收。</small></p></main>
-<script>
-const states={idle:{frames:4,ms:[240,180,240,140]},attack:{frames:5,ms:[110,140,105,130,180]},hurt:{frames:3,ms:[140,210,230]},defeat:{frames:4,ms:[190,190,230,420]}};
+<script type="module">
+import {drawPaperHitTint,drawPaperCombatFx,PAPER_RETALIATE_START_MS,PAPER_HERO_HIT_MS} from './paper-combat.mjs';
+const states={idle:{frames:4,ms:[240,180,240,140]},attack:{frames:5,ms:[150,130,70,90,180]},hurt:{frames:3,ms:[90,160,150]},defeat:{frames:4,ms:[190,190,230,420]}};
 const world=document.querySelector('#world'),ctx=world.getContext('2d');
 const status=document.querySelector('#status');
-const images={},nameMap={idle:'待機',attack:'攻擊',hurt:'受傷',defeat:'死亡'};
+const images={},nameMap={idle:'待機',attack:'攻擊・紙刃',hurt:'受傷・紅閃',defeat:'死亡'};
 let started=performance.now(),mode='idle',sequenceStart=0,sequence=false,loaded=false;
 const total=s=>s.ms.reduce((a,b)=>a+b,0);
 const allTotal=Object.values(states).reduce((a,s)=>a+total(s),0);
@@ -23,9 +24,16 @@ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{sequence=false;s
 document.querySelector('#sequence').onclick=()=>{sequence=true;sequenceStart=performance.now();setMode('idle');};
 function render(now){
  ctx.clearRect(0,0,720,420);
- const bg=ctx.createLinearGradient(0,0,0,420);bg.addColorStop(0,'#5b4b69');bg.addColorStop(1,'#251d37');ctx.fillStyle=bg;ctx.fillRect(0,0,720,420);
+ const bg=ctx.createLinearGradient(0,0,0,420);bg.addColorStop(0,'#5b4b69');bg.addColorStop(1,'#251d37');
+ ctx.fillStyle=bg;ctx.fillRect(0,0,720,420);
  ctx.fillStyle='#5c4059';ctx.beginPath();ctx.ellipse(357,376,302,37,0,0,Math.PI*2);ctx.fill();
- ctx.fillStyle='#2113299e';ctx.beginPath();ctx.ellipse(372,373,113,14,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#2113299e';ctx.beginPath();ctx.ellipse(439,373,113,14,0,0,Math.PI*2);ctx.fill();
+ // A stationary sparring target gives the paper projectile a visible destination.
+ ctx.save();ctx.fillStyle='#49324e';ctx.strokeStyle='#e9bb83';ctx.lineWidth=6;
+ ctx.beginPath();ctx.arc(128,249,47,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(102,249);ctx.lineTo(154,249);
+ ctx.moveTo(128,223);ctx.lineTo(128,275);ctx.stroke();
+ ctx.fillStyle='#f9d9a6';ctx.font='14px system-ui';ctx.textAlign='center';ctx.fillText('練習標靶',128,320);ctx.restore();
  if(loaded){
    let state=mode,elapsed=now-started,loop=state==='idle'&&!sequence;
    if(sequence){
@@ -39,9 +47,20 @@ function render(now){
      setMode('idle');state='idle';elapsed=0;loop=true;
    }
    const frame=selectFrame(state,elapsed,loop);
-   const image=images[state];
-   const size=334;
-   ctx.drawImage(image,frame*320,0,320,320,207,72,size,size);
+   const image=images[state],rect={x:285,y:72,w:334,h:334};
+   ctx.drawImage(image,frame*320,0,320,320,rect.x,rect.y,rect.w,rect.h);
+   if(state==='hurt'){
+     const combatMs=PAPER_HERO_HIT_MS+elapsed;
+     drawPaperHitTint(ctx,image,{cell:320},frame,rect,combatMs);
+     drawPaperCombatFx(ctx,combatMs,{enemyX:285,enemyY:75,heroX:-45,heroY:115,attackAllowed:false});
+   }
+   if(state==='attack'){
+     drawPaperCombatFx(ctx,PAPER_RETALIATE_START_MS+elapsed,
+       {enemyX:285,enemyY:75,heroX:-45,heroY:115,attackAllowed:true});
+   }
+   if(state==='defeat'&&elapsed<200)
+     drawPaperCombatFx(ctx,PAPER_HERO_HIT_MS+elapsed,
+       {enemyX:285,enemyY:75,heroX:-45,heroY:115,attackAllowed:false});
    ctx.font='bold 16px system-ui';ctx.fillStyle='#ffe3ab';ctx.textAlign='right';
    ctx.fillText(nameMap[state]+' '+(frame+1)+' / '+states[state].frames,684,397);
  }else{
@@ -62,6 +81,6 @@ Promise.all(Object.keys(states).map(key=>new Promise((resolve,reject)=>{
  image.src='../art/v19/runtime/monsters/paper-gremlin/'+key+'.png?v=523ddc6';
 }))).then(()=>{
  loaded=true;document.querySelectorAll('#controls button').forEach(button=>button.disabled=false);
- status.textContent='✓ 四組真實 PNG 已自動載入（16 張不同畫格）。點擊下方按鈕就能試看，無須下載。';
+ status.textContent='✓ 16 張真實 PNG 已載入。攻擊會發射紙刃；受擊會先閃白、再紅閃、後仰。無需下載圖片。';
 }).catch(err=>{status.textContent='❌ '+err.message+'。請重新整理頁面。';console.error(err)});
 </script></body></html>
