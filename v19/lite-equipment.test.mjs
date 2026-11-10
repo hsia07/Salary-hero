@@ -91,7 +91,8 @@ test('two coffee items give lifesteal and fourth-hit HP recovery',()=>{
 test('armor can reduce actual retaliation without making guard buffs infinite',()=>{
  const shielded=loaded([item('a-heavy','epic',1),item('b-security','rare',2)],{armor:'li-1',badge:'li-2'});
  const bare=loaded([]);
- shielded.enemy.attack=20;bare.enemy.attack=20;
+ shielded.wave=100;shielded.modeWaves.campaign=100;shielded.enemy=loopEnemyFor(100,'campaign',NOW);
+ bare.wave=100;bare.modeWaves.campaign=100;bare.enemy=loopEnemyFor(100,'campaign',NOW);
  const a=transition(shielded,'attack',fixed(.999),NOW),b=transition(bare,'attack',fixed(.999),NOW);
  assert.ok(a.last.retaliationDamage<b.last.retaliationDamage);
  assert.ok(a.heroHp>0);
