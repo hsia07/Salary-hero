@@ -12,6 +12,7 @@ import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './co
 import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardArmorFlashAt,drawGuardArmorTint,guardCombatCaptionAt} from './guard-combat.mjs?v=armor-red-v19-12';
 import {alienCombatPoseAt,drawAlienStampFx,alienStampAt,alienStampRouteAt,alienInjuryAt,drawAlienInjuryTint,ALIEN_STAMP_IMPACT_MS,ALIEN_DEFEAT_END_MS} from './alien-combat.mjs?v=alien-facing-left-v19-17';
 import {cloudCombatPoseAt,cloudClockAt,drawCloudClockFx,cloudHurtFlashAt,drawCloudHurtTint,CLOUD_CLOCK_IMPACT_MS,CLOUD_FADE_START_MS,CLOUD_DEFEAT_END_MS} from './cloud-ghost-combat.mjs?v=cloud-v19-18';
+import {clerkCombatPoseAt,clerkReportAt,drawClerkReportFx,clerkHurtFlashAt,drawClerkHurtTint,CLERK_REPORT_IMPACT_MS,CLERK_FADE_START_MS,CLERK_DEFEAT_END_MS} from './ghost-clerk-combat.mjs?v=clerk-original-v19-21';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
@@ -67,11 +68,11 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':trainingSpecies==='keyboard-piranha'?'加班遊魂文員（16 格人形怨靈候選）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
- if(readout)readout.hidden=!['chair-golem','meeting-ghost','deadline-clock'].includes(trainingSpecies);
+ if(readout)readout.hidden=!['chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'].includes(trainingSpecies);
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 $('#training-finish')?.addEventListener('click',()=>{
@@ -164,6 +165,34 @@ async function loadCloudGhostCandidateArt(){
  if(notice){
   notice.dataset.candidate='true';
   notice.textContent='☁️ 雲端資料專員靈的 16 格透明逐格候選已載入（待機4／攻擊5／受擊3／死亡4），第 6 關朝左側勇者出招。正式已有 4/32。';
+ }
+}
+async function loadClerkCandidateArt(){
+ if(trainingSpecies!=='keyboard-piranha')return;
+ const url=new URL('../art/v19/candidates/monsters/keyboard-piranha/manifest-candidate.json?v=clerk-v19-21',import.meta.url);
+ const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('第六隻素材 HTTP '+r.status);return r.json()});
+ if(record.id!=='keyboard-piranha'||record.approved!==false||record.previewOnly!==true||
+    record.tier!=='normal'||record.facing!=='left'||record.target!=='hero-on-left')
+  throw new Error('第六隻候選必須是面向勇者的普通怪，不能當菁英或 Boss');
+ const poses={};
+ for(const state of ['idle','attack','hurt','defeat']){
+  const frame=record.states?.[state];
+  if(!frame||frame.cell!==384||!frame.src.startsWith('../art/v19/candidates/monsters/keyboard-piranha/'))
+   throw new Error('加班遊魂文員圖集路徑無效：'+state);
+  const image=await imageFrom(frame.src);
+  const pixels=validateSpritePixels(image,frame);
+  if(!pixels.ok)throw new Error('加班遊魂文員 '+state+' 圖片尺寸錯誤：'+pixels.reason);
+  const issues=inspectAtlasFrameArt(image,frame,state);
+  if(issues.length)throw new Error('加班遊魂文員 '+state+' 缺少獨立姿勢：'+issues.join('; '));
+  poses[state]={image,frame};
+ }
+ trainingCandidateArt.set('keyboard-piranha',poses);
+ world.dataset.clerkArt='16-original-frames-loaded';
+ world.dataset.clerkFacing='left';
+ const notice=$('#monster-art-status');
+ if(notice){
+  notice.dataset.candidate='true';
+  notice.textContent='👻 第六隻「加班遊魂文員」16 格人形怨靈候選已載入（待機 4／攻擊 5／受擊 3／死亡 4）；報表朝左飛向勇者。正式仍為 5/32，候選待視覺驗收。';
  }
 }
 async function loadApprovedMonsterArt(){
@@ -338,6 +367,14 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      const frameY=525-248-displaySize*sourceFloor/frame.cell;
      const skin=activeNormalVariant?.baseTypeId===enemy.typeId?activeNormalVariant:null;
      if(drawNormalVariantFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle',skin)){
+        if(trainingSpecies==='keyboard-piranha'&&enemy.typeId==='keyboard-piranha'&&
+           !(fx?.result?.type==='victory'&&visual?.state==='idle')){
+          world.dataset.clerkPose=visual?.state||'idle';
+          world.dataset.clerkFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
+          const flash=clerkHurtFlashAt(combatMs,{reducedMotion:motionReduced});
+          world.dataset.clerkFlash=JSON.stringify(flash);
+          world.dataset.clerkPeakRed=String(Math.max(Number(world.dataset.clerkPeakRed)||0,flash.red));
+        }
         if(trainingSpecies==='deadline-clock'&&enemy.typeId==='deadline-clock'&&
            !(fx?.result?.type==='victory'&&visual?.state==='idle')){
           world.dataset.cloudPose=visual?.state||'idle';
@@ -368,10 +405,13 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
        }
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
-       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem'||enemy.typeId==='meeting-ghost'||enemy.typeId==='deadline-clock')&&(visual?.state==='hurt'||visual?.state==='defeat')){
+       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem'||enemy.typeId==='meeting-ghost'||enemy.typeId==='deadline-clock'||enemy.typeId==='keyboard-piranha')&&(visual?.state==='hurt'||visual?.state==='defeat')){
          const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
          const rect={x:frameX,y:frameY,w:displaySize,h:displaySize};
-         if(enemy.typeId==='chair-golem'){
+         if(enemy.typeId==='keyboard-piranha'){
+           const tinted=drawClerkHurtTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
+           if(trainingSpecies==='keyboard-piranha'&&tinted)world.dataset.clerkTintApplied='true';
+         }else if(enemy.typeId==='chair-golem'){
            const tinted=drawGuardArmorTint(ctx,image,frame,frameIndex,rect,combatMs,{reducedMotion:motionReduced});
            if(trainingSpecies==='chair-golem'&&tinted)world.dataset.guardTintApplied='true';
          }else if(enemy.typeId==='deadline-clock'){
@@ -412,8 +452,9 @@ function drawStage(now){
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
    (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))||
    (fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
-   (fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock')));
- const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:fx?.oldEnemy?.typeId==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
+   (fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))||
+   (fx?.oldEnemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha')));
+ const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='keyboard-piranha'?CLERK_REPORT_IMPACT_MS:fx?.oldEnemy?.typeId==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:fx?.oldEnemy?.typeId==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
  const hurtVfx=hurtPlaybackAt(now,fx?.start??now,state.speed,attackDurationMs,
@@ -486,7 +527,8 @@ function drawStage(now){
  const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem');
  const alienVictoryHold=fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost');
  const cloudVictoryHold=fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock');
- const victory=fx?.result?.type==='victory'&&animationMs<(cloudVictoryHold?CLOUD_DEFEAT_END_MS:guardVictoryHold?GUARD_DEFEAT_END_MS:alienVictoryHold?ALIEN_DEFEAT_END_MS:1100);
+ const clerkVictoryHold=fx?.oldEnemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha');
+ const victory=fx?.result?.type==='victory'&&animationMs<(clerkVictoryHold?CLERK_DEFEAT_END_MS:cloudVictoryHold?CLOUD_DEFEAT_END_MS:guardVictoryHold?GUARD_DEFEAT_END_MS:alienVictoryHold?ALIEN_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
    (victory&&hasIllustratedMonster(fx?.oldEnemy?.typeId));
@@ -498,8 +540,9 @@ function drawStage(now){
  const guardShattering=victory&&guardVictoryHold;
  const alienShattering=victory&&alienVictoryHold;
  const cloudShattering=victory&&cloudVictoryHold;
- const fadeStart=cloudShattering?CLOUD_FADE_START_MS:guardShattering?GUARD_DEFEAT_FADE_START_MS:alienShattering?1450:900;
- const fadeEnd=cloudShattering?CLOUD_DEFEAT_END_MS:guardShattering?GUARD_DEFEAT_END_MS:alienShattering?ALIEN_DEFEAT_END_MS:1100;
+ const clerkShattering=victory&&clerkVictoryHold;
+ const fadeStart=clerkShattering?CLERK_FADE_START_MS:cloudShattering?CLOUD_FADE_START_MS:guardShattering?GUARD_DEFEAT_FADE_START_MS:alienShattering?1450:900;
+ const fadeEnd=clerkShattering?CLERK_DEFEAT_END_MS:cloudShattering?CLOUD_DEFEAT_END_MS:guardShattering?GUARD_DEFEAT_END_MS:alienShattering?ALIEN_DEFEAT_END_MS:1100;
  const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-fadeStart)/(fadeEnd-fadeStart))):1;
  const fadingOld=victory?1-enteringNew:0;
  const visualFor=(enemy,result)=>{
@@ -511,6 +554,8 @@ function drawStage(now){
      return alienCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))
      return cloudCombatPoseAt(animationMs,hitResult);
+   if(enemy?.typeId==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha'))
+     return clerkCombatPoseAt(animationMs,hitResult);
    return monsterAnimationState(enemy,animationMs,hitResult);
  };
  const oldVisual=victory?visualFor(fx.oldEnemy,fx.result):null;
@@ -578,6 +623,16 @@ function drawStage(now){
      projectile:clock.projectile,impact:clock.impact,charge:clock.charge,
      x:clock.x,originX:clock.originX,targetX:clock.targetX,travelsLeft:clock.travelsLeft});
  }
+ // Human ghost clerk, floor 26: haunted documents fired from enemy right to hero left.
+ if(fx?.wave&&trainingSpecies==='keyboard-piranha'&&fx?.oldEnemy?.typeId==='keyboard-piranha'&&
+    trainingCandidateArt.has('keyboard-piranha')&&fx.result?.type==='hit'){
+  drawClerkReportFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,
+     canRetaliate:fx.retaliationDamage>0,reducedMotion:motionReduced});
+  const papers=clerkReportAt(animationMs,fx.retaliationDamage>0,{enemyX,enemyY,heroX,heroY});
+  world.dataset.clerkPaper=JSON.stringify({elapsed:Math.floor(animationMs),
+    charge:papers.charge,projectile:papers.projectile,impact:papers.impact,
+    x:papers.x,originX:papers.originX,targetX:papers.targetX,travelsLeft:papers.travelsLeft});
+ }
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
  if(slashActive){
@@ -630,9 +685,10 @@ function renderCombatBars(now){
  const caster=fx?.oldEnemy?.typeId;
  const illustrated=fx?.retaliation&&(hasIllustratedMonster(caster)||
    (caster==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
-   (caster==='deadline-clock'&&approvedMonsterArt.has('deadline-clock')));
- const contactMs=illustrated&&['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock'].includes(caster)
-   ?(caster==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:caster==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
+   (caster==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))||
+   (caster==='keyboard-piranha'&&trainingSpecies==='keyboard-piranha'&&trainingCandidateArt.has('keyboard-piranha')));
+ const contactMs=illustrated&&['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'].includes(caster)
+   ?(caster==='keyboard-piranha'?CLERK_REPORT_IMPACT_MS:caster==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:caster==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
    :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const view=visibleCombatHealthAt(state,fx,elapsed,{retaliationContactMs:contactMs});
  if(trainingWave!==null)world.dataset.hpTiming=JSON.stringify({t:Math.floor(elapsed),stateType:fx?.result?.type||null,retaliation:!!fx?.retaliation,caster,illustrated:!!illustrated,contactMs,oldHeroHp:fx?.oldHeroHp,realHeroHp:state.heroHp,visibleHeroHp:view.heroHp});
@@ -686,6 +742,7 @@ function commit(action){
  if(action==='attack'){
    if(trainingSpecies==='chair-golem'){world.dataset.guardPeakRed='0';world.dataset.guardTintApplied='false';}
    if(trainingSpecies==='meeting-ghost'){world.dataset.alienRedPeak='0';world.dataset.alienTintApplied='false';}
+   if(trainingSpecies==='keyboard-piranha'){world.dataset.clerkPeakRed='0';world.dataset.clerkTintApplied='false';}
    fx={start:performance.now(),result:state.last,oldEnemy,oldHeroHp,wave:wasWave,
       retaliation:shouldRecoil(oldHeroHp,state.heroHp,state.last),
       retaliationDamage:Math.max(0,Number(state.last?.retaliationDamage??(oldHeroHp-state.heroHp)))};
@@ -958,6 +1015,21 @@ function frame(now){
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
   drawStage(now);
   renderCombatBars(now);
+  if(trainingSpecies==='keyboard-piranha'){
+    const readout=$('#training-animation-readout');
+    if(readout){
+      const ms=fx?.wave?Math.max(0,(now-fx.start)*state.speed):Infinity;
+      const report=clerkReportAt(ms,fx?.retaliationDamage>0);
+      const inScene=Number.isFinite(ms)&&ms<CLERK_DEFEAT_END_MS;
+      const cue=!inScene?'待機巡邏':fx.result?.type==='victory'?'人形怨靈逐格消散':
+        report.projectile?'詛咒報表飛向左邊':report.impact>0?'報表命中勇者':
+        report.charge>0?'報表詠唱':ms<405?'勇者揮擊':ms<850?'紅色受擊':'收招';
+      const pose=world.dataset.clerkPose||'idle',frame=1+Number(world.dataset.clerkFrame||0);
+      const red=Math.round(100*Number(JSON.parse(world.dataset.clerkFlash||'{}').red||0));
+      const message='👻 第六隻｜'+cue+'｜'+pose+' #'+frame+(red?'｜受擊紅閃 '+red+'%':'')+'｜候選 16 格・正式 5/32';
+      if(readout.textContent!==message)readout.textContent=message;
+    }
+  }
   if(trainingSpecies==='deadline-clock'){
     const readout=$('#training-animation-readout');
     if(readout){
@@ -1042,7 +1114,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    initChibiV2Lab();
  }
  render();
- loadApprovedMonsterArt().then(()=>Promise.all([loadTrainingCandidateArt(),loadAlienCandidateArt(),loadCloudGhostCandidateArt()])).catch(err=>{
+ loadApprovedMonsterArt().then(()=>Promise.all([loadTrainingCandidateArt(),loadAlienCandidateArt(),loadCloudGhostCandidateArt(),loadClerkCandidateArt()])).catch(err=>{
    console.warn('正式或候選怪物逐格素材載入失敗，保留工程替身：',err);
    const notice=$('#monster-art-status');
    if(notice)notice.textContent='⚠️ 怪物圖片未成功載入：'+String(err.message||err)+'。目前只顯示工程替身。';
