@@ -86,23 +86,42 @@ export function autoEncounterChoice(event){
 export const GAME_MODES=Object.freeze([
  {id:'campaign',name:'🏙️ 社畜遠征',description:'一般冒險 · 普通怪循環，永久推進'},
  {id:'tower',name:'🗼 無限之塔',description:'每四波補滿生命，持續挑戰更高樓層'},
- {id:'dungeon',name:'🌌 異界副本',description:'異世界主題怪物循環，進度獨立'}
+ {id:'dungeon',name:'📆 每日副本',description:'星期一至日七種副本，以台灣時間每日更換'}
 ]);
+/** Seven fixed weekly dungeons. Weekday is Taiwan-local: 0=Sun, 1=Mon ... 6=Sat. */
+export const DAILY_DUNGEONS=Object.freeze([
+ {weekday:0,id:'sunday-dream',name:'星期日・週末夢境',icon:'🌙',theme:'dream',story:'週日午後的公司像在做夢，怪物也在半夢半醒地巡邏。',hpScale:.92,attackScale:.9,rewardScale:1.1,slackChance:.16},
+ {weekday:1,id:'monday-hell',name:'星期一・地獄總部',icon:'🔥',theme:'hell',story:'地獄星期一，全公司警報齊鳴。怪物更硬、更兇，但獎金特別豐厚！',hpScale:1.65,attackScale:1.4,rewardScale:2,slackChance:0},
+ {weekday:2,id:'tuesday-office',name:'星期二・失控影印室',icon:'🖨️',theme:'office',story:'星期二的文件失控了，長出尖牙的公文四處亂飛。',hpScale:1,attackScale:1,rewardScale:1,slackChance:.06},
+ {weekday:3,id:'wednesday-alien',name:'星期三・銀河客服站',icon:'🛸',theme:'alien',story:'外星客訴跨星系而來，連打卡鐘都被改成宇宙時間。',hpScale:1.12,attackScale:1.08,rewardScale:1.18,slackChance:.08},
+ {weekday:4,id:'thursday-data',name:'星期四・資料深淵',icon:'🌀',theme:'digital',story:'星期四伺服器陷入異界，報表與幽靈在資料流裡交戰。',hpScale:1.18,attackScale:1.1,rewardScale:1.25,slackChance:.1},
+ {weekday:5,id:'friday-escape',name:'星期五・準時下班大逃亡',icon:'🏃',theme:'friday',story:'小兵上班滑手機，菁英只想關電腦，魔王甚至可能已經下班。',hpScale:.85,attackScale:.7,rewardScale:1.2,slackChance:.48,bossSkipChance:.55},
+ {weekday:6,id:'saturday-night',name:'星期六・冥府夜班列車',icon:'🚉',theme:'night',story:'週六沒有人想值班，幽冥列車卻帶來一車又一車的夜班妖怪。',hpScale:1.22,attackScale:1.16,rewardScale:1.32,slackChance:.12}
+]);
+export function dailyDungeonFor(now=Date.now()){return DAILY_DUNGEONS[weekdayTaiwan(now)];}
+export const FRIDAY_BOSS_NOTE=Object.freeze({headline:'下班去',message:'下週一再戰',signature:'— 魔王（已經打卡）'});
 export const GAME_SKILLS=Object.freeze([
  {id:'burst',name:'⚡ 爆肝連擊',cooldown:4,description:'下次攻擊造成 2 倍傷害'},
  {id:'guard',name:'🛡️ 摸魚防護',cooldown:5,description:'本次反擊傷害減半'},
  {id:'drain',name:'☕ 咖啡續命',cooldown:6,description:'攻擊時恢復 25 生命'}
 ]);
 const LOOP_IDS=['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'];
-export function loopEnemyFor(wave,mode='campaign'){
+export function loopEnemyFor(wave,mode='campaign',now=Date.now()){
  const n=Math.max(1,Math.floor(Number(wave)||1));
- const id=LOOP_IDS[(n-1+(mode==='dungeon'?3:0))%LOOP_IDS.length];
+ const daily=mode==='dungeon'?dailyDungeonFor(now):null;
+ // Six approved normal-monster animation sets are temporarily shared by
+ // ordinary, stand-in elite and stand-in boss stages. Do not claim new boss art.
+ const id=LOOP_IDS[(n-1+(daily?daily.weekday*2:0))%LOOP_IDS.length];
  const design=ALL_ENEMIES.find(x=>x.id===id)||ALL_ENEMIES[0];
- const hp=Math.round((45+n*9)*(mode==='tower'?1.15:mode==='dungeon'?1.1:1));
- return {id:n,typeId:design.id,tier:'normal',boss:false,elite:false,name:design.name,icon:design.icon,
+ const tier=daily?(n%4===3?'elite':n%4===0?'boss':'normal'):'normal';
+ const multiplier=(tier==='elite'?1.65:tier==='boss'?2.65:1);
+ const hp=Math.max(12,Math.round((45+n*9)*(mode==='tower'?1.15:daily?daily.hpScale:1)*multiplier));
+ const atk=Math.max(1,Math.round((3+Math.floor(n/4)+(mode==='tower'?2:0))*(daily?.attackScale||1)*(tier==='boss'?1.5:tier==='elite'?1.2:1)));
+ const prefix=daily?(tier==='boss'?(daily.weekday===5?'週五快閃魔王・':'代班魔王・'):tier==='elite'?(daily.weekday===5?'摸魚菁英・':'代班菁英・'):''):'';
+ return {id:n,typeId:design.id,tier,boss:tier==='boss',elite:tier==='elite',name:prefix+design.name,icon:design.icon,
   family:design.family,faction:design.faction,sprite:design.sprite||null,shape:design.shape||null,
   accent:design.accent,trait:design.trait,traitText:design.traitText,
-  hp,maxHp:hp,turns:0,attack:3+Math.floor(n/4)+(mode==='tower'?2:0)};
+  hp,maxHp:hp,turns:0,attack:atk,dungeonId:daily?.id||null,standIn:!!daily&&tier!=='normal'};
 }
 export const STORAGE_KEY='salary-hero-v19-save-1';
 export function todayTW(now=Date.now()){
@@ -119,17 +138,23 @@ export function enemyFor(wave){
 }
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
-   playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},
+   playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),fridayBossRolls:{},fridayNote:null,
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
-export function normalize(raw){
+export function normalize(raw,now=Date.now()){
  const fresh=initial();if(!raw||typeof raw!=='object'||raw.version!==19)return fresh;
  const n={...fresh,...raw};
  n.playerName=cleanPlayerName(raw.playerName);
  n.activeMode=GAME_MODES.some(m=>m.id===raw.activeMode)?raw.activeMode:'campaign';
  n.modeWaves=Object.fromEntries(GAME_MODES.map(m=>[m.id,Math.max(1,Math.min(100000,Math.floor(Number(raw.modeWaves?.[m.id])|| (m.id===n.activeMode?Number(raw.wave)||1:1))))]));
+ const today=todayTW(now);
+ const dungeonDayChanged=raw.dailyDungeonDay!==today;
+ n.dailyDungeonDay=today;
+ if(dungeonDayChanged)n.modeWaves.dungeon=1;
+ n.fridayBossRolls=dungeonDayChanged?{}:Object.fromEntries(Object.entries(raw.fridayBossRolls||{}).filter(([k,v])=>k.startsWith(today+':')&&(v===true||v===false)).slice(-32));
+ n.fridayNote=raw.fridayNote&&raw.fridayNote.day===today?raw.fridayNote:null;
  n.wave=n.modeWaves[n.activeMode];
  n.skillCooldowns=Object.fromEntries(GAME_SKILLS.map(k=>[k.id,Math.max(0,Math.min(k.cooldown,Math.floor(Number(raw.skillCooldowns?.[k.id])||0)))]));
  n.styleWishlist=[...new Set((Array.isArray(raw.styleWishlist)?raw.styleWishlist:[]).filter(id=>HERO_STYLES.some(s=>s.id===id)))];
@@ -159,8 +184,8 @@ export function normalize(raw){
    n.auto=!!raw.auto;n.speed=raw.speed===2?2:1;
    return n;
  }
- const baseEnemy=loopEnemyFor(n.wave,n.activeMode);
- n.enemy=raw.enemy&&Number(raw.enemy.id)===n.wave&&raw.enemy.typeId===baseEnemy.typeId&&Number(raw.enemy.hp)>0
+ const baseEnemy=loopEnemyFor(n.wave,n.activeMode,now);
+ n.enemy=!dungeonDayChanged&&raw.enemy&&Number(raw.enemy.id)===n.wave&&raw.enemy.typeId===baseEnemy.typeId&&Number(raw.enemy.hp)>0
    ?{...baseEnemy,hp:Math.min(baseEnemy.maxHp,Number(raw.enemy.hp)),turns:Math.max(0,Math.floor(Number(raw.enemy.turns)||0))}
    :baseEnemy;
  n.pendingDrops=Array.isArray(raw.pendingDrops)?raw.pendingDrops.filter(x=>ITEMS.some(it=>it.id===x)).slice(0,20):[];
@@ -169,6 +194,33 @@ export function normalize(raw){
  n.log=Array.isArray(raw.log)?raw.log.slice(0,12):fresh.log;
  n.auto=!!raw.auto;n.speed=raw.speed===2?2:1;
  return n;
+}
+/** At Friday's boss gate there is a one-time 55% absentee roll per gate.
+ * Absence counts as a clear and pays the ordinary boss reward without fighting.
+ * Uses injected RNG and time so it is reproducible in tests.
+ */
+function maybeFridayBossEscaped(s,rng,now){
+ if(s.trainingIsolated||s.activeMode!=='dungeon'||weekdayTaiwan(now)!==5||s.wave%4!==0)return null;
+ const key=todayTW(now)+':'+s.wave;
+ if(Object.prototype.hasOwnProperty.call(s.fridayBossRolls,key))return null;
+ const gone=Number(rng())<dailyDungeonFor(now).bossSkipChance;
+ s.fridayBossRolls[key]=gone;
+ if(!gone){notice(s,'👑 魔王今天居然沒溜！牠一邊看手錶一邊準備應戰。');return null;}
+ const skippedFloor=s.wave;
+ const reward=Math.round((70+skippedFloor*9)*dailyDungeonFor(now).rewardScale);
+ const xp=Math.round(75*dailyDungeonFor(now).rewardScale);
+ s.gold+=reward;s.cleared++;awardXP(s,xp);
+ s.gems+=2;s.chests++;s.skinTickets++;s.heroHp=s.maxHp;
+ const day=todayTW(now);
+ if(s.activityDaily.day!==day)s.activityDaily={day,wins:0,bosses:0};
+ s.activityDaily.wins++;s.activityDaily.bosses++;
+ lootRoll(s,rng,true);
+ const note={...FRIDAY_BOSS_NOTE,day,wave:skippedFloor,gold:reward,xp};
+ s.fridayNote=note;
+ s.wave++;s.modeWaves.dungeon=s.wave;
+ s.enemy=loopEnemyFor(s.wave,'dungeon',now);
+ notice(s,'📨 魔王只留下一封信：「下班去，下週一再戰」。你莫名其妙獲勝！+'+reward+' 金幣、+'+xp+' EXP，另有首領戰利品。');
+ return note;
 }
 function notice(s,msg){s.log=[msg,...s.log].slice(0,12);}
 function awardXP(s,amount){
@@ -183,7 +235,7 @@ function lootRoll(s,rng,guaranteed=false){
  }
 }
 export function transition(raw,action,rng=Math.random,now=Date.now()){
- const s=normalize(raw),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
+ const s=normalize(raw,now),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
  switch(a.type){
  case 'setName':{
@@ -251,10 +303,18 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(a.id===s.activeMode)break;
    s.modeWaves[s.activeMode]=s.wave;
    s.activeMode=a.id;s.wave=s.modeWaves[a.id];
-   s.enemy=loopEnemyFor(s.wave,a.id);
+   s.enemy=loopEnemyFor(s.wave,a.id,now);
    s.heroHp=s.maxHp;
    notice(s,'🗺️ 切換至 '+GAME_MODES.find(m=>m.id===a.id).name+'，進度獨立保存。');
-   s.last={type:'mode',id:a.id};break;
+   const fridayNote=maybeFridayBossEscaped(s,rng,now);
+   s.last={type:'mode',id:a.id,fridayNote};break;
+ }
+ case 'refreshDungeon':{
+   if(s.trainingIsolated)break;
+   // normalize() above performs the Taiwan-local daily rollover and preserves
+   // permanent campaign / tower / inventory progression.
+   s.last={type:'dungeonRefresh',day:s.dailyDungeonDay};
+   break;
  }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
  case 'autoEncounter':s.autoEncounter=!!a.value;notice(s,s.autoEncounter?'🗺️ 每日奇遇：智慧託管已開啟':'🗺️ 每日奇遇：已改為手動探索');break;
@@ -275,9 +335,12 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    notice(s,(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
    if(s.enemy.hp===0){
      const dead=s.enemy,boss=dead.boss,elite=dead.tier==='elite';
-     const reward=boss?70+s.wave*9:elite?36+s.wave*7:12+s.wave*4;
+     const baseReward=boss?70+s.wave*9:elite?36+s.wave*7:12+s.wave*4;
+     const reward=Math.round(baseReward*(s.trainingIsolated||s.activeMode!=='dungeon'?1:dailyDungeonFor(now).rewardScale));
      if(!s.defeatedTypes.includes(dead.typeId))s.defeatedTypes.push(dead.typeId);
-     s.gold+=reward;s.cleared++;awardXP(s,boss?75:elite?38+s.wave*4:12+s.wave*2);
+     s.gold+=reward;s.cleared++;
+     const earnedXP=boss?75:elite?38+s.wave*4:12+s.wave*2;
+     awardXP(s,Math.round(earnedXP*(s.trainingIsolated||s.activeMode!=='dungeon'?1:dailyDungeonFor(now).rewardScale)));
      const today=todayTW(now);
      if(s.activityDaily.day!==today)s.activityDaily={day:today,wins:0,bosses:0};
      s.activityDaily.wins++;
@@ -288,12 +351,16 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        notice(s,'🏆 首領擊敗！生命回滿，獲得寶箱、寶石與 1 張造型券。');
      }
      if(elite){s.gems+=1;notice(s,'💠 菁英擊敗！獲得額外 1 顆寶石，必定掉落裝備。');}
-     lootRoll(s,rng,false);s.wave++;s.modeWaves[s.activeMode]=s.wave;
+     lootRoll(s,rng,elite);s.wave++;s.modeWaves[s.activeMode]=s.wave;
      if(s.activeMode==='tower'&&(s.wave-1)%4===0){s.heroHp=s.maxHp;s.chests++;notice(s,'🗼 四層突破！恢復全部生命，獲得寶箱。');}
-     if(s.activeMode==='dungeon'&&(s.wave-1)%5===0){s.gems++;notice(s,'🌌 副本結算：獲得一顆寶石。');}
-     s.enemy=loopEnemyFor(s.wave,s.activeMode);
-     s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave};
+     if(s.activeMode==='dungeon'&&(s.wave-1)%4===0){
+       s.heroHp=s.maxHp;s.gems+=1;notice(s,'🏅 今日副本四關結算：生命回滿，寶石 +1。');
+     }
+     s.enemy=loopEnemyFor(s.wave,s.activeMode,now);
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
+     const fridayNote=maybeFridayBossEscaped(s,rng,now);
+     s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave,fridayNote};
+     
    }else{
      // Enemy turns survive save/normalize, so special moves trigger consistently.
      s.enemy.turns=(s.enemy.turns||0)+1;
@@ -307,7 +374,17 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        notice(s,(eliteSkill?'✦ 菁英反制！':'👑 首領狂暴！')+' '+s.enemy.name+' 發動強力攻擊！');
      }
      const hpBeforeRetaliation=s.heroHp;
-     s.heroHp=Math.max(0,s.heroHp-(skill?.id==='guard'?Math.ceil(retaliation/2):retaliation));
+     const daily=s.activeMode==='dungeon'&&!s.trainingIsolated?dailyDungeonFor(now):null;
+     const slackChance=daily?(s.enemy.tier==='elite'&&daily.weekday===5?.65:s.enemy.tier==='boss'&&daily.weekday===5?.22:daily.slackChance):0;
+     const slacking=slackChance>0&&Number(rng())<slackChance;
+     s.last.enemyIdle=slacking;
+     if(slacking){
+       const line=s.enemy.tier==='elite'?'📱 菁英主管看了眼打卡鐘：「剩三分鐘，我不打了。」':
+         s.enemy.tier==='boss'?'📨 魔王一邊收公事包一邊假裝沒看到你。':
+         ['😴 小兵趴在鍵盤上睡著，放棄攻擊。','🧋 小兵正在喝手搖飲：「有事週一再說。」','🧳 小兵急著下班，完全不想揍人。'][s.enemy.turns%3];
+       notice(s,line);
+     }
+     s.heroHp=Math.max(0,s.heroHp-(slacking?0:skill?.id==='guard'?Math.ceil(retaliation/2):retaliation));
      // Persist the actual HP lost within this attack result. If the hero dies and
      // instantly respawns, comparing only before/after HP would miss the injury.
      s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
