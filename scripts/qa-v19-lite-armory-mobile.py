@@ -43,8 +43,7 @@ def main():
         assert page.locator('button[data-action="liteNext"]').count()==1
         page.locator('button[data-action="liteNext"]').click()
         assert page.locator('.lite-item').count()==5
-        page.locator('button[data-action="litePrevious"]').click()
-        assert page.locator('.lite-item').count()==20
+        # Oldest items are on page 2: verify a player can equip them there.
         page.locator('button[data-action="liteEquip"][data-value="li-1"]').click()
         page.locator('button[data-action="liteEquip"][data-value="li-2"]').click()
         text=page.locator('#panel-content').inner_text()
@@ -64,6 +63,8 @@ def main():
         page.locator('button[data-action="liteSalvage"][data-value="li-3"]').click()
         assert state()['gold']>before
         assert len(state()['liteInventory'])==24
+        page.locator('button[data-action="litePrevious"]').click()
+        assert page.locator('.lite-item').count()==20
         page.reload(wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
         assert state()['liteLoadout']['weapon']=='li-1'
