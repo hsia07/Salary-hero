@@ -12,6 +12,7 @@ export const GUARD_ATTACK_END_MS=1455;
 export const GUARD_DEFEAT_FADE_START_MS=1280;
 export const GUARD_DEFEAT_END_MS=1550;
 export const GUARD_ATTACK_POSE_MS=Object.freeze([145,155,75,115,160]);
+export const GUARD_LOCK_START_MS=930;
 const clamp=(n,min=0,max=1)=>Math.max(min,Math.min(max,n));
 export function guardCombatPoseAt(elapsed,result){
  const t=Number(elapsed);
@@ -34,6 +35,35 @@ export function guardBeamAt(elapsed,canRetaliate=true){
  const beam=clamp((t-GUARD_BEAM_LAUNCH_MS)/(GUARD_BEAM_IMPACT_MS-GUARD_BEAM_LAUNCH_MS));
  const impact=t>=GUARD_BEAM_IMPACT_MS?clamp(1-(t-GUARD_BEAM_IMPACT_MS)/170):0;
  return {active:true,charging:charge,beam,projectile,impact};
+}
+/** A separate animated targeting lock. This is attack FX, never a substitute for
+ * the five hand-drawn attack sprites or three distinct injured sprites. */
+export function guardTargetLockAt(elapsed,canRetaliate=true){
+ const t=Number(elapsed);
+ if(!canRetaliate||!Number.isFinite(t)||t<GUARD_LOCK_START_MS||t>=GUARD_BEAM_IMPACT_MS)
+  return {active:false,strength:0,closing:0};
+ const charge=clamp((t-GUARD_LOCK_START_MS)/(GUARD_BEAM_LAUNCH_MS-GUARD_LOCK_START_MS));
+ const flight=clamp((t-GUARD_BEAM_LAUNCH_MS)/(GUARD_BEAM_IMPACT_MS-GUARD_BEAM_LAUNCH_MS));
+ return {active:true,strength:Math.min(1,.32+charge*.55+flight*.13),closing:charge*.65+flight*.35};
+}
+/** Human-readable live battle cue in isolated art rehearsal only. */
+export function guardCombatCaptionAt(elapsed,result){
+ const t=Number(elapsed);
+ if(!result||!Number.isFinite(t))return '機兵巡邏・等待交戰';
+ if(t<GUARD_HERO_HIT_MS)return '勇者蓄力・即將命中';
+ if(result.type==='victory'){
+  if(t<GUARD_DEFEAT_FADE_START_MS)return '機兵受創・機體分段崩解';
+  if(t<GUARD_DEFEAT_END_MS)return '最後一格碎裂姿勢・定格';
+  return '機兵重新進場';
+ }
+ if(result.type!=='hit')return '機兵巡邏・等待交戰';
+ if(t<GUARD_ATTACK_START_MS)return '機兵受擊・紅白閃爍';
+ if(Number(result.retaliationDamage)<=0)return '反擊未觸發・等待下一擊';
+ if(t<GUARD_LOCK_START_MS)return '機兵反擊・聚集紅色能量';
+ if(t<GUARD_BEAM_LAUNCH_MS)return '危險！紅色掃描鎖定勇者';
+ if(t<GUARD_BEAM_IMPACT_MS)return '警報！掃描光束飛行中';
+ if(t<GUARD_ATTACK_END_MS)return '光束命中・勇者受擊';
+ return '機兵巡邏・等待交戰';
 }
 function spark(ctx,x,y,size,alpha){
  ctx.save();ctx.globalAlpha*=alpha;ctx.translate(x,y);
@@ -70,6 +100,23 @@ export function drawGuardCombatFx(ctx,elapsed,{enemyX,enemyY,heroX,heroY,reduced
  if(!p.active)return;
  const startX=enemyX+40,startY=enemyY+148;
  const endX=heroX+169,endY=heroY+130;
+ // Animate the lock ON THE HERO before the laser strikes. No fake actor motion.
+ const lock=guardTargetLockAt(t,canRetaliate);
+ if(lock.active){
+   ctx.save();ctx.translate(endX,endY);
+   ctx.globalAlpha*=lock.strength*(reducedMotion?.48:1);
+   ctx.strokeStyle='#ff344e';ctx.shadowColor='#ff123e';ctx.shadowBlur=19;
+   ctx.lineWidth=3.5;const radius=42-lock.closing*20;
+   ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();
+   ctx.strokeStyle='#ffe7d7';ctx.lineWidth=2;
+   for(let i=0;i<4;i++){
+     const a=i*Math.PI/2;
+     ctx.beginPath();
+     ctx.moveTo(Math.cos(a)*(radius+6),Math.sin(a)*(radius+6));
+     ctx.lineTo(Math.cos(a)*(radius-9),Math.sin(a)*(radius-9));ctx.stroke();
+   }
+   ctx.restore();
+ }
  if(p.charging>0){
    ctx.save();ctx.globalAlpha=p.charging*(reducedMotion?.45:1);
    ctx.strokeStyle='#ff4c5f';ctx.lineWidth=3;ctx.shadowColor='#f22';ctx.shadowBlur=13;
