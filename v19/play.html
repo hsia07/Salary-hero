@@ -152,9 +152,23 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .chibi-art-state[data-quality=ready]{display:none}
 #app:not([data-training]) .monster-art-status{display:none}
 
+/* Weekend office chaos: distinct presentation layers, not a fake art poster. */
+#app[data-dungeon-theme=weekend] .scene::after{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:radial-gradient(ellipse at 25% 12%,#efc36d27,transparent 47%),
+ radial-gradient(ellipse at 80% 38%,#ff59da25,transparent 45%),
+ linear-gradient(145deg,#6246ee12,transparent 55%,#fe9d461c)
+}
+.daily-feature.theme-weekend{background:radial-gradient(ellipse at 15% 0,#875e72,#4b3263 45%,#241832 90%);border-color:#f7ce86}
+.weekend-madness{padding:13px 14px;margin:10px 0 16px;border:2px solid #d1a76a;border-radius:13px;background:radial-gradient(circle at 20% 0,#45365c,#241932 80%);box-shadow:inset 0 0 22px #f6bd5630}
+.weekend-madness h3{margin:1px 0 11px;color:#ffda9a;font-size:16px}
+.weekend-madness p{line-height:1.6;font-size:12px;color:#ebdddf;border-bottom:1px dashed #89677d;padding:7px 0;margin:0}
+.weekend-madness p:last-child{border-bottom:0}
+.weekend-madness strong{color:#ffe4ac}
+.weekend-madness p.weekend-current{border:1px solid #eec786;background:#644563;color:#fff0c5;padding:9px;border-radius:8px;margin-bottom:9px;font-weight:800}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
-<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.26</div></div>
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.27</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
 <div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
 <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
@@ -210,7 +224,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 
 
 
-<div class="footnote">📆 星期一到日各有不同每日副本；週五魔王可能直接翹班。菁英與 Boss 暫借普通怪美術。</div>
+<div class="footnote">📆 每週六種副本：平日各一個，週末兩天共用狂歡副本；週五魔王可能翹班。菁英與 Boss 暫借普通怪美術。</div>
 <div class="footnote">存檔保存在此瀏覽器 · 薪資與遊戲貨幣獨立</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
@@ -221,4 +235,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=original-weekly-v19-26"></script></body></html>
+<script type="module" src="./app.mjs?v=shared-weekend-chaos-v19-27"></script></body></html>
