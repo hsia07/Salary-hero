@@ -149,6 +149,16 @@ export function normalize(raw){
  for(const k of ['xp','gold','gems','potions','chests','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.maxHp=Math.max(1,Number(n.maxHp)||110);
  n.heroHp=Math.max(0,Math.min(n.maxHp,Number(n.heroHp)||0));
+ if(raw.trainingIsolated===true&&raw.enemy&&Number(raw.enemy.hp)>0){
+   n.trainingIsolated=true;
+   n.wave=Math.max(1,Math.floor(Number(raw.wave)||1));
+   n.modeWaves[n.activeMode]=n.wave;
+   n.enemy={...enemyFor(n.wave),...raw.enemy};
+   n.enemy.hp=Math.min(n.enemy.maxHp,Math.max(1,Number(raw.enemy.hp)||1));
+   n.log=Array.isArray(raw.log)?raw.log.slice(0,12):fresh.log;
+   n.auto=!!raw.auto;n.speed=raw.speed===2?2:1;
+   return n;
+ }
  const baseEnemy=loopEnemyFor(n.wave,n.activeMode);
  n.enemy=raw.enemy&&Number(raw.enemy.id)===n.wave&&raw.enemy.typeId===baseEnemy.typeId&&Number(raw.enemy.hp)>0
    ?{...baseEnemy,hp:Math.min(baseEnemy.maxHp,Number(raw.enemy.hp)),turns:Math.max(0,Math.floor(Number(raw.enemy.turns)||0))}
