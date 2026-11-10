@@ -109,7 +109,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .art-advanced .chibi-v2-lab{padding:9px;margin-top:6px;border:1px solid #be9872;border-radius:9px}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
-<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.11</div></div>
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.19</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
 <div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
 <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
@@ -131,13 +131,13 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  <a href="./play.html?training=paper-gremlin">⚔️ 紙妖<br>直接實戰</a>
  <a href="./play.html?training=coffee-mimic">☕ 邪惡杯靈<br>直接實戰</a>
  <a href="./play.html?training=chair-golem">🚨 打卡保全機兵・第 5 關<br>已核准正式美術（不改正式存檔）</a>
- <a href="./play.html?training=meeting-ghost">🛸 星際打卡實習生・第 50 關<br>朝左 16 格候選實戰（不改存檔）</a>
+ <a href="./play.html?training=meeting-ghost">🛸 星際打卡實習生・第 50 關<br>朝左正式 16 格實戰（不改存檔）</a>
  <a href="./play.html?training=deadline-clock">☁️ 雲端資料專員靈・第 6 關<br>16 格候選實戰（不改存檔）</a>
 </div>
 <a class="paper-art-preview" href="./paper-trial.html">⚔️ 試播紙妖：攻擊紙刃＋受傷白亮紅閃（免下載）</a>
 <a class="paper-art-preview" href="./coffee-trial.html">☕ 試播邪惡杯靈：噴咖啡＋受傷紅閃＋杯身碎裂（免下載）</a>
 <a class="paper-art-preview" href="./cloud-trial.html" style="background:linear-gradient(135deg,#6b4783,#332954)">☁️ 第 5 隻｜雲端資料專員靈 16 格透明動畫＋時鐘攻擊（免下載）</a>
-<a class="paper-art-preview" href="./guard-trial.html" style="background:linear-gradient(135deg,#6f3843,#332e53)">🚨 美術候選｜打卡保全機兵：柵欄刀攻擊＋紅閃＋冒煙解體（免下載）</a>
+<a class="paper-art-preview" href="./guard-trial.html" style="background:linear-gradient(135deg,#6f3843,#332e53)">🚨 正式美術｜打卡保全機兵：柵欄刀攻擊＋紅閃＋冒煙解體（免下載）</a>
 <button id="hurt-demo-quick" type="button">💥 試播主角受擊動畫（不扣血）</button>
 <details class="art-advanced"><summary>素材檢查／進階測試</summary>
 <section id="chibi-v2-lab" class="chibi-v2-lab" hidden aria-label="七姿勢高畫質動畫測試">
@@ -162,8 +162,8 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="footnote">🖼️ <a href="./paper-trial.html">直接觀看紙妖 16 格動畫｜無須下載或上傳</a></div>
 <div class="footnote">☕ <a href="./coffee-trial.html">直接觀看邪惡杯靈 16 格動畫｜無須下載或上傳</a></div>
 <div class="footnote">🚨 <a href="./guard-trial.html">打卡保全機兵・16 格正式動畫（已認可）</a></div>
-<div class="footnote">🛸 <a href="./alien-trial.html">第 4 隻・星際打卡實習生｜朝左逐格候選試播（16 格，不算正式 4／32）</a></div>
-<div class="footnote">已實裝 3／32 種獨立 Q 版怪物：紙妖、杯靈、打卡保全機兵；機兵現已在正式第 5 關播放原創 16 格動畫，其餘 29 種仍在製作。</div>
+<div class="footnote">🛸 <a href="./alien-trial.html">第 4 隻・星際打卡實習生｜朝左正式逐格試播（16 格）</a></div>
+<div class="footnote">已正式完成 4／32 種獨立 Q 版怪物：影印室紙妖、茶水間杯靈、打卡保全機兵、星際打卡實習生。第五隻雲端資料專員靈已通過技術測試，仍為候選。</div>
 <div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
@@ -174,4 +174,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=cloud-ghost-training-v19-18-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=alien-official-v19-19-20261110"></script></body></html>
