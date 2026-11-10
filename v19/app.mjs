@@ -1,7 +1,7 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
-import {SKINS,skinById} from './skins.mjs';
+import {SKINS,skinById,taiwanWeekKey} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -712,6 +712,7 @@ function render(){
  $('#attack').disabled=!ready||attackInCooldown(performance.now());$('#claim').disabled=!ready||state.pendingDrops.length===0;$('#chest').disabled=!ready||state.chests===0;
  $('#claim').textContent='🎁 掉寶 ('+state.pendingDrops.length+')';
  $('#chest').textContent='📦 寶箱 ('+state.chests+')';
+ const weekend=$('#weekend-chest');if(weekend){weekend.textContent='🎁 週末箱 ('+state.specialChests+')';weekend.disabled=!ready||!state.specialChests;}
  if(currentPanel&&panel.open)renderPanel(currentPanel);
 }
 function commit(action){
@@ -749,10 +750,13 @@ function renderPanel(type){
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='modes'){
   const daily=dailyDungeonFor();
-  body.innerHTML='<div class="daily-feature theme-'+daily.theme+'"><span>📆 台灣時間 '+todayTW()+' · 今日開放</span><h3>'+daily.icon+' '+daily.name+'</h3><p>'+escapeHTML(daily.story)+'</p><strong>難度 '+Math.round(daily.hpScale*100)+'% · 獎勵 ×'+daily.rewardScale.toFixed(2)+'</strong>'+
+  body.innerHTML='<div class="daily-feature theme-'+daily.theme+'"><span>📆 台灣時間 '+todayTW()+' · 今日開放</span><h3>'+daily.icon+' '+daily.name+'</h3><p>'+escapeHTML(daily.story)+'</p><strong>難度 '+Math.round(daily.hpScale*100)+'% · 金幣 ×'+daily.rewardScale.toFixed(2)+' · EXP ×'+daily.xpScale.toFixed(2)+'</strong>'+
      (daily.weekday===5?'<p>📨 魔王有 55% 機率提前打卡，只留「下班去，下週一再戰」，你直接獲得通關獎勵。小兵與菁英也會經常放棄攻擊。</p>':'')+'</div>'+
    GAME_MODES.map(mode=>'<div class="item"><div class="detail"><strong>'+mode.name+'</strong><small>'+escapeHTML(mode.description)+' · 第 '+state.modeWaves[mode.id]+' 關</small></div>'+btn(state.activeMode===mode.id?'進行中':'進入','mode',mode.id,state.activeMode===mode.id)+'</div>').join('')+
    (state.fridayNote?btn('📨 閱讀魔王留下的下班信','letter'):'')+
+   (state.specialChests?btn('🎁 開啟週末越獄特殊寶箱 ×'+state.specialChests,'weekendChest'):'')+
+   (daily.weekday===5&&state.activityDaily.day===todayTW()&&state.activityDaily.wins>=4?btn('🎭 領取週五限定造型','claimSkinEvent','friday-weekend',state.activityClaims.includes('friday-weekend:'+taiwanWeekKey())):'')+
+   '<div class="item"><div class="detail"><strong>冒險收穫</strong><small>📕 技能書 '+state.skillBooks+' · 🐾 寵物 Lv.'+state.petLevel+' · 🔧 強化材料 '+state.craftingMaterial+' · 💎 黎明礦石 '+state.rareMaterials+'</small></div></div>'+
    '<h3>每週副本輪替表</h3><div class="weekday-grid">'+[1,2,3,4,5,6,0].map(day=>{
      const d=DAILY_DUNGEONS[day],isToday=day===daily.weekday;
      return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'今日':day===1?'高獎勵':day===5?'偷跑魔王':'每週輪替')+'</b></div>';
@@ -761,10 +765,11 @@ function renderPanel(type){
    const note=state.fridayNote;
    body.innerHTML=note?
     '<div class="boss-letter"><span>📨 週五魔王關 · '+note.wave+' 樓</span><h3>'+escapeHTML(note.headline)+'</h3><p>'+escapeHTML(note.message)+'</p><small>'+escapeHTML(note.signature)+'</small></div>'+
-    '<p class="letter-win">🏆 你明明還沒開打，卻莫名其妙贏了！</p><p>🪙 '+note.gold+' 金幣 · EXP '+note.xp+' · 💎 2 · 📦 寶箱 1 · 🎟️ 造型券 1，並恢復全部生命。</p>':
+    '<p class="letter-win">🏆 你明明還沒開打，卻莫名其妙贏了！</p><p>🪙 '+note.gold+' 金幣 · EXP '+note.xp+' · 💎 2 · 📦 寶箱 1 · 🎁 週五特殊寶箱 1 · 🎟️ 造型券 1，並恢復全部生命。</p>':
     '<p>魔王這週還沒有留下任何信。星期五進入魔王關時有機率遇到。</p>';
  }else if(type==='skills'){
   body.innerHTML='<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
+   '<p>技能書 '+state.skillBooks+' 本 · 專精 '+state.skillRank+'/5</p>'+btn('📕 研讀技能書（提升技能效果）','studySkillBook','',!state.skillBooks||state.skillRank>=5)+
    GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
  }else if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
@@ -773,7 +778,7 @@ function renderPanel(type){
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
  } else if(type==='equipment'){
-  body.innerHTML='<p>更換裝備立即影響實際傷害，戰場中的武器外觀也會切換。</p>'+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>有 '+state.pendingDrops.length+' 件掉寶待領取。</p>'+btn('領取掉寶','claim'):'');
+  body.innerHTML='<p>更換裝備立即影響實際傷害，戰場中的武器外觀也會切換。</p><p>⚒️ 鍛造 +'+state.forgeLevel+'/10 · 強化素材 '+state.craftingMaterial+' · 黎明礦石 '+state.rareMaterials+'</p>'+btn('⚒️ 消耗材料鍛造武器','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>有 '+state.pendingDrops.length+' 件掉寶待領取。</p>'+btn('領取掉寶','claim'):'');
  } else if(type==='shop'){
   body.innerHTML='<p>目前持有 <b>🪙 '+format(state.gold)+'</b>。購買立即扣款並裝備；進度會存檔。</p>'+ITEMS.filter(it=>it.cost).map(it=>itemRow(it,'shop')).join('');
  } else if(type==='adventure'){
@@ -833,6 +838,7 @@ body.addEventListener('click',e=>{
  else if(act==='drawSkin')commit('drawSkin');
  else if(act==='favoriteStyle')commit({type:'toggleFavoriteStyle',id:b.dataset.value});
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
+ else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
  else if(act==='equip'||act==='buy')commit({type:act,id:b.dataset.value});
  else commit(act);
@@ -869,6 +875,7 @@ $('#speed').onclick=()=>commit({type:'speed',value:state.speed===1?2:1});
 $('#heal').onclick=()=>commit('heal');
 $('#claim').onclick=()=>commit('claim');
 $('#chest').onclick=()=>commit('chest');
+ $('#weekend-chest').onclick=()=>commit('weekendChest');
 world.addEventListener('pointerup',e=>{
  const rect=world.getBoundingClientRect();
  const x=(e.clientX-rect.left)/rect.width;
@@ -1037,6 +1044,7 @@ function frame(now){
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed)){
       if(state.pendingDrops.length){commit('claim');lastAttack=now;}
       else if(state.chests>0){commit('chest');lastAttack=now;}
+      else if(state.specialChests>0){commit('weekendChest');lastAttack=now;}
       else if(state.heroHp<state.maxHp*.32&&state.potions>0){commit('heal');lastAttack=now;}
       else {
       const pick=state.heroHp<state.maxHp*.6&&state.skillCooldowns.drain===0?'drain':
