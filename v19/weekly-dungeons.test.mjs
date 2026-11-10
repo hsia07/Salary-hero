@@ -19,19 +19,19 @@ test('seven different dungeons rotate in Taiwanese weekday order',()=>{
  assert.equal(new Set(DAILY_DUNGEONS.map(x=>x.id)).size,7);
  assert.equal(dailyDungeonFor(MON).id,'monday-hell');
  assert.equal(dailyDungeonFor(FRI).id,'friday-escape');
- assert.equal(dailyDungeonFor(SAT).id,'saturday-night');
+ assert.equal(dailyDungeonFor(SAT).id,'saturday-lazy');
  assert.equal(dailyDungeonFor(date('2026-11-12T15:59:59Z')).weekday,4);
  assert.equal(dailyDungeonFor(date('2026-11-12T16:00:00Z')).weekday,5);
 });
-test('Monday has harder enemies and double rewards',()=>{
+test('Monday has harder enemies, double XP, higher rare-drop rate and gold bonus',()=>{
  const harder=loopEnemyFor(1,'dungeon',MON),basic=loopEnemyFor(1,'dungeon',TUE);
  assert.ok(harder.maxHp>basic.maxHp);
  assert.ok(harder.attack>basic.attack);
- assert.equal(dailyDungeonFor(MON).rewardScale,2);
+ assert.equal(dailyDungeonFor(MON).xpScale,2);
  let monday=enterDaily(MON),tuesday=enterDaily(TUE);
  monday.enemy.hp=1;tuesday.enemy.hp=1;
  const m=transition(monday,'attack',()=>.99,MON),t=transition(tuesday,'attack',()=>.99,TUE);
- assert.equal(m.gold,2*t.gold);
+ assert.ok(m.gold>t.gold);assert.ok(m.xp>t.xp);
 });
 test('weekday dungeons have stand-in elite on 3 and stand-in boss on 4',()=>{
  assert.equal(loopEnemyFor(1,'dungeon',TUE).tier,'normal');
@@ -90,8 +90,49 @@ test('Taiwan midnight resets daily only, preserves salary-independent inventory 
  s.gold=350;s.gems=8;s.modeWaves.campaign=9;s.modeWaves.tower=13;
  s=transition(s,'refreshDungeon',()=>.99,SAT);
  assert.equal(s.wave,1);
- assert.equal(s.enemy.dungeonId,'saturday-night');
+ assert.equal(s.enemy.dungeonId,'saturday-lazy');
  assert.equal(s.gold,350);assert.equal(s.gems,8);
  assert.equal(s.modeWaves.campaign,9);assert.equal(s.modeWaves.tower,13);
  assert.equal(s.dailyDungeonDay,todayTW(SAT));
+});
+
+test('Monday first boss clear guarantees epic equipment only once per day',()=>{
+ let s=atFloor(enterDaily(MON),4,MON);s.enemy.hp=1;
+ const first=transition(s,'attack',()=>.99,MON);
+ assert.ok(first.pendingDrops.includes('notice'));
+ assert.ok(first.weeklyDungeonClaims.includes('monday-epic:'+todayTW(MON)));
+ s=atFloor(first,8,MON);s.enemy.hp=1;
+ const second=transition(s,'attack',()=>.99,MON);
+ assert.equal(second.weeklyDungeonClaims.filter(x=>x.startsWith('monday-epic:')).length,1);
+});
+test('Tuesday four-stage clear awards skill book and studying it improves skill rank',()=>{
+ let s=atFloor(enterDaily(TUE),4,TUE);s.enemy.hp=1;
+ s=transition(s,'attack',()=>.99,TUE);
+ assert.equal(s.skillBooks,1);
+ s=transition(s,'studySkillBook',()=>.99,TUE);
+ assert.equal(s.skillBooks,0);assert.equal(s.skillRank,1);
+});
+test('Wednesday pet earns real XP from combat',()=>{
+ const WED=date('2026-11-11T08:00:00Z');
+ let s=enterDaily(WED);s.enemy.hp=1;
+ s=transition(s,'attack',()=>.99,WED);
+ assert.ok(s.petXp>0||s.petLevel>1);
+});
+test('Thursday forging consumes earned materials and raises attack',()=>{
+ const THU=date('2026-11-12T08:00:00Z');
+ let s=atFloor(enterDaily(THU),4,THU);s.enemy.hp=1;
+ s=transition(s,'attack',()=>.99,THU);
+ assert.ok(s.craftingMaterial>0&&s.rareMaterials>0);
+ s.craftingMaterial=3;
+ const oldLevel=s.forgeLevel;
+ s=transition(s,'forge',()=>.99,THU);
+ assert.equal(s.forgeLevel,oldLevel+1);assert.equal(s.craftingMaterial,0);
+});
+test('Friday absentee reward includes unique weekend chest and opening truly consumes it',()=>{
+ let s=atFloor(enterDaily(FRI),3,FRI);s.enemy.hp=1;
+ s=transition(s,'attack',()=>.01,FRI);
+ assert.equal(s.specialChests,1);
+ const gold=s.gold;
+ s=transition(s,'weekendChest',()=>.99,FRI);
+ assert.equal(s.specialChests,0);assert.equal(s.gold,gold+160);assert.ok(s.pendingDrops.length>0);
 });
