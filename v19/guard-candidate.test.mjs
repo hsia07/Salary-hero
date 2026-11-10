@@ -22,19 +22,28 @@ test('16 original mech sprite poses really exist as four WebP binary atlases',()
   assert.equal(createHash('sha256').update(data).digest('hex'),sha);
  }
 });
-test('normal-tier mech is candidate ONLY, never fake approved 3/32',()=>{
+test('normal-tier mech approved 3/32 with original 16 WebP frames',()=>{
  const c=JSON.parse(readFileSync(new URL('manifest-candidate.json',root),'utf8'));
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
  assert.ok(ALL_ENEMIES.find(e=>e.id==='chair-golem'&&e.name==='打卡保全機兵'));
  assert.equal(c.id,'chair-golem');assert.equal(c.approved,false);assert.equal(c.previewOnly,true);
  assert.equal(c.tier,'normal');assert.equal(c.special,undefined);
- assert.equal(m.monsters['chair-golem'],undefined);assert.equal(Object.keys(m.monsters).length,2);
+ const live=m.monsters['chair-golem'];assert.equal(live.approved,true);
+ assert.equal(live.userVisualApprovalDate,'2026-11-10');
+ assert.equal(Object.keys(m.monsters).length,3);
  for(const [name,{frames,sha}] of Object.entries(source)){
   const f=c.states[name];
   assert.equal(f.frames,frames);assert.equal(f.cell,384);assert.equal(f.ground_y,342);
   assert.equal(f.durations.length,frames);assert.equal(f.sha256,sha);
   assert.ok(f.src.endsWith('/chair-golem/'+name+'.webp'));
   assert.equal(validateSpritePixels({naturalWidth:384*frames,naturalHeight:384},f).ok,true);
+  const real=live.states[name];
+  assert.equal(real.frames,frames);assert.equal(real.cell,384);
+  assert.ok(real.src.includes('/runtime/monsters/chair-golem/'));
+  const copied=readFileSync(new URL('../art/v19/runtime/monsters/chair-golem/'+name+'.webp',import.meta.url));
+  const source=readFileSync(new URL(name+'.webp',root));
+  assert.deepEqual(copied,source);
+  assert.equal(createHash('sha256').update(copied).digest('hex'),sha);
  }
 });
 test('guard plays unique attack/hurt/shatter poses with no projectile on victory',()=>{
