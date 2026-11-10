@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {COMMON_ENEMIES,ALL_ENEMIES,enemyDesignFor} from './roster.mjs';
-import {ALIEN_HERO_HIT_MS,ALIEN_ATTACK_START_MS,ALIEN_STAMP_RELEASE_MS,ALIEN_STAMP_IMPACT_MS,ALIEN_ATTACK_END_MS,ALIEN_DEFEAT_END_MS,ALIEN_ATTACK_DURATIONS,alienCombatPoseAt,alienStampAt,alienInjuryAt} from './alien-combat.mjs';
+import {ALIEN_HERO_HIT_MS,ALIEN_ATTACK_START_MS,ALIEN_STAMP_RELEASE_MS,ALIEN_STAMP_IMPACT_MS,ALIEN_ATTACK_END_MS,ALIEN_DEFEAT_END_MS,ALIEN_ATTACK_DURATIONS,alienCombatPoseAt,alienStampAt,alienInjuryAt,alienStampRouteAt} from './alien-combat.mjs';
 
 test('fourth monster is its own registered original ordinary species, not a reused cup or boss skin',()=>{
  const e=COMMON_ENEMIES.find(x=>x.id==='meeting-ghost');
@@ -40,4 +40,15 @@ test('alien skin red flash is visible on low FPS and never fires before a real h
  assert.equal(alienInjuryAt(ALIEN_HERO_HIT_MS+290).active,false);
  assert.ok(alienInjuryAt(ALIEN_HERO_HIT_MS+160,{reducedMotion:true}).red<
    alienInjuryAt(ALIEN_HERO_HIT_MS+160).red);
+});
+
+test('left-facing original alien always casts toward the hero on the LEFT; spell follows same direction',()=>{
+ const origin=alienStampRouteAt(ALIEN_STAMP_RELEASE_MS,{enemyX:458,heroX:100});
+ const middle=alienStampRouteAt((ALIEN_STAMP_RELEASE_MS+ALIEN_STAMP_IMPACT_MS)/2,{enemyX:458,heroX:100});
+ const arrival=alienStampRouteAt(ALIEN_STAMP_IMPACT_MS,{enemyX:458,heroX:100});
+ assert.equal(origin.travelsLeft,true);
+ assert.ok(origin.originX>origin.targetX);
+ assert.ok(middle.x<origin.x&&middle.x>origin.targetX);
+ assert.equal(arrival.x,arrival.targetX);
+ assert.equal(ALIEN_DEFEAT_END_MS,1700,'fourth death frame must not end early');
 });
