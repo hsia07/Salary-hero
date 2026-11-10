@@ -254,6 +254,7 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
          // Browser QA reports what the player ACTUALLY sees, not a guessed timer.
          world.dataset.guardPose=visual?.state||'idle';
          world.dataset.guardFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
+         world.dataset.guardFlash=JSON.stringify(paperHitFlashAt(combatMs,{reducedMotion:motionReduced}));
        }
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
