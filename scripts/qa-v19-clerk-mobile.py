@@ -39,6 +39,50 @@ def main():
    }return dims;
   }""")
   assert dimensions=={'idle':[2048,512],'attack':[2560,512],'hurt':[1536,512],'defeat':[2048,512]},dimensions
+  # Inspect REAL decoded alpha pixels: full 16 unique poses, with sufficient
+  # air around the headband, hair and purple ghost flames on all four edges.
+  # This prevents accidental re-introduction of cropped 384px sprite sheets.
+  quality=page.evaluate("""async()=>{
+    const results={};
+    for(const [state,frames] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
+      const image=new Image();
+      image.src='../art/v19/candidates/monsters/keyboard-piranha/hd/'+state+'.webp';
+      await image.decode();
+      const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
+      const ctx=canvas.getContext('2d',{willReadFrequently:true});
+      const keys=[],bounds=[];
+      for(let k=0;k<frames;k++){
+        ctx.clearRect(0,0,512,512);
+        ctx.drawImage(image,k*512,0,512,512,0,0,512,512);
+        const a=ctx.getImageData(0,0,512,512).data;
+        let minX=512,minY=512,maxX=-1,maxY=-1,visible=0,hash=2166136261;
+        for(let y=0;y<512;y+=4)for(let x=0;x<512;x+=4){
+          const p=4*(y*512+x),alpha=a[p+3];
+          if(alpha>55){
+            visible++;minX=Math.min(minX,x);minY=Math.min(minY,y);
+            maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
+          }
+          // Sample foreground and hair details to verify animation frames
+          // are materially different, not repeated resized single images.
+          hash=Math.imul(hash^a[p],16777619)>>>0;
+          hash=Math.imul(hash^a[p+1],16777619)>>>0;
+          hash=Math.imul(hash^a[p+2],16777619)>>>0;
+          hash=Math.imul(hash^alpha,16777619)>>>0;
+        }
+        keys.push(hash);bounds.push({minX,minY,maxX,maxY,visible});
+      }
+      results[state]={unique:(new Set(keys)).size,bounds};
+    }
+    return results;
+  }""")
+  for state,expected in {'idle':4,'attack':5,'hurt':3,'defeat':4}.items():
+   group=quality[state]
+   assert group['unique']==expected,(state,group)
+   for frame in group['bounds']:
+    assert frame['minX']>=12 and frame['minY']>=12,(state,frame)
+    assert frame['maxX']<=499 and frame['maxY']<=499,(state,frame)
+    assert frame['visible']>1500,(state,frame)
+
   page.evaluate('(key)=>localStorage.setItem(key,"SIXTH_PLAYER_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0]);assert initial==900
   page.locator('#attack').click()
