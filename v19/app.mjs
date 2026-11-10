@@ -68,7 +68,7 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':trainingSpecies==='keyboard-piranha'?'加班遊魂文員（16 格人形怨靈候選）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':trainingSpecies==='keyboard-piranha'?'加班遊魂文員（512px 高清 16 格人形怨靈候選）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
@@ -169,7 +169,7 @@ async function loadCloudGhostCandidateArt(){
 }
 async function loadClerkCandidateArt(){
  if(trainingSpecies!=='keyboard-piranha')return;
- const url=new URL('../art/v19/candidates/monsters/keyboard-piranha/manifest-candidate.json?v=clerk-v19-21',import.meta.url);
+ const url=new URL('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk-hd-v19-22',import.meta.url);
  const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('第六隻素材 HTTP '+r.status);return r.json()});
  if(record.id!=='keyboard-piranha'||record.approved!==false||record.previewOnly!==true||
     record.tier!=='normal'||record.facing!=='left'||record.target!=='hero-on-left')
@@ -177,7 +177,7 @@ async function loadClerkCandidateArt(){
  const poses={};
  for(const state of ['idle','attack','hurt','defeat']){
   const frame=record.states?.[state];
-  if(!frame||frame.cell!==384||!frame.src.startsWith('../art/v19/candidates/monsters/keyboard-piranha/'))
+  if(!frame||frame.cell!==512||!frame.src.startsWith('../art/v19/candidates/monsters/keyboard-piranha/hd/'))
    throw new Error('加班遊魂文員圖集路徑無效：'+state);
   const image=await imageFrom(frame.src);
   const pixels=validateSpritePixels(image,frame);
@@ -192,7 +192,7 @@ async function loadClerkCandidateArt(){
  const notice=$('#monster-art-status');
  if(notice){
   notice.dataset.candidate='true';
-  notice.textContent='👻 第六隻「加班遊魂文員」16 格人形怨靈候選已載入（待機 4／攻擊 5／受擊 3／死亡 4）；報表朝左飛向勇者。正式仍為 5/32，候選待視覺驗收。';
+  notice.textContent='👻 第六隻「加班遊魂文員」HD 高清 512px × 16 格已載入（待機4／攻擊5／受擊3／死亡4），面向左側勇者。正式仍為 5/32，待美術驗收。';
  }
 }
 async function loadApprovedMonsterArt(){
