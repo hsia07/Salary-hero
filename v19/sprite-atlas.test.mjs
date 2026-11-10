@@ -65,5 +65,13 @@ test('do not silently promote 32 existing programmatic silhouettes',()=>{
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
  const tiers=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,BOSSES.includes(e)?'boss':ELITE_ENEMIES.includes(e)?'elite':'normal']));
  assert.deepEqual(validateMonsterAtlasManifest(m,tiers),[]);
- assert.equal(Object.keys(m.monsters).length,0);
+ // Once an owner-approved sprite has been promoted the manifest may contain
+ // genuine image records; never hardcode a permanent zero-monster count.
+ for(const [id,record] of Object.entries(m.monsters)){
+  assert.ok(ALL_ENEMIES.some(e=>e.id===id),'unregistered monster in approved manifest');
+  assert.equal(record.approved,true);
+  for(const pose of Object.values(record.states)){
+   assert.ok(pose.src.includes('/runtime/monsters/'));
+  }
+ }
 });
