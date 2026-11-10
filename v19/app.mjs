@@ -1,5 +1,5 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
-import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName} from './engine.mjs';
+import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice} from './engine.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById} from './skins.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
@@ -581,10 +581,12 @@ function renderPanel(type){
   }else if(state.encounterDay===today){
    const latest=history.find(x=>x.day===today);
    const result=latest?.outcome==='failure'?'冒險失敗・保住了性命':latest?.outcome==='success'?'冒險成功・帶回神祕戰利品':'今日奇遇完成';
-   body.innerHTML='<div class="encounter-diorama encounter-complete"><span class="encounter-type">今日冒險紀錄</span><div class="encounter-emblem" aria-hidden="true">📜</div><h3>'+result+'</h3><p>今日獎勵已領取。明天會遇到新的奇遇，不會重複領獎。</p></div>';
+   const gains=latest?('🪙 '+(latest.gold||0)+' · EXP '+(latest.xp||0)+(latest.heal?' · ❤️ +'+latest.heal:'')+(latest.damage?' · ❤️ -'+latest.damage:'')+(latest.gems?' · 💎 +'+latest.gems:'')+(latest.potions?' · 🧪 +'+latest.potions:'')):'';
+   body.innerHTML='<div class="encounter-diorama encounter-complete"><span class="encounter-type">今日冒險紀錄</span><div class="encounter-emblem" aria-hidden="true">📜</div><h3>'+result+'</h3><p>'+gains+'</p><p>今日獎勵已領取。明天會遇到新的奇遇，不會重複領獎。</p></div>';
   }else{
    body.innerHTML='<div class="encounter-diorama encounter-ready"><span class="encounter-type">每日隱藏劇情</span><div class="encounter-emblem" aria-hidden="true">🗝️</div><h3>冒險之門已開啟</h3><p>穿過結界，可能遇到外星人、妖怪、機械主管或失控的辦公室怪談。</p></div>'+btn('✦ 探索今日奇遇','encounterStart');
   }
+  body.innerHTML='<div class="encounter-trustee"><button class="encounter-auto-toggle" data-action="autoEncounter" aria-pressed="'+String(state.autoEncounter)+'">🤖 智慧平衡託管 '+(state.autoEncounter?'ON':'OFF')+'</button><small>'+(state.autoEncounter?'開啟遊戲期間，每日自動探索並挑選風險適中的路線。':'手動探索不會自動消耗每日奇遇。')+'</small></div>'+body.innerHTML;
   body.innerHTML+='<h3 class="encounter-journal-title">冒險手札 · '+history.length+' 次</h3>'+
     history.slice(0,5).map(x=>{
       const info=ENCOUNTERS.find(e=>e.id===x.id);
@@ -618,6 +620,7 @@ body.addEventListener('click',e=>{
  else if(act==='drawSkin')commit('drawSkin');
  else if(act==='favoriteStyle')commit({type:'toggleFavoriteStyle',id:b.dataset.value});
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
+ else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
  else if(act==='equip'||act==='buy')commit({type:act,id:b.dataset.value});
  else commit(act);
 });
@@ -782,7 +785,18 @@ async function initChibiV2Lab(){
  }catch(error){console.warn('讀取本機美術測試圖失敗',error)}
  report('✓ 網站已內建高解析度七姿勢攻擊。可直接點「手動攻擊」，不需要上傳檔案。');
 }
+function runDailyEncounterTrustee(){
+ if(trainingWave!==null||!ready||!state.autoEncounter)return;
+ const day=todayTW();
+ if(state.encounterDay!==day)commit('encounterStart');
+ const event=ENCOUNTERS.find(x=>x.id===state.encounterPending);
+ if(event){
+   const choice=autoEncounterChoice(event);
+   if(choice>=0)commit({type:'encounterChoose',choice});
+ }
+}
 function payRender(){
+ runDailyEncounterTrustee();
  const p=salaryAt(Date.now(),40000);
  $('#today').textContent=money(p.today,2);
  $('#pay-status').textContent='台灣時間 · '+p.status;
