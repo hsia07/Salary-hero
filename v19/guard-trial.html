@@ -10,7 +10,7 @@
 <p><a href="./play.html?training=chair-golem">⚔️ 用主遊戲的真正戰鬥畫面測試機兵（不改存檔）</a></p>
 <script type="module">
 import {drawGuardCombatFx,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS} from './guard-combat.mjs';
-import {drawPaperHitTint} from './paper-combat.mjs';
+import {drawPaperHitTint} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 const poses={idle:{frames:4,ms:[250,185,240,165]},attack:{frames:5,ms:[145,155,75,115,160]},hurt:{frames:3,ms:[95,125,205]},defeat:{frames:4,ms:[145,200,265,445]}};
 const frames={},ctx=document.querySelector('#arena').getContext('2d'),status=document.querySelector('#status');
 let ready=false,action='idle',started=performance.now(),sequence=false,seriesAt=0;
