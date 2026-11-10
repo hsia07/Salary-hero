@@ -8,6 +8,7 @@ test('training admits three approved monsters and one isolated fourth timing can
  assert.equal(trainingWaveFor('coffee-mimic'),2);
  assert.equal(trainingWaveFor('chair-golem'),5);
  assert.equal(trainingWaveFor('meeting-ghost'),50);
+ assert.equal(trainingWaveFor('deadline-clock'),6);
  for(const invalid of ['',null,'../../secrets','printer-minion','paper-gremlin?x=1','__proto__']){
    assert.equal(trainingWaveFor(invalid),null);
    assert.equal(trainingStateFor(invalid,initial,enemyFor),null);
@@ -91,4 +92,18 @@ test('alien rehearsals attack and finish at correct original species without sav
  const renewed=repeatTrainingEnemy(win,'meeting-ghost',enemyFor);
  assert.equal(renewed.wave,50);assert.equal(renewed.enemy.hp,126);
  assert.equal(real.wave,1);assert.equal(real.gold,0);
+});
+
+test('fifth ghost has isolated wave 6 training with real attack/victory and no save mutation',()=>{
+ const real=initial(),practice=trainingStateFor('deadline-clock',initial,enemyFor);
+ assert.equal(practice.wave,6);assert.equal(practice.enemy.typeId,'deadline-clock');
+ assert.equal(practice.enemy.tier,'normal');assert.equal(practice.auto,false);
+ const hit=transition(practice,'attack',()=>.98);
+ assert.ok(hit.enemy.hp<practice.enemy.hp);
+ const primed=primeTrainingFinisher(practice,'deadline-clock');
+ const won=transition(primed,'attack',()=>.98);
+ assert.equal(won.last.type,'victory');
+ const repeat=repeatTrainingEnemy(won,'deadline-clock',enemyFor);
+ assert.equal(repeat.wave,6);assert.equal(repeat.enemy.typeId,'deadline-clock');
+ assert.equal(repeat.enemy.hp,126);assert.equal(real.wave,1);assert.equal(real.gold,0);
 });
