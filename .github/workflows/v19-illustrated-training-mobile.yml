@@ -7,6 +7,8 @@ on:
       - 'v19/play.html'
       - 'v19/training-mode.mjs'
       - 'v19/training-mode.test.mjs'
+      - 'v19/combat-feedback.mjs'
+      - 'v19/combat-feedback.test.mjs'
       - 'v19/coffee-combat.mjs'
       - 'v19/paper-combat.mjs'
       - 'v19/roster.mjs'
@@ -33,7 +35,8 @@ jobs:
         run: |
           node --check v19/app.mjs
           node --check v19/training-mode.mjs
-          node --test v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/paper-combat.test.mjs
+          node --check v19/combat-feedback.mjs
+          node --test v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/paper-combat.test.mjs
       - name: Install real Chromium mobile browser
         run: |
           python -m pip install --disable-pip-version-check "playwright>=1.56,<2"
