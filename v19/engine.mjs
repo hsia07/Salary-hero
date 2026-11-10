@@ -185,7 +185,7 @@ export function normalize(raw,now=Date.now()){
    return n;
  }
  const baseEnemy=loopEnemyFor(n.wave,n.activeMode,now);
- n.enemy=!dungeonDayChanged&&raw.enemy&&Number(raw.enemy.id)===n.wave&&raw.enemy.typeId===baseEnemy.typeId&&Number(raw.enemy.hp)>0
+ n.enemy=(n.activeMode!=='dungeon'||!dungeonDayChanged)&&raw.enemy&&Number(raw.enemy.id)===n.wave&&raw.enemy.typeId===baseEnemy.typeId&&Number(raw.enemy.hp)>0
    ?{...baseEnemy,hp:Math.min(baseEnemy.maxHp,Number(raw.enemy.hp)),turns:Math.max(0,Math.floor(Number(raw.enemy.turns)||0))}
    :baseEnemy;
  n.pendingDrops=Array.isArray(raw.pendingDrops)?raw.pendingDrops.filter(x=>ITEMS.some(it=>it.id===x)).slice(0,20):[];
@@ -375,7 +375,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      }
      const hpBeforeRetaliation=s.heroHp;
      const daily=s.activeMode==='dungeon'&&!s.trainingIsolated?dailyDungeonFor(now):null;
-     const slackChance=daily?(s.enemy.tier==='elite'&&daily.weekday===5?.65:s.enemy.tier==='boss'&&daily.weekday===5?.22:daily.slackChance):0;
+     const slackChance=daily?(daily.weekday===5?(s.enemy.tier==='elite'?.65:s.enemy.tier==='boss'?.22:daily.slackChance):daily.slackChance):0;
      const slacking=slackChance>0&&Number(rng())<slackChance;
      s.last.enemyIdle=slacking;
      if(slacking){
