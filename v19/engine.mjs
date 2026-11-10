@@ -231,6 +231,13 @@ function awardXP(s,amount){
  s.xp+=amount;
  while(s.xp>=50+s.level*30){s.xp-=50+s.level*30;s.level++;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);notice(s,'✨ 升到 Lv.'+s.level+'，生命上限增加！');}
 }
+function awardPetXP(s,amount){
+ s.petXp+=amount;
+ while(s.petLevel<50&&s.petXp>=50+s.petLevel*30){
+   s.petXp-=50+s.petLevel*30;s.petLevel++;
+   notice(s,'🐾 寵物升到 Lv.'+s.petLevel+'，支援攻擊提升！');
+ }
+}
 function lootRoll(s,rng,guaranteed=false,now=Date.now()){
  const mondayRare=s.activeMode==='dungeon'&&!s.trainingIsolated&&weekdayTaiwan(now)===1;
  const chance=Math.max(0,Math.min(0.999999,Number(rng())||0));
@@ -321,6 +328,28 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.last={type:'dungeonRefresh',day:s.dailyDungeonDay};
    break;
  }
+ case 'studySkillBook':{
+   if(!s.skillBooks||s.skillRank>=5){notice(s,'技能書不足或技能專精已滿。');break;}
+   s.skillBooks--;s.skillRank++;s.last={type:'study',rank:s.skillRank};
+   notice(s,'📕 技能專精升級！目前 +'+s.skillRank+' 階，主動技能效果提升。');break;
+ }
+ case 'forge':{
+   if(s.forgeLevel>=10||s.craftingMaterial<3||s.rareMaterials<1){
+     notice(s,'鍛造需要強化素材 ×3、黎明礦石 ×1（最多 10 階）。');break;
+   }
+   s.craftingMaterial-=3;s.rareMaterials--;s.forgeLevel++;
+   s.last={type:'forge',rank:s.forgeLevel};
+   notice(s,'⚒️ 裝備鍛造成 +'+s.forgeLevel+'！每次攻擊額外增加 '+s.forgeLevel*2+' 基礎傷害。');break;
+ }
+ case 'weekendChest':{
+   if(s.specialChests<=0){notice(s,'目前沒有週末越獄特殊寶箱。');break;}
+   s.specialChests--;s.gold+=160;s.gems+=2;s.potions++;
+   const epic=Number(rng())<.3;
+   s.pendingDrops.push(epic?'notice':'laptop');
+   s.last={type:'weekendChest',epic};
+   notice(s,'🎁 週末越獄寶箱！金幣 +160、寶石 +2、藥水 +1，另獲'+(epic?'史詩':'稀有')+'裝備。');
+   break;
+ }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
  case 'autoEncounter':s.autoEncounter=!!a.value;notice(s,s.autoEncounter?'🗺️ 每日奇遇：智慧託管已開啟':'🗺️ 每日奇遇：已改為手動探索');break;
  case 'speed':s.speed=a.value===2?2:1;notice(s,'戰鬥速度 ×'+s.speed);break;
@@ -329,12 +358,12 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    const skill=a.type==='skill'?GAME_SKILLS.find(k=>k.id===a.id):null;
    if(a.type==='skill'&&(!skill||s.skillCooldowns[skill.id]>0)){notice(s,'技能尚未準備好。');break;}
    const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
-   const crit=Number(rng())<.16,baseDamage=Math.round((weapon.attack+4+s.level*2)*(crit?1.7:1));
-   const boosted=skill?.id==='burst'?baseDamage*2:baseDamage;
+   const crit=Number(rng())<.16,baseDamage=Math.round((weapon.attack+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*(crit?1.7:1));
+   const boosted=skill?.id==='burst'?Math.round(baseDamage*(2+s.skillRank*.15)):baseDamage;
    const damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
    for(const key of GAME_SKILLS)s.skillCooldowns[key.id]=Math.max(0,s.skillCooldowns[key.id]-1);
    if(skill)s.skillCooldowns[skill.id]=skill.cooldown;
-   if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+25);
+   if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+25+s.skillRank*5);
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
    s.last={type:'hit',damage,crit,boss:s.enemy.boss,skill:skill?.id||null};
    notice(s,(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
@@ -348,8 +377,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      const earnedXP=boss?75:elite?38+s.wave*4:12+s.wave*2;
      awardXP(s,Math.round(earnedXP*(dungeon?.xpScale||1)));
      if(dungeon?.weekday===4)s.craftingMaterial++;
-     if(dungeon?.weekday===3)s.petXp+=12;
-     while(s.petXp>=50+s.petLevel*30){s.petXp-=50+s.petLevel*30;s.petLevel++;notice(s,'🐾 寵物升級！Lv.'+s.petLevel);}
+     if(dungeon?.weekday===3)awardPetXP(s,12);
      const today=todayTW(now);
      if(s.activityDaily.day!==today)s.activityDaily={day:today,wins:0,bosses:0};
      s.activityDaily.wins++;
@@ -374,7 +402,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      if(s.activeMode==='dungeon'&&(s.wave-1)%4===0){
        s.heroHp=s.maxHp;s.gems+=1;
        if(dungeon?.weekday===2){s.skillBooks++;notice(s,'📕 會議室技能書 +1！');}
-       if(dungeon?.weekday===3){s.craftingMaterial+=2;s.petXp+=30;notice(s,'🐾 寵物經驗 +30、強化材料 +2！');}
+       if(dungeon?.weekday===3){s.craftingMaterial+=2;awardPetXP(s,30);notice(s,'🐾 寵物經驗 +30、強化材料 +2！');}
        if(dungeon?.weekday===4){s.rareMaterials++;notice(s,'⚒️ 副本結算：稀有材料 +1！');}
        notice(s,'🏅 今日副本四關結算：生命回滿，寶石 +1。');
      }
@@ -406,7 +434,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
          ['😴 小兵趴在鍵盤上睡著，放棄攻擊。','🧋 小兵正在喝手搖飲：「有事週一再說。」','🧳 小兵急著下班，完全不想揍人。'][s.enemy.turns%3];
        notice(s,line);
      }
-     s.heroHp=Math.max(0,s.heroHp-(slacking?0:skill?.id==='guard'?Math.ceil(retaliation/2):retaliation));
+     s.heroHp=Math.max(0,s.heroHp-(slacking?0:skill?.id==='guard'?Math.ceil(retaliation*Math.max(.25,.5-.05*s.skillRank)):retaliation));
      // Persist the actual HP lost within this attack result. If the hero dies and
      // instantly respawns, comparing only before/after HP would miss the injury.
      s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
