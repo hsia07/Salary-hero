@@ -38,6 +38,28 @@
 .item .detail{flex:1;min-width:0}.item strong{display:block;color:#ffe1a0}.item small{color:#d5b9c6;font-size:11px}
 .item button,.panel-button{border:1px solid #e4b77f;border-radius:9px;color:#fff1d0;background:linear-gradient(#845567,#4c304b);padding:9px;min-width:72px;font-weight:800}
 .panel-button{width:100%;margin:7px 0}.choices{display:grid;gap:8px}.choices button{min-height:45px;background:#634560;border:1px solid #e6bd7b;color:#fff4d2;border-radius:9px;font-weight:700}
+.encounter-diorama{position:relative;isolation:isolate;min-height:245px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:21px 17px 17px;border:2px solid #dfab69;border-radius:13px;background:linear-gradient(180deg,#21132755,#1b1129e8 89%),url('../art/v19/runtime/backgrounds/office-night.svg') center/cover;box-shadow:inset 0 0 46px #110b28,0 5px 12px #09081780}
+.encounter-diorama:before{position:absolute;z-index:-1;content:'';inset:-35%;background:radial-gradient(ellipse at 45% 35%,#ffbc793d,transparent 56%);animation:encounter-haze 5s ease-in-out infinite alternate;pointer-events:none}
+.encounter-diorama.encounter-tone-alien:before{background:radial-gradient(ellipse at 40% 40%,#59ecea70,transparent 58%)}
+.encounter-diorama.encounter-tone-myth:before{background:radial-gradient(ellipse at 45% 35%,#ffb64d70,transparent 60%)}
+.encounter-diorama.encounter-tone-mecha:before{background:radial-gradient(ellipse at 45% 35%,#f3657673,transparent 55%)}
+.encounter-diorama.encounter-tone-nether:before{background:radial-gradient(ellipse at 45% 35%,#a780fa75,transparent 56%)}
+.encounter-diorama.encounter-tone-digital:before{background:radial-gradient(ellipse at 45% 35%,#7eccff70,transparent 57%)}
+.encounter-diorama h3{position:relative;margin:4px 0 6px;color:#ffe3a3;font-size:22px;text-shadow:0 3px 6px #170817}
+.encounter-diorama p{position:relative;margin:4px 0;font-size:13px;line-height:1.65;color:#f6e7d4;text-shadow:0 2px 5px #14091b}
+.encounter-emblem{font-size:67px;line-height:1.25;filter:drop-shadow(0 0 21px #ffba6d88);animation:encounter-float 2.7s ease-in-out infinite alternate}
+.encounter-type{align-self:flex-start;font-size:11px;font-weight:900;letter-spacing:.7px;color:#ffe7b8;border:1px solid #d4aa6b;background:#382338d9;border-radius:40px;padding:4px 9px}
+.encounter-instruction{font-size:12px;color:#dbc2c5;text-align:center;margin:12px 0}
+.encounter-choices{gap:10px}
+.encounter-choices .encounter-choice{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;gap:5px;padding:13px 14px;border-width:2px;background:linear-gradient(110deg,#674557,#33233d);box-shadow:0 3px 0 #1a1227}
+.encounter-choice strong{font-size:13px;color:#fff0d0}.encounter-choice small{font-size:11px;font-weight:600;color:#ffcea5;line-height:1.5}
+.encounter-choice:active{transform:translateY(2px);box-shadow:none}
+.encounter-journal-title{margin:20px 0 8px;color:#fbdba8;font-size:15px}
+.encounter-history{display:flex;gap:10px;align-items:center;border-bottom:1px solid #775a5f;padding:7px 3px}
+.encounter-history>span{font-size:21px}.encounter-history strong{display:block;color:#f4d3ae;font-size:12px}
+.encounter-history small{display:block;color:#d5bbbf;font-size:11px}
+@keyframes encounter-float{to{transform:translateY(-8px)}}
+@keyframes encounter-haze{to{transform:translateX(6%) rotate(4deg)}}
 .item.muted{opacity:.65}.center{text-align:center}.large-symbol{font-size:64px;display:block;margin:15px 0;animation:float 2.5s ease-in-out infinite alternate}
 @keyframes float{to{transform:translateY(-8px)}}.footnote{text-align:center;font-size:10px;color:#bba8b9;padding:10px 12px 16px}
 a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;outline-offset:3px}
@@ -144,4 +166,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=guard-scanlock-rehearsal-v19-9-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=encounter-storybook-v19-10-20261110"></script></body></html>
