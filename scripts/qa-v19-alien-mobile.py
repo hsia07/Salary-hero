@@ -55,12 +55,12 @@ def main():
    snapshots.append(page.evaluate("""()=>{
     const canvas=document.querySelector('#world');
     return {
-     ...JSON.parse(canvas.dataset.hpTiming),
+     ...JSON.parse(canvas.dataset.hpTiming||'{}'),
      hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
      pose:canvas.dataset.alienPose,
      peakRed:Number(canvas.dataset.alienRedPeak||0),
      tintApplied:canvas.dataset.alienTintApplied==='true',
-     spell:JSON.parse(canvas.dataset.alienStamp),
+     spell:JSON.parse(canvas.dataset.alienStamp||'{}'),
     };
    }"""))
   page.clock.resume()
