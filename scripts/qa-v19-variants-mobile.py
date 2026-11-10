@@ -25,7 +25,7 @@ def main():
         page.on('pageerror',lambda e:errors.append(str(e)))
         # Prove a tinted original action frame is drawn in Canvas2D, not only a
         # URL label or altered metadata.
-        page.add_init_script("""() => {
+        page.add_init_script("""(() => {
           window.__monsterSkinDraws=0;
           const proto=CanvasRenderingContext2D.prototype;
           const original=proto.drawImage;
@@ -35,7 +35,7 @@ def main():
                 args.length===9)window.__monsterSkinDraws++;
             return original.apply(this,args);
           };
-        }""")
+        })()""")
         page.goto(BASE+'/v19/play.html?training=paper-gremlin&skin=midnight-ink',
             wait_until='domcontentloaded')
         wait_art(page)
