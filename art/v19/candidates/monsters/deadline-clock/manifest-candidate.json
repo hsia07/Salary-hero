@@ -36,7 +36,7 @@
         100,
         170
       ],
-      "sha256": "3904b4deb004f405b52aaaab65e3c72fe60b32fe326ca37e78a1d30aa130a0f0"
+      "sha256": "af774cd14178af72aba2ef937851eb5f89bd8aa73f6ca7749b3ab03d7b78bd8d"
     },
     "hurt": {
       "src": "../art/v19/candidates/monsters/deadline-clock/hurt.webp",
@@ -65,5 +65,5 @@
     }
   },
   "sourceNote": "Cleaned almost-invisible magenta/blue pixel RGB and preserved original separate poses from previous illustration; no recoloring of any pre-existing monster. Base 32 official progress remains 3/32.",
-  "approvalNotes": "Requires player visual review, Chromium live test and polish of projectile clipping before official count increases."
+  "approvalNotes": "Candidate has 16 original hand-drawn poses; clock projectile cutoffs in attack frames 3/4 were removed because the moving clock is separately drawn in world coordinates. Not user-approved and never official 4/32."
 }
