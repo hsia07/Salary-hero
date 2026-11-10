@@ -2,7 +2,7 @@
  * No mutation of the player's actual save. Two approved sprite IDs and the explicitly whitelisted third art candidate
  * can be opened; query values never select arbitrary species or files.
  */
-const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2,'chair-golem':3});
+const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2,'chair-golem':5});
 export function trainingWaveFor(value){
  return Object.prototype.hasOwnProperty.call(TRAINING_WAVES,value)?TRAINING_WAVES[value]:null;
 }
