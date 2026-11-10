@@ -62,6 +62,27 @@ export function encounterOutcome(event,choiceIndex,rng=Math.random){
   damage:clean('damage'),potions:clean('potions'),gems:clean('gems'),
   choiceText:choice.text};
 }
+/** Balanced auto trustee: deterministic, prefer reliable rewards, take risks only
+ * when their expected value clearly beats the safe route. */
+export function autoEncounterChoice(event){
+ if(!event?.choices?.length)return -1;
+ const utility=(r)=>Math.max(0,Number(r?.gold)||0)*.30+
+  Math.max(0,Number(r?.xp)||0)*.50+
+  Math.max(0,Number(r?.heal)||0)*.35+
+  Math.max(0,Number(r?.potions)||0)*25+
+  Math.max(0,Number(r?.gems)||0)*40-
+  Math.max(0,Number(r?.damage)||0)*1.80;
+ const scores=event.choices.map(c=>{
+   if(!c.risk)return utility(c);
+   const p=c.risk.chance;
+   const expected=p*utility(c.risk.success)+(1-p)*utility(c.risk.failure);
+   // A conservative strategy: never take an under-60% speculative adventure.
+   return p>=.6?expected/1.25:-Infinity;
+ });
+ let best=0;
+ for(let i=1;i<scores.length;i++)if(scores[i]>scores[best])best=i;
+ return best;
+}
 export const STORAGE_KEY='salary-hero-v19-save-1';
 export function todayTW(now=Date.now()){
  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(now)).map(p=>[p.type,p.value]));
@@ -80,7 +101,7 @@ export function initial(){
    playerName:'',styleWishlist:[],defeatedTypes:[],
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:enemyFor(1),
-   auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],log:['勇者甦醒，開始第一場冒險。'],last:null};
+   auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw){
  const fresh=initial();if(!raw||typeof raw!=='object'||raw.version!==19)return fresh;
@@ -108,6 +129,7 @@ export function normalize(raw){
    :enemyFor(n.wave);
  n.pendingDrops=Array.isArray(raw.pendingDrops)?raw.pendingDrops.filter(x=>ITEMS.some(it=>it.id===x)).slice(0,20):[];
  n.encounterHistory=Array.isArray(raw.encounterHistory)?raw.encounterHistory.slice(0,80):[];
+ n.autoEncounter=raw.autoEncounter===true;
  n.log=Array.isArray(raw.log)?raw.log.slice(0,12):fresh.log;
  n.auto=!!raw.auto;n.speed=raw.speed===2?2:1;
  return n;
@@ -189,6 +211,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    break;
  }
  case 'auto':s.auto=!!a.value;notice(s,s.auto?'⚙️ 自動託管開啟':'🛑 已暫停自動戰鬥');break;
+ case 'autoEncounter':s.autoEncounter=!!a.value;notice(s,s.autoEncounter?'🗺️ 每日奇遇：智慧託管已開啟':'🗺️ 每日奇遇：已改為手動探索');break;
  case 'speed':s.speed=a.value===2?2:1;notice(s,'戰鬥速度 ×'+s.speed);break;
  case 'attack':{
    const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
@@ -276,6 +299,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    const result=encounterOutcome(e,a.choice,rng);
    if(!result)break;
    const oldHp=s.heroHp;
+   const injury=Math.min(Math.max(0,oldHp-1),result.damage);
    // Encounter injuries never defeat or auto-respawn the hero; this is a risky
    // side adventure, not a hidden battle. Level-up healing still works normally.
    if(result.damage)s.heroHp=Math.max(1,s.heroHp-result.damage);
@@ -284,7 +308,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    awardXP(s,result.xp);
    s.encounterHistory.unshift({day:s.encounterDay,id:e.id,choice:a.choice,
     outcome:result.outcome,gold:result.gold,xp:result.xp,
-    damage:oldHp-Math.min(oldHp,s.heroHp),potions:result.potions,gems:result.gems});
+    damage:injury,heal:result.heal,potions:result.potions,gems:result.gems});
    s.encounterHistory=s.encounterHistory.slice(0,80);
    s.encounterPending=null;
    s.skinTickets++; // Exactly one ticket/day, even after a failed risk.
