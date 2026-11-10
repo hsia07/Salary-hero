@@ -22,7 +22,7 @@ test('evil cup has four actual committed, verified WebP images (not cute placeho
 test('evil cup is registered as the real second art species with four frame states',()=>{
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
  assert.equal(ALL_ENEMIES.find(e=>e.id==='coffee-mimic')?.name,'茶水間實習杯靈');
- assert.equal(Object.keys(m.monsters).length,2);
+ assert.equal(Object.keys(m.monsters).length,3); // officially approved mech added alongside original cup
  const record=m.monsters['coffee-mimic'];assert.deepEqual(validateMonsterAtlasRecord(record,'normal'),[]);
  for(const [state,{frames}] of Object.entries(expected)){
   assert.equal(record.states[state].frames,frames);
