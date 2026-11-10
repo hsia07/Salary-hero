@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>薪水勇者｜第六隻・加班遊魂文員・逐格試播</title>
+<title>薪水勇者｜第六隻・加班遊魂文員・高清 512px 逐格試播</title>
 <style>
 :root{color-scheme:dark;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;background:#110c23;color:#ffe5bf}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 45% 4%,#463361,#110b1e 71%);min-height:100vh}
@@ -36,7 +36,7 @@ a{color:#ffdb9b}
 <button data-state="hurt">受擊紅閃 3 格</button>
 <button data-state="defeat">消散死亡 4 格</button>
 </div><div id="cue">正在載入透明原畫格……</div></div>
-<div class="notes"><b>造型定位：</b>邪惡又疲憊的紫黑髮人形上班族怨靈，歪領帶、加班頭帶、幽靈火、詛咒文件。攻擊真正朝左；四個動作分別使用獨立的原畫格，而不是整張圖擺動。<p>這套候選圖集已實際提交到 GitHub 並接入第 26 關實戰，但來源尺寸較小，部分邊緣需進一步整理。你確認前不會計入正式完成數，也不會變更正常存檔。</p><a href="./play.html?training=keyboard-piranha">前往第 26 關實際戰鬥</a></div>
+<div class="notes"><b>造型定位：</b>邪惡又疲憊的紫黑髮人形上班族怨靈，歪領帶、加班頭帶、幽靈火、詛咒文件。攻擊真正朝左；四個動作分別使用獨立的原畫格，而不是整張圖擺動。<p>這次重新繪製成高清 512×512 單格：頭髮、眼神、襯衫、領帶、筆電和報表攻擊都更清晰，保留完整 16 格獨立姿勢。你確認前仍不計入正式完成數，也不更動遊戲存檔。</p><a href="./play.html?training=keyboard-piranha">前往第 26 關實際戰鬥</a></div>
 <section id="all" aria-label="完整 16 格畫格檢查"></section>
 </main>
 <script>
@@ -100,10 +100,10 @@ function paint(now){
  requestAnimationFrame(paint);
 }
 async function load(){
- const source=await fetch('../art/v19/candidates/monsters/keyboard-piranha/manifest-candidate.json?v=clerk21');
+ const source=await fetch('../art/v19/candidates/monsters/keyboard-piranha/hd/manifest-hd-candidate.json?v=clerk22');
  if(!source.ok)throw Error('candidate manifest HTTP '+source.status);
  const m=await source.json();
- if(m.id!=='keyboard-piranha'||m.approved!==false)throw Error('候選來源識別錯誤');
+ if(m.id!=='keyboard-piranha'||m.approved!==false||Object.values(m.states).some(s=>s.cell!==512))throw Error('高清候選圖集識別錯誤');
  for(const s of states){
   const frame=m.states[s],im=new Image();
   im.src=frame.src;await im.decode();

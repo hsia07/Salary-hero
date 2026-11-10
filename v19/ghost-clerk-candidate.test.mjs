@@ -37,3 +37,26 @@ test('four actual transparent WebP sprite strips hold 16 uniquely illustrated fr
   assert.equal(validateSpritePixels({naturalWidth:384*frames,naturalHeight:384},f).ok,true);
  }
 });
+
+test('high definition redrawn clerk really has 16 independently illustrated 512px transparent frames',()=>{
+ const hdRoot=new URL('../art/v19/candidates/monsters/keyboard-piranha/hd/',import.meta.url);
+ const hd=JSON.parse(readFileSync(new URL('manifest-hd-candidate.json',hdRoot),'utf8'));
+ assert.equal(hd.id,'keyboard-piranha');
+ assert.equal(hd.approved,false);
+ assert.equal(hd.previewOnly,true);
+ assert.equal(hd.facing,'left');
+ let total=0;
+ for(const [state,frame] of Object.entries(hd.states)){
+   const bytes=readFileSync(new URL(state+'.webp',hdRoot));
+   assert.notDeepEqual(bytes,readFileSync(new URL(state+'.webp',root)));
+   assert.equal(frame.cell,512);
+   assert.equal(frame.frames,record.states[state].frames);
+   assert.equal(frame.durations.length,frame.frames);
+   assert.equal(bytes.toString('ascii',0,4),'RIFF');
+   assert.equal(bytes.toString('ascii',8,12),'WEBP');
+   assert.equal(createHash('sha256').update(bytes).digest('hex'),frame.sha256);
+   assert.equal(validateSpritePixels({naturalWidth:512*frame.frames,naturalHeight:512},frame).ok,true);
+   total+=frame.frames;
+ }
+ assert.equal(total,16);
+});

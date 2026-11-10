@@ -29,16 +29,16 @@ def main():
   assert '第 26 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
   assert '5/32' in page.locator('#monster-art-status').inner_text()
-  assert '人形怨靈候選' in page.locator('#training-mode-notice').inner_text()
+  assert '512px 高清 16 格人形怨靈候選' in page.locator('#training-mode-notice').inner_text()
   assert page.evaluate('document.documentElement.scrollWidth>innerWidth+3') is False
   dimensions=page.evaluate("""async()=>{
    const dims={};
    for(const [s,n] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
-    const im=new Image();im.src='../art/v19/candidates/monsters/keyboard-piranha/'+s+'.webp';
+    const im=new Image();im.src='../art/v19/candidates/monsters/keyboard-piranha/hd/'+s+'.webp';
     await im.decode();dims[s]=[im.naturalWidth,im.naturalHeight];
    }return dims;
   }""")
-  assert dimensions=={'idle':[1536,384],'attack':[1920,384],'hurt':[1152,384],'defeat':[1536,384]},dimensions
+  assert dimensions=={'idle':[2048,512],'attack':[2560,512],'hurt':[1536,512],'defeat':[2048,512]},dimensions
   page.evaluate('(key)=>localStorage.setItem(key,"SIXTH_PLAYER_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0]);assert initial==900
   page.locator('#attack').click()
