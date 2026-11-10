@@ -28,9 +28,12 @@ test('the candidate cup monster has 16 real transparent raster pose frames commi
   assert.equal(validateSpritePixels({naturalWidth:320*e.frames,naturalHeight:320},f).ok,true);
  }
 });
-test('unapproved cup monster never appears in official approved manifest',()=>{
+test('old cute cup is archived as rejected candidate; only new evil cup ships officially',()=>{
+ const old=JSON.parse(readFileSync(new URL('manifest-candidate.json',root),'utf8'));
+ assert.equal(old.approved,false);
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
- assert.equal(m.monsters['coffee-mimic'],undefined);
- assert.equal(Object.keys(m.monsters).length,1);
+ assert.equal(Object.keys(m.monsters).length,2);
  assert.ok(m.monsters['paper-gremlin']);
+ assert.equal(m.monsters['coffee-mimic'].approved,true);
+ assert.ok(m.monsters['coffee-mimic'].states.attack.src.endsWith('/runtime/monsters/coffee-mimic/attack.webp'));
 });
