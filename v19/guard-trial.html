@@ -9,8 +9,7 @@
 <div id="controls"><button data-state="idle" disabled>待機 4 格</button><button data-state="attack" disabled>柵欄刀攻擊 5 格</button><button data-state="hurt" disabled>紅閃受傷 3 格</button><button data-state="defeat" disabled>機體碎裂 4 格</button><button id="play-all" disabled>▶ 全部連播</button></div></div>
 <p><a href="./play.html?training=chair-golem">⚔️ 用主遊戲的真正戰鬥畫面測試機兵（不改存檔）</a></p>
 <script type="module">
-import {drawGuardCombatFx,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS} from './guard-combat.mjs';
-import {drawPaperHitTint} from './paper-combat.mjs?v=guard-extended-red-v19-8';
+import {drawGuardCombatFx,drawGuardArmorTint,GUARD_HERO_HIT_MS,GUARD_ATTACK_START_MS} from './guard-combat.mjs?v=armor-red-v19-12';
 const poses={idle:{frames:4,ms:[250,185,240,165]},attack:{frames:5,ms:[145,155,75,115,160]},hurt:{frames:3,ms:[95,125,205]},defeat:{frames:4,ms:[145,200,265,445]}};
 const frames={},ctx=document.querySelector('#arena').getContext('2d'),status=document.querySelector('#status');
 let ready=false,action='idle',started=performance.now(),sequence=false,seriesAt=0;
@@ -31,7 +30,7 @@ function draw(now){
   const frame=poseFrame(name,elapsed),sprite=frames[name],rect={x:281,y:37,w:350,h:350};
   ctx.drawImage(sprite,frame*384,0,384,384,rect.x,rect.y,rect.w,rect.h);
   if(name==='hurt'){
-   drawPaperHitTint(ctx,sprite,{cell:384},frame,rect,GUARD_HERO_HIT_MS+elapsed,{extendedRed:true});
+   drawGuardArmorTint(ctx,sprite,{cell:384},frame,rect,GUARD_HERO_HIT_MS+elapsed);
    drawGuardCombatFx(ctx,GUARD_HERO_HIT_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:false});
   }else if(name==='attack'){
    drawGuardCombatFx(ctx,GUARD_ATTACK_START_MS+elapsed,{enemyX:283,enemyY:69,heroX:-52,heroY:120,canRetaliate:true});
