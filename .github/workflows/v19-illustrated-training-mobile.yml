@@ -14,6 +14,7 @@ on:
       - 'v19/guard-combat.mjs'
       - 'v19/alien-combat.mjs'
       - 'v19/alien-combat.test.mjs'
+      - 'scripts/qa-v19-alien-mobile.py'
       - 'v19/monster-variants.mjs'
       - 'v19/monster-variants.test.mjs'
       - 'scripts/qa-v19-variants-mobile.py'
@@ -67,6 +68,8 @@ jobs:
         run: python scripts/qa-v19-guard-mobile.py
       - name: "Normal monster reskin: real mobile atlas reuse and save isolation"
         run: python scripts/qa-v19-variants-mobile.py
+      - name: "Fourth alien real mobile combat timing and save isolation"
+        run: python scripts/qa-v19-alien-mobile.py
       - name: Retain real screenshots for art review
         if: always()
         uses: actions/upload-artifact@v4
