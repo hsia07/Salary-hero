@@ -567,15 +567,30 @@ function renderPanel(type){
  } else if(type==='shop'){
   body.innerHTML='<p>目前持有 <b>🪙 '+format(state.gold)+'</b>。購買立即扣款並裝備；進度會存檔。</p>'+ITEMS.filter(it=>it.cost).map(it=>itemRow(it,'shop')).join('');
  } else if(type==='adventure'){
-  const e=ENCOUNTERS.find(x=>x.id===state.encounterPending),today=todayTW();
-  if(e){
-   body.innerHTML='<div class="center"><span class="large-symbol">'+e.icon+'</span><h3>'+e.name+'</h3><p>'+e.text+'</p><small>今日奇遇：'+state.encounterDay+'</small></div><div class="choices">'+e.choices.map((c,i)=>'<button data-action="choice" data-value="'+i+'">'+c.text+'　(+🪙'+c.gold+' / EXP '+c.xp+')</button>').join('')+'</div>';
+  const event=ENCOUNTERS.find(x=>x.id===state.encounterPending),today=todayTW();
+  const history=state.encounterHistory||[];
+  if(event){
+   const eventArt='<div class="encounter-diorama encounter-tone-'+escapeHTML(event.theme||'office')+'"><span class="encounter-type">'+escapeHTML(event.rarity||'神祕奇遇')+'</span><div class="encounter-emblem" aria-hidden="true">'+event.icon+'</div><h3>'+escapeHTML(event.name)+'</h3><p>'+escapeHTML(event.text)+'</p></div>';
+   const options=event.choices.map((choice,i)=>{
+     const hint=choice.risk
+       ?'🎲 成功率 '+Math.round(choice.risk.chance*100)+'% · '+escapeHTML(choice.note||'有風險的抉擇')
+       :'🛡️ 安全選擇 · '+escapeHTML(choice.note||('金幣 '+choice.gold+' / 經驗 '+choice.xp));
+     return '<button class="encounter-choice" data-action="choice" data-value="'+i+'"><strong>'+escapeHTML(choice.text)+'</strong><small>'+hint+'</small></button>';
+   }).join('');
+   body.innerHTML=eventArt+'<p class="encounter-instruction">選擇將真正影響冒險結果。失敗可能扣除 HP，今日僅可領獎一次。</p><div class="choices encounter-choices">'+options+'</div>';
   }else if(state.encounterDay===today){
-   body.innerHTML='<div class="center"><span class="large-symbol">📜</span><h3>今天的奇遇已完成</h3><p>每天可以體驗一次新事件，無法重複領取獎勵。</p></div>';
+   const latest=history.find(x=>x.day===today);
+   const result=latest?.outcome==='failure'?'冒險失敗・保住了性命':latest?.outcome==='success'?'冒險成功・帶回神祕戰利品':'今日奇遇完成';
+   body.innerHTML='<div class="encounter-diorama encounter-complete"><span class="encounter-type">今日冒險紀錄</span><div class="encounter-emblem" aria-hidden="true">📜</div><h3>'+result+'</h3><p>今日獎勵已領取。明天會遇到新的奇遇，不會重複領獎。</p></div>';
   }else{
-   body.innerHTML='<div class="center"><span class="large-symbol">🗺️</span><h3>今天有新的奇遇</h3><p>不同選擇會影響金幣、經驗與生命值。</p></div>'+btn('✦ 探索今日奇遇','encounterStart');
+   body.innerHTML='<div class="encounter-diorama encounter-ready"><span class="encounter-type">每日隱藏劇情</span><div class="encounter-emblem" aria-hidden="true">🗝️</div><h3>冒險之門已開啟</h3><p>穿過結界，可能遇到外星人、妖怪、機械主管或失控的辦公室怪談。</p></div>'+btn('✦ 探索今日奇遇','encounterStart');
   }
-  body.innerHTML+='<p>累積奇遇完成：'+state.encounterHistory.length+' 次</p>'+state.encounterHistory.slice(0,4).map(x=>'<div class="item"><span>'+x.day+'</span><small>'+ENCOUNTERS.find(e=>e.id===x.id)?.name+'</small></div>').join('');
+  body.innerHTML+='<h3 class="encounter-journal-title">冒險手札 · '+history.length+' 次</h3>'+
+    history.slice(0,5).map(x=>{
+      const info=ENCOUNTERS.find(e=>e.id===x.id);
+      const marker=x.outcome==='success'?'🌟':x.outcome==='failure'?'💥':'📜';
+      return '<div class="encounter-history"><span>'+marker+'</span><div><strong>'+escapeHTML(info?.name||'未知的奇遇')+'</strong><small>'+escapeHTML(x.day||'')+' · '+(x.outcome==='success'?'成功':x.outcome==='failure'?'失敗':'已完成')+(Number.isFinite(x.gold)?' · 🪙'+x.gold:'')+'</small></div></div>';
+    }).join('');
  }else if(type==='collection'){
   const defeated=state.defeatedTypes||[];
   const groups=[['👾 普通怪',COMMON_ENEMIES],['✦ 菁英怪',ELITE_ENEMIES],['👑 Boss',BOSSES]];
