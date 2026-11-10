@@ -6,6 +6,7 @@ import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
 import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
+import {normalVariantFor,drawNormalVariantFrame} from './monster-variants.mjs?v=normal-skin-pipeline-v19-13';
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
 import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardArmorFlashAt,drawGuardArmorTint,guardCombatCaptionAt} from './guard-combat.mjs?v=armor-red-v19-12';
@@ -22,6 +23,10 @@ world.height=LOGICAL_HEIGHT*PIXEL_SCALE;
 const panel=$('#panel'),body=$('#panel-content');
 const trainingSpecies=new URLSearchParams(location.search).get('training');
 const trainingWave=trainingWaveFor(trainingSpecies);
+// Costume experiments are explicitly training-only. Never change save, wave,
+// enemy ID, rarity, monster production approval, or player's inventory.
+const requestedNormalVariant=new URLSearchParams(location.search).get('skin');
+let activeNormalVariant=null;
 const save=()=>{
  // Art rehearsal is an entirely separate simulated battle. It MUST NOT modify
  // salary, inventory, currency, unlocks, level or any official save.
@@ -124,12 +129,23 @@ async function loadApprovedMonsterArt(){
    if(ok)approved.set(id,frames);
  }
  approvedMonsterArt=approved;
+ activeNormalVariant=trainingWave!==null
+  ?normalVariantFor(trainingSpecies,requestedNormalVariant,[...approved.keys()]):null;
+ if(activeNormalVariant){
+   world.dataset.monsterVariant=activeNormalVariant.id;
+   const t=$('#training-monster-name');
+   if(t)t.textContent=activeNormalVariant.name+'（普通怪共用動畫換皮試玩）';
+ }else{
+   delete world.dataset.monsterVariant;
+ }
  const notice=$('#monster-art-status');
  if(notice){
    notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')?'true':'false';
    const count=approved.size;
-   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。';
+   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
+    (activeNormalVariant?' 🔬 實驗換皮：'+activeNormalVariant.name+'，完全共用正式逐格動畫；不增加 32 種完成數。':'');
  }
+ if(activeNormalVariant)render();
 }
 const artMode=new URLSearchParams(location.search).get('art');
 // High-resolution Q版 is now the normal V19 hero art, not a hidden opt-in.
@@ -251,7 +267,8 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      const sourceFloor=Number.isFinite(frame.ground_y)?frame.ground_y:frame.cell*.903125;
      const frameX=(boxW-displaySize)*.5;
      const frameY=525-248-displaySize*sourceFloor/frame.cell;
-     if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle')){
+     const skin=activeNormalVariant?.baseTypeId===enemy.typeId?activeNormalVariant:null;
+     if(drawNormalVariantFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle',skin)){
        if(trainingSpecies==='chair-golem'&&enemy.typeId==='chair-golem'&&
           // During the crossfade both outgoing and incoming are the SAME
           // species. Track the still-visible dying mech, not the freshly
@@ -513,7 +530,7 @@ function render(){
  document.querySelector('.enemy-meter')?.classList.toggle('boss',enemyTier==='boss');
  $('#level').textContent='Lv.'+state.level+' '+playerTitle(state);
  renderCombatBars(performance.now());
- $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+state.enemy.name;
+ $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+(activeNormalVariant?.baseTypeId===state.enemy.typeId?activeNormalVariant.name+'（試玩換皮）':state.enemy.name);
  const trait=$('#enemy-trait');
  if(trait){
    const skillCharge=enemyTier==='elite'?' · 反制 '+(state.enemy.turns||0)%3+'/3':
