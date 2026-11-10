@@ -70,8 +70,47 @@ def main():
   assert mid['t']<1160 and mid['hp']==before,mid['timing']
   assert post['t']>=1160 and post['hp']<before,post['timing']
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='TRUE_PLAYER_SAVE_UNCHANGED'
+
+  # This one-tap setup changes only the temporary training opponent's HP.
+  # The subsequent strike is a REAL engine victory, showing the real
+  # three injury stages and the fourth, collapsed final frame in the arena.
+  page.locator('#training-finish').click()
+  assert '下一擊' in page.locator('#game-log').inner_text()
+  page.locator('#attack').click()
+  finish=page.evaluate("""() => new Promise((resolve,reject)=>{
+    const c=document.querySelector('#world');
+    const stages=[['red-hit',475],['shattered-last-frame',1120],['held-last-frame',1250]];
+    const samples=[];let i=0;
+    const watchdog=setTimeout(()=>reject(Error('guard defeat frames not delivered')),9000);
+    function draw(){
+      const raw=c.dataset.hpTiming;
+      if(raw){
+        const timing=JSON.parse(raw);
+        if(timing.t>=stages[i][1]){
+          samples.push({
+            point:stages[i][0],t:timing.t,pose:c.dataset.guardPose,
+            frame:Number(c.dataset.guardFrame),flash:JSON.parse(c.dataset.guardFlash||'{}'),
+            image:c.toDataURL('image/png').split(',')[1]
+          });
+          i++;
+        }
+      }
+      if(i===stages.length){clearTimeout(watchdog);resolve(samples);}
+      else requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  })""")
+  assert len(finish)==3
+  for snap in finish:
+    (DEST/('training-chair-golem-'+snap['point']+'.png')).write_bytes(b64decode(snap['image']))
+  red,final_pose,held=finish
+  assert red['pose']=='defeat' and red['flash']['red']>0.3,red
+  assert final_pose['pose']=='defeat' and final_pose['frame']==3,final_pose
+  assert held['pose']=='defeat' and held['frame']==3,held
+  assert '第 5 關' in page.locator('#wave').inner_text()
+  assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='TRUE_PLAYER_SAVE_UNCHANGED'
   assert not errors,'browser runtime errors: '+repr(errors)
   browser.close()
-  print('PASS: real 390px mobile guard candidate, 16 source frames, distinct 5×384 blade sprites, combat contact, no official-save changes; NOT user art signoff.')
+  print('PASS: 390px browser, true 16-frame mech battle, red body flash, final shattered frame held, beam-impact HP timing, no actual save writes; candidate only.')
 
 if __name__=='__main__': main()
