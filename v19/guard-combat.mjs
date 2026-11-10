@@ -8,7 +8,7 @@ export const GUARD_HERO_HIT_MS=405;
 export const GUARD_ATTACK_START_MS=805;
 export const GUARD_BEAM_LAUNCH_MS=1080;
 export const GUARD_BEAM_IMPACT_MS=1160;
-export const GUARD_ATTACK_END_MS=1440;
+export const GUARD_ATTACK_END_MS=1455;
 export const GUARD_ATTACK_POSE_MS=Object.freeze([145,155,75,115,160]);
 const clamp=(n,min=0,max=1)=>Math.max(min,Math.min(max,n));
 export function guardCombatPoseAt(elapsed,result){
@@ -20,7 +20,7 @@ export function guardCombatPoseAt(elapsed,result){
  if(t>=GUARD_HERO_HIT_MS&&t<GUARD_ATTACK_START_MS)
   return {state:'hurt',progress:clamp((t-GUARD_HERO_HIT_MS)/400)};
  if(t>=GUARD_ATTACK_START_MS&&t<GUARD_ATTACK_END_MS&&Number(result.retaliationDamage)>0)
-  return {state:'attack',progress:clamp((t-GUARD_ATTACK_START_MS)/635)};
+  return {state:'attack',progress:clamp((t-GUARD_ATTACK_START_MS)/650)};
  return {state:'idle',progress:0};
 }
 export function guardBeamAt(elapsed,canRetaliate=true){
