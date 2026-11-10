@@ -92,7 +92,7 @@ async function loadTrainingCandidateArt(){
  const status=$('#monster-art-status');
  if(status){
    status.dataset.candidate='true';
-   status.textContent='🧪 已載入打卡保全機兵 16 格候選美術（可實戰，未正式核准）；紙妖與杯靈維持正式 2／32。菁英專屬技能 5 格美術仍待製作。';
+   status.textContent='🧪 打卡保全機兵（普通怪物）16 格候選美術已載入，可在第 5 關練習實戰；正式核准仍為 2／32，等待你確認攻擊與受傷效果。';
  }
 }
 async function loadApprovedMonsterArt(){
