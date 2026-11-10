@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy} from './training-mode.mjs';
+import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
 import {initial,enemyFor,transition} from './engine.mjs';
 
 test('training accepts two approved enemies and the isolated third security-mech candidate only',()=>{
@@ -55,4 +55,22 @@ test('victory loops back to training enemy without deleting last defeat animatio
  assert.equal(preview.enemy.typeId,'chair-golem');
  assert.equal(preview.wave,5);
  assert.equal(repeatTrainingEnemy(beat,'printer-minion',enemyFor),beat);
+});
+test('one-tap finisher is a genuine normal engine victory only inside an approved training species',()=>{
+ const saved=initial(),original=trainingStateFor('chair-golem',initial,enemyFor);
+ const primed=primeTrainingFinisher(original,'chair-golem');
+ assert.equal(primed.enemy.hp,1);
+ assert.equal(primed.wave,5);
+ assert.equal(primed.auto,false);
+ assert.equal(original.enemy.hp,126);
+ assert.deepEqual(saved,initial(),'real game state must not mutate');
+ const after=transition(primed,'attack',()=>.999);
+ assert.equal(after.last.type,'victory');
+ const repeated=repeatTrainingEnemy(after,'chair-golem',enemyFor);
+ assert.equal(repeated.wave,5);
+ assert.equal(repeated.enemy.hp,126);
+ assert.equal(repeated.last.type,'victory');
+ assert.equal(primeTrainingFinisher(original,'another-id'),original);
+ const mismatched={...original,wave:2};
+ assert.equal(primeTrainingFinisher(mismatched,'chair-golem'),mismatched);
 });
