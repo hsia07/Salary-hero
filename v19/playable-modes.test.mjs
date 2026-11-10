@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initial,transition,normalize,loopEnemyFor,GAME_MODES,GAME_SKILLS} from './engine.mjs';
 
-test('regular loop never blocks play with unfinished bosses or elites',()=>{
- for(const mode of GAME_MODES){
+test('campaign and tower recycle normal illustrated monsters without bosses or elites',()=>{
+ for(const mode of GAME_MODES.filter(m=>m.id!=='dungeon')){
   for(let wave=1;wave<=120;wave++){
    const enemy=loopEnemyFor(wave,mode.id);
    assert.equal(enemy.tier,'normal');assert.equal(enemy.boss,false);assert.equal(enemy.elite,false);
@@ -11,17 +11,17 @@ test('regular loop never blocks play with unfinished bosses or elites',()=>{
   }
  }
 });
-test('different modes retain their independent wave progress',()=>{
+test('non-daily modes retain their independent wave progress',()=>{
  let s=initial();
- s=transition(s,{type:'mode',id:'tower'});
+ s=transition(s,{type:'mode',id:'tower'},()=>.9,Date.parse('2026-11-11T08:00:00Z'));
  assert.equal(s.wave,1);
- s.enemy.hp=1;s=transition(s,'attack',()=>.9);
+ s.enemy.hp=1;s=transition(s,'attack',()=>.9,Date.parse('2026-11-11T08:00:00Z'));
  assert.equal(s.wave,2);
- s=transition(s,{type:'mode',id:'dungeon'});
+ s=transition(s,{type:'mode',id:'dungeon'},()=>.9,Date.parse('2026-11-11T08:00:00Z'));
  assert.equal(s.wave,1);
- s=transition(s,{type:'mode',id:'tower'});
+ s=transition(s,{type:'mode',id:'tower'},()=>.9,Date.parse('2026-11-11T08:00:00Z'));
  assert.equal(s.wave,2);
- assert.equal(normalize(JSON.parse(JSON.stringify(s))).wave,2);
+ assert.equal(normalize(JSON.parse(JSON.stringify(s)),Date.parse('2026-11-11T08:00:00Z')).wave,2);
 });
 test('skill cooldown prevents free repeat casting, and ticks on attacks',()=>{
  let s=initial();
