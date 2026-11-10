@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>薪水勇者｜影印室工讀紙妖逐格動畫試玩</title>
+<style>:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color-scheme:dark;background:#160f22;color:#fff0d6}*{box-sizing:border-box}body{margin:0;padding:17px;background:radial-gradient(ellipse at top,#39243e,#160f22 70%)}main{max-width:780px;margin:0 auto}a{color:#fbd99e}h1{font-size:24px;margin:12px 0 7px}p{font-size:13px;color:#d4c0d8;line-height:1.6}h2{font-size:15px}section{border:1px solid #977a96;background:#291f38;border-radius:14px;padding:13px;margin:12px 0}input{max-width:100%;font-size:13px}canvas{display:block;width:100%;aspect-ratio:720/420;height:auto;background:radial-gradient(circle at 60% 30%,#62566e,#242034 66%);border-radius:11px}button{background:#64415a;border:1px solid #c6a28c;color:#ffe5bc;border-radius:10px;padding:10px 13px;font-weight:700;margin:3px;cursor:pointer}button[aria-pressed=true]{background:#986451}button:disabled{opacity:.4}#status{font-size:12px;color:#eac8a8}small{font-size:11px;color:#c7b4ca}</style></head><body><main><a href="./play.html">返回《薪水勇者》</a>
+<h1>紙妖 Q 版逐格動畫・現場驗收</h1><p>這是 V19 的候選素材測試頁，**只會展示你親自選擇的本機圖片，不更改遊戲存檔或宣稱正式美術完成。** 先從本次附件取得 <code>paper-gremlin-16pose.png</code>，再用下方按鈕選擇。</p>
+<section><h2>載入 4 × 4 透明動畫圖集</h2><input id="file" type="file" accept="image/png"><p id="status" role="status">尚未選擇素材。規格：1280 × 1280 PNG，16 個不同姿勢，每格 320 × 320。</p></section>
+<section><canvas id="world" width="720" height="420"></canvas><div id="controls"><button data-m="idle" disabled>待機 4</button><button data-m="attack" disabled>攻擊 5</button><button data-m="hurt" disabled>受傷 3</button><button data-m="defeat" disabled>死亡 4</button><button id="sequence" disabled>連續播放</button></div></section>
+<p><small>每次播放直接切換來源圖片中的不同畫格，角色整體不移動、不旋轉、不縮放。腳底基準為 289px；這不是幾何替身。實際是否符合正式品質仍需視覺驗收。</small></p></main>
+<script>
+const states={idle:{ids:[0,1,2,3],ms:[240,180,240,140]},attack:{ids:[4,5,6,7,8],ms:[110,140,105,130,180]},hurt:{ids:[9,10,11],ms:[140,210,230]},defeat:{ids:[12,13,14,15],ms:[190,190,230,420]}};
+const canvas=document.querySelector('#world'),ctx=canvas.getContext('2d');
+const input=document.querySelector('#file'),status=document.querySelector('#status');
+let image=null,start=performance.now(),mode='idle',combo=false,comboStart=0;
+const total=(s)=>s.ms.reduce((a,b)=>a+b,0);
+function switchMode(next){mode=next;start=performance.now();document.querySelectorAll('[data-m]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.m===mode)));}
+input.addEventListener('change',()=>{
+ const file=input.files?.[0];if(!file)return;
+ if(file.size>12e6){status.textContent='❌ 檔案超過 12 MB';return;}
+ const url=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{
+  URL.revokeObjectURL(url);
+  if(img.naturalWidth!==1280||img.naturalHeight!==1280){status.textContent='❌ 需要 1280 × 1280 PNG；實際 '+img.naturalWidth+' × '+img.naturalHeight;return;}
+  image=img;status.textContent='✓ 已載入真實 16 格 Q 版繪製素材（僅本次測試，不改存檔）'; 
+  document.querySelectorAll('#controls button').forEach(el=>el.disabled=false);switchMode('idle');
+ };
+ img.onerror=()=>{URL.revokeObjectURL(url);status.textContent='❌ PNG 圖片無法解碼';};
+ img.src=url;
+});
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{combo=false;switchMode(b.dataset.m);});
+document.querySelector('#sequence').onclick=()=>{combo=true;comboStart=performance.now();switchMode('idle');};
+function currentFrame(now){
+ if(combo){let t=now-comboStart,selected='defeat';
+  for(const m of ['idle','attack','hurt','defeat']){const len=total(states[m]);if(t<len){selected=m;break;}t-=len;}
+  if(selected!==mode){mode=selected;}
+  if(now-comboStart>2200)combo=false;
+  const s=states[mode];return Math.max(0,Math.min(s.ids.length-1, indexAt(s,t)));
+ }
+ const s=states[mode],t=now-start;
+ if(t>total(s)&&mode!=='idle'&&mode!=='defeat'){switchMode('idle');return 0;}
+ return indexAt(s,mode==='idle'?t%total(s):Math.min(t,total(s)-.1));
+}
+function indexAt(s,time){let index=0;while(index<s.ms.length-1&&time>=s.ms[index])time-=s.ms[index++];return index;}
+function draw(now){
+ ctx.clearRect(0,0,720,420);
+ const g=ctx.createLinearGradient(0,0,0,420);g.addColorStop(0,'#5b4b69');g.addColorStop(1,'#251d37');ctx.fillStyle=g;ctx.fillRect(0,0,720,420);
+ ctx.fillStyle='#5c4059';ctx.beginPath();ctx.ellipse(357,374,302,37,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#2113299e';ctx.beginPath();ctx.ellipse(372,372,113,14,0,0,Math.PI*2);ctx.fill();
+ if(image){const s=states[mode],i=s.ids[currentFrame(now)],x=i%4*320,y=Math.floor(i/4)*320;
+  ctx.drawImage(image,x,y,320,320,207,22,334,334);
+ }else{ctx.fillStyle='#e9cfb4';ctx.textAlign='center';ctx.font='20px system-ui';ctx.fillText('請先選擇 16 格透明 PNG',360,198);}
+ requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script></body></html>
