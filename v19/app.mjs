@@ -8,10 +8,10 @@ import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-m
 import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
-import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS} from './guard-combat.mjs';
+import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS} from './guard-combat.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
-import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy} from './training-mode.mjs';
+import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
 import {visibleCombatHealthAt} from './combat-feedback.mjs';
 const $=s=>document.querySelector(s);
 const world=$('#world'),ctx=world.getContext('2d');
@@ -65,6 +65,12 @@ if(trainingNotice&&trainingWave!==null){
  if(label)label.textContent=name;
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
+$('#training-finish')?.addEventListener('click',()=>{
+ if(trainingWave===null||!ready)return;
+ state=primeTrainingFinisher(state,trainingSpecies);
+ fx=null; // begin a clean illustrated hit sequence on the NEXT manual strike
+ render();
+});
 let approvedMonsterArt=new Map();
 let trainingCandidateArt=new Map();
 const hasIllustratedMonster=(id)=>approvedMonsterArt.has(id)||trainingCandidateArt.has(id);
@@ -244,6 +250,11 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      const frameX=(boxW-displaySize)*.5;
      const frameY=525-248-displaySize*sourceFloor/frame.cell;
      if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle')){
+       if(trainingSpecies==='chair-golem'&&enemy.typeId==='chair-golem'){
+         // Browser QA reports what the player ACTUALLY sees, not a guessed timer.
+         world.dataset.guardPose=visual?.state||'idle';
+         world.dataset.guardFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
+       }
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
        if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem')&&(visual?.state==='hurt'||visual?.state==='defeat')){
@@ -357,7 +368,10 @@ function drawStage(now){
  const enemyY=248+(illustratedPaperInScene?0:Math.sin(time*2)*5);
  // The defeated actor plays its own disintegration, while the next species
  // materializes in the SAME slot with no empty frame between waves.
- const enteringNew=victory?Math.max(0,Math.min(1,(animationMs-900)/200)):1;
+ const guardShattering=victory&&fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem');
+ const enteringNew=victory
+   ?Math.max(0,Math.min(1,(animationMs-(guardShattering?GUARD_DEFEAT_FADE_START_MS:900))/(guardShattering?GUARD_DEFEAT_END_MS-GUARD_DEFEAT_FADE_START_MS:200)))
+   :1;
  const fadingOld=victory?1-enteringNew:0;
  const visualFor=(enemy,result)=>{
    const hitResult=result?{...result,retaliationDamage:fx?.retaliationDamage||0}:null;
@@ -620,6 +634,8 @@ world.addEventListener('pointerup',e=>{
 });
 function attackCooldownMs(){
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
+ if(fx?.result?.type==='victory'&&fx.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))
+   return GUARD_DEFEAT_END_MS+40; // Never skip the final disintegrated pose.
  if(fx?.retaliation&&((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
    (fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))))
