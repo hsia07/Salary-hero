@@ -45,7 +45,7 @@ def main():
         """,timeout=10000)
         assert '夜班紫墨紙妖' in page.locator('#enemy-name').inner_text()
         assert '普通怪共用動畫換皮試玩' in page.locator('#training-mode-notice').inner_text()
-        assert '2/32' in page.locator('#monster-art-status').inner_text()
+        assert '3/32' in page.locator('#monster-art-status').inner_text()
         assert page.evaluate('document.documentElement.scrollWidth>innerWidth+3') is False
         page.evaluate('(key)=>localStorage.setItem(key,"ORIGINAL_SAVE_DO_NOT_CHANGE")',KEY)
         page.locator('#world').screenshot(path=str(DEST/'training-normal-skin-midnight.png'))
