@@ -47,6 +47,7 @@ function loadGame(){
 let state=loadGame();save();
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 let approvedMonsterArt=new Map();
+let candidateMonsterArt=new Map(); // Explicitly NOT user-approved art.
 async function loadApprovedMonsterArt(){
  const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=paper-combat-v19-4-20261110',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
@@ -75,6 +76,23 @@ async function loadApprovedMonsterArt(){
      ?'✓ 已自動載入「影印室工讀紙妖」16 張獨立繪製動畫（待機／攻擊／受傷／死亡），不必下載素材。其他 31 隻仍是工程替身。'
      :'⚠️ 紙妖圖片未成功載入；本場暫顯示工程替身，請重新整理。';
  }
+}
+async function loadCandidateMonsterArt(){
+ const uri=new URL('../art/v19/candidates/monsters/coffee-mimic/manifest-candidate.json?art=coffee16-v1',import.meta.url);
+ const record=await fetch(uri).then(r=>{if(!r.ok)throw new Error('coffee candidate '+r.status);return r.json()});
+ if(record.approved!==false||record.id!=='coffee-mimic')throw new Error('wrong candidate');
+ const poses={};
+ for(const [state,frame] of Object.entries(record.states||{})){
+   const image=await imageFrom(frame.src);
+   const pixels=validateSpritePixels(image,frame);
+   if(!pixels.ok)throw new Error('杯靈 '+state+' 圖片尺寸不符');
+   const defects=inspectAtlasFrameArt(image,frame,state);
+   if(defects.length)throw new Error('杯靈畫格未通過: '+defects.join('; '));
+   poses[state]={image,frame};
+ }
+ for(const state of ['idle','attack','hurt','defeat'])if(!poses[state])throw new Error('杯靈缺少 '+state);
+ candidateMonsterArt.set('coffee-mimic',poses);
+ world.dataset.coffeeCandidate='loaded';
 }
 const artMode=new URLSearchParams(location.search).get('art');
 // High-resolution Q版 is now the normal V19 hero art, not a hidden opt-in.
@@ -181,9 +199,9 @@ function drawWeapon(x,y,t){
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
 // 32 real monster actors: per-species anatomy/poses, not shared emoji bodies.
 function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity){
- const approved=approvedMonsterArt.get(enemy.typeId);
- if(approved){
-   const pose=approved[visual?.state]||approved.idle;
+ const illustrated=approvedMonsterArt.get(enemy.typeId)||candidateMonsterArt.get(enemy.typeId);
+ if(illustrated){
+   const pose=illustrated[visual?.state]||illustrated.idle;
    if(pose){
      const {image,frame}=pose,durations=frame.durations;
      const duration=durations.reduce((a,b)=>a+b,0);
@@ -199,7 +217,7 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle')){
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
-       if(enemy.typeId==='paper-gremlin'&&(visual?.state==='hurt'||visual?.state==='defeat')){
+       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic')&&(visual?.state==='hurt'||visual?.state==='defeat')){
          const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
          drawPaperHitTint(ctx,image,frame,frameIndex,
            {x:frameX,y:frameY,w:displaySize,h:displaySize},combatMs,{reducedMotion:motionReduced});
@@ -227,8 +245,10 @@ function drawStage(now){
  const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
  // The paper caster needs time to visibly launch its projectile BEFORE the
  // hero reacts. Damage is computed by the engine; only the feedback is delayed.
- const paperRetaliation=fx?.result?.type==='hit'&&fx?.oldEnemy?.typeId==='paper-gremlin'&&fx?.retaliationDamage>0&&approvedMonsterArt.has('paper-gremlin');
- const attackDurationMs=paperRetaliation?PAPER_PROJECTILE_IMPACT_MS:(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
+ const illustratedCaster=fx?.result?.type==='hit'&&fx?.retaliationDamage>0&&
+  ((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
+   (fx?.oldEnemy?.typeId==='coffee-mimic'&&candidateMonsterArt.has('coffee-mimic')));
+ const attackDurationMs=illustratedCaster?PAPER_PROJECTILE_IMPACT_MS:(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
  const hurtVfx=hurtPlaybackAt(now,fx?.start??now,state.speed,attackDurationMs,
@@ -300,8 +320,9 @@ function drawStage(now){
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const victory=fx?.result?.type==='victory'&&animationMs<1100;
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
- const illustratedPaperInScene=approvedMonsterArt.has('paper-gremlin')&&(
-   state.enemy?.typeId==='paper-gremlin'||(victory&&fx?.oldEnemy?.typeId==='paper-gremlin'));
+ const illustratedPaperInScene=(approvedMonsterArt.has(state.enemy?.typeId)||
+   candidateMonsterArt.has(state.enemy?.typeId))||
+   (victory&&(approvedMonsterArt.has(fx?.oldEnemy?.typeId)||candidateMonsterArt.has(fx?.oldEnemy?.typeId)));
  // No rigid-body bobble/shake on approved, separately illustrated poses.
  const enemyX=458+(illustratedPaperInScene?0:Math.sin(time*1.75)*4)+(attacking&&hitWindow&&!illustratedPaperInScene?Math.sin(now/22)*7:0);
  const enemyY=248+(illustratedPaperInScene?0:Math.sin(time*2)*5);
@@ -324,11 +345,16 @@ function drawStage(now){
    const pivotY=enemy.boss?129:enemy.tier==='elite'?124:120;
    ctx.save();ctx.globalAlpha=alpha;
    ctx.translate(enemyX+pivotX,enemyY+pivotY);
-   if(!approvedMonsterArt.has(enemy.typeId))ctx.rotate(Math.sin(time*1.1)*.018);
+   const hasIndividualArt=approvedMonsterArt.has(enemy.typeId)||candidateMonsterArt.has(enemy.typeId);
+   if(!hasIndividualArt)ctx.rotate(Math.sin(time*1.1)*.018);
    ctx.translate(-pivotX,-pivotY);
+   if(enemy.typeId==='coffee-mimic'&&candidateMonsterArt.has(enemy.typeId)){
+     // One fixed orientation correction, not a whole-body fake animation.
+     ctx.translate(pivotX*2,0);ctx.scale(-1,1);
+   }
    paintEnemy(enemy,now,visual,animationMs);
    ctx.restore();
-   if(visual?.state!=='idle'&&visual?.state&&!approvedMonsterArt.has(enemy?.typeId)){
+   if(visual?.state!=='idle'&&visual?.state&&!approvedMonsterArt.has(enemy?.typeId)&&!candidateMonsterArt.has(enemy?.typeId)){
      ctx.save();ctx.globalAlpha=alpha;
      drawMonsterVfx(ctx,enemy,visual.state,visual.progress,
        {enemyX,enemyY,heroX:heroX+70,heroY:heroY+110,now});
@@ -533,7 +559,8 @@ world.addEventListener('pointerup',e=>{
 });
 function attackCooldownMs(){
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
- if(fx?.retaliation&&fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))
+ if(fx?.retaliation&&((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
+   (fx?.oldEnemy?.typeId==='coffee-mimic'&&candidateMonsterArt.has('coffee-mimic'))))
    return PAPER_PROJECTILE_IMPACT_MS+HIT_FEEDBACK_MS+70;
  return base+(fx?.retaliation?HIT_FEEDBACK_MS:0);
 }
@@ -706,6 +733,10 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    console.warn('正式怪物逐格素材載入失敗，保留工程替身：',err);
    const notice=$('#monster-art-status');
    if(notice)notice.textContent='⚠️ 怪物正式美術尚未可用，現正顯示未核准工程替身。';
+ });
+ loadCandidateMonsterArt().catch(err=>{
+   world.dataset.coffeeCandidate='unavailable';
+   console.warn('杯靈候選未載入，保留工程替身：',err);
  });
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
