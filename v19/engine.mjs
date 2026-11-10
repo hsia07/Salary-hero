@@ -481,16 +481,29 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    const skill=a.type==='skill'?GAME_SKILLS.find(k=>k.id===a.id):null;
    if(a.type==='skill'&&(!skill||s.skillCooldowns[skill.id]>0)){notice(s,'技能尚未準備好。');break;}
    const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
+   const liteStats=liteEquipmentStats(s);
    const currentDungeon=s.activeMode==='dungeon'&&!s.trainingIsolated?dailyDungeonFor(now):null;
    const wednesdayRage=currentDungeon?.weekday===3&&s.heroHp<s.maxHp*.5;
-   const crit=Number(rng())<(.16+(wednesdayRage ? .25 : 0)),baseDamage=Math.round((weapon.attack+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*(crit?1.7:1));
+   const crit=Number(rng())<Math.min(.75,.16+liteStats.crit+(wednesdayRage?.25:0));
+   const attackValue=(liteStats.weaponAttack||weapon.attack)+liteStats.attack;
+   const baseDamage=Math.round((attackValue+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*(crit?1.7:1));
    const boosted=skill?.id==='burst'?Math.round(baseDamage*(2+s.skillRank*.15)):baseDamage;
-   const damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
+   let damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
+   s.liteCombo++;
+   const finisher=liteStats.clockout&&s.liteCombo%5===0;
+   const coffeeHeal=liteStats.coffee&&s.liteCombo%4===0;
+   if(finisher){const extra=Math.max(3,Math.round(damage*.6));damage+=extra;
+     notice(s,'⚡ 準時下班協定：收工斬 +'+extra+'！');}
+   if(coffeeHeal){s.heroHp=Math.min(s.maxHp,s.heroHp+15);
+     notice(s,'☕ 咖啡續命：恢復 15 生命！');}
    for(const key of GAME_SKILLS)s.skillCooldowns[key.id]=Math.max(0,s.skillCooldowns[key.id]-1);
    if(skill)s.skillCooldowns[skill.id]=skill.cooldown;
    if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+25+s.skillRank*5);
+   const enemyHpBefore=s.enemy.hp;
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
-   s.last={type:'hit',damage,crit,boss:s.enemy.boss,skill:skill?.id||null};
+   const lifeSteal=Math.floor(Math.min(damage,enemyHpBefore)*liteStats.lifeSteal);
+   if(lifeSteal)s.heroHp=Math.min(s.maxHp,s.heroHp+lifeSteal);
+   s.last={type:'hit',damage,crit,boss:s.enemy.boss,skill:skill?.id||null,lifeSteal,finisher,coffeeHeal};
    notice(s,(wednesdayRage?'🫠 厭世崩潰・暴擊率上升！ ':'')+(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
    if(s.enemy.hp===0){
      const dead=s.enemy,boss=dead.boss,elite=dead.tier==='elite';
@@ -529,7 +542,14 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        notice(s,'🏆 首領擊敗！生命回滿，獲得寶箱、寶石與 1 張造型券。');
      }
      if(elite){s.gems+=1;notice(s,'💠 菁英擊敗！獲得額外 1 顆寶石，必定掉落裝備。');}
-     lootRoll(s,rng,elite,now);s.wave++;s.modeWaves[s.activeMode]=s.wave;
+     lootRoll(s,rng,elite,now);
+     if(!s.trainingIsolated){
+       const liteDrop=liteRollDrop(s,rng,dead.tier,dungeon?.weekday===1);
+       if(liteDrop){const base=liteBase(liteDrop.templateId);
+         notice(s,'✨ 新裝備：'+liteRarity(liteDrop.rarity).name+'・'+base.name+'（'+LITE_SLOTS.find(x=>x.id===base.slot).name+'），已放入背包。');
+       }
+     }
+     s.wave++;s.modeWaves[s.activeMode]=s.wave;
      if(s.activeMode==='tower'&&(s.wave-1)%4===0){s.heroHp=s.maxHp;s.chests++;notice(s,'🗼 四層突破！恢復全部生命，獲得寶箱。');}
      if(s.activeMode==='dungeon'&&(s.wave-1)%4===0){
        s.heroHp=s.maxHp;s.gems+=1;
@@ -578,7 +598,8 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
          ['😴 小兵趴在鍵盤上睡著，放棄攻擊。','🧋 小兵正在喝手搖飲：「有事週一再說。」','🧳 小兵急著下班，完全不想揍人。'][s.enemy.turns%3];
        notice(s,line);
      }
-     s.heroHp=Math.max(0,s.heroHp-(slacking?0:skill?.id==='guard'?Math.ceil(retaliation*Math.max(.25,.5-.05*s.skillRank)):retaliation));
+     const reduced=Math.max(1,Math.ceil(retaliation*(1-liteStats.damageReduction)*85/(85+liteStats.armor)));
+     s.heroHp=Math.max(0,s.heroHp-(slacking?0:skill?.id==='guard'?Math.ceil(reduced*Math.max(.25,.5-.05*s.skillRank)):reduced));
      // Persist the actual HP lost within this attack result. If the hero dies and
      // instantly respawns, comparing only before/after HP would miss the injury.
      s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
@@ -602,10 +623,10 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.last={type:'loot',id};break;
  }
  case 'equip':
-   if(item&&s.owned.includes(item.id)){s.equipped=item.id;s.last={type:'equip',id:item.id};notice(s,'🛡️ 換裝：'+item.name+'，攻擊 '+item.attack);}
+   if(item&&s.owned.includes(item.id)){s.equipped=item.id;s.liteLoadout.weapon=null;s.last={type:'equip',id:item.id};notice(s,'🛡️ 換裝：'+item.name+'，攻擊 '+item.attack);}
    break;
  case 'buy':
-   if(item&&item.id!=='briefcase'&&!s.owned.includes(item.id)&&s.gold>=item.cost){s.gold-=item.cost;s.owned.push(item.id);s.equipped=item.id;s.last={type:'equip',id:item.id};notice(s,'🛒 買下並裝備 '+item.name);}
+   if(item&&item.id!=='briefcase'&&!s.owned.includes(item.id)&&s.gold>=item.cost){s.gold-=item.cost;s.owned.push(item.id);s.equipped=item.id;s.liteLoadout.weapon=null;s.last={type:'equip',id:item.id};notice(s,'🛒 買下並裝備 '+item.name);}
    else notice(s,'金幣不足或已擁有該裝備。');
    break;
  case 'chest':
