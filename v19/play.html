@@ -54,6 +54,10 @@
 .encounter-choices .encounter-choice{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;gap:5px;padding:13px 14px;border-width:2px;background:linear-gradient(110deg,#674557,#33233d);box-shadow:0 3px 0 #1a1227}
 .encounter-choice strong{font-size:13px;color:#fff0d0}.encounter-choice small{font-size:11px;font-weight:600;color:#ffcea5;line-height:1.5}
 .encounter-choice:active{transform:translateY(2px);box-shadow:none}
+.encounter-trustee{margin:0 0 12px;padding:11px;border:1px solid #ce9a71;border-radius:11px;background:linear-gradient(125deg,#462b46,#2d2345)}
+.encounter-trustee button{display:block;min-height:42px;width:100%;border:1px solid #e9b879;border-radius:8px;color:#ffebcc;background:linear-gradient(#78505b,#49344e);font:800 13px system-ui}
+.encounter-trustee button[aria-pressed=true]{background:linear-gradient(#906245,#674360);border-color:#ffd99d;box-shadow:0 0 12px #e7b16f49}
+.encounter-trustee small{display:block;margin-top:6px;color:#e2c9bc;font-size:11px;line-height:1.5}
 .encounter-journal-title{margin:20px 0 8px;color:#fbdba8;font-size:15px}
 .encounter-history{display:flex;gap:10px;align-items:center;border-bottom:1px solid #775a5f;padding:7px 3px}
 .encounter-history>span{font-size:21px}.encounter-history strong{display:block;color:#f4d3ae;font-size:12px}
@@ -166,4 +170,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=encounter-storybook-v19-10-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=encounter-auto-balanced-v19-11-20261110"></script></body></html>
