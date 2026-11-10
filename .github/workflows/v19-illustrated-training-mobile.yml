@@ -1,0 +1,57 @@
+name: V19 Illustrated Monster Real Combat Mobile QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v19/app.mjs'
+      - 'v19/play.html'
+      - 'v19/training-mode.mjs'
+      - 'v19/training-mode.test.mjs'
+      - 'v19/coffee-combat.mjs'
+      - 'v19/paper-combat.mjs'
+      - 'v19/roster.mjs'
+      - 'art/v19/runtime/monsters/**'
+      - 'scripts/qa-v19-training-mobile.py'
+      - '.github/workflows/v19-illustrated-training-mobile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  illustrated-battle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify real battle and training JS
+        run: |
+          node --check v19/app.mjs
+          node --check v19/training-mode.mjs
+          node --test v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/paper-combat.test.mjs
+      - name: Install real Chromium mobile browser
+        run: |
+          python -m pip install --disable-pip-version-check "playwright>=1.56,<2"
+          python -m playwright install --with-deps chromium
+      - name: Start local game server
+        run: |
+          python -m http.server 8766 --bind 127.0.0.1 --directory . > /tmp/salary-hero-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8766/v19/play.html >/dev/null && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Mobile real-sprite combat: attacks, injury, save isolation, screenshots
+        run: python scripts/qa-v19-training-mobile.py
+      - name: Retain real screenshots for art review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v19-two-monster-mobile-training-qa
+          path: art/v19/runtime/qa/training-*.png
+          if-no-files-found: warn
