@@ -6,7 +6,7 @@ import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
 import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
-import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs';
+import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
 import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS} from './guard-combat.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
