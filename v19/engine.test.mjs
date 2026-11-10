@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ITEMS,initial,normalize,transition,todayTW,salaryAt} from './engine.mjs';
+import {ITEMS,ENCOUNTERS,encounterOutcome,initial,normalize,transition,todayTW,salaryAt} from './engine.mjs';
 import {shouldRecoil} from './hurt-timing.mjs';
 
 test('each attack mutates actual enemy HP and keeps salary separate',()=>{
@@ -182,4 +182,57 @@ test('fatal retaliation still displays pain after instant auto-respawn',()=>{
  assert.equal(n.last.retaliationDamage,1);
  assert.equal(n.last.respawned,true);
  assert.equal(shouldRecoil(1,n.heroHp,n.last),true);
+});
+
+test('encounter roster now has 8 distinct fantasy-office stories and genuine risk/safe routes',()=>{
+ assert.equal(ENCOUNTERS.length,8);
+ assert.equal(new Set(ENCOUNTERS.map(x=>x.id)).size,8);
+ assert.ok(ENCOUNTERS.some(x=>x.theme==='alien'));
+ assert.ok(ENCOUNTERS.some(x=>x.theme==='myth'));
+ assert.ok(ENCOUNTERS.some(x=>x.theme==='mecha'));
+ for(const story of ENCOUNTERS){
+  assert.ok(story.text.length>18);
+  assert.equal(story.choices.length,2);
+  assert.ok(story.choices.every(choice=>choice.note));
+ }
+});
+test('risk outcome is deterministic and has different successful and failed loot',()=>{
+ const e=ENCOUNTERS.find(x=>x.id==='alien-shuttle');
+ const success=encounterOutcome(e,0,()=>0.1);
+ const failure=encounterOutcome(e,0,()=>0.9);
+ const safe=encounterOutcome(e,1,()=>{throw Error('safe choice must not roll RNG')});
+ assert.equal(success.outcome,'success');
+ assert.equal(success.gold,155);assert.equal(success.damage,0);
+ assert.equal(failure.outcome,'failure');
+ assert.equal(failure.damage,26);assert.equal(failure.gold,0);
+ assert.equal(safe.outcome,'certain');assert.equal(safe.gold,53);
+ assert.equal(encounterOutcome(e,900,()=>0.5),null);
+});
+test('daily risk failure applies real damage without killing hero or duplicating ticket',()=>{
+ const now=Date.parse('2026-11-14T08:00:00Z');
+ const event=ENCOUNTERS.find(x=>x.id==='alien-shuttle');
+ const start=initial();start.heroHp=8;start.encounterDay=todayTW(now);start.encounterPending=event.id;
+ const fail=transition(start,{type:'encounterChoose',choice:0},()=>0.95,now);
+ assert.equal(fail.heroHp,1);
+ assert.equal(fail.skinTickets,1);
+ assert.equal(fail.encounterPending,null);
+ assert.equal(fail.last.outcome,'failure');
+ assert.equal(fail.encounterHistory[0].outcome,'failure');
+ const repeated=transition(fail,{type:'encounterChoose',choice:1},()=>0.02,now);
+ assert.equal(repeated.gold,fail.gold);
+ assert.equal(repeated.skinTickets,1);
+ assert.equal(repeated.encounterHistory.length,1);
+ assert.deepEqual(normalize(JSON.parse(JSON.stringify(fail))).encounterHistory,fail.encounterHistory);
+});
+test('winning hidden story risk earns item boosts and one ticket, safe choice does not roll',()=>{
+ const now=Date.parse('2026-11-13T05:00:00Z');
+ const event=ENCOUNTERS.find(x=>x.id==='clockwork-elevator');
+ const start=initial();start.encounterDay=todayTW(now);start.encounterPending=event.id;
+ const win=transition(start,{type:'encounterChoose',choice:0},()=>.01,now);
+ assert.equal(win.last.outcome,'success');
+ assert.equal(win.potions,3);assert.equal(win.gold,100);
+ assert.equal(win.skinTickets,1);
+ const next=transition(start,{type:'encounterChoose',choice:1},()=>{throw Error('safe story should not roll')},now);
+ assert.equal(next.potions,2);assert.equal(next.gold,42);
+ assert.equal(next.skinTickets,1);
 });
