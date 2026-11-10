@@ -125,6 +125,10 @@ test('new players encounter the two illustrated characters in floor order',()=>{
  assert.equal(enemyFor(1).typeId,'paper-gremlin');
  assert.equal(enemyFor(2).typeId,'coffee-mimic');
  assert.equal(enemyFor(10).typeId,'file-crab'); // swapped, not removed
+ assert.equal(enemyFor(3).tier,'elite');
+ assert.equal(enemyFor(4).tier,'boss');
+ assert.equal(enemyFor(5).typeId,'chair-golem'); // common security mech moved forward
+ assert.equal(enemyFor(30).typeId,'alien-intern'); // displaced species retained
 });
 test('shield enemy actually mitigates damage',()=>{
  const a=initial();
