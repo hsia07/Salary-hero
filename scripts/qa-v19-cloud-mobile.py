@@ -2,7 +2,6 @@
 """Chromium mobile end-to-end: fifth Q-version cloud ghost is a genuine 16-frame
 illustrated candidate, NOT a production promotion. Real battle & save isolated."""
 from pathlib import Path
-from base64 import b64decode
 from playwright.sync_api import sync_playwright
 
 BASE='http://127.0.0.1:8766'
@@ -43,7 +42,7 @@ def main():
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0]);assert initial==900
   page.locator('#attack').click()
   captures=page.evaluate("""()=>new Promise((resolve,reject)=>{
-   const c=document.querySelector('#world'),goals=[530,1000,1170,1330];
+   const c=document.querySelector('#world'),goals=[530,940,1150,1330];
    const results=[];let index=0;
    const stop=setTimeout(()=>reject(Error('ghost hit/clock not sampled')),8500);
    function snap(){
@@ -54,7 +53,7 @@ def main():
       peakRed:Number(c.dataset.cloudPeakRed||0),
       tinted:c.dataset.cloudTintApplied==='true',
       clock:JSON.parse(c.dataset.cloudClock||'{}'),
-      contactMs:info.contactMs,canvas:c.toDataURL('image/png').split(',')[1]});
+      contactMs:info.contactMs});
      index++;
     }
     if(index===goals.length){clearTimeout(stop);resolve(results)}
@@ -64,10 +63,10 @@ def main():
   })""")
   assert len(captures)==4,len(captures)
   hurt,windup,travel,contact=captures
-  for label,frame in zip(['hurt','windup','travel','contact'],captures):
-   (OUT/('training-cloud-deadline-'+label+'.png')).write_bytes(b64decode(frame['canvas']))
+  # Persist a real screenshot only AFTER time-sensitive measurements finish.
+  page.locator('#world').screenshot(path=str(OUT/'training-cloud-deadline-contact.png'))
   assert hurt['pose']=='hurt' and hurt['peakRed']>.3 and hurt['tinted'],{k:v for k,v in hurt.items() if k!='canvas'}
-  assert hurt['hp']==initial and windup['hp']==initial and travel['hp']==initial
+  assert hurt['hp']==initial and windup['hp']==initial and travel['hp']==initial,[(x['t'],x['hp'],x['contactMs']) for x in captures]
   assert windup['pose']=='attack'
   assert travel['clock'].get('projectile') is True,travel['clock']
   assert travel['clock'].get('travelsLeft') is True,travel['clock']
