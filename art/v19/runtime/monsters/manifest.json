@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "status": "first_illustrated_monster_integrated_pending_user_visual_approval",
+  "status": "paper_gremlin_art_user_approved_remaining_31_pending",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
   "monsters": {
     "paper-gremlin": {
       "id": "paper-gremlin",
       "approved": true,
-      "approvalScope": "user-requested in-game trial; final aesthetic approval still pending",
+      "approvalScope": "user visually accepted the revised paper-gremlin illustrated poses, projectile timing and advanced white-to-red hurt flash on 2026-11-10; independent art CI and physical iPhone Safari QA remain unresolved",
       "source": "original 16-pose illustrated transparent sprite from user's accepted candidate, cleaned and aligned",
       "states": {
         "idle": {
@@ -58,8 +58,9 @@
           ]
         }
       },
-      "notes": "V19.4: independently drawn attack/recoil frames with 48ms contact hold, white→red silhouette hurt flash, moving paper-blade projectile and delayed retaliation impact. Pending visual approval."
+      "notes": "V19.4: independently drawn attack/recoil frames with 48ms contact hold, white→red silhouette hurt flash, moving paper-blade projectile and delayed retaliation impact. Pending visual approval.",
+      "userVisualApprovalDate": "2026-11-10"
     }
   },
-  "note": "The paper-gremlin has four distinct illustrated PNG pose strips loaded automatically by the game. This is a deployed art candidate and awaits final user's visual verdict. Other 31 procedural monsters remain unapproved."
+  "note": "Paper gremlin illustrated 16-pose animation and V19.4 hit flash/attack were accepted by the user. This is 1/32 user visually accepted species, not an assertion that independent engineering/physical-device QA passed. Remaining 31 species need independent illustrated assets."
 }
