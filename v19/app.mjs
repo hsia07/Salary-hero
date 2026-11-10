@@ -10,6 +10,7 @@ import {normalVariantFor,drawNormalVariantFrame} from './monster-variants.mjs?v=
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs?v=guard-extended-red-v19-8';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
 import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS,GUARD_DEFEAT_FADE_START_MS,GUARD_DEFEAT_END_MS,guardArmorFlashAt,drawGuardArmorTint,guardCombatCaptionAt} from './guard-combat.mjs?v=armor-red-v19-12';
+import {alienCombatPoseAt,drawAlienStampFx,alienStampAt,ALIEN_STAMP_IMPACT_MS,ALIEN_DEFEAT_END_MS} from './alien-combat.mjs?v=alien-timing-v19-16';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy,primeTrainingFinisher} from './training-mode.mjs';
@@ -65,11 +66,11 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（動畫時序測試，正式美術尚未整合）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
- if(readout)readout.hidden=trainingSpecies!=='chair-golem';
+ if(readout)readout.hidden=!['chair-golem','meeting-ghost'].includes(trainingSpecies);
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 $('#training-finish')?.addEventListener('click',()=>{
@@ -320,8 +321,9 @@ function drawStage(now){
  const illustratedCaster=fx?.result?.type==='hit'&&fx?.retaliationDamage>0&&
   ((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
-   (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem')));
- const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
+   (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))||
+   (fx?.oldEnemy?.typeId==='meeting-ghost'&&trainingSpecies==='meeting-ghost'));
+ const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
  const hurtVfx=hurtPlaybackAt(now,fx?.start??now,state.speed,attackDurationMs,
@@ -411,6 +413,8 @@ function drawStage(now){
    if(enemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))return paperCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))return coffeeCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))return guardCombatPoseAt(animationMs,hitResult);
+   if(enemy?.typeId==='meeting-ghost'&&trainingSpecies==='meeting-ghost')
+     return alienCombatPoseAt(animationMs,hitResult);
    return monsterAnimationState(enemy,animationMs,hitResult);
  };
  const oldVisual=victory?visualFor(fx.oldEnemy,fx.result):null;
@@ -455,6 +459,16 @@ function drawStage(now){
    drawGuardCombatFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,reducedMotion:motionReduced,
      canRetaliate:fx.result.type==='hit'&&fx.retaliationDamage>0,
      eliteSkill:fx.result.enemySkill==='菁英反制'});
+ }
+ // Fourth species rehearsal: separate purple stamp charge, projectile and
+ // impact. The alien's actor art is NOT promoted or counted in the 3/32.
+ if(fx?.wave&&trainingSpecies==='meeting-ghost'&&fx?.oldEnemy?.typeId==='meeting-ghost'&&
+    fx.result?.type==='hit'){
+   drawAlienStampFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,
+      reducedMotion:motionReduced,canRetaliate:fx.retaliationDamage>0});
+   const stamp=alienStampAt(animationMs,fx.retaliationDamage>0);
+   world.dataset.alienStamp=JSON.stringify({elapsed:Math.floor(animationMs),
+      charge:stamp.charge,projectile:stamp.projectile,impact:stamp.impact});
  }
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
@@ -506,9 +520,10 @@ function renderCombatBars(now){
  $('#attack').disabled=!ready||attackInCooldown(now);
  const elapsed=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const caster=fx?.oldEnemy?.typeId;
- const illustrated=fx?.retaliation&&hasIllustratedMonster(caster);
- const contactMs=illustrated&&(caster==='paper-gremlin'||caster==='coffee-mimic'||caster==='chair-golem')
-   ?(caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
+ const illustrated=fx?.retaliation&&(hasIllustratedMonster(caster)||
+   (caster==='meeting-ghost'&&trainingSpecies==='meeting-ghost'));
+ const contactMs=illustrated&&['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost'].includes(caster)
+   ?(caster==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
    :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const view=visibleCombatHealthAt(state,fx,elapsed,{retaliationContactMs:contactMs});
  if(trainingWave!==null)world.dataset.hpTiming=JSON.stringify({t:Math.floor(elapsed),stateType:fx?.result?.type||null,retaliation:!!fx?.retaliation,caster,illustrated:!!illustrated,contactMs,oldHeroHp:fx?.oldHeroHp,realHeroHp:state.heroHp,visibleHeroHp:view.heroHp});
@@ -833,6 +848,19 @@ function frame(now){
     &&now-lastAttack>1450/state.speed&&(!fx||now-fx.start>=attackCooldownMs()/state.speed))attack();
   drawStage(now);
   renderCombatBars(now);
+  if(trainingSpecies==='meeting-ghost'){
+    const readout=$('#training-animation-readout');
+    if(readout){
+      const ms=fx?.wave?Math.max(0,(now-fx.start)*state.speed):Infinity;
+      const inFlight=Number.isFinite(ms)&&ms<ALIEN_DEFEAT_END_MS;
+      const activeStamp=alienStampAt(ms,fx?.retaliationDamage>0);
+      const cue=!inFlight?'待機':fx.result?.type==='victory'?'擊倒':
+        activeStamp.projectile?'印章飛行中':activeStamp.impact>0?'印章命中勇者':
+        activeStamp.charge>0?'蓄力詠唱':ms<405?'勇者出手':ms<845?'外星人受擊':'動作收招';
+      const label='🛸 第四隻時序：'+cue+'｜正式角色美術未整合';
+      if(readout.textContent!==label)readout.textContent=label;
+    }
+  }
   if(trainingSpecies==='chair-golem'){
     const readout=$('#training-animation-readout');
     if(readout){
