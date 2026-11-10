@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy} from './training-mode.mjs';
 import {initial,enemyFor,transition} from './engine.mjs';
 
-test('training only accepts exactly two illustrated combat opponents',()=>{
+test('training accepts two approved enemies and the isolated third security-mech candidate only',()=>{
  assert.equal(trainingWaveFor('paper-gremlin'),1);
  assert.equal(trainingWaveFor('coffee-mimic'),2);
- for(const invalid of ['',null,'../../secrets','chair-golem','paper-gremlin?x=1','__proto__']){
+ assert.equal(trainingWaveFor('chair-golem'),3);
+ for(const invalid of ['',null,'../../secrets','printer-minion','paper-gremlin?x=1','__proto__']){
    assert.equal(trainingWaveFor(invalid),null);
    assert.equal(trainingStateFor(invalid,initial,enemyFor),null);
  }
@@ -14,10 +15,14 @@ test('training only accepts exactly two illustrated combat opponents',()=>{
 test('safe practice starts in front of the correct illustrated enemy with auto OFF and high HP',()=>{
  const paper=trainingStateFor('paper-gremlin',initial,enemyFor);
  const coffee=trainingStateFor('coffee-mimic',initial,enemyFor);
+ const guard=trainingStateFor('chair-golem',initial,enemyFor);
  assert.equal(paper.wave,1);
  assert.equal(paper.enemy.typeId,'paper-gremlin');
  assert.equal(coffee.wave,2);
  assert.equal(coffee.enemy.typeId,'coffee-mimic');
+ assert.equal(guard.wave,3);
+ assert.equal(guard.enemy.typeId,'chair-golem');
+ assert.equal(guard.enemy.tier,'elite');
  assert.equal(coffee.auto,false);
  assert.equal(coffee.speed,1);
  assert.equal(coffee.playerName,'練習勇者');
@@ -46,5 +51,8 @@ test('victory loops back to training enemy without deleting last defeat animatio
  assert.equal(renewed.enemy.hp,126);
  assert.equal(renewed.last.type,'victory');
  assert.equal(renewed.heroHp,900);
- assert.equal(repeatTrainingEnemy(beat,'chair-golem',enemyFor),beat);
+ const preview=repeatTrainingEnemy(beat,'chair-golem',enemyFor);
+ assert.equal(preview.enemy.typeId,'chair-golem');
+ assert.equal(preview.wave,3);
+ assert.equal(repeatTrainingEnemy(beat,'printer-minion',enemyFor),beat);
 });
