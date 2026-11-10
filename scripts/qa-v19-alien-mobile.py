@@ -25,16 +25,16 @@ def main():
   assert '星際打卡實習生' in page.locator('#enemy-name').inner_text()
   assert '第 50 關' in page.locator('#wave').inner_text()
   assert 'OFF' in page.locator('#auto').inner_text()
-  assert '3/32' in page.locator('#monster-art-status').inner_text()
-  assert '朝左・16 格逐格候選' in page.locator('#training-mode-notice').inner_text()
+  assert '4/32' in page.locator('#monster-art-status').inner_text()
+  assert '正式 16 格逐格美術・面向左' in page.locator('#training-mode-notice').inner_text()
   page.wait_for_function("""() => {
     const w=document.querySelector('#world'),label=document.querySelector('#monster-art-status');
     return w?.dataset.alienArt==='16-frames-loaded'&&w?.dataset.alienFacing==='left'&&
-           label?.dataset.candidate==='true'&&label.textContent.includes('3/32');
+           label?.dataset.approved==='true'&&label.textContent.includes('4/32');
   }""",timeout=20000)
   dimensions=page.evaluate("""async()=>{
     const r={};for(const [state,frames] of Object.entries({idle:4,attack:5,hurt:3,defeat:4})){
-      const image=new Image();image.src='../art/v19/candidates/monsters/meeting-ghost/'+state+'.webp';
+      const image=new Image();image.src='../art/v19/runtime/monsters/meeting-ghost/'+state+'.webp';
       await image.decode();r[state]=[image.naturalWidth,image.naturalHeight];
     }return r;
   }""")
@@ -91,6 +91,6 @@ def main():
   assert page.evaluate('(k)=>localStorage.getItem(k)',KEY)=='ORIGINAL_SAVE_UNCHANGED'
   page.locator('#world').screenshot(path=str(OUT/'training-fourth-alien-left-facing.png'))
   browser.close()
- print('PASS: alien practice wave 50, 1215ms projectile impact, delayed displayed HP, repeat finisher and unchanged official save. Candidate 16-frame image staged and left-facing; not officially approved.')
+ print('PASS: alien practice wave 50, 1215ms projectile impact, delayed displayed HP, repeat finisher and unchanged official save. Now official fourth 16-frame illustrated alien, visual acceptance recorded.')
 
 if __name__=='__main__':main()
