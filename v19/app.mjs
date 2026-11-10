@@ -258,7 +258,7 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
          // Browser QA reports what the player ACTUALLY sees, not a guessed timer.
          world.dataset.guardPose=visual?.state||'idle';
          world.dataset.guardFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
-         const visualFlash=paperHitFlashAt(combatMs,{reducedMotion:motionReduced});
+         const visualFlash=paperHitFlashAt(combatMs,{reducedMotion:motionReduced,extendedRed:true});
          world.dataset.guardFlash=JSON.stringify(visualFlash);
          world.dataset.guardPeakRed=String(Math.max(Number(world.dataset.guardPeakRed)||0,visualFlash.red));
        }
@@ -267,7 +267,7 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
        if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem')&&(visual?.state==='hurt'||visual?.state==='defeat')){
          const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
          drawPaperHitTint(ctx,image,frame,frameIndex,
-           {x:frameX,y:frameY,w:displaySize,h:displaySize},combatMs,{reducedMotion:motionReduced});
+           {x:frameX,y:frameY,w:displaySize,h:displaySize},combatMs,{reducedMotion:motionReduced,extendedRed:enemy.typeId==='chair-golem'});
        }
        return;
      }
