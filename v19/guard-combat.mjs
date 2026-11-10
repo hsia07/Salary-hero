@@ -2,20 +2,22 @@
  * Anatomy always comes from 16 independently illustrated WebP poses.
  * Detatched scan beams, hazard-bar swing trail, and impact sparks are FX,
  * not fake whole-body scale/jitter/rotation.
- * Elite special-skill FIVE unique illustrated poses have NOT been approved yet.
+ * This is a normal-tier monster (guard trait), NOT an elite that needs special poses.
  */
 export const GUARD_HERO_HIT_MS=405;
 export const GUARD_ATTACK_START_MS=805;
 export const GUARD_BEAM_LAUNCH_MS=1080;
 export const GUARD_BEAM_IMPACT_MS=1160;
 export const GUARD_ATTACK_END_MS=1455;
+export const GUARD_DEFEAT_FADE_START_MS=1280;
+export const GUARD_DEFEAT_END_MS=1550;
 export const GUARD_ATTACK_POSE_MS=Object.freeze([145,155,75,115,160]);
 const clamp=(n,min=0,max=1)=>Math.max(min,Math.min(max,n));
 export function guardCombatPoseAt(elapsed,result){
  const t=Number(elapsed);
  if(!result||!Number.isFinite(t)||t<0)return {state:'idle',progress:0};
- if(result.type==='victory')return t>=GUARD_HERO_HIT_MS&&t<1190
-  ?{state:'defeat',progress:clamp((t-GUARD_HERO_HIT_MS)/785)}:{state:'idle',progress:0};
+ if(result.type==='victory')return t>=GUARD_HERO_HIT_MS&&t<GUARD_DEFEAT_END_MS
+  ?{state:'defeat',progress:clamp((t-GUARD_HERO_HIT_MS)/895)}:{state:'idle',progress:0};
  if(result.type!=='hit')return {state:'idle',progress:0};
  if(t>=GUARD_HERO_HIT_MS&&t<GUARD_ATTACK_START_MS)
   return {state:'hurt',progress:clamp((t-GUARD_HERO_HIT_MS)/400)};
