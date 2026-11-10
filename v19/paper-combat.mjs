@@ -22,13 +22,21 @@ export function paperCombatPoseAt(elapsed,hitResult){
   return {state:'attack',progress:clamp((t-PAPER_RETALIATE_START_MS)/PAPER_ATTACK_POSE_MS.reduce((a,b)=>a+b,0))};
  return {state:'idle',progress:0};
 }
-export function paperHitFlashAt(elapsed,{reducedMotion=false}={}){
+export function paperHitFlashAt(elapsed,{reducedMotion=false,extendedRed=false}={}){
  const t=Number(elapsed)-PAPER_HERO_HIT_MS;
  if(!Number.isFinite(t)||t<0||t>245)return {white:0,red:0,burst:0,hitStop:false};
  let white=0,red=0;
  if(t<35)white=.82*(1-t/35);
- if(t>=35&&t<115)red=.86*(1-(t-35)/80*.32);
- if(t>=153&&t<203)red=.50*(1-(t-153)/50);
+ if(extendedRed){
+  // Mechanical armor stays clearly scarlet across low-FPS mobile frames:
+  // 135ms strong pulse followed by a 55ms smooth recoil fade. Only used by
+  // the SECURITY MECH; approved paper and coffee timing is unchanged.
+  if(t>=35&&t<170)red=.88-.32*((t-35)/135);
+  if(t>=170&&t<225)red=.56*(1-(t-170)/55);
+ }else{
+  if(t>=35&&t<115)red=.86*(1-(t-35)/80*.32);
+  if(t>=153&&t<203)red=.50*(1-(t-153)/50);
+ }
  return {white:reducedMotion?white*.45:white,red:reducedMotion?red*.45:red,
   burst:reducedMotion?0:clamp(1-t/155),hitStop:t<48};
 }
