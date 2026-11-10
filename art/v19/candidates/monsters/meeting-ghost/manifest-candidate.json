@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "id": "meeting-ghost",
+  "name": "星際打卡實習生",
+  "tier": "normal",
+  "approved": false,
+  "previewOnly": true,
+  "userVisualApproval": "PENDING",
+  "facing": "left",
+  "target": "hero-on-left",
+  "candidateQuality": "low-resolution original-art rehearsal, not official 4/32",
+  "artStyle": "evil purple chibi Japanese RPG alien office intern; crooked tie, glowing antennae, tentacles, suspicious grin; independently illustrated original poses, not a recolored cup",
+  "states": {
+    "idle": {
+      "src": "../art/v19/candidates/monsters/meeting-ghost/idle.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        240,
+        190,
+        245,
+        160
+      ],
+      "sha256": "9dd3074f148f4da72e627199a4bbf93dabc6355a84e453de35c8c3398606b2f3"
+    },
+    "attack": {
+      "src": "../art/v19/candidates/monsters/meeting-ghost/attack.webp",
+      "frames": 5,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        130,
+        150,
+        90,
+        140,
+        165
+      ],
+      "sha256": "65d57b939ec9fb70af324ad84d09f3178541225d59928a360cf21d6e13fa1c41"
+    },
+    "hurt": {
+      "src": "../art/v19/candidates/monsters/meeting-ghost/hurt.webp",
+      "frames": 3,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        95,
+        135,
+        210
+      ],
+      "sha256": "2d0f1e9b4028259b2bd1bdb35e46adb8f31f43e4b8eb75bbb1917bd93c359ac2"
+    },
+    "defeat": {
+      "src": "../art/v19/candidates/monsters/meeting-ghost/defeat.webp",
+      "frames": 4,
+      "cell": 384,
+      "ground_y": 342,
+      "durations": [
+        180,
+        220,
+        250,
+        390
+      ],
+      "sha256": "dd4a1270a057dc3ea0e355a001204c6bda9938b640da281067dc5e02634a95cb"
+    }
+  },
+  "correction": "2026-11-10 each individual source image cell was horizontally reoriented so the monster's striking arm, tentacles, stamps and landing all face the hero on the LEFT. Original frame order kept. Spell origin and hit route are in world space, move from right enemy to left hero.",
+  "approvalNotes": "Temporary 16-drawing art candidate has legible attack/hurt/defeat in mobile preview but low native resolution and some source effect clipping; not production-approved."
+}
