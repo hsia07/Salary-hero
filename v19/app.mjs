@@ -362,7 +362,8 @@ function drawStage(now){
  }
  // Party pet is independently animated, not baked into the background.
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
- const victory=fx?.result?.type==='victory'&&animationMs<1100;
+ const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem');
+ const victory=fx?.result?.type==='victory'&&animationMs<(guardVictoryHold?GUARD_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
    (victory&&hasIllustratedMonster(fx?.oldEnemy?.typeId));
@@ -371,7 +372,7 @@ function drawStage(now){
  const enemyY=248+(illustratedPaperInScene?0:Math.sin(time*2)*5);
  // The defeated actor plays its own disintegration, while the next species
  // materializes in the SAME slot with no empty frame between waves.
- const guardShattering=victory&&fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem');
+ const guardShattering=victory&&guardVictoryHold;
  const enteringNew=victory
    ?Math.max(0,Math.min(1,(animationMs-(guardShattering?GUARD_DEFEAT_FADE_START_MS:900))/(guardShattering?GUARD_DEFEAT_END_MS-GUARD_DEFEAT_FADE_START_MS:200)))
    :1;
