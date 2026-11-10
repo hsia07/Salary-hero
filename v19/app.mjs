@@ -8,6 +8,7 @@ import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-m
 import {validateMonsterAtlasManifest,validateSpritePixels,inspectAtlasFrameArt,drawMonsterAtlasFrame,spriteFrameIndex} from './sprite-atlas.mjs';
 import {paperCombatPoseAt,paperHitFlashAt,drawPaperHitTint,drawPaperCombatFx,PAPER_PROJECTILE_IMPACT_MS} from './paper-combat.mjs';
 import {coffeeCombatPoseAt,drawCoffeeCombatFx,COFFEE_SPRAY_IMPACT_MS} from './coffee-combat.mjs';
+import {guardCombatPoseAt,drawGuardCombatFx,GUARD_BEAM_IMPACT_MS} from './guard-combat.mjs';
 import {CHIBI_HURT_TOTAL_MS,hurtFrameAt,validateHurtAtlas,shouldRecoil} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,HIT_SPARK_COUNT,hurtPlaybackAt} from './hurt-effects.mjs';
 import {trainingWaveFor,trainingStateFor,repeatTrainingEnemy} from './training-mode.mjs';
@@ -59,12 +60,41 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（美術候選）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 let approvedMonsterArt=new Map();
+let trainingCandidateArt=new Map();
+const hasIllustratedMonster=(id)=>approvedMonsterArt.has(id)||trainingCandidateArt.has(id);
+async function loadTrainingCandidateArt(){
+ // This 16-pose elite sprite may ONLY appear under the explicit, save-isolated
+ // training URL. It is NOT in the approved 2/32 production monster manifest.
+ if(trainingSpecies!=='chair-golem')return;
+ const url=new URL('../art/v19/candidates/monsters/chair-golem/manifest-candidate.json?v=security-20261110',import.meta.url);
+ const candidate=await fetch(url).then(r=>{if(!r.ok)throw new Error('security candidate manifest HTTP '+r.status);return r.json()});
+ if(candidate.id!=='chair-golem'||candidate.approved!==false||candidate.previewOnly!==true)
+   throw new Error('Candidate safety check failed: not a genuine unapproved training-only monster');
+ const frames={};
+ for(const state of ['idle','attack','hurt','defeat']){
+   const frame=candidate.states?.[state];
+   if(!frame||frame.cell!==384||!frame.src.includes('/candidates/monsters/chair-golem/'))
+     throw new Error('Invalid security-mech candidate path/atlas for '+state);
+   const image=await imageFrom(frame.src);
+   const size=validateSpritePixels(image,frame);
+   if(!size.ok)throw new Error('Bad security-mech '+state+': '+size.reason);
+   const artErrors=inspectAtlasFrameArt(image,frame,state);
+   if(artErrors.length)throw new Error('Unusable security-mech '+state+': '+artErrors.join('; '));
+   frames[state]={image,frame};
+ }
+ trainingCandidateArt.set('chair-golem',frames);
+ const status=$('#monster-art-status');
+ if(status){
+   status.dataset.candidate='true';
+   status.textContent='🧪 已載入打卡保全機兵 16 格候選美術（可實戰，未正式核准）；紙妖與杯靈維持正式 2／32。菁英專屬技能 5 格美術仍待製作。';
+ }
+}
 async function loadApprovedMonsterArt(){
  const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=evil-coffee-v19-5-20261110',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
@@ -198,7 +228,7 @@ function drawWeapon(x,y,t){
  *  illustrated monster silhouette when they have no dedicated sprite yet. */
 // 32 real monster actors: per-species anatomy/poses, not shared emoji bodies.
 function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity){
- const illustrated=approvedMonsterArt.get(enemy.typeId);
+ const illustrated=approvedMonsterArt.get(enemy.typeId)||trainingCandidateArt.get(enemy.typeId);
  if(illustrated){
    const pose=illustrated[visual?.state]||illustrated.idle;
    if(pose){
@@ -216,7 +246,7 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle')){
        // Alpha-masked, silhouette-perfect white → scarlet → fade. Only on an
        // actual hit/defeat; never tint the entire arena or the idle actor.
-       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic')&&(visual?.state==='hurt'||visual?.state==='defeat')){
+       if((enemy.typeId==='paper-gremlin'||enemy.typeId==='coffee-mimic'||enemy.typeId==='chair-golem')&&(visual?.state==='hurt'||visual?.state==='defeat')){
          const frameIndex=spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle');
          drawPaperHitTint(ctx,image,frame,frameIndex,
            {x:frameX,y:frameY,w:displaySize,h:displaySize},combatMs,{reducedMotion:motionReduced});
@@ -246,8 +276,9 @@ function drawStage(now){
  // hero reacts. Damage is computed by the engine; only the feedback is delayed.
  const illustratedCaster=fx?.result?.type==='hit'&&fx?.retaliationDamage>0&&
   ((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
-   (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic')));
- const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
+   (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
+   (fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem')));
+ const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
  const hurtVfx=hurtPlaybackAt(now,fx?.start??now,state.speed,attackDurationMs,
@@ -319,8 +350,8 @@ function drawStage(now){
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const victory=fx?.result?.type==='victory'&&animationMs<1100;
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
- const illustratedPaperInScene=approvedMonsterArt.has(state.enemy?.typeId)||
-   (victory&&approvedMonsterArt.has(fx?.oldEnemy?.typeId));
+ const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
+   (victory&&hasIllustratedMonster(fx?.oldEnemy?.typeId));
  // No rigid-body bobble/shake on approved, separately illustrated poses.
  const enemyX=458+(illustratedPaperInScene?0:Math.sin(time*1.75)*4)+(attacking&&hitWindow&&!illustratedPaperInScene?Math.sin(now/22)*7:0);
  const enemyY=248+(illustratedPaperInScene?0:Math.sin(time*2)*5);
@@ -332,6 +363,7 @@ function drawStage(now){
    const hitResult=result?{...result,retaliationDamage:fx?.retaliationDamage||0}:null;
    if(enemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))return paperCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))return coffeeCombatPoseAt(animationMs,hitResult);
+   if(enemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))return guardCombatPoseAt(animationMs,hitResult);
    return monsterAnimationState(enemy,animationMs,hitResult);
  };
  const oldVisual=victory?visualFor(fx.oldEnemy,fx.result):null;
@@ -343,12 +375,12 @@ function drawStage(now){
    const pivotY=enemy.boss?129:enemy.tier==='elite'?124:120;
    ctx.save();ctx.globalAlpha=alpha;
    ctx.translate(enemyX+pivotX,enemyY+pivotY);
-   const hasIndividualArt=approvedMonsterArt.has(enemy.typeId);
+   const hasIndividualArt=hasIllustratedMonster(enemy.typeId);
    if(!hasIndividualArt)ctx.rotate(Math.sin(time*1.1)*.018);
    ctx.translate(-pivotX,-pivotY);
    paintEnemy(enemy,now,visual,animationMs);
    ctx.restore();
-   if(visual?.state!=='idle'&&visual?.state&&!approvedMonsterArt.has(enemy?.typeId)){
+   if(visual?.state!=='idle'&&visual?.state&&!hasIllustratedMonster(enemy?.typeId)){
      ctx.save();ctx.globalAlpha=alpha;
      drawMonsterVfx(ctx,enemy,visual.state,visual.progress,
        {enemyX,enemyY,heroX:heroX+70,heroY:heroY+110,now});
@@ -370,6 +402,12 @@ function drawStage(now){
     (fx.result?.type==='hit'||fx.result?.type==='victory')){
    drawCoffeeCombatFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,reducedMotion:motionReduced,
      canRetaliate:fx.result.type==='hit'&&fx.retaliationDamage>0});
+ }
+ if(fx?.wave&&trainingCandidateArt.has('chair-golem')&&fx?.oldEnemy?.typeId==='chair-golem'&&
+    (fx.result?.type==='hit'||fx.result?.type==='victory')){
+   drawGuardCombatFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,reducedMotion:motionReduced,
+     canRetaliate:fx.result.type==='hit'&&fx.retaliationDamage>0,
+     eliteSkill:fx.result.enemySkill==='菁英反制'});
  }
  const slashActive=attacking&&(chibiV2Ready?(animationMs>=345&&animationMs<550):(phase>.17&&phase<.55));
  const impactActive=attacking&&(chibiV2Ready?(animationMs>=405&&animationMs<600):(phase>.27&&phase<.68));
@@ -417,9 +455,9 @@ let lastCombatBarKey='';
 function renderCombatBars(now){
  const elapsed=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const caster=fx?.oldEnemy?.typeId;
- const illustrated=fx?.retaliation&&approvedMonsterArt.has(caster);
- const contactMs=illustrated&&(caster==='paper-gremlin'||caster==='coffee-mimic')
-   ?(caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
+ const illustrated=fx?.retaliation&&hasIllustratedMonster(caster);
+ const contactMs=illustrated&&(caster==='paper-gremlin'||caster==='coffee-mimic'||caster==='chair-golem')
+   ?(caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
    :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const view=visibleCombatHealthAt(state,fx,elapsed,{retaliationContactMs:contactMs});
  if(trainingWave!==null)world.dataset.hpTiming=JSON.stringify({t:Math.floor(elapsed),stateType:fx?.result?.type||null,retaliation:!!fx?.retaliation,caster,illustrated:!!illustrated,contactMs,oldHeroHp:fx?.oldHeroHp,realHeroHp:state.heroHp,visibleHeroHp:view.heroHp});
@@ -579,8 +617,9 @@ world.addEventListener('pointerup',e=>{
 function attackCooldownMs(){
  const base=chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680;
  if(fx?.retaliation&&((fx?.oldEnemy?.typeId==='paper-gremlin'&&approvedMonsterArt.has('paper-gremlin'))||
-   (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))))
-   return PAPER_PROJECTILE_IMPACT_MS+HIT_FEEDBACK_MS+70;
+   (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
+   (fx?.oldEnemy?.typeId==='chair-golem'&&trainingCandidateArt.has('chair-golem'))))
+   return (fx.oldEnemy.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)+HIT_FEEDBACK_MS+70;
  return base+(fx?.retaliation?HIT_FEEDBACK_MS:0);
 }
 function attack(){
@@ -749,10 +788,10 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    initChibiV2Lab();
  }
  render();
- loadApprovedMonsterArt().catch(err=>{
-   console.warn('正式怪物逐格素材載入失敗，保留工程替身：',err);
+ loadApprovedMonsterArt().then(()=>loadTrainingCandidateArt()).catch(err=>{
+   console.warn('正式或候選怪物逐格素材載入失敗，保留工程替身：',err);
    const notice=$('#monster-art-status');
-   if(notice)notice.textContent='⚠️ 怪物正式美術尚未可用，現正顯示未核准工程替身。';
+   if(notice)notice.textContent='⚠️ 怪物圖片未成功載入：'+String(err.message||err)+'。目前只顯示工程替身。';
  });
 }).catch(err=>{
  failure=String(err.message||err);$('#game-log').textContent='❌ 動態遊戲素材載入失敗：'+failure+'。請確認網頁是透過 HTTP(S) 開啟。';
