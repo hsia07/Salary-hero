@@ -24,11 +24,11 @@ button.active{border:2px solid #ffe2a1;background:linear-gradient(#a96485,#61365
 .thumbs canvas{width:100%;aspect-ratio:1/1;background:radial-gradient(#493159,#22182e);border:1px solid #6d5577;border-radius:8px}
 a{color:#ffd49e}footer{font-size:12px;color:#b8a7c8}
 </style></head><body><main>
-<header><div><h1>☁️ 雲端資料專員靈</h1><p>第 5 隻普通怪 · 面向左邊勇者 · 16 格透明候選</p></div><span class="tag">美術待驗收 · 正式 3／32</span></header>
+<header><div><h1>☁️ 雲端資料專員靈</h1><p>第 5 隻普通怪 · 面向左邊勇者 · 16 格正式動畫</p></div><span class="tag">正式美術 · 已完成 5／32</span></header>
 <div class="scene"><canvas id="arena" width="720" height="440" aria-label="雲端資料專員靈從右側向左側施放時鐘魔法"></canvas>
 <div class="controls"><button data-state="idle" class="active">待機 4 格</button><button data-state="attack">時鐘攻擊 5 格</button><button data-state="hurt">受擊紅閃 3 格</button><button data-state="defeat">消散死亡 4 格</button></div>
 <div id="status">載入逐格圖集……</div></div>
-<div class="note"><b>真正的角色圖集，不是功能面板。</b><p>使用已清除透明雜訊的原創圖，顯示不同手部、頭部、文件、時鐘、受擊與消散姿勢。時鐘由右向左飛往勇者；獨立練習不會變動你的遊戲進度。這是普通怪候選，未正式核准。</p></div>
+<div class="note"><b>真正的角色圖集，不是功能面板。</b><p>使用已清除透明雜訊的原創圖，顯示不同手部、頭部、文件、時鐘、受擊與消散姿勢。時鐘由右向左飛往勇者；獨立練習不會變動你的遊戲進度。這是經玩家核准的正式第五隻普通怪。</p></div>
 <section class="preview-rows" id="rows"></section>
 <p><a href="./play.html?training=deadline-clock">⚔️ 開啟第 6 關｜真正的戰鬥練習（不修改存檔）</a></p>
 <footer>動畫以四份透明 WebP 串接，所有 16 格都會逐格呈現。尚未通過玩家正式美術核准。</footer>
@@ -75,10 +75,11 @@ function render(t){
 }
 const loadImage=url=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=url;});
 async function load(){
- const base='../art/v19/candidates/monsters/deadline-clock/';
- const r=await fetch(base+'manifest-candidate.json');if(!r.ok)throw Error('manifest HTTP '+r.status);
+ const base='../art/v19/runtime/monsters/deadline-clock/';
+ const r=await fetch('../art/v19/runtime/monsters/manifest.json?trial=approved-fifth-v19-20');if(!r.ok)throw Error('official manifest HTTP '+r.status);
  manifest=await r.json();
- if(manifest.id!=='deadline-clock'||manifest.approved!==false)throw Error('這不是第五隻候選');
+ if(!manifest.monsters?.['deadline-clock']?.approved)throw Error('第五隻正式素材尚未核准');
+ manifest=manifest.monsters['deadline-clock'];
  for(const state of ['idle','attack','hurt','defeat']){
   const record=manifest.states[state],img=await loadImage(base+state+'.webp');
   if(img.naturalWidth!==384*record.frames||img.naturalHeight!==384)throw Error('不合格畫格 '+state);
@@ -96,7 +97,7 @@ async function load(){
   row.appendChild(group);rows.appendChild(row);
  }
  try{hero=await loadImage('../art/v19/candidates/characters/starter/chibi/idle-candidate.webp')}catch{}
- status.textContent='已載入完整 16 格透明候選，點擊任一動作試播。';
+ status.textContent='已載入完整 16 格正式動畫，點擊任一動作試播。';
 }
 load().catch(e=>{status.textContent='素材載入失敗：'+e.message;console.error(e)});
 requestAnimationFrame(render);

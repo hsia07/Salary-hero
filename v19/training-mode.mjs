@@ -1,5 +1,5 @@
 /** Salary Hero V19 — ephemeral art/battle rehearsal.
- * No mutation of the player's actual save. Three approved species and the fourth alien timing-only candidate
+ * No mutation of the player's actual save. Five approved illustrated species
  * can be opened; query values never select arbitrary species or files.
  */
 const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2,'chair-golem':5,'meeting-ghost':50,'deadline-clock':6});
