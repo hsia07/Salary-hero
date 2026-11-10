@@ -36,11 +36,18 @@ def test_species(page,species,expected_name,expected_wave):
     }""",species)
     assert frames==[1600,320],f'actual animation pixels missing {species}: {frames}'
     page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-idle.png')))
+    hp_before=int(page.locator('#hero-hp-text').inner_text().split('/')[0])
+    assert hp_before==900
     page.locator('#attack').click()
     page.wait_for_timeout(520)
     page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hero-hit.png')))
+    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'premature HP loss before projectile flies'
     page.wait_for_timeout(610)
     page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-counterattack.png')))
+    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'HP changed before coffee/paper projectile contact'
+    page.wait_for_timeout(180)
+    page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hurt-red-flash.png')))
+    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])<hp_before, 'visible HP should change AFTER projectile impact'
     assert page.evaluate('(key)=>localStorage.getItem(key)',SAVE_KEY)=='UNCHANGED_REAL_PLAYER_SAVE'
 
 def main():
