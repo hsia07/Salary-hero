@@ -14,12 +14,14 @@ function atFloor(state,floor,now){
  return {...state,wave:floor,modeWaves:{...state.modeWaves,dungeon:floor},
   enemy:loopEnemyFor(floor,'dungeon',now)};
 }
-test('seven different dungeons rotate in Taiwanese weekday order',()=>{
- assert.equal(DAILY_DUNGEONS.length,7);
- assert.equal(new Set(DAILY_DUNGEONS.map(x=>x.id)).size,7);
+test('six dungeons: five weekdays plus ONE shared Saturday/Sunday dungeon',()=>{
+ assert.equal(DAILY_DUNGEONS.length,7); // weekday lookup slots, not 7 distinct dungeons
+ assert.equal(new Set(DAILY_DUNGEONS.map(x=>x.id)).size,6);
  assert.equal(dailyDungeonFor(MON).id,'monday-hell');
  assert.equal(dailyDungeonFor(FRI).id,'friday-escape');
- assert.equal(dailyDungeonFor(SAT).id,'saturday-lazy');
+ assert.equal(dailyDungeonFor(SAT).id,'weekend-chaos');
+ assert.equal(dailyDungeonFor(date('2026-11-15T08:00:00Z')).id,'weekend-chaos');
+ assert.strictEqual(DAILY_DUNGEONS[0],DAILY_DUNGEONS[6]);
  assert.equal(dailyDungeonFor(date('2026-11-12T15:59:59Z')).weekday,4);
  assert.equal(dailyDungeonFor(date('2026-11-12T16:00:00Z')).weekday,5);
 });
@@ -90,7 +92,7 @@ test('Taiwan midnight resets daily only, preserves salary-independent inventory 
  s.gold=350;s.gems=8;s.modeWaves.campaign=9;s.modeWaves.tower=13;
  s=transition(s,'refreshDungeon',()=>.99,SAT);
  assert.equal(s.wave,1);
- assert.equal(s.enemy.dungeonId,'saturday-lazy');
+ assert.equal(s.enemy.dungeonId,'weekend-chaos');
  assert.equal(s.gold,350);assert.equal(s.gems,8);
  assert.equal(s.modeWaves.campaign,9);assert.equal(s.modeWaves.tower,13);
  assert.equal(s.dailyDungeonDay,todayTW(SAT));
