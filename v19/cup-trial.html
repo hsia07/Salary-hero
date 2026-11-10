@@ -1,0 +1,57 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>薪水勇者｜茶水間實習杯靈・逐格審圖</title>
+<style>:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#fce9cc;background:#141021}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#422b3f,#161022 70%);padding:18px}main{max-width:760px;margin:auto}a{color:#f8d596}h1{font-size:23px;line-height:1.35;margin:14px 0 10px}p{font-size:14px;line-height:1.6;color:#d4c4d5}.scene{border:1px solid #a1828c;border-radius:14px;padding:10px;margin-top:14px;background:#2c2036}canvas{width:100%;height:auto;display:block;aspect-ratio:720/420;border-radius:8px}button{font:700 13px system-ui;background:linear-gradient(#7b505b,#513046);color:#ffe9cb;border:1px solid #cba37e;border-radius:9px;padding:10px 12px;margin:4px 3px 2px 0;cursor:pointer}button[disabled]{opacity:.45}button[aria-pressed=true]{background:linear-gradient(#d59156,#925765);color:#301f2c}.note{font-size:12px;line-height:1.5;color:#c2b3cb}#status{min-height:22px}h2{font-size:15px;margin:10px 0 4px}</style></head>
+<body><main><a href="./play.html">返回《薪水勇者》主遊戲</a><h1>☕ 茶水間實習杯靈・16 張動作候選</h1>
+<p>全新獨立 Q 版角色：杯身、咖啡、手腳與工牌都有真實畫稿。直接線上試播，不用下載或上傳圖片。</p>
+<div class="scene"><canvas id="stage" width="720" height="420" aria-label="茶水間實習杯靈動作預覽"></canvas>
+<div id="controls"><button data-state="idle" disabled>待機 · 4 格</button><button data-state="attack" disabled>潑灑攻擊 · 5 格</button><button data-state="hurt" disabled>受傷紅閃 · 3 格</button><button data-state="defeat" disabled>碎裂死亡 · 4 格</button><button id="sequence" disabled>▶ 完整連播</button></div>
+<p id="status" role="status">正在讀取 4 組真正的透明 PNG 動畫……</p>
+</div><h2>目前驗收狀態：候選美術（未計入正式 2/32）</h2><p class="note">動作數量與透明度已經過初步檢查。攻擊中有一張姿勢略靠畫格邊緣，仍需要實際審看是否自然；尚未把這一隻宣稱為正式完成。</p>
+<script type="module">
+import {drawPaperHitTint,PAPER_HERO_HIT_MS} from './paper-combat.mjs';
+const settings={
+ idle:{n:4,d:[250,150,220,180]},attack:{n:5,d:[150,130,90,120,190]},
+ hurt:{n:3,d:[95,155,190]},defeat:{n:4,d:[190,210,220,400]}
+};
+const files={},canvas=document.querySelector('#stage'),ctx=canvas.getContext('2d'),status=document.querySelector('#status');
+let mode='idle',started=performance.now(),sequence=false,sequenceStart=0,loaded=false;
+const sum=a=>a.reduce((x,y)=>x+y,0),order=['idle','attack','hurt','defeat'];
+function choose(key){mode=key;started=performance.now();for(const b of document.querySelectorAll('[data-state]'))b.setAttribute('aria-pressed',String(b.dataset.state===key));}
+document.querySelectorAll('[data-state]').forEach(b=>b.onclick=()=>{sequence=false;choose(b.dataset.state);});
+document.querySelector('#sequence').onclick=()=>{sequence=true;sequenceStart=performance.now();choose('idle');};
+function whichIndex(ds,age,loop){let t=loop?age%sum(ds):Math.min(Math.max(0,age),sum(ds)-.01);for(let i=0;i<ds.length;i++){if(t<ds[i])return i;t-=ds[i];}return ds.length-1;}
+function render(now){
+ ctx.clearRect(0,0,720,420);
+ const g=ctx.createLinearGradient(0,0,0,420);g.addColorStop(0,'#4a3448');g.addColorStop(1,'#22192d');ctx.fillStyle=g;ctx.fillRect(0,0,720,420);
+ ctx.fillStyle='#6e4540';ctx.fillRect(0,368,720,52);
+ ctx.fillStyle='#2f1e31';ctx.beginPath();ctx.ellipse(360,369,160,21,0,0,6.283);ctx.fill();
+ ctx.textAlign='center';ctx.font='bold 14px system-ui';ctx.fillStyle='#ebcdaa';
+ ctx.fillText('TEA ROOM · LV.1',358,32);
+ if(loaded){
+  let key=mode,elapsed=now-started;
+  if(sequence){
+   let t=Math.min(now-sequenceStart,order.reduce((a,k)=>a+sum(settings[k].d),0)-.01);
+   for(const k of order){if(t<sum(settings[k].d)){key=k;elapsed=t;break;}t-=sum(settings[k].d);}
+   if(now-sequenceStart>=order.reduce((a,k)=>a+sum(settings[k].d),0)){sequence=false;choose('defeat');key='defeat';elapsed=sum(settings.defeat.d);}
+  }else if(elapsed>=sum(settings[key].d)&&key!=='idle'&&key!=='defeat'){choose('idle');key='idle';elapsed=0;}
+  const frame=whichIndex(settings[key].d,elapsed,key==='idle'&&!sequence);
+  const image=files[key],rect={x:203,y:59,w:320,h:320};
+  ctx.save();ctx.translate(rect.x+rect.w,0);ctx.scale(-1,1);
+  ctx.drawImage(image,frame*320,0,320,320,0,rect.y,rect.w,rect.h);
+  if(key==='hurt')drawPaperHitTint(ctx,image,{cell:320},frame,{x:0,y:rect.y,w:320,h:320},PAPER_HERO_HIT_MS+elapsed);
+  ctx.restore();
+  const names={idle:'待機',attack:'咖啡攻擊',hurt:'受擊紅閃',defeat:'杯身碎裂'};
+  ctx.fillStyle='#ffdfbd';ctx.textAlign='right';ctx.font='bold 16px system-ui';
+  ctx.fillText(names[key]+'　'+(frame+1)+' / '+settings[key].n,695,400);
+ }else{
+  ctx.fillStyle='#fff0cf';ctx.font='20px system-ui';ctx.fillText('正在載入角色畫格',360,200);
+ }
+ requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+Promise.all(order.map(key=>new Promise((resolve,reject)=>{
+ const img=new Image();img.onload=()=>{if(img.naturalWidth!==settings[key].n*320||img.naturalHeight!==320)return reject(Error(key+' 圖集尺寸錯誤'));files[key]=img;resolve();};
+ img.onerror=()=>reject(Error(key+' 圖片載入失敗'));
+ img.src='../art/v19/candidates/monsters/coffee-mimic/'+key+'.png?v=f4bcebd-20261110';
+}))).then(()=>{loaded=true;document.querySelectorAll('button').forEach(b=>b.disabled=false);status.textContent='✓ 16 張真正的透明動作畫格載入成功。點擊攻擊、受傷、死亡即可試播。';})
+.catch(e=>{status.textContent='⚠ '+e.message;console.error(e)});
+</script></main></body></html>
