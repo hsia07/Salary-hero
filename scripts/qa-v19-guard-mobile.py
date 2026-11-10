@@ -90,6 +90,7 @@ def main():
           samples.push({
             point:stages[i][0],t:timing.t,pose:c.dataset.guardPose,
             frame:Number(c.dataset.guardFrame),flash:JSON.parse(c.dataset.guardFlash||'{}'),
+            peakRed:Number(c.dataset.guardPeakRed||0),
             image:c.toDataURL('image/png').split(',')[1]
           });
           i++;
@@ -104,9 +105,9 @@ def main():
   for snap in finish:
     (DEST/('training-chair-golem-'+snap['point']+'.png')).write_bytes(b64decode(snap['image']))
   red,final_pose,held=finish
-  assert red['pose']=='defeat' and red['flash']['red']>0.3,red
-  assert final_pose['pose']=='defeat' and final_pose['frame']==3,final_pose
-  assert held['pose']=='defeat' and held['frame']==3,held
+  assert red['pose']=='defeat' and red['peakRed']>0.3, {k:v for k,v in red.items() if k!='image'}
+  assert final_pose['pose']=='defeat' and final_pose['frame']==3,{k:v for k,v in final_pose.items() if k!='image'}
+  assert held['pose']=='defeat' and held['frame']==3,{k:v for k,v in held.items() if k!='image'}
   assert '第 5 關' in page.locator('#wave').inner_text()
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='TRUE_PLAYER_SAVE_UNCHANGED'
   assert not errors,'browser runtime errors: '+repr(errors)
