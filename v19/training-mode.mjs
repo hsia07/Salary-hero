@@ -23,3 +23,13 @@ export function repeatTrainingEnemy(state,species,enemyFor){
  return {...state,wave,enemy:{...target,hp:maxHp,maxHp,turns:0},
    heroHp:900,maxHp:900,log:['🎮 已擊倒，準備重新練習 '+target.name+'；正式存檔未更動。',...state.log].slice(0,20)};
 }
+/** Prepare one lethal REAL engine attack inside isolated practice only.
+ * Keeps all combat calculations, crits, rewards and death sprites unchanged.
+ * The app never saves this temporary training state to the player's slot.
+ */
+export function primeTrainingFinisher(state,species){
+ const wave=trainingWaveFor(species);
+ if(wave===null||!state||state.wave!==wave||state.enemy?.hp<=0)return state;
+ return {...state,enemy:{...state.enemy,hp:1},auto:false,
+  log:['🎯 練習下一擊：已把測試怪物生命設為 1。按攻擊可播放完整擊敗動畫；正式存檔不受影響。',...(state.log||[])].slice(0,20)};
+}
