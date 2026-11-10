@@ -10,9 +10,44 @@ export const ALIEN_STAMP_RAISE_MS=1045;
 export const ALIEN_STAMP_RELEASE_MS=1125;
 export const ALIEN_STAMP_IMPACT_MS=1215;
 export const ALIEN_ATTACK_END_MS=1505;
-export const ALIEN_DEFEAT_END_MS=1590;
+export const ALIEN_DEFEAT_END_MS=1700;
 export const ALIEN_ATTACK_DURATIONS=Object.freeze([155,125,100,95,185]);
 const clamp=(x,min=0,max=1)=>Math.max(min,Math.min(max,x));
+/** Enemy positioned right of the hero. The projectile MUST travel to the left. */
+export function alienStampRouteAt(elapsed,{enemyX=458,enemyY=248,heroX=100,heroY=227}={}){
+ const flight=alienStampAt(elapsed).flight;
+ const originX=enemyX+35,originY=enemyY+115;
+ const targetX=heroX+155,targetY=heroY+105;
+ const u=1-Math.pow(1-flight,1.8);
+ return {originX,originY,targetX,targetY,x:originX+(targetX-originX)*u,
+   y:originY+(targetY-originY)*u-25*Math.sin(Math.PI*u),travelsLeft:targetX<originX};
+}
+/** Draw an original alpha-masked white/scarlet reaction on alien frames only. */
+const alienTintCache=new WeakMap();
+function tintedAlienFrame(image,frame,index,color){
+ let cache=alienTintCache.get(image);
+ if(!cache){cache=new Map();alienTintCache.set(image,cache);}
+ const key=index+':'+color;
+ if(cache.has(key))return cache.get(key);
+ const canvas=document.createElement('canvas');
+ canvas.width=frame.cell;canvas.height=frame.cell;
+ const c=canvas.getContext('2d');
+ c.drawImage(image,index*frame.cell,0,frame.cell,frame.cell,0,0,frame.cell,frame.cell);
+ c.globalCompositeOperation='source-in';c.fillStyle=color;
+ c.fillRect(0,0,frame.cell,frame.cell);
+ cache.set(key,canvas);return canvas;
+}
+export function drawAlienInjuryTint(ctx,image,frame,index,rect,elapsed,options={}){
+ const flash=alienInjuryAt(elapsed,options);
+ if(!flash.active||!image||!rect)return false;
+ for(const [amount,color] of [[flash.white,'#fff5f8'],[flash.red,'#ff2347']]){
+   if(amount<=0)continue;
+   ctx.save();ctx.globalAlpha*=amount;
+   ctx.drawImage(tintedAlienFrame(image,frame,index,color),rect.x,rect.y,rect.w,rect.h);
+   ctx.restore();
+ }
+ return true;
+}
 /** State must select genuinely separately illustrated arms/antennae/face/tentacle
  * poses when the image manifest is added. This function never rotates sprites. */
 export function alienCombatPoseAt(elapsed,result){
@@ -53,8 +88,8 @@ export function alienInjuryAt(elapsed,{reducedMotion=false}={}){
 export function drawAlienStampFx(ctx,elapsed,{enemyX=0,enemyY=0,heroX=0,heroY=0,canRetaliate=true,reducedMotion=false}={}){
  const stamp=alienStampAt(elapsed,canRetaliate);
  if(!stamp.active)return;
- const originX=enemyX+35,originY=enemyY+115;
- const targetX=heroX+155,targetY=heroY+105;
+ const route=alienStampRouteAt(elapsed,{enemyX,enemyY,heroX,heroY});
+ const {originX,originY,targetX,targetY}=route;
  ctx.save();
  ctx.globalAlpha*=reducedMotion?.65:1;
  if(stamp.charge>0){
@@ -66,9 +101,7 @@ export function drawAlienStampFx(ctx,elapsed,{enemyX=0,enemyY=0,heroX=0,heroY=0,
    }
  }
  if(stamp.projectile){
-   const u=1-Math.pow(1-stamp.flight,1.8);
-   const x=originX+(targetX-originX)*u;
-   const y=originY+(targetY-originY)*u-25*Math.sin(Math.PI*u);
+   const {x,y}=route;
    ctx.shadowColor='#d653ff';ctx.shadowBlur=20;
    ctx.fillStyle='#9c3def';ctx.fillRect(x-19,y-14,38,28);
    ctx.lineWidth=3;ctx.strokeStyle='#ffe8ff';ctx.strokeRect(x-17,y-12,34,24);
