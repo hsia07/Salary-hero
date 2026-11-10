@@ -27,10 +27,10 @@
           "cell": 320,
           "ground_y": 289,
           "durations": [
-            110,
-            140,
-            105,
+            150,
             130,
+            70,
+            90,
             180
           ]
         },
@@ -40,9 +40,9 @@
           "cell": 320,
           "ground_y": 289,
           "durations": [
-            140,
-            210,
-            230
+            90,
+            160,
+            150
           ]
         },
         "defeat": {
@@ -57,7 +57,8 @@
             420
           ]
         }
-      }
+      },
+      "notes": "V19.4: independently drawn attack/recoil frames with 48ms contact hold, white→red silhouette hurt flash, moving paper-blade projectile and delayed retaliation impact. Pending visual approval."
     }
   },
   "note": "The paper-gremlin has four distinct illustrated PNG pose strips loaded automatically by the game. This is a deployed art candidate and awaits final user's visual verdict. Other 31 procedural monsters remain unapproved."
