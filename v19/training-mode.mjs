@@ -2,7 +2,7 @@
  * No mutation of the player's actual save. Three approved species and the fourth alien timing-only candidate
  * can be opened; query values never select arbitrary species or files.
  */
-const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2,'chair-golem':5,'meeting-ghost':50});
+const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2,'chair-golem':5,'meeting-ghost':50,'deadline-clock':6});
 export function trainingWaveFor(value){
  return Object.prototype.hasOwnProperty.call(TRAINING_WAVES,value)?TRAINING_WAVES[value]:null;
 }
