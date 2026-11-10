@@ -15,6 +15,7 @@ def main():
   browser=p.chromium.launch(headless=True,args=['--disable-dev-shm-usage'])
   page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=2,is_mobile=True,has_touch=True)
   page.on('pageerror',lambda e:errors.append(str(e)))
+  page.clock.install()
   page.goto(BASE+'/v19/play.html?training=deadline-clock',wait_until='domcontentloaded')
   page.wait_for_function("""() => {
    const s=document.querySelector('#monster-art-status'),w=document.querySelector('#world');
@@ -40,27 +41,26 @@ def main():
   assert sizes=={'idle':[1536,384],'attack':[1920,384],'hurt':[1152,384],'defeat':[1536,384]},sizes
   page.evaluate('(key)=>localStorage.setItem(key,"REAL_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0]);assert initial==900
-  page.locator('#attack').click()
-  captures=page.evaluate("""()=>new Promise((resolve,reject)=>{
-   const c=document.querySelector('#world'),goals=[530,940,1150,1330];
-   const results=[];let index=0;
-   const stop=setTimeout(()=>reject(Error('ghost hit/clock not sampled')),8500);
-   function snap(){
-    const info=JSON.parse(c.dataset.hpTiming||'null');
-    if(info&&info.t>=goals[index]){
-     results.push({t:info.t,hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
-      pose:c.dataset.cloudPose,frame:Number(c.dataset.cloudFrame),
-      peakRed:Number(c.dataset.cloudPeakRed||0),
-      tinted:c.dataset.cloudTintApplied==='true',
-      clock:JSON.parse(c.dataset.cloudClock||'{}'),
-      contactMs:info.contactMs});
-     index++;
-    }
-    if(index===goals.length){clearTimeout(stop);resolve(results)}
-    else requestAnimationFrame(snap);
-   }
-   requestAnimationFrame(snap);
-  })""")
+  # Sample the rendered frames even if Chromium skips a real-time refresh.
+  page.clock.pause_at(page.evaluate('Date.now()')+1000)
+  attack=page.locator('#attack')
+  assert attack.is_enabled()
+  attack.dispatch_event('click')
+  captures=[]
+  for delta in (544,416,208,176):
+   page.clock.run_for(delta)
+   captures.append(page.evaluate("""()=>{
+    const canvas=document.querySelector('#world');
+    return {
+     ...JSON.parse(canvas.dataset.hpTiming),
+     hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
+     pose:canvas.dataset.cloudPose,
+     peakRed:Number(canvas.dataset.cloudPeakRed||0),
+     tinted:canvas.dataset.cloudTintApplied==='true',
+     clock:JSON.parse(canvas.dataset.cloudClock),
+    };
+   }"""))
+  page.clock.resume()
   assert len(captures)==4,len(captures)
   hurt,windup,travel,contact=captures
   # Persist a real screenshot only AFTER time-sensitive measurements finish.

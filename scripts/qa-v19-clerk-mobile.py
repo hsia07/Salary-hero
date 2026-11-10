@@ -121,7 +121,9 @@ def main():
   assert contact['attackLocked'],contact
   b64=page.locator('#world').evaluate('(canvas)=>canvas.toDataURL("image/png").split(",")[1]')
   (OUT/'training-sixth-clerk-reports.png').write_bytes(b64decode(b64))
-  page.clock.run_for(900)
+  page.clock.run_for(288)
+  assert attack.is_disabled()
+  page.clock.run_for(612)
   assert attack.is_enabled()
   assert page.evaluate('(key)=>localStorage.getItem(key)',KEY)=='SIXTH_PLAYER_SAVE_UNCHANGED'
   page.locator('#training-finish').dispatch_event('click')

@@ -17,6 +17,7 @@ def main():
   page=browser.new_page(viewport={'width':390,'height':844},
     device_scale_factor=2,is_mobile=True,has_touch=True)
   page.on('pageerror',lambda e:errors.append(str(e)))
+  page.clock.install()
   page.goto(BASE+'/v19/play.html?training=meeting-ghost',wait_until='domcontentloaded')
   page.wait_for_function("""()=>
      document.querySelector('#attack')?.disabled===false &&
@@ -43,32 +44,26 @@ def main():
   page.evaluate('(k)=>localStorage.setItem(k,"ORIGINAL_SAVE_UNCHANGED")',KEY)
   initial=int(page.locator('#hero-hp-text').inner_text().split('/')[0])
   assert initial==900
-  page.locator('#attack').click()
-  snapshots=page.evaluate("""()=>new Promise((resolve,reject)=>{
+  # Sample the rendered frames even if Chromium skips a real-time refresh.
+  page.clock.pause_at(page.evaluate('Date.now()')+1000)
+  attack=page.locator('#attack')
+  assert attack.is_enabled()
+  attack.dispatch_event('click')
+  snapshots=[]
+  for delta in (544,464,144,176):
+   page.clock.run_for(delta)
+   snapshots.append(page.evaluate("""()=>{
     const canvas=document.querySelector('#world');
-    const samples=[],goals=[530,1000,1150,1320];
-    let idx=0;
-    const timer=setTimeout(()=>reject(Error('alien combat timed out')),9000);
-    function frame(){
-      const raw=canvas.dataset.hpTiming;
-      if(raw){
-        const timing=JSON.parse(raw);
-        if(timing.t>=goals[idx]){
-          const spell=JSON.parse(canvas.dataset.alienStamp||'{}');
-          samples.push({t:timing.t,contactMs:timing.contactMs,
-            hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
-            pose:canvas.dataset.alienPose,frame:Number(canvas.dataset.alienFrame),
-            peakRed:Number(canvas.dataset.alienRedPeak||0),
-            tintApplied:canvas.dataset.alienTintApplied==='true',
-            spell});
-          idx++;
-        }
-      }
-      if(idx>=goals.length){clearTimeout(timer);resolve(samples);}
-      else requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  })""")
+    return {
+     ...JSON.parse(canvas.dataset.hpTiming),
+     hp:Number(document.querySelector('#hero-hp-text').textContent.split('/')[0]),
+     pose:canvas.dataset.alienPose,
+     peakRed:Number(canvas.dataset.alienRedPeak||0),
+     tintApplied:canvas.dataset.alienTintApplied==='true',
+     spell:JSON.parse(canvas.dataset.alienStamp),
+    };
+   }"""))
+  page.clock.resume()
   hurt,early,travel,contact=snapshots
   assert hurt['hp']==initial,hurt
   assert hurt['pose']=='hurt' and hurt['peakRed']>.3 and hurt['tintApplied'],hurt
