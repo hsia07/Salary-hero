@@ -250,7 +250,11 @@ function paintEnemy(enemy,now,visual={state:'idle',progress:0},combatMs=Infinity
      const frameX=(boxW-displaySize)*.5;
      const frameY=525-248-displaySize*sourceFloor/frame.cell;
      if(drawMonsterAtlasFrame(ctx,image,frame,frameX,frameY,displaySize,displaySize,elapsed,visual?.state==='idle')){
-       if(trainingSpecies==='chair-golem'&&enemy.typeId==='chair-golem'){
+       if(trainingSpecies==='chair-golem'&&enemy.typeId==='chair-golem'&&
+          // During the crossfade both outgoing and incoming are the SAME
+          // species. Track the still-visible dying mech, not the freshly
+          // spawned idle mech drawn on top during its first transparent frames.
+          !(fx?.result?.type==='victory'&&visual?.state==='idle')){
          // Browser QA reports what the player ACTUALLY sees, not a guessed timer.
          world.dataset.guardPose=visual?.state||'idle';
          world.dataset.guardFrame=String(spriteFrameIndex(frame.durations,elapsed,visual?.state==='idle'));
