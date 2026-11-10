@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "4_species_illustrated_user_approved",
+  "status": "5_species_illustrated_user_approved",
   "artStyle": "high-quality Japanese fantasy RPG chibi; painterly lighting; no geometric SVG, emoji, sprite rotation or fake pose transforms",
   "monsters": {
     "paper-gremlin": {
@@ -240,7 +240,70 @@
           "sha256": "dd4a1270a057dc3ea0e355a001204c6bda9938b640da281067dc5e02634a95cb"
         }
       }
+    },
+    "deadline-clock": {
+      "id": "deadline-clock",
+      "approved": true,
+      "tier": "normal",
+      "facing": "left",
+      "userVisualApprovalDate": "2026-11-10",
+      "approvalScope": "User explicitly confirmed 第五隻可以 on 2026-11-10 after testing the fifth monster's cloud clock sprite and 16 poses.",
+      "source": "Same original 16 independently drawn transparent WebP pose frames copied byte-for-byte from the candidate and mobile QA inspected",
+      "states": {
+        "idle": {
+          "src": "../art/v19/runtime/monsters/deadline-clock/idle.webp",
+          "frames": 4,
+          "cell": 384,
+          "ground_y": 339,
+          "durations": [
+            250,
+            190,
+            245,
+            175
+          ],
+          "sha256": "ed7ed51b218ad235e35c761e7b30fe84db3eccfff12536e6e396dee74787b276"
+        },
+        "attack": {
+          "src": "../art/v19/runtime/monsters/deadline-clock/attack.webp",
+          "frames": 5,
+          "cell": 384,
+          "ground_y": 339,
+          "durations": [
+            155,
+            145,
+            100,
+            100,
+            170
+          ],
+          "sha256": "af774cd14178af72aba2ef937851eb5f89bd8aa73f6ca7749b3ab03d7b78bd8d"
+        },
+        "hurt": {
+          "src": "../art/v19/runtime/monsters/deadline-clock/hurt.webp",
+          "frames": 3,
+          "cell": 384,
+          "ground_y": 339,
+          "durations": [
+            115,
+            130,
+            185
+          ],
+          "sha256": "aeddb2edc5522245bf4fe6bb2c832aa0517f6fef13e0cfde6233692c90fd0d0c"
+        },
+        "defeat": {
+          "src": "../art/v19/runtime/monsters/deadline-clock/defeat.webp",
+          "frames": 4,
+          "cell": 384,
+          "ground_y": 339,
+          "durations": [
+            180,
+            245,
+            300,
+            445
+          ],
+          "sha256": "951ef46b1c511f2e828dcfe1fa0445d23e4d9383e8a7e8f035c37a8c4a740451"
+        }
+      }
     }
   },
-  "note": "Four approved original species: paper, coffee, security mech, alien intern. Cloud ghost remains an independently illustrated candidate until its visual approval."
+  "note": "Officially approved 5/32 normal enemies: paper-gremlin, coffee-mimic, chair-golem, meeting-ghost, deadline-clock. Sixth keyboard-piranha is in development."
 }
