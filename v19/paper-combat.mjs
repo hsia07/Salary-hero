@@ -84,7 +84,7 @@ function shard(ctx,x,y,scale,angle,alpha=1){
  ctx.moveTo(-10,-1);ctx.lineTo(9,-1);ctx.moveTo(-9,5);ctx.lineTo(5,5);ctx.stroke();
  ctx.restore();
 }
-export function drawPaperCombatFx(ctx,elapsed,{enemyX,enemyY,heroX,heroY,reducedMotion=false}){
+export function drawPaperCombatFx(ctx,elapsed,{enemyX,enemyY,heroX,heroY,reducedMotion=false,attackAllowed=true}){
  const hit=paperHitFlashAt(elapsed,{reducedMotion});
  const actorX=enemyX+85,actorY=enemyY+130;
  if(hit.burst>0){
@@ -97,7 +97,7 @@ export function drawPaperCombatFx(ctx,elapsed,{enemyX,enemyY,heroX,heroY,reduced
    ctx.lineTo(Math.cos(a)*(r+10),Math.sin(a)*(r+10));ctx.stroke();
   }ctx.restore();
  }
- const fx=paperAttackFxAt(elapsed);if(!fx.active)return;
+ const fx=attackAllowed?paperAttackFxAt(elapsed):{active:false};if(!fx.active)return;
  const fromX=enemyX+43,fromY=enemyY+133,toX=heroX+167,toY=heroY+135;
  if(fx.charge>0){
   ctx.save();ctx.globalAlpha=fx.charge*(reducedMotion?.45:1);
