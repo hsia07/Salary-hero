@@ -1,8 +1,8 @@
 /** Salary Hero V19 — ephemeral art/battle rehearsal.
- * No mutation of the player's actual save. Only the two approved sprite IDs
+ * No mutation of the player's actual save. Two approved sprite IDs and the explicitly whitelisted third art candidate
  * can be opened; query values never select arbitrary species or files.
  */
-const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2});
+const TRAINING_WAVES=Object.freeze({'paper-gremlin':1,'coffee-mimic':2,'chair-golem':3});
 export function trainingWaveFor(value){
  return Object.prototype.hasOwnProperty.call(TRAINING_WAVES,value)?TRAINING_WAVES[value]:null;
 }
