@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>薪水勇者｜星際打卡實習生・朝左的16格候選</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#ffe5c3;background:#120d25}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 5%,#49345d,#110b20 70%);min-height:100vh}
+main{max-width:830px;padding:20px 12px 30px;margin:auto}header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+h1{font-size:clamp(23px,6vw,34px);color:#ffdea2;margin:0}p{font-size:13px;color:#dac5d4;line-height:1.7}
+.pill{font-size:11px;background:#32203d;border:1px solid #b88a7b;border-radius:20px;padding:7px 10px}
+.arena{border:3px solid #d3a16c;background:#271934;border-radius:12px;overflow:hidden;margin-top:12px;box-shadow:0 16px 42px #07031488}
+canvas{display:block;width:100%;aspect-ratio:720/450;background:#261b39}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:11px}
+button{cursor:pointer;color:#ffe8bc;font-weight:800;font-size:12px;min-height:46px;border-radius:9px;border:1px solid #ce9f6d;background:linear-gradient(#795267,#3c2748)}
+button.selected{background:linear-gradient(#b76a7b,#6e355a);border:2px solid #ffe19f}
+#status{font-size:12px;font-weight:800;text-align:center;padding:10px;border-top:1px solid #79556c;background:#2e2039;color:#ffd8ef}
+.note{font-size:12px;border:1px solid #805a7b;padding:12px;border-radius:11px;background:#20162f;margin-top:14px;color:#e2cbd9}
+.frames{display:grid;gap:10px;margin-top:18px}.frame-row{background:#281d39;border:1px solid #695675;border-radius:11px;padding:10px}
+.frame-row strong{font-size:12px;color:#ffe1ab}.thumbs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:5px;margin-top:8px}
+.thumb{display:flex;justify-content:center;align-items:center;background:radial-gradient(#422c51,#211a34);border:1px solid #5c476b;border-radius:8px;overflow:hidden}
+.thumb canvas{max-height:108px;aspect-ratio:1/1;object-fit:contain}
+a{color:#ffcc9b}
+</style></head><body><main>
+<header><div><h1>🛸 星際打卡實習生</h1><p>第 4 隻｜已修正朝左，敵人在右、勇者在左</p></div><div class="pill">16 格原創美術候選｜正式 3／32</div></header>
+<div class="arena"><canvas id="arena" width="720" height="450" aria-label="外星實習生與勇者對戰，外星人朝向左側"></canvas>
+<div class="controls"><button data-state="idle" class="selected">待機 4 格</button><button data-state="attack">攻擊 5 格</button><button data-state="hurt">受擊 3 格</button><button data-state="defeat">死亡 4 格</button></div><div id="status">正在載入透明 16 格圖集…</div></div>
+<div class="note">這裡直接載入 GitHub 候選 WebP 原圖，沒有把 UI 截圖偽裝成角色動畫。**角色朝左、觸手朝勇者揮擊、印章朝左飛行。** 第四隻仍待畫質與視覺正式驗收，不會計入已完成數。</div>
+<section id="frames" class="frames"></section>
+<p><a href="./play.html?training=meeting-ghost">⚔️ 前往第 50 關・不修改正式存檔的實戰測試</a></p>
+</main><script type="module">
+import {drawAlienStampFx,alienInjuryAt,drawAlienInjuryTint,ALIEN_STAMP_IMPACT_MS,ALIEN_ATTACK_START_MS,ALIEN_DEFEAT_END_MS} from './alien-combat.mjs?v=left-face-v19-17';
+import {spriteFrameIndex} from './sprite-atlas.mjs';
+const src='../art/v19/candidates/monsters/meeting-ghost/';
+const names={idle:'待機',attack:'觸手掃擊與印章',hurt:'白亮紅閃',defeat:'倒地解體'};
+const statuses={idle:'面向左側・等待勇者進攻',attack:'觸手朝勇者揮擊，印章由右往左飛',hurt:'獨立受傷姿勢・本體白亮紅閃',defeat:'受創倒地・逐格死亡'};
+const canvas=document.getElementById('arena'),ctx=canvas.getContext('2d');
+let art={},manifest,mode='idle',start=performance.now(),hero=null;
+function setMode(m){mode=m;start=performance.now();document.querySelectorAll('button[data-state]').forEach(b=>b.classList.toggle('selected',b.dataset.state===m));}
+document.querySelectorAll('button[data-state]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.state)));
+function backdrop(){
+ const g=ctx.createLinearGradient(0,0,0,450);g.addColorStop(0,'#272046');g.addColorStop(1,'#34213b');ctx.fillStyle=g;ctx.fillRect(0,0,720,450);
+ ctx.fillStyle='#3a2949';for(let i=0;i<16;i++){let x=i*51-8,h=50+(i*71)%120;ctx.fillRect(x,325-h,39+(i%3)*6,h);}
+ ctx.fillStyle='#4e3958';ctx.fillRect(0,350,720,100);
+ ctx.strokeStyle='#745274';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,350);ctx.lineTo(720,350);ctx.stroke();
+ ctx.textAlign='center';ctx.font='800 18px system-ui';ctx.fillStyle='#ffdfa9';
+ ctx.fillText('勇者（左）',160,54);ctx.fillText('星際打卡實習生（右）',518,54);
+}
+function draw(now){
+ backdrop();
+ const elapsed=now-start;
+ if(hero){
+  ctx.save();ctx.translate(286,0);ctx.scale(-1,1);
+  ctx.drawImage(hero,0,125,270,270);ctx.restore();
+ }
+ if(manifest){
+  const state=mode,frame=manifest.states[state],image=art[state],total=frame.durations.reduce((a,b)=>a+b,0);
+  const e=state==='idle'?elapsed%total:Math.min(elapsed,total-.001);
+  const index=spriteFrameIndex(frame.durations,e,state==='idle');
+  const x=370,y=340-300*(frame.ground_y/frame.cell),size=300;
+  ctx.drawImage(image,index*frame.cell,0,frame.cell,frame.cell,x,y,size,size);
+  if(state==='hurt')drawAlienInjuryTint(ctx,image,frame,index,{x,y,w:size,h:size},405+elapsed);
+  if(state==='attack')drawAlienStampFx(ctx,ALIEN_ATTACK_START_MS+elapsed,{enemyX:443,enemyY:120,heroX:100,heroY:165,canRetaliate:true});
+  const line=statuses[state]+' · 畫格 '+(index+1)+' / '+frame.frames+(state==='attack'?' · ← 攻擊勇者':'');
+  const status=document.getElementById('status');if(status.textContent!==line)status.textContent=line;
+  if(elapsed>total+700&&state!=='idle')setMode('idle');
+ }
+ requestAnimationFrame(draw);
+}
+async function load(){
+ const r=await fetch(src+'manifest-candidate.json?v=left-face-v19-17');if(!r.ok)throw Error('manifest '+r.status);
+ manifest=await r.json();
+ if(manifest.id!=='meeting-ghost'||manifest.approved!==false||manifest.previewOnly!==true||manifest.facing!=='left')throw Error('候選方向或核准狀態錯誤');
+ const states=['idle','attack','hurt','defeat'];
+ await Promise.all(states.map(async state=>{
+  const frame=manifest.states[state],im=new Image();
+  im.src=new URL(frame.src,import.meta.url).href;await im.decode();
+  if(im.naturalWidth!==frame.cell*frame.frames||im.naturalHeight!==frame.cell)throw Error('圖集損壞 '+state);
+  art[state]=im;
+ }));
+ try{hero=new Image();hero.src='../art/v19/candidates/characters/starter/chibi/idle-candidate.webp';await hero.decode();}catch{hero=null;}
+ const rows=document.querySelector('#frames');
+ for(const state of states){
+  const record=manifest.states[state],row=document.createElement('div');row.className='frame-row';
+  const title=document.createElement('strong');title.textContent=names[state]+'｜'+record.frames+' 格原創姿勢';
+  const thumbs=document.createElement('div');thumbs.className='thumbs';
+  for(let i=0;i<record.frames;i++){
+   const box=document.createElement('div');box.className='thumb';
+   const c=document.createElement('canvas');c.width=110;c.height=110;
+   c.getContext('2d').drawImage(art[state],i*384,0,384,384,0,0,110,110);
+   box.appendChild(c);thumbs.appendChild(box);
+  }
+  row.appendChild(title);row.appendChild(thumbs);rows.appendChild(row);
+ }
+}
+load().catch(e=>{document.getElementById('status').textContent='素材載入失敗：'+e.message;console.error(e)});
+requestAnimationFrame(draw);
+</script></body></html>
