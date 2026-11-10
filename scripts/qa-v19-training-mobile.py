@@ -41,10 +41,10 @@ def test_species(page,species,expected_name,expected_wave):
     page.locator('#attack').click()
     page.wait_for_timeout(520)
     page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hero-hit.png')))
-    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'premature HP loss before projectile flies'
+    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'premature HP loss before projectile flies: '+str(page.locator('#world').get_attribute('data-hp-timing'))
     page.wait_for_timeout(610)
     page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-counterattack.png')))
-    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'HP changed before coffee/paper projectile contact'
+    assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])==hp_before, 'HP changed before coffee/paper projectile contact: '+str(page.locator('#world').get_attribute('data-hp-timing'))
     page.wait_for_timeout(180)
     page.locator('#world').screenshot(path=str(OUT/('training-'+species+'-hurt-red-flash.png')))
     assert int(page.locator('#hero-hp-text').inner_text().split('/')[0])<hp_before, 'visible HP should change AFTER projectile impact'
