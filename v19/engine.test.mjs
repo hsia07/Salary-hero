@@ -157,7 +157,7 @@ test('weekly salary returns a finite amount on scheduled workday',()=>{
 });
 
 test('rage enemy deals more retaliation damage than its base attack',()=>{
- const a=initial();a.wave=5;a.enemy=enemyFor(5);
+ const a=initial();a.wave=30;a.enemy=enemyFor(30); // rage species displaced from floor 5, still in rotation
  const b=transition(a,'attack',()=>.9);
  assert.ok(a.heroHp-b.heroHp>a.enemy.attack);
 });
