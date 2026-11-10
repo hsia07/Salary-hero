@@ -107,7 +107,8 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .training-fight-links a{display:block;border:1px solid #efc187;background:linear-gradient(135deg,#6e3d4d,#2e2b48);color:#fff0c6;text-decoration:none;text-align:center;border-radius:9px;font-size:12px;font-weight:800;padding:11px 5px;line-height:1.4}
 .art-advanced summary{font-size:12px;color:#d9bca3;padding:7px 0 4px;cursor:pointer}
 .art-advanced .chibi-v2-lab{padding:9px;margin-top:6px;border:1px solid #be9872;border-radius:9px}
-.tabs{grid-template-columns:repeat(7,minmax(0,1fr))}.tabs button{font-size:clamp(10px,2.4vw,12px);padding-inline:1px}.tabs button span{display:block;font-size:16px}\n</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
+.tabs{grid-template-columns:repeat(7,minmax(0,1fr))}.tabs button{font-size:clamp(10px,2.4vw,12px);padding-inline:1px}.tabs button span{display:block;font-size:16px}\n.dev-gallery{background:#21152f;border-block:1px solid #916b51}.dev-gallery>summary{cursor:pointer;list-style:none;padding:10px 14px;color:#eacfa5;text-align:center;font-size:12px}.dev-gallery>summary::-webkit-details-marker{display:none}.dev-gallery:not([open]) .chibi-quick-preview{display:none}
+</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
 <header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.24</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
@@ -126,7 +127,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
 <div class="chibi-art-state" id="chibi-art-state" role="status" hidden>正在檢查 Q 版高畫質主角……</div>
 <div class="monster-art-status" id="monster-art-status" role="status">🎨 正在自動載入紙妖與邪惡杯靈兩套 Q 版逐格動畫……</div>
-<div class="chibi-quick-preview">
+<details class="dev-gallery"><summary>🧪 怪物動畫與美術測試（點此展開）</summary><div class="chibi-quick-preview">
 <div class="training-fight-links" aria-label="不更改遊戲存檔的實戰練習">
  <a href="./play.html?training=paper-gremlin">⚔️ 紙妖<br>直接實戰</a>
  <a href="./play.html?training=coffee-mimic">☕ 邪惡杯靈<br>直接實戰</a>
@@ -156,7 +157,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <button id="chibi-v2-clear" type="button">清除本機美術快取</button>
 <p id="chibi-v2-status" role="status">正在載入內建高清素材……</p>
 </section>
-</details></div>
+</details></div></details>
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
