@@ -108,9 +108,53 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .art-advanced summary{font-size:12px;color:#d9bca3;padding:7px 0 4px;cursor:pointer}
 .art-advanced .chibi-v2-lab{padding:9px;margin-top:6px;border:1px solid #be9872;border-radius:9px}
 .tabs{grid-template-columns:repeat(7,minmax(0,1fr))}.tabs button{font-size:clamp(10px,2.4vw,12px);padding-inline:1px}.tabs button span{display:block;font-size:16px}\n.dev-gallery{background:#21152f;border-block:1px solid #916b51}.dev-gallery>summary{cursor:pointer;list-style:none;padding:10px 14px;color:#eacfa5;text-align:center;font-size:12px}.dev-gallery>summary::-webkit-details-marker{display:none}.dev-gallery:not([open]) .chibi-quick-preview{display:none}
+
+/* Weekday dungeon presentation — keeps independent v19 artwork untouched. */
+#app[data-dungeon-theme] .stage-head #wave{max-width:70%;min-width:0;overflow-wrap:anywhere;line-height:1.28}
+#app[data-dungeon-theme=hell] .scene::after,
+#app[data-dungeon-theme=friday] .scene::after,
+#app[data-dungeon-theme=alien] .scene::after,
+#app[data-dungeon-theme=digital] .scene::after,
+#app[data-dungeon-theme=night] .scene::after,
+#app[data-dungeon-theme=dream] .scene::after,
+#app[data-dungeon-theme=office] .scene::after{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:1
+}
+.scene .stage-head,.scene .bars{z-index:2}
+#app[data-dungeon-theme=hell] .scene::after{background:linear-gradient(152deg,#ff65302a,transparent 43%,#b90e4218)}
+#app[data-dungeon-theme=friday] .scene::after{background:linear-gradient(140deg,#fbc45818,transparent 55%,#ffb04910)}
+#app[data-dungeon-theme=alien] .scene::after{background:linear-gradient(135deg,#5ff7f71a,transparent 53%,#5e7be023)}
+#app[data-dungeon-theme=digital] .scene::after{background:linear-gradient(130deg,#718cff1c,transparent 56%,#ae5bfe19)}
+#app[data-dungeon-theme=night] .scene::after{background:linear-gradient(150deg,#5c65b924,transparent 44%,#25124935)}
+#app[data-dungeon-theme=dream] .scene::after{background:linear-gradient(125deg,#f8bbdc1b,transparent 60%,#a780ea16)}
+#app[data-dungeon-theme=office] .scene::after{background:linear-gradient(155deg,#f7d29e15,transparent 65%)}
+.daily-feature{border:2px solid #dfb979;border-radius:14px;padding:16px 15px;margin-bottom:13px;background:radial-gradient(ellipse at 20% 0,#64415c,#271d3c 78%);box-shadow:inset 0 1px #ffe0ac6a,0 4px 19px #0005;color:#ffedca}
+.daily-feature>span{font-size:11px;color:#f4d0aa;letter-spacing:1px}
+.daily-feature h3{font-size:19px;line-height:1.3;color:#ffdc96;margin:8px 0}
+.daily-feature p{line-height:1.6;font-size:13px;color:#f1d9d5}
+.daily-feature strong{font-size:13px;color:#ffd792}
+.daily-feature.theme-hell{background:radial-gradient(ellipse at 10% 10%,#813e40,#2a1536 76%)}
+.daily-feature.theme-friday{background:radial-gradient(ellipse at 10% 10%,#765e3e,#33213e 76%)}
+.weekday-grid{display:grid;gap:7px}
+.weekday-entry{display:grid;grid-template-columns:33px 1fr auto;align-items:center;gap:9px;padding:10px 9px;border:1px solid #7c6070;border-radius:10px;background:linear-gradient(100deg,#38283f,#221d37)}
+.weekday-entry>span{font-size:23px}.weekday-entry strong{font-size:12px;color:#ffe0a8}.weekday-entry small{display:block;font-size:10px;line-height:1.48;color:#cdb7c1;margin-top:4px}
+.weekday-entry>b{font-size:10px;white-space:nowrap;color:#e8c99a}
+.weekday-entry.is-today{border-color:#f1c375;background:linear-gradient(100deg,#65415a,#382442);box-shadow:inset 0 0 16px #b9795233}
+.mode-caveat{font-size:11px;color:#c8b6c1;line-height:1.65}
+.boss-letter{position:relative;margin:8px auto 16px;padding:26px 17px 25px;max-width:380px;text-align:center;border:3px double #b08244;border-radius:4px;background:linear-gradient(120deg,#f5dcaa,#ffeec4 50%,#dcb67f);color:#3e2b29;box-shadow:0 12px 29px #0007,inset 0 0 24px #98704455}
+.boss-letter:before,.boss-letter:after{content:"✦";position:absolute;top:8px;color:#865733;font-size:19px}
+.boss-letter:before{left:13px}.boss-letter:after{right:13px}
+.boss-letter>span{font-size:12px;letter-spacing:2px;color:#6c4a38}
+.boss-letter h3{font-family:serif;font-size:38px;letter-spacing:5px;color:#51302e;margin:21px 0 10px}
+.boss-letter p{font-family:serif;font-size:23px;font-weight:800;color:#65352c;letter-spacing:2px;margin:8px 0 34px}
+.boss-letter small{font-size:14px;color:#674d3f}
+.letter-win{text-align:center;font-size:15px;color:#ffe0a0;font-weight:750}
+.chibi-art-state[data-quality=ready]{display:none}
+#app:not([data-training]) .monster-art-status{display:none}
+
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
-<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.24</div></div>
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.25</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
 <div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
 <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
@@ -161,13 +205,13 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button></section>
-<nav class="tabs" aria-label="遊戲功能"><button data-panel="modes"><span>🗼</span>模式</button><button data-panel="skills"><span>✨</span>技能</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
-<div class="footnote">🖼️ <a href="./paper-trial.html">直接觀看紙妖 16 格動畫｜無須下載或上傳</a></div>
-<div class="footnote">☕ <a href="./coffee-trial.html">直接觀看邪惡杯靈 16 格動畫｜無須下載或上傳</a></div>
-<div class="footnote">🚨 <a href="./guard-trial.html">打卡保全機兵・16 格正式動畫（已認可）</a></div>
-<div class="footnote">🛸 <a href="./alien-trial.html">第 4 隻・星際打卡實習生｜朝左正式逐格試播（16 格）</a></div>
-<div class="footnote">目前搶先遊玩：普通怪循環 + 三種模式 + 三種主動技能，菁英與 Boss 暫緩。</div><div class="footnote">已正式完成 6／32 種 Q 版逐格怪物。第六隻「加班遊魂文員」已加入第 26 關正式戰鬥。</div>
-<div class="footnote">敵人類型與技能已能切換；部分圖示與角色立繪仍為工程候選美術 · 存檔保存在此瀏覽器 · 薪資與遊戲貨幣分開計算</div>
+<nav class="tabs" aria-label="遊戲功能"><button data-panel="modes"><span>📆</span>副本</button><button data-panel="skills"><span>✨</span>技能</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
+
+
+
+
+<div class="footnote">📆 星期一到日各有不同每日副本；週五魔王可能直接翹班。菁英與 Boss 暫借普通怪美術。</div>
+<div class="footnote">存檔保存在此瀏覽器 · 薪資與遊戲貨幣獨立</div>
 </main>
 <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title">冒險</h2><button class="close" id="panel-close" aria-label="關閉">✕</button></header><div id="panel-content"></div></dialog>
 <dialog id="name-dialog" aria-labelledby="name-title"><form id="name-form" method="dialog">
@@ -177,4 +221,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=playable-modes-v19-24"></script></body></html>
+<script type="module" src="./app.mjs?v=weekday-dungeon-v19-25"></script></body></html>
