@@ -2,6 +2,7 @@
 import {enemyDesignFor,tierForWave,ALL_ENEMIES,HERO_STYLES} from './roster.mjs';
 import {SKINS,SKIN_EVENTS,skinById,drawPool,pickSkin,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {WEEKEND_CHAOS_EVENTS,weekendChaosDraw,weekendChaosById} from './weekend-chaos.mjs';
+import {LITE_SLOTS,liteBase,liteRarity,liteNormalizeInventory,liteNormalizeLoadout,liteEquipmentStats,liteRollDrop} from './lite-equipment.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -145,10 +146,10 @@ export function enemyFor(wave){
    hp:maxHp,maxHp,turns:0,attack:boss?10+scale*2:elite?7+Math.floor(n/3):3+Math.floor(n/3)};
 }
 export function initial(){
- return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,
+ return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,baseMaxHp:110,
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
-   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
+   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw,now=Date.now()){
@@ -187,12 +188,18 @@ export function normalize(raw,now=Date.now()){
    :{day:'',wins:0,bosses:0};
  n.owned=[...new Set((Array.isArray(raw.owned)?raw.owned:[]).filter(x=>ITEMS.some(it=>it.id===x)).concat('briefcase'))];
  n.equipped=n.owned.includes(raw.equipped)?raw.equipped:'briefcase';
+ // Additive V19 Lite schema: migrate existing saves without replacing legacy items.
+ n.liteInventory=liteNormalizeInventory(raw.liteInventory);
+ n.liteLoadout=liteNormalizeLoadout(raw.liteLoadout,n.liteInventory);
+ n.liteItemSeq=Math.max(...n.liteInventory.map(x=>Number(x.instanceId.slice(3))||0),Math.max(0,Math.floor(Number(raw.liteItemSeq)||0)));
+ n.liteCombo=Math.max(0,Math.min(100000,Math.floor(Number(raw.liteCombo)||0)));
  n.level=Math.max(1,Math.min(500,Math.floor(Number(n.level)||1)));
  for(const k of ['xp','gold','gems','potions','chests','specialChests','skillBooks','skillFragments','petXp','petFood','craftingMaterial','rareMaterials','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.skillRank=Math.max(0,Math.min(5,Math.floor(Number(raw.skillRank)||0)));
  n.forgeLevel=Math.max(0,Math.min(10,Math.floor(Number(raw.forgeLevel)||0)));
  n.petLevel=Math.max(1,Math.min(50,Math.floor(Number(raw.petLevel)||1)));
- n.maxHp=Math.max(1,Number(n.maxHp)||110);
+ n.baseMaxHp=Math.max(1,Math.floor(Number(raw.baseMaxHp)||Number(raw.maxHp)||110));
+ n.maxHp=n.baseMaxHp+liteEquipmentStats(n).hp;
  n.heroHp=Math.max(0,Math.min(n.maxHp,Number(n.heroHp)||0));
  if(raw.trainingIsolated===true&&raw.enemy&&Number(raw.enemy.hp)>0){
    n.trainingIsolated=true;
@@ -294,9 +301,14 @@ function maybeFridayBossEscaped(s,rng,now){
  return note;
 }
 function notice(s,msg){s.log=[msg,...s.log].slice(0,12);}
+function recalcLiteHp(s){
+ const previous=s.maxHp;
+ s.maxHp=s.baseMaxHp+liteEquipmentStats(s).hp;
+ s.heroHp=Math.min(s.maxHp,Math.max(0,s.heroHp+Math.max(0,s.maxHp-previous)));
+}
 function awardXP(s,amount){
  s.xp+=amount;
- while(s.xp>=50+s.level*30){s.xp-=50+s.level*30;s.level++;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);notice(s,'✨ 升到 Lv.'+s.level+'，生命上限增加！');}
+ while(s.xp>=50+s.level*30){s.xp-=50+s.level*30;s.level++;s.baseMaxHp+=9;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);notice(s,'✨ 升到 Lv.'+s.level+'，生命上限增加！');}
 }
 function awardPetXP(s,amount){
  s.petXp+=amount;
@@ -409,6 +421,33 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(s.petFood<=0){notice(s,'🐾 目前沒有寵物食物。');break;}
    s.petFood--;awardPetXP(s,45);s.last={type:'petFed'};
    notice(s,'🐾 餵食寵物，獲得 45 寵物經驗！');break;
+ }
+ case 'liteEquip':{
+   const it=s.liteInventory.find(x=>x.instanceId===a.id),base=liteBase(it?.templateId);
+   if(!it||!base)break;
+   s.liteLoadout[base.slot]=it.instanceId;recalcLiteHp(s);
+   s.last={type:'liteEquip',id:it.instanceId};notice(s,'🛡️ 已穿上 '+liteRarity(it.rarity).name+'・'+base.name);break;
+ }
+ case 'liteUnequip':{
+   const slot=LITE_SLOTS.find(x=>x.id===a.id);if(!slot||!s.liteLoadout[slot.id])break;
+   s.liteLoadout[slot.id]=null;recalcLiteHp(s);
+   s.last={type:'liteUnequip',slot:slot.id};notice(s,'已卸下 '+slot.name);break;
+ }
+ case 'liteLock':{
+   const it=s.liteInventory.find(x=>x.instanceId===a.id);if(!it)break;
+   it.locked=!it.locked;s.last={type:'liteLock',id:it.instanceId,locked:it.locked};
+   notice(s,it.locked?'🔒 裝備已鎖定。':'🔓 裝備已解鎖。');break;
+ }
+ case 'liteSalvage':{
+   const index=s.liteInventory.findIndex(x=>x.instanceId===a.id);if(index<0)break;
+   const it=s.liteInventory[index];
+   if(it.locked||Object.values(s.liteLoadout).includes(it.instanceId)){
+     notice(s,'裝備已鎖定或正在使用，無法分解。');break;
+   }
+   const reward=Math.floor((8+it.itemLevel*2)*liteRarity(it.rarity).scale);
+   s.liteInventory.splice(index,1);s.gold+=reward;
+   s.last={type:'liteSalvage',id:a.id,gold:reward};
+   notice(s,'⚒️ 分解 '+liteBase(it.templateId).name+'，獲得 '+reward+' 金幣。');break;
  }
  case 'studySkillBook':{
    if(!s.skillBooks||s.skillRank>=5){notice(s,'技能書不足或技能專精已滿。');break;}
