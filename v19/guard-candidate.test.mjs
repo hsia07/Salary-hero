@@ -21,7 +21,7 @@ test('16 original mech sprite poses really exist as four WebP binary atlases',()
   assert.equal(createHash('sha256').update(data).digest('hex'),sha);
  }
 });
-test('elite mech is candidate ONLY, never fake approved 3/32',()=>{
+test('normal-tier mech is candidate ONLY, never fake approved 3/32',()=>{
  const c=JSON.parse(readFileSync(new URL('manifest-candidate.json',root),'utf8'));
  const m=JSON.parse(readFileSync(new URL('../art/v19/runtime/monsters/manifest.json',import.meta.url),'utf8'));
  assert.ok(ALL_ENEMIES.find(e=>e.id==='chair-golem'&&e.name==='打卡保全機兵'));
