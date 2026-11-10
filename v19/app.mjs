@@ -706,7 +706,8 @@ function render(){
      enemyTier==='boss'?' · 狂暴 '+(state.enemy.turns||0)%4+'/4':'';
    trait.textContent=state.enemy.family+' · '+state.enemy.traitText+skillCharge+(state.enemy.standIn?' · 普通怪暫代美術':'');
  }
- $('#game-log').textContent=state.log[0]||'冒險中';
+ const liteDrop=state.last?.liteDrop?state.liteInventory.find(it=>it.instanceId===state.last.liteDrop):null;
+ $('#game-log').textContent=liteDrop?'✨ '+liteRarity(liteDrop.rarity).name+'裝備掉落：'+liteBase(liteDrop.templateId).name+'！打開裝備背包查看。':state.log[0]||'冒險中';
  $('#auto').textContent='🤖 自動 '+(state.auto?'ON':'OFF');
  $('#auto').setAttribute('aria-pressed',String(state.auto));
  $('#speed').textContent='⏩ 速度 ×'+state.speed;
@@ -747,7 +748,7 @@ function itemRow(it,kind){
  const text=kind==='shop'?(owned?'已擁有':'購買 '+it.cost+'🪙'):(equipped?'裝備中':owned?'穿上':'未解鎖');
  return '<div class="item '+(!owned&&kind!=='shop'?'muted':'')+'"><div class="symbol">'+(owned?it.icon:'◈')+'</div><div class="detail"><strong>'+it.name+'</strong><small>'+it.tier+' · ⚔️ 攻擊 '+it.attack+'</small></div><button data-action="'+action+'" data-value="'+it.id+'" '+(disabled?'disabled':'')+'>'+text+'</button></div>';
 }
-let liteSalvagePending=null;
+let liteSalvagePending=null,liteArmoryPage=0;
 function renderLiteEquipment(){
  const stats=liteEquipmentStats(state);
  const slotPanels=LITE_SLOTS.map(slot=>{
@@ -758,7 +759,9 @@ function renderLiteEquipment(){
  const summary='<div class="lite-stats">⚔️ 裝備攻擊 '+(stats.weaponAttack||0)+'＋'+stats.attack+'　❤️ 生命 +'+stats.hp+'　🛡️ 護甲 '+stats.armor+'<p>暴擊 +'+(stats.crit*100).toFixed(1)+'% · 吸血 +'+(stats.lifeSteal*100).toFixed(1)+'% · 額外減傷 '+(stats.damageReduction*100).toFixed(1)+'%</p></div>';
  const activeSets=LITE_SETS.filter(set=>stats.sets[set.id]>=2);
  const sets='<div class="lite-sets"><h3>✦ 套裝協定</h3>'+(activeSets.length?activeSets.map(set=>'<p>✦ <strong>'+escapeHTML(set.name)+'</strong> · '+escapeHTML(set.description)+'</p>').join(''):'<p>穿戴同系列兩件裝備即可啟動戰鬥特效。</p>')+'</div>';
- const items=[...state.liteInventory].reverse().map(item=>{
+ const pages=Math.max(1,Math.ceil(state.liteInventory.length/20));
+ liteArmoryPage=Math.min(liteArmoryPage,pages-1);
+ const items=[...state.liteInventory].reverse().slice(liteArmoryPage*20,(liteArmoryPage+1)*20).map(item=>{
    const base=liteBase(item.templateId);if(!base)return '';
    const isEquipped=Object.values(state.liteLoadout).includes(item.instanceId);
    const rarity=liteRarity(item.rarity);
@@ -767,7 +770,7 @@ function renderLiteEquipment(){
      btn(liteSalvagePending===item.instanceId?'確定分解':'分解','liteSalvage',item.instanceId,item.locked||isEquipped)+'</div>';
    return '<article class="lite-item" data-rarity="'+rarity.id+'"><div class="lite-item-heading"><div><span class="lite-rarity">'+rarity.name+' · Lv.'+item.itemLevel+'</span><strong>'+escapeHTML(base.name)+'</strong></div><small>'+LITE_SLOTS.find(x=>x.id===base.slot)?.name+(base.setId?' · '+LITE_SETS.find(x=>x.id===base.setId)?.name:'')+'</small></div><div class="lite-item-stats">'+escapeHTML(liteStatLine(item))+'</div><div class="lite-item-affixes">'+escapeHTML(liteAffixLine(item)||'無附加詞條')+'</div>'+actions+'</article>';
  }).join('');
- return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+'<h3>戰利品背包</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+'</div>';
+ return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+'<h3>戰利品背包 · '+(liteArmoryPage+1)+'/'+pages+' 頁</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+(pages>1?'<div class="lite-pages">'+btn('較新的裝備','litePrevious','',liteArmoryPage===0)+btn('較舊的裝備','liteNext','',liteArmoryPage===pages-1)+'</div>':'')+'</div>';
 }
 function renderPanel(type){
  currentPanel=type;
@@ -801,7 +804,12 @@ function renderPanel(type){
    GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
  }else if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
-  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+it.icon+'</span><div class="detail"><strong>'+it.name+'</strong><small>目前攻擊 '+it.attack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
+  const liteWeapon=state.liteInventory.find(x=>x.instanceId===state.liteLoadout?.weapon);
+  const liteWeaponBase=liteBase(liteWeapon?.templateId);
+  const shownName=liteWeaponBase?.name||it.name;
+  const shownIcon=liteWeaponBase?.icon||it.icon;
+  const shownAttack=liteEquipmentStats(state).weaponAttack||it.attack;
+  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+shownIcon+'</span><div class="detail"><strong>'+shownName+'</strong><small>目前武器攻擊 '+shownAttack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
   +btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
@@ -868,6 +876,9 @@ body.addEventListener('click',e=>{
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
  else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(act==='litePrevious'||act==='liteNext'){
+   liteSalvagePending=null;liteArmoryPage=Math.max(0,liteArmoryPage+(act==='liteNext'?1:-1));renderPanel('equipment');
+ }
  else if(act==='liteEquip'||act==='liteUnequip'||act==='liteLock'){
    liteSalvagePending=null;commit({type:act,id:b.dataset.value});
  }
