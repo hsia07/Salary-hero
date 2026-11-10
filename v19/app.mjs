@@ -181,8 +181,9 @@ async function loadApprovedMonsterArt(){
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
  const errors=validateMonsterAtlasManifest(manifest,tierById);
  if(errors.length)throw new Error('未核准的怪物素材：'+errors.join('; '));
- const approved=new Map();
- for(const [id,record] of Object.entries(manifest.monsters||{})){
+ // Load each approved monster concurrently instead of serially decoding all
+ // 24 high-resolution strips. Every individual frame still receives full pixel QA.
+ const decoded=await Promise.all(Object.entries(manifest.monsters||{}).map(async ([id,record])=>{
    const frames={};let ok=true;
    for(const [state,frame] of Object.entries(record.states)){
      const image=await imageFrom(frame.src);
@@ -192,8 +193,9 @@ async function loadApprovedMonsterArt(){
      if(artErrors.length){console.warn('怪物逐格美術未通過：',id,state,artErrors);ok=false;break;}
      frames[state]={image,frame};
    }
-   if(ok)approved.set(id,frames);
- }
+   return [id,ok?frames:null];
+ }));
+ const approved=new Map(decoded.filter(([,frames])=>frames));
  approvedMonsterArt=approved;
  if(approved.has('keyboard-piranha')){
   world.dataset.clerkArt='16-original-frames-loaded';
