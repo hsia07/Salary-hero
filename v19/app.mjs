@@ -67,7 +67,7 @@ let state=loadGame();save();
 const trainingNotice=$('#training-mode-notice');
 if(trainingNotice&&trainingWave!==null){
  trainingNotice.hidden=false;
- const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（朝左・16 格透明候選，未正式核准）':'影印室工讀紙妖';
+ const name=trainingSpecies==='coffee-mimic'?'茶水間邪惡杯靈':trainingSpecies==='chair-golem'?'打卡保全機兵（正式美術）':trainingSpecies==='meeting-ghost'?'星際打卡實習生（正式 16 格逐格美術・面向左）':trainingSpecies==='deadline-clock'?'雲端資料專員靈（正式 16 格・面向左）':'影印室工讀紙妖';
  const label=$('#training-monster-name');
  if(label)label.textContent=name;
  const readout=$('#training-animation-readout');
@@ -139,7 +139,7 @@ async function loadAlienCandidateArt(){
  }
 }
 async function loadCloudGhostCandidateArt(){
- if(trainingSpecies!=='deadline-clock')return;
+ if(trainingSpecies!=='deadline-clock'||approvedMonsterArt.has('deadline-clock'))return;
  const url=new URL('../art/v19/candidates/monsters/deadline-clock/manifest-candidate.json?v=ghost-v19-18',import.meta.url);
  const record=await fetch(url).then(r=>{if(!r.ok)throw new Error('雲端幽靈候選素材 HTTP '+r.status);return r.json()});
  if(record.id!=='deadline-clock'||record.tier!=='normal'||record.approved!==false||
@@ -167,7 +167,7 @@ async function loadCloudGhostCandidateArt(){
  }
 }
 async function loadApprovedMonsterArt(){
- const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=alien-official-fourth-v19-19-20261110',import.meta.url);
+ const manifestURL=new URL('../art/v19/runtime/monsters/manifest.json?art=cloud-official-fifth-v19-20-20261110',import.meta.url);
  const manifest=await fetch(manifestURL).then(r=>{if(!r.ok)throw new Error('monster manifest HTTP '+r.status);return r.json()});
  const tierById=Object.fromEntries(ALL_ENEMIES.map(e=>[e.id,
    BOSSES.some(b=>b.id===e.id)?'boss':ELITE_ENEMIES.some(b=>b.id===e.id)?'elite':'normal']));
@@ -192,6 +192,11 @@ async function loadApprovedMonsterArt(){
   world.dataset.alienFacing='left';
   world.dataset.alienApproval='official';
  }
+ if(trainingSpecies==='deadline-clock'&&approved.has('deadline-clock')){
+  world.dataset.cloudArt='16-original-frames-loaded';
+  world.dataset.cloudFacing='left';
+  world.dataset.cloudApproval='official';
+ }
  activeNormalVariant=trainingWave!==null
   ?normalVariantFor(trainingSpecies,requestedNormalVariant,[...approved.keys()]):null;
  if(activeNormalVariant){
@@ -203,10 +208,10 @@ async function loadApprovedMonsterArt(){
  }
  const notice=$('#monster-art-status');
  if(notice){
-   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')&&approved.has('chair-golem')&&approved.has('meeting-ghost')?'true':'false';
-   notice.dataset.approved=approved.has('chair-golem')?'true':'false';
+   notice.dataset.loaded=approved.has('paper-gremlin')&&approved.has('coffee-mimic')&&approved.has('chair-golem')&&approved.has('meeting-ghost')&&approved.has('deadline-clock')?'true':'false';
+   notice.dataset.approved=approved.has('chair-golem')&&approved.has('meeting-ghost')&&approved.has('deadline-clock')?'true':'false';
    const count=approved.size;
-   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id==='meeting-ghost'?'星際打卡實習生':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
+   notice.textContent='✓ 已載入獨立繪製怪物 '+count+'/32：'+[...approved.keys()].map(id=>id==='paper-gremlin'?'影印室工讀紙妖':id==='coffee-mimic'?'茶水間邪惡杯靈':id==='chair-golem'?'打卡保全機兵':id==='meeting-ghost'?'星際打卡實習生':id==='deadline-clock'?'雲端資料專員靈':id).join('、')+'。無須下載圖片；其餘怪物仍是工程替身。'+
     (activeNormalVariant?' 🔬 實驗換皮：'+activeNormalVariant.name+'，完全共用正式逐格動畫；不增加 32 種完成數。':'');
  }
  if(activeNormalVariant)render();
@@ -407,7 +412,7 @@ function drawStage(now){
    (fx?.oldEnemy?.typeId==='coffee-mimic'&&approvedMonsterArt.has('coffee-mimic'))||
    (fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))||
    (fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
-   (fx?.oldEnemy?.typeId==='deadline-clock'&&trainingSpecies==='deadline-clock'));
+   (fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock')));
  const attackDurationMs=illustratedCaster?(fx?.oldEnemy?.typeId==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:fx?.oldEnemy?.typeId==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:fx?.oldEnemy?.typeId==='chair-golem'?GUARD_BEAM_IMPACT_MS:fx?.oldEnemy?.typeId==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS):(chibiV2Ready?CHIBI_ATTACK_V2_TOTAL_MS:680);
  const hurtAtlas=chibiV2Mode?images.chibiHurtV1:null;
  const hurtCell=hurtAtlas?validateHurtAtlas(hurtAtlas.naturalWidth,hurtAtlas.naturalHeight):0;
@@ -480,7 +485,7 @@ function drawStage(now){
  ctx.save();ctx.translate(55,478+Math.sin(time*2)*4);ctx.font='55px system-ui';ctx.fillText('🐈',0,0);ctx.restore();
  const guardVictoryHold=fx?.oldEnemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem');
  const alienVictoryHold=fx?.oldEnemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost');
- const cloudVictoryHold=fx?.oldEnemy?.typeId==='deadline-clock'&&trainingCandidateArt.has('deadline-clock');
+ const cloudVictoryHold=fx?.oldEnemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock');
  const victory=fx?.result?.type==='victory'&&animationMs<(cloudVictoryHold?CLOUD_DEFEAT_END_MS:guardVictoryHold?GUARD_DEFEAT_END_MS:alienVictoryHold?ALIEN_DEFEAT_END_MS:1100);
  const hitWindow=chibiV2Ready?animationMs>=405&&animationMs<=580:phase>.25&&phase<.6;
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
@@ -504,7 +509,7 @@ function drawStage(now){
    if(enemy?.typeId==='chair-golem'&&approvedMonsterArt.has('chair-golem'))return guardCombatPoseAt(animationMs,hitResult);
    if(enemy?.typeId==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))
      return alienCombatPoseAt(animationMs,hitResult);
-   if(enemy?.typeId==='deadline-clock'&&trainingSpecies==='deadline-clock')
+   if(enemy?.typeId==='deadline-clock'&&approvedMonsterArt.has('deadline-clock'))
      return cloudCombatPoseAt(animationMs,hitResult);
    return monsterAnimationState(enemy,animationMs,hitResult);
  };
@@ -564,7 +569,7 @@ function drawStage(now){
       originX:route.originX,targetX:route.targetX,x:route.x,travelsLeft:route.travelsLeft});
  }
  // Fifth cloud spirit: time-dial projectile toward hero, never fake body animation.
- if(fx?.wave&&trainingSpecies==='deadline-clock'&&fx?.oldEnemy?.typeId==='deadline-clock'&&
+ if(fx?.wave&&approvedMonsterArt.has('deadline-clock')&&fx?.oldEnemy?.typeId==='deadline-clock'&&
     fx.result?.type==='hit'){
    drawCloudClockFx(ctx,animationMs,{enemyX,enemyY,heroX,heroY,
      canRetaliate:fx.retaliationDamage>0,reducedMotion:motionReduced});
@@ -625,7 +630,7 @@ function renderCombatBars(now){
  const caster=fx?.oldEnemy?.typeId;
  const illustrated=fx?.retaliation&&(hasIllustratedMonster(caster)||
    (caster==='meeting-ghost'&&approvedMonsterArt.has('meeting-ghost'))||
-   (caster==='deadline-clock'&&trainingSpecies==='deadline-clock'));
+   (caster==='deadline-clock'&&approvedMonsterArt.has('deadline-clock')));
  const contactMs=illustrated&&['paper-gremlin','coffee-mimic','chair-golem','meeting-ghost','deadline-clock'].includes(caster)
    ?(caster==='deadline-clock'?CLOUD_CLOCK_IMPACT_MS:caster==='meeting-ghost'?ALIEN_STAMP_IMPACT_MS:caster==='chair-golem'?GUARD_BEAM_IMPACT_MS:caster==='coffee-mimic'?COFFEE_SPRAY_IMPACT_MS:PAPER_PROJECTILE_IMPACT_MS)
    :(chibiV2Mode&&images.chibiAttackV2?CHIBI_ATTACK_V2_TOTAL_MS:680);
@@ -964,7 +969,7 @@ function frame(now){
         clock.charge>0?'時鐘蓄能':ms<405?'勇者出招':ms<840?'受傷閃紅':'準備下次攻擊';
       const pose=world.dataset.cloudPose||'idle',frame=1+Number(world.dataset.cloudFrame||0);
       const flash=Math.round(100*Number(JSON.parse(world.dataset.cloudFlash||'{}').red||0));
-      const msg='☁️ '+cue+'｜'+pose+' #'+frame+(flash?'｜全身紅閃 '+flash+'%':'')+'｜正式仍 3/32';
+      const msg='☁️ '+cue+'｜'+pose+' #'+frame+(flash?'｜全身紅閃 '+flash+'%':'')+'｜正式 5/32';
       if(readout.textContent!==msg)readout.textContent=msg;
     }
   }
