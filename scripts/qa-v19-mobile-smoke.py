@@ -35,11 +35,17 @@ def main():
   wave=page.locator('#wave').inner_text()
   hp_before=page.locator('#enemy-hp-fill').get_attribute('style')
   page.locator('#attack').click()
-  page.wait_for_timeout(280)
+  # The illustrated hero does not physically hit until t=405ms. The UI
+  # deliberately holds pre-hit HP until contact; don't test stale 280ms bars.
+  page.wait_for_function("""(before) => {
+    const style=document.querySelector('#enemy-hp-fill')?.getAttribute('style');
+    const log=document.querySelector('#game-log')?.textContent || '';
+    return style!==before || log.includes('過關');
+  }""",arg=hp_before,timeout=7000)
   hp_after=page.locator('#enemy-hp-fill').get_attribute('style')
   log=page.locator('#game-log').inner_text()
-  if hp_before==hp_after and '過關' not in log and '攻擊' not in log:
-   raise AssertionError('Attacking did not update enemy state')
+  if hp_before==hp_after and '過關' not in log:
+   raise AssertionError('Attacking did not update enemy state after weapon contact')
   if page.evaluate('document.documentElement.scrollWidth > window.innerWidth + 3'):
    raise AssertionError('Horizontal overflow at 390px mobile viewport')
   if errors:raise AssertionError('JS runtime errors: '+'; '.join(errors[:8]))
