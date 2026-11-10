@@ -71,6 +71,8 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .paper-art-preview{display:block;text-align:center;background:linear-gradient(135deg,#855142,#4a2e46);color:#ffebc9;border:1px solid #ecc48e;border-radius:8px;font-size:13px;font-weight:750;padding:10px;margin:0 0 8px;text-decoration:none}
 .training-mode-notice{padding:12px 14px;background:linear-gradient(100deg,#75412c,#3f2845);border-bottom:2px solid #e8ae62;text-align:center;font-size:13px;line-height:1.55;color:#ffeed1}
 .training-mode-notice[hidden]{display:none}
+.training-mode-notice #training-finish{display:inline-block;margin:7px 5px 0 0;padding:8px 12px;border-radius:9px;background:linear-gradient(100deg,#9d4839,#5f294b);border:1px solid #ffd4a2;color:#fff5cf;font-weight:800;font-size:13px;cursor:pointer}
+.training-mode-notice #training-finish:disabled{opacity:.45}
 .training-mode-notice a{display:inline-block;color:#fff5ba;font-weight:800;margin-top:5px;text-decoration:underline}
 .training-fight-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:4px 0 8px}
 .training-fight-links a:last-child{grid-column:1/-1}
@@ -87,6 +89,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div id="training-mode-notice" class="training-mode-notice" role="status" hidden>
  <strong>⚔️ 實戰練習：<span id="training-monster-name">怪物</span></strong>
  <div>可攻擊、被反擊、擊倒並重戰。這裡的戰鬥不會改變正式遊戲存檔、裝備或薪資。</div>
+ <div><button type="button" id="training-finish">🎯 下一擊播放擊敗動畫</button></div>
  <a href="./play.html">返回原本的遊戲進度</a>
 </div>
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
@@ -138,4 +141,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=security-guard-cooldown-fix-v19-7-20261110"></script></body></html>
+<script type="module" src="./app.mjs?v=guard-death-frame-hold-v19-8-20261110"></script></body></html>
