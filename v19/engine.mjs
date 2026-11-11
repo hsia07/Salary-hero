@@ -202,7 +202,7 @@ export function normalize(raw,now=Date.now()){
  n.liteActiveBuild=liteBuildById(raw.liteActiveBuild)?.id||'none';
  n.liteBuildProgress=liteBuildProgress(raw.liteBuildProgress);
  n.liteBuildBranch=liteBuildBranch(raw.liteBuildBranch);
- n.liteMarks=n.liteActiveBuild==='clockout'?Math.max(0,Math.min(3,Math.floor(Number(raw.liteMarks)||0))):0;
+ n.liteMarks=n.liteActiveBuild==='clockout'&&Number.isFinite(Number(raw.liteMarks))?Math.max(0,Math.min(3,Math.floor(Number(raw.liteMarks)))):0;
  n.liteSkillUses=liteSkillUses(raw.liteSkillUses);
  n.liteSkillPaths=liteSkillPaths(raw.liteSkillPaths);
  n.litePresets=liteNormalizePresets(raw.litePresets,n.liteInventory);
