@@ -32,7 +32,7 @@ test('invalid selections and duplicate heroes are rejected without mutating inpu
  assert.deepEqual(result.imprints,{'mage-a':'shadow','medic-a':'night'});
  // The duplicate fighter was rejected, so its requested imprint must not survive.
  assert.equal(result.imprints['fighter-a'],undefined);
- assert.deepEqual(result.gear,{'fighter-a':'toxic-ledger'});
+ assert.deepEqual(result.gear,{}); // Rejected duplicate slot cannot retain its old equipment.
  assert.equal(JSON.stringify(d),before);
 });
 test('research imprint, actual fusion and equipment drive different simulator events',()=>{
