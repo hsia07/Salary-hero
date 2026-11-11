@@ -7,6 +7,7 @@ import {LITE_STRATEGIES} from './lite-idle.mjs';
 import {LITE_BUILDS,LITE_BUILD_TIERS,liteBuildById,liteMasteryRank,liteBuildStats} from './lite-builds.mjs';
 import {LITE_SKILL_PATHS,LITE_SKILL_UNLOCK_USES,liteSkillSelection} from './lite-skills.mjs';
 import {liteLegendaryEffects,liteLegendaryByTemplate} from './lite-legendaries.mjs';
+import {liteArmorPose,liteArmorAsset} from './lite-armor-poses.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -514,18 +515,22 @@ function drawStage(now){
  }else{
   drawHurtTintedSprite(pose,0,0,pose.naturalWidth,pose.naturalHeight,0,0,236,306,hurtVfx);
  }
- // Lite armor layer: independent, detailed illustrated garment pieces are mapped
- // to the existing approved chibi IDLE torso. Do not reuse on moving frames:
- // attack/hurt poses displace the shoulders and require their own atlas alignment.
+ // Real pose-by-pose equipment follows the already approved 7 hand-drawn
+ // attack poses and 5 separate hurt drawings, not a moving idle cut-out.
  const outfit=state.liteInventory.find(it=>it.instanceId===state.liteLoadout?.armor);
  const outfitBase=liteBase(outfit?.templateId);
- const armorArt=outfitBase?.setId==='clockout'?images.armorClockout:
-   outfitBase?.setId==='coffee'?images.armorCoffee:
-   outfitBase?.setId==='guardian'?images.armorGuardian:null;
- world.dataset.liteArmor=outfitBase?.setId||'none';
- if(trainingWave===null&&chibiReady&&!attacking&&!hurtVfx.active&&armorArt){
-   ctx.save();ctx.globalAlpha=.97;
-   ctx.drawImage(armorArt,83,190,94,83);
+ const armorKey=liteArmorAsset(outfit,outfitBase),armorArt=armorKey?images[armorKey]:null;
+ world.dataset.liteArmor=armorKey?outfitBase.setId:'none';
+ if(trainingWave===null&&chibiReady&&armorArt){
+   const mode=hurtPoseIndex>=0&&hurtCell?'hurt':attacking&&chibiV2Ready?'attack':'idle';
+   const poseIndex=mode==='hurt'?hurtPoseIndex:mode==='attack'?attackFrameAt(animationMs):0;
+   const layer=liteArmorPose(mode,poseIndex);
+   ctx.save();
+   ctx.translate(layer.x,layer.y);
+   ctx.rotate(layer.rotation);
+   ctx.globalAlpha=.92;
+   // Keep the straps and shoulder silhouette in sync with the native artwork.
+   ctx.drawImage(armorArt,-layer.width/2,-layer.height/2,layer.width,layer.height);
    ctx.restore();
  }
  // Engineering preview only: nondefault outfits have no approved animation sprites yet.
