@@ -8,6 +8,7 @@ import {LITE_BUILDS,LITE_BUILD_TIERS,liteBuildById,liteMasteryRank,liteBuildStat
 import {LITE_SKILL_PATHS,LITE_SKILL_UNLOCK_USES,liteSkillSelection} from './lite-skills.mjs';
 import {liteLegendaryEffects,liteLegendaryByTemplate} from './lite-legendaries.mjs';
 import {liteArmorPose,liteArmorAsset} from './lite-armor-poses.mjs';
+import {liteTacticalHint} from './lite-tactics.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -706,6 +707,40 @@ function drawStage(now){
 
  // Lite set attacks affect the rules AND have distinct timed impact feedback.
  // Reuse approved hero/monster animation atlas; only overlay the spell FX.
+ // Distinct tactical finisher: stamps shatter over the enemy, extraction
+ // forms a vivid emerald burst. These accompany real atlas poses, not jitter.
+ if(fx?.result?.tacticalSpent>0&&animationMs>=320&&animationMs<970){
+   const p=Math.max(0,Math.min(1,(animationMs-320)/650));
+   const cx=enemyX+92,cy=enemyY+125;
+   ctx.save();ctx.globalAlpha=(1-p)*.94;ctx.translate(cx,cy);
+   ctx.rotate(-.18-p*.6);ctx.shadowColor='#ffd47e';ctx.shadowBlur=19;
+   for(let i=0;i<fx.result.tacticalSpent;i++){
+     const angle=i*Math.PI*2/fx.result.tacticalSpent;
+     const x=Math.cos(angle)*(45+p*42),y=Math.sin(angle)*(41+p*40);
+     ctx.lineWidth=5;ctx.strokeStyle='#ffe2a6';ctx.fillStyle='#be7e60';
+     ctx.beginPath();ctx.roundRect(x-16,y-16,32,32,5);ctx.fill();ctx.stroke();
+     ctx.font='900 24px serif';ctx.textAlign='center';ctx.fillStyle='#fff0c3';
+     ctx.fillText('✓',x,y+8);
+   }
+   ctx.shadowBlur=0;ctx.lineWidth=5;ctx.strokeStyle='#3e253e';ctx.fillStyle='#ffdf9e';
+   ctx.strokeText('超時結算 +'+fx.result.tacticalExtra,0,-108-p*28);
+   ctx.fillText('超時結算 +'+fx.result.tacticalExtra,0,-108-p*28);ctx.restore();
+ }
+ if(fx?.result?.tacticalExtracted>0&&animationMs>=280&&animationMs<1050){
+   const p=Math.max(0,Math.min(1,(animationMs-280)/770));
+   const cx=enemyX+105,cy=enemyY+148;
+   ctx.save();ctx.globalAlpha=(1-p)*.9;ctx.translate(cx,cy);
+   ctx.strokeStyle='#acf6c8';ctx.shadowColor='#74e7b1';ctx.shadowBlur=26;
+   for(let i=0;i<3;i++){
+     const radius=24+35*i+p*65;ctx.lineWidth=8-i;
+     ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();
+   }
+   ctx.shadowBlur=0;ctx.strokeStyle='#254735';ctx.lineWidth=5;ctx.fillStyle='#ceffdd';
+   ctx.font='900 24px serif';ctx.textAlign='center';
+   const label='萃取 '+fx.result.tacticalExtracted+' 層';
+   ctx.strokeText(label,0,-111-p*19);ctx.fillText(label,0,-111-p*19);
+   ctx.restore();
+ }
  if((fx?.result?.finisher||(fx?.result?.liteBuild==='clockout'&&fx?.result?.buildProc))&&animationMs>=260&&animationMs<980){
    const progress=Math.max(0,Math.min(1,(animationMs-260)/720));
    const alpha=(1-progress)*(motionReduced?.78:1);
@@ -828,6 +863,8 @@ function render(){
    buildRibbon.dataset.build=build?.id||'none';
    buildRibbon.textContent=build?'✦ '+build.name+' · 專精 '+rank+' 階 · '+state.liteBuildProgress[build.id]+' 熟練':'✦ 尚未選擇流派 · 點此開啟專精';
  }
+ const tactic=$('#lite-tactical-status');
+ if(tactic){const hint=liteTacticalHint(state);tactic.dataset.build=hint.id;tactic.textContent=hint.label;}
  renderCombatBars(performance.now());
  $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+(liveVariantFor(state.enemy)?.name||state.enemy.name);
  const trait=$('#enemy-trait');
@@ -1271,7 +1308,10 @@ function frame(now){
       else if(state.specialChests>0){commit('weekendChest');lastAttack=now;}
       else if(state.heroHp<state.maxHp*.32&&state.potions>0){commit('heal');lastAttack=now;}
       else {
-      const pick=state.heroHp<state.maxHp*.6&&state.skillCooldowns.drain===0?'drain':
+      const coffeeStacks=state.liteToxinStacks||0;
+      const coffeeBoss=state.enemy?.tier==='boss';
+      const shouldExtract=state.liteActiveBuild==='coffee'&&coffeeStacks>=(coffeeBoss?4:2)&&state.skillCooldowns.drain===0;
+      const pick=shouldExtract?'drain':state.heroHp<state.maxHp*.6&&state.skillCooldowns.drain===0?'drain':
        state.heroHp<state.maxHp*.35&&state.skillCooldowns.guard===0?'guard':
        state.skillCooldowns.burst===0?'burst':null;
       if(pick)skillAttack(pick);else attack();
