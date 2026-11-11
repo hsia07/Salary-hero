@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="320" viewBox="0 0 220 320">
+<defs>
+ <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffeabc"/><stop offset=".33" stop-color="#dfb375"/><stop offset=".65" stop-color="#9c6656"/><stop offset="1" stop-color="#f6d9a3"/></linearGradient>
+ <linearGradient id="wood" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#754f5c"/><stop offset=".4" stop-color="#352334"/><stop offset=".84" stop-color="#593b48"/><stop offset="1" stop-color="#251c2c"/></linearGradient>
+ <linearGradient id="potion" x1="0" y1="0" x2="1" y2=".88"><stop stop-color="#e5ffe1"/><stop offset=".25" stop-color="#a2edc4"/><stop offset=".63" stop-color="#2eaf96"/><stop offset="1" stop-color="#174b64"/></linearGradient>
+ <radialGradient id="mist"><stop stop-color="#b3efd0" stop-opacity=".55"/><stop offset=".58" stop-color="#51ac93" stop-opacity=".17"/><stop offset="1" stop-color="#a0ffcd" stop-opacity="0"/></radialGradient>
+ <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<!-- Unique coffee alchemy weapon, floating beside the approved chibi actor. -->
+<ellipse cx="105" cy="104" rx="101" ry="106" fill="url(#mist)"/>
+<g transform="rotate(-12 102 161)">
+ <path d="M98 122Q104 106 112 119L111 295Q110 312 98 314Q89 310 92 295Z" fill="url(#wood)" stroke="#d6b17d" stroke-width="6" stroke-linejoin="round"/>
+ <path d="M95 152Q110 159 114 146M94 169Q107 178 113 164M93 190Q109 199 113 185M95 211Q110 220 112 205M96 233Q109 239 113 226M95 257Q110 265 112 249" fill="none" stroke="#e8c18c" stroke-width="2.7" opacity=".75"/>
+ <path d="M72 79Q66 106 77 123Q104 135 126 121Q136 105 129 79Z" fill="#264e50" stroke="url(#brass)" stroke-width="7"/>
+ <path d="M75 84Q71 105 81 116Q105 127 122 114Q130 101 125 84Z" fill="url(#potion)" stroke="#d3ffe4" stroke-width="2"/>
+ <path d="M129 87Q161 77 159 102Q157 118 130 116" fill="none" stroke="url(#brass)" stroke-width="10" stroke-linecap="round"/>
+ <path d="M128 87Q153 81 152 101Q151 109 132 110" fill="none" stroke="#4b3850" stroke-width="4"/>
+ <ellipse cx="100" cy="81" rx="31" ry="9" fill="#2c4b51" stroke="url(#brass)" stroke-width="6"/>
+ <ellipse cx="100" cy="82" rx="24" ry="5" fill="#7be5bd"/>
+ <path d="M92 94Q89 52 105 31Q112 16 102 8M107 93Q119 57 128 47Q147 25 133 13" stroke="#abf7d3" opacity=".55" stroke-width="9" fill="none" filter="url(#blur)"/>
+ <path d="M92 94Q89 52 105 31Q112 16 102 8M107 93Q119 57 128 47Q147 25 133 13" stroke="#d4ffe9" opacity=".8" stroke-width="3" fill="none" stroke-linecap="round"/>
+ <path d="M78 124Q96 143 125 125L119 143Q100 151 84 142Z" fill="url(#brass)" stroke="#503748" stroke-width="4"/>
+ <path d="M81 143l19 13 18-13" stroke="#f9dfab" stroke-width="3" fill="none"/>
+ <path d="M95 296l11 10 8-12" stroke="url(#brass)" stroke-width="6" fill="none" stroke-linecap="round"/>
+ <circle cx="103" cy="126" r="7" fill="#d4f9cf" stroke="#e8b878" stroke-width="3"/>
+</g>
+<g fill="#c3ffe3" opacity=".85"><circle cx="47" cy="69" r="3"/><circle cx="165" cy="38" r="2"/><circle cx="172" cy="136" r="4"/><circle cx="57" cy="169" r="2"/></g>
+</svg>
