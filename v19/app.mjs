@@ -10,6 +10,7 @@ import {liteLegendaryEffects,liteLegendaryByTemplate} from './lite-legendaries.m
 import {liteArmorPose,liteArmorAsset} from './lite-armor-poses.mjs';
 import {liteTacticalHint} from './lite-tactics.mjs';
 import {initPortraitHome} from './portrait-home.mjs';
+import {initV20Home} from './v20-home.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -92,7 +93,7 @@ if(trainingNotice&&trainingWave!==null){
  if(readout)readout.hidden=!['chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'].includes(trainingSpecies);
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
-let portraitHome=null;
+let portraitHome=null,v20Home=null;
 $('#training-finish')?.addEventListener('click',()=>{
  if(trainingWave===null||!ready)return;
  state=primeTrainingFinisher(state,trainingSpecies);
@@ -905,6 +906,7 @@ function render(){
  $('#chest').textContent='📦 寶箱 ('+state.chests+')';
  const weekend=$('#weekend-chest');if(weekend){weekend.textContent='🎁 週末箱 ('+state.specialChests+')';weekend.disabled=!ready||!state.specialChests;}
  portraitHome?.update(state);
+ v20Home?.update(state);
  if(currentPanel&&panel.open)renderPanel(currentPanel);
 }
 function commit(action){
@@ -1152,6 +1154,7 @@ body.addEventListener('click',e=>{
 });
 document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>openPanel(b.dataset.panel));
 portraitHome=initPortraitHome({getState:()=>state,openPanel,goHome:()=>{}});
+v20Home=initV20Home({getState:()=>state});
 $('#pay-details').onclick=()=>openPanel('salary');
 const nameDialog=$('#name-dialog'),nameInput=$('#player-name-input'),nameMessage=$('#name-message'),namePreview=$('#name-preview');
 function openNameEditor(){
