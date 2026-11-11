@@ -52,7 +52,68 @@ def main():
         page=manual_context.new_page()
         page.on('pageerror',lambda err:errors.append(str(err)))
         ready(page)
-        assert 'NT$' in page.locator('#today').inner_text()
+        # V21 has one stage: daily office encounters are reached after switching
+        # to the office view; combat and real salary continue in the background.
+        page.locator('#v21-view-office').click()
+        assert page.locator('#town-stage').is_visible()
+        assert 'NT
+        page.locator('button[data-panel="adventure"]').click()
+        assert '智慧平衡託管 OFF' in page.locator('#panel-content').inner_text()
+        assert page.locator('#panel-content .encounter-diorama').is_visible()
+        page.locator('#panel-content button[data-action="encounterStart"]').click()
+        assert page.locator('.encounter-choice').count()==2
+        assert page.locator('.encounter-diorama h3').inner_text().strip()
+        # Capture the mobile story scene without downloading or uploading user art.
+        page.locator('#panel').screenshot(path=str(QA/'encounter-storybook-mobile.png'),
+             animations='disabled')
+        page.locator('.encounter-choice').nth(1).click()
+        complete=state(page)
+        assert complete['encounterPending'] is None
+        assert len(complete['encounterHistory'])==1
+        assert complete['skinTickets']==1
+        assert complete['autoEncounter'] is False
+        assert '今日冒險紀錄' in page.locator('#panel-content').inner_text()
+        assert page.locator('#panel-content button[data-action="encounterStart"]').count()==0
+        # Opening this same panel again does not award a second ticket.
+        page.locator('#panel-close').click()
+        page.locator('button[data-panel="adventure"]').click()
+        assert state(page)['skinTickets']==1
+        page.locator('.encounter-auto-toggle').click()
+        assert state(page)['autoEncounter'] is True
+        page.reload(wait_until='domcontentloaded')
+        page.wait_for_function('() => document.querySelector("#attack")?.disabled===false')
+        persisted=state(page)
+        assert persisted['autoEncounter'] is True
+        assert len(persisted['encounterHistory'])==1
+        assert persisted['skinTickets']==1
+        manual_context.close()
+
+        # Separate simulated mobile player's storage: auto must complete once,
+        # but only when explicitly opted in, and with combat auto disabled.
+        auto_context=context(browser,True)
+        automatic=auto_context.new_page()
+        automatic.on('pageerror',lambda err:errors.append(str(err)))
+        ready(automatic)
+        automatic.wait_for_function("""(key) => {
+          const s=JSON.parse(localStorage.getItem(key)||'null');
+          return s?.encounterDay && !s.encounterPending && s.encounterHistory?.length===1;
+        }""",arg=KEY,timeout=10000)
+        auto_state=state(automatic)
+        assert auto_state['autoEncounter'] is True
+        assert auto_state['skinTickets']==1
+        assert auto_state['auto'] is False
+        automatic.wait_for_timeout(1250)
+        assert state(automatic)['skinTickets']==1,'auto minted duplicate daily ticket'
+        assert len(state(automatic)['encounterHistory'])==1
+        assert 'NT$' in automatic.locator('#today').inner_text()
+        auto_context.close()
+        assert not errors,'JavaScript runtime error: '+repr(errors)
+        browser.close()
+    print('PASS: mobile storybook scene, eight-route gameplay, manual opt-in, risk journal, persisted save, auto daily exactly once, salary preserved.')
+
+if __name__=='__main__':
+    main()
+ in page.locator('#today').inner_text()
         page.locator('button[data-panel="adventure"]').click()
         assert '智慧平衡託管 OFF' in page.locator('#panel-content').inner_text()
         assert page.locator('#panel-content .encounter-diorama').is_visible()
