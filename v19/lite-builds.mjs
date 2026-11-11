@@ -19,7 +19,7 @@ export const LITE_BUILDS=Object.freeze([
  }),
  Object.freeze({
    id:'coffee',name:'咖啡續命',title:'深夜煉金師',icon:'☕',accent:'#9ee4bf',
-   description:'擊中敵人疊加咖啡毒素，對敵人造成額外腐蝕傷害；每第三次攻擊恢復生命。',
+   description:'每次攻擊疊加毒素，每第三次攻擊回血；累積 2 層後使用咖啡技能，可萃取毒素打出額外傷害並讓普通敵人脫力。',
    options:Object.freeze([
      Object.freeze({id:'heal',name:'續杯本能',text:'每第三次攻擊回復更多生命，專打持久戰。'}),
      Object.freeze({id:'venom',name:'黑咖啡腐蝕',text:'放大毒素傷害，換取更快的擊殺速度。'})
