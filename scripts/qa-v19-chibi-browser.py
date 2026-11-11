@@ -17,7 +17,7 @@ def main():
   errors=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
   # This is deliberately the DEFAULT V19 URL, without ?art=... or manual upload.
-  page.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
+  page.goto(BASE+'/v19/play.html?dev=1',wait_until='domcontentloaded')
   page.wait_for_function("document.querySelector('#name-dialog')?.open || document.querySelector('#world')?.dataset?.art",timeout=25000)
   if page.locator('#name-dialog[open]').count():
    page.locator('#player-name-input').fill('高清驗收')
