@@ -83,7 +83,7 @@ export function initPortraitHome({getState,openPanel,goHome}){
  cat?.addEventListener('click',()=>{line('cat')});
  coffee?.addEventListener('click',()=>{line('coffee');flash('☕ 咖啡彩蛋 · 不扣藥水，也不增加遊戲資源')});
  clock?.addEventListener('click',()=>{flash('台灣時間 '+portraitClock());openPanel('salary')});
- document.querySelector('#town-task')?.addEventListener('click',()=>openPanel('modes'));
+ // The existing game panel dispatcher owns the town-task adventure button.
  const homeButton=document.querySelector('.tabs button[data-home]');
  const chooseTab=(button)=>{
    for(const b of buttons){
