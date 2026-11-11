@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="132" viewBox="0 0 160 132">
+<defs>
+<linearGradient id="coat" x1="0" y1=".1" x2="1" y2="1"><stop stop-color="#483452"/><stop offset=".45" stop-color="#30243b"/><stop offset=".81" stop-color="#584057"/><stop offset="1" stop-color="#241b2d"/></linearGradient>
+<linearGradient id="trim" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff4cb"/><stop offset=".38" stop-color="#c5965f"/><stop offset=".7" stop-color="#86566d"/><stop offset="1" stop-color="#f8dca2"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#d87872"/><stop offset=".6" stop-color="#903a51"/><stop offset="1" stop-color="#502b47"/></linearGradient>
+</defs>
+<!-- Transparent, manually illustrated front tailoring over existing shirt. -->
+<path d="M49 13Q37 18 22 30Q15 47 11 68L20 110Q28 119 43 125L52 116Q50 100 52 82L57 30Z" fill="url(#coat)" stroke="#211729" stroke-width="6" stroke-linejoin="round"/>
+<path d="M109 13Q128 22 141 35L147 75L138 115Q127 124 114 121L105 113Q112 86 107 33Z" fill="url(#coat)" stroke="#211729" stroke-width="6"/>
+<path d="M49 12Q55 24 79 42Q101 22 109 12L115 52L108 119Q94 124 80 122Q66 127 52 118L44 58Z" fill="#ece4d6" fill-opacity=".18"/>
+<path d="M48 12L74 35L53 52L67 66L57 106L37 55Z" fill="url(#coat)" stroke="url(#trim)" stroke-width="5"/>
+<path d="M111 12L88 35L107 52L94 66L104 108L123 56Z" fill="url(#coat)" stroke="url(#trim)" stroke-width="5"/>
+<path d="M68 32L80 45L92 31L87 88L80 110L73 87Z" fill="url(#red)" stroke="#4c283d" stroke-width="4"/>
+<path d="M80 46L80 109" stroke="#f5d6a1" stroke-width="2" stroke-dasharray="7 7"/>
+<g fill="#f2d99e" stroke="#8b5673" stroke-width="2"><circle cx="58" cy="82" r="5"/><circle cx="101" cy="82" r="5"/><circle cx="54" cy="103" r="4"/><circle cx="106" cy="103" r="4"/></g>
+<path d="M14 60Q27 50 42 58M121 58Q137 53 147 65" stroke="#b77b67" stroke-width="5" fill="none"/>
+<path d="M20 77L26 90L21 103M139 78L133 94L140 108" fill="none" stroke="#f4d59d" stroke-width="3" opacity=".78"/>
+<path d="M34 42q10-11 17-16m56 0q12 9 20 20" stroke="#fff0cb" stroke-opacity=".56" stroke-width="2.4" fill="none"/>
+<path d="M56 112Q78 121 104 111" fill="none" stroke="#9f6571" stroke-width="3"/>
+</svg>
