@@ -131,7 +131,7 @@ def main():
         mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-mobile.png'),animations='disabled')
         # Verify the outfit tracks actual hand-drawn attack frames, not only idle.
         mastered.locator('#attack').click()
-        mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose?.startsWith("attack-")',timeout=7000)
+        mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="attack-4"',timeout=7000)
         mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-attack-mobile.png'),animations='disabled')
         mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="idle-0"',timeout=7000)
         mastered.locator('#lite-tactical-status').click()
