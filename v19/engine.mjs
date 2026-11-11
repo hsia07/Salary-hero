@@ -150,7 +150,7 @@ export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,baseMaxHp:110,
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
-   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:Date.now(),liteOfflineReport:null,potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
+   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw,now=Date.now()){
