@@ -418,7 +418,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  <div id="training-animation-readout" class="training-animation-readout" hidden aria-live="off">🚨 正在載入機兵動作即時驗收……</div>
  <a href="./play.html">返回原本的遊戲進度</a>
 </div>
-<section class="battle-deck" id="battle-deck" aria-label="即時戰鬥與冒險控制"><div class="battle-heading"><span id="town-mode-label">⚔️ 辦公室遠征 · 第 1 關</span><span class="battle-live">● 即時戰鬥</span><button class="battle-bestiary" type="button" data-panel="collection">📖 圖鑑</button></div>
+<section class="battle-deck" id="battle-deck" aria-label="即時戰鬥與冒險控制"><div class="battle-heading"><span id="town-mode-label">⚔️ 辦公室遠征 · 第 1 關</span><span class="battle-live">● 即時戰鬥</span><section id="lite-offline-report" class="lite-offline-report" aria-label="離線巡邏收穫" hidden><div><strong>🌙 離線巡邏結算</strong><p id="lite-offline-summary"></p></div><button id="lite-offline-dismiss" type="button" aria-label="關閉離線收益提示">收起</button></section><button class="battle-bestiary" type="button" data-panel="collection">📖 圖鑑</button></div>
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
@@ -458,7 +458,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 </section>
 </details></div></details>
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
-<section id="lite-offline-report" class="lite-offline-report" aria-label="離線巡邏收穫" hidden><div><strong>🌙 離線巡邏結算</strong><p id="lite-offline-summary"></p></div><button id="lite-offline-dismiss" type="button" aria-label="關閉離線收益提示">收起</button></section>
+
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button><button id="weekend-chest">🎁 週末箱 (0)</button></section>
 </section><!-- /battle-deck -->
