@@ -11,7 +11,7 @@ import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyP
 import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
-import {SQUAD_JOBS,squadStats} from './v21-squad-core.mjs';
+import {SQUAD_JOBS,squadStats,normalizeSquadDraft,assignSquadMember} from './v21-squad-core.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -162,6 +162,7 @@ export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,baseMaxHp:110,
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    colleagueProgress:{version:1,members:[],materials:{trainingXp:0,coins:0,seals:0,emblems:0}},
+   colleagueFormation:{version:1,commanderPath:'strategist',slots:[null,null,null,null,null,null]},
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,liteActiveBuild:'none',liteBuildProgress:{clockout:0,coffee:0},liteBuildBranch:{clockout:'rush',coffee:'heal'},liteToxinStacks:0,liteToxinKey:'',liteMarks:0,liteSkillUses:{burst:0,guard:0,drain:0},liteSkillPaths:{burst:null,guard:null,drain:null},litePresets:[null,null],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
@@ -229,6 +230,13 @@ export function normalize(raw,now=Date.now()){
  n.colleagueProgress=normalizeColleagueProgress(raw.colleagueProgress,n.level);
  // Salary Hero's existing gold is the single source of truth for training coins.
  n.colleagueProgress.materials.coins=Math.max(0,Math.floor(Number(raw.gold)||0));
+ const ownedColleagues=new Map(n.colleagueProgress.members.map(m=>[m.id,m]));
+ const originalFormation=normalizeSquadDraft(raw.colleagueFormation);
+ n.colleagueFormation={...originalFormation,slots:originalFormation.slots.map(member=>{
+   if(!member)return null;
+   const owned=ownedColleagues.get(member.id);
+   return owned?{...member,level:owned.level}:null;
+ })};
  for(const k of ['xp','gold','gems','potions','chests','specialChests','skillBooks','skillFragments','petXp','petFood','craftingMaterial','rareMaterials','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.skillRank=Math.max(0,Math.min(5,Math.floor(Number(raw.skillRank)||0)));
  n.forgeLevel=Math.max(0,Math.min(10,Math.floor(Number(raw.forgeLevel)||0)));
@@ -385,6 +393,28 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.colleagueProgress=recruited.state;
    s.last={type:'colleagueRecruit',ok:true,id,job:job.id};
    notice(s,'🤝 同事加入隊伍：'+job.name+'！');break;
+ }
+ case 's1DeployColleague':{
+   if(s.trainingIsolated){notice(s,'美術練習模式不允許編隊。');break;}
+   const index=Number(a.slot);
+   const job=SQUAD_JOBS.find(x=>x.id===a.id);
+   const owned=job&&s.colleagueProgress.members.find(m=>m.id==='starter-'+job.id);
+   if(!Number.isInteger(index)||index<0||index>=6||!owned){
+     s.last={type:'colleagueDeploy',ok:false,reason:'invalid-slot-or-member'};break;
+   }
+   const member={id:owned.id,job:job.id,level:owned.level,stars:1};
+   const existing=s.colleagueFormation.slots.findIndex(m=>m?.id===member.id);
+   if(existing>=0&&existing!==index)s.colleagueFormation=assignSquadMember(s.colleagueFormation,existing,null);
+   s.colleagueFormation=assignSquadMember(s.colleagueFormation,index,member);
+   s.last={type:'colleagueDeploy',ok:true,id:owned.id,slot:index};
+   notice(s,'🤝 '+job.name+' 已部署到第 '+(index+1)+' 格。');break;
+ }
+ case 's1RemoveColleague':{
+   const index=Number(a.slot);
+   if(!Number.isInteger(index)||index<0||index>=6){s.last={type:'colleagueRemove',ok:false};break;}
+   s.colleagueFormation=assignSquadMember(s.colleagueFormation,index,null);
+   s.last={type:'colleagueRemove',ok:true,slot:index};
+   notice(s,'已撤下第 '+(index+1)+' 格同事。');break;
  }
  case 's1TrainColleague':{
    if(s.trainingIsolated){notice(s,'美術練習模式不允許養成。');break;}
@@ -686,12 +716,8 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+Math.max(1,25+s.skillRank*5+skillMods.drainHeal));
    // S1 interim squad assist: recruited starters participate in real damage
    // calculations. Dedicated seven-actor sprite choreography is still pending.
-   const deployed=SQUAD_JOBS.flatMap(job=>{
-     const member=s.colleagueProgress.members.find(m=>m.id==='starter-'+job.id);
-     return member?[{id:member.id,job:job.id,level:member.level,stars:1}]:[];
-   }).slice(0,6);
-   const squadDraft={slots:Array.from({length:6},(_,i)=>deployed[i]||null)};
-   const squadAttack=squadStats(squadDraft,s.level).filter(Boolean).reduce((total,m)=>total+m.attack,0);
+   const deployed=s.colleagueFormation.slots.filter(Boolean);
+   const squadAttack=squadStats(s.colleagueFormation,s.level).filter(Boolean).reduce((total,m)=>total+m.attack,0);
    const colleagueAssist=deployed.length?Math.max(1,Math.round(squadAttack*.16)):0;
    if(colleagueAssist){damage+=colleagueAssist;notice(s,'🤝 '+deployed.length+' 位同事協力：追加 '+colleagueAssist+' 傷害！');}
    const enemyHpBefore=s.enemy.hp;
