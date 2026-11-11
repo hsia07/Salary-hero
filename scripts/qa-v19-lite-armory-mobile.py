@@ -104,11 +104,7 @@ def main():
         assert configured['liteAutoEquip'] is True
         assert configured['liteAutoStrategy']=='survival'
         assert configured['liteOfflineReport'] is None
-        assert 'NT
-
-if __name__=='__main__':
-    main()
- in offline.locator('#today').inner_text()
+        assert 'NT$' in offline.locator('#today').inner_text()
         offline.locator('#panel-close').click()
         offline.reload(wait_until='domcontentloaded')
         offline.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
