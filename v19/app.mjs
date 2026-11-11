@@ -298,7 +298,7 @@ function drawHurtSparks(x,y,effect){
  ctx.restore();
 }
 const assetPaths={
- bg:'../art/v19/runtime/backgrounds/office-night.svg',
+ bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v19/runtime/backgrounds/storybook-corridor.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
  weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
  weaponClockoutEcho:'../art/v19/runtime/weapons/lite-clockout-echo.svg',
@@ -439,7 +439,7 @@ function drawStage(now){
  ctx.setTransform(PIXEL_SCALE,0,0,PIXEL_SCALE,0,0);
  ctx.clearRect(0,0,W,H);
  drawImageCover(images.bg,bgShift);
- const dim=ctx.createLinearGradient(0,0,0,H);dim.addColorStop(0,'#120b2919');dim.addColorStop(.65,'#160e254d');dim.addColorStop(1,'#120b27de');ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
+ const dim=ctx.createLinearGradient(0,0,0,H);dim.addColorStop(0,'#1b173319');dim.addColorStop(.65,'#23163432');dim.addColorStop(1,'#20142a8c');ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
  // Living environment: separate floating light sources, mist, floor and sparks.
  for(let i=0;i<14;i++){const x=(i*113+Math.sin(time*.3+i)*13)%W,y=(i*79+Math.sin(time*.8+i)*14)%(H-60);glow(x,y,7+i%4*4,i%3?'#ffc4703b':'#aa8bff48');}
  glow(126,88,135,'#ffd58a34');glow(614,165,175,'#a575ff35');
