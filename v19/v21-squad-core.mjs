@@ -2,6 +2,7 @@
  * No import from app.mjs or engine.mjs; does not touch saves, salary or
  * currently live single-character combat until migration is explicitly done.
  */
+import {teamAura,colleagueCap} from './s1-progression.mjs';
 export const SQUAD_SLOTS=Object.freeze([
  {id:'front-left',row:'front',x:0,y:0},{id:'front-right',row:'front',x:1,y:0},
  {id:'middle-left',row:'middle',x:0,y:1},{id:'middle-right',row:'middle',x:1,y:1},
@@ -84,17 +85,20 @@ export function squadSynergies(draft){
   .map(([tag,count])=>({tag,count,tier:count>=4?2:1}))
   .sort((a,b)=>b.tier-a.tier||b.count-a.count||a.tag.localeCompare(b.tag));
 }
-export function squadStats(draft){
+export function squadStats(draft,slaveLevel=null){
  const formation=normalizeSquadDraft(draft);
  const tagged=squadSynergies(formation);
  const officeBoost=tagged.find(s=>s.tag==='office')?.tier??0;
  return formation.slots.map((m,i)=>{
   if(!m)return null;
   const j=job(m.job),p=j.paths.find(x=>x.id===m.path);
-  const multi=1+(m.level-1)*.055+(m.stars-1)*.11;
+  // Preview without a slaveLevel remains backward compatible with V21 prototypes.
+  const effectiveLevel=slaveLevel===null?m.level:Math.min(m.level,colleagueCap(slaveLevel,4));
+  const aura=slaveLevel===null?1:teamAura(slaveLevel);
+  const multi=1+(effectiveLevel-1)*.055+(m.stars-1)*.11;
   const x={id:m.id,name:m.name,job:j.id,role:j.role,preferredRow:roleRows[j.role],
     slot:SQUAD_SLOTS[i].id,row:SQUAD_SLOTS[i].row,path:m.path,effect:p.effect,value:p.value,
-    maxHp:Math.round(j.hp*multi),attack:Math.round(j.atk*multi*(1+officeBoost*.035)),
+    maxHp:Math.round(j.hp*multi*aura),attack:Math.round(j.atk*multi*aura*(1+officeBoost*.035)),
     speed:j.spd+(m.stars-1),shield:0};
   if(x.row!==x.preferredRow)x.formationHint='非典型站位：可組特殊陣容';
   return x;
@@ -113,9 +117,9 @@ export function commanderAction(draft,{charge=0,allies=[],enemies=[]}={}){
  }))};
  return {ready:true,path,charge:0,effects:opponent.map(x=>({target:x.id,type:'interrupt-weaken',damageTaken:.16,duration:4}))};
 }
-export function squadPreview(draft){
+export function squadPreview(draft,slaveLevel=null){
  const squad=normalizeSquadDraft(draft);
- const units=squadStats(squad).filter(Boolean);
+ const units=squadStats(squad,slaveLevel).filter(Boolean);
  const filled=units.length;
  const roles=Object.fromEntries(SQUAD_JOBS.map(x=>[x.role,units.filter(m=>m.role===x.role).length]));
  return {filled,empty:6-filled,units,roles,synergies:squadSynergies(squad),commander:squad.commanderPath,
