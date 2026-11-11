@@ -1,6 +1,7 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
-import {xpToNext,teamAura} from './s1-progression.mjs';
+import {xpToNext,teamAura,colleagueCap,colleagueUpgradeCost} from './s1-progression.mjs';
+import {SQUAD_JOBS} from './v21-squad-core.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -1033,7 +1034,7 @@ function renderLiteEquipment(){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',offline:'離線巡邏收益',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心',research:'戰術研究室'};
+ const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',offline:'離線巡邏收益',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',colleagues:'同事養成・試玩',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心',research:'戰術研究室'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='research'){labUI.mount(body);return;}
  if(type==='modes'){
@@ -1062,7 +1063,22 @@ function renderPanel(type){
   body.innerHTML=btn('🏵️ 查看打卡暴擊／咖啡續命流派專精','liteBuilds')+'<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
    '<p>技能書 '+state.skillBooks+' 本 · 專精 '+state.skillRank+'/5</p>'+btn('📕 研讀技能書（提升技能效果）','studySkillBook','',!state.skillBooks||state.skillRank>=5)+
    GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('')+renderLiteSkillStudies();
- }else if(type==='hero'){
+ }else if(type==='colleagues'){
+  const progress=state.colleagueProgress;
+  const materials=progress.materials;
+  const cards=SQUAD_JOBS.map(job=>{
+   const member=progress.members.find(m=>m.id==='starter-'+job.id);
+   if(!member)return '<article class="s1-colleague-card"><div class="s1-colleague-emblem" aria-hidden="true">✦</div><div><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(job.role)+' · 尚未招募</small></div><button data-action="s1RecruitColleague" data-value="'+job.id+'">招募</button></article>';
+   const cap=colleagueCap(state.level,member.breakthrough);
+   const cost=colleagueUpgradeCost(member.level);
+   const ready=member.level<cap&&cost&&materials.trainingXp>=cost.trainingXp&&state.gold>=cost.coins;
+   const breakthroughReady=member.breakthrough<4&&member.level===[20,40,60,80][member.breakthrough]&&state.level>=member.level;
+   return '<article class="s1-colleague-card"><div class="s1-colleague-emblem" aria-hidden="true">✦</div><div><strong>'+escapeHTML(job.name)+'</strong><small>Lv.'+member.level+' / '+cap+' · 突破 '+member.breakthrough+'/4</small><small>升級：訓練點 '+(cost?.trainingXp??'MAX')+'／薪幣 '+(cost?.coins??'MAX')+'</small></div><div class="s1-colleague-actions"><button data-action="s1TrainColleague" data-value="'+member.id+'" '+(!ready?'disabled':'')+'>升級</button><button data-action="s1BreakthroughColleague" data-value="'+member.id+'" '+(!breakthroughReady?'disabled':'')+'>突破</button></div></article>';
+  }).join('');
+  body.innerHTML='<section class="s1-colleague-panel"><p class="s1-colleague-note">養成系統試玩版 · 角色正式分層美術與進階動畫製作中</p><div class="s1-colleague-resources"><span>薪奴 Lv.'+state.level+'</span><span>薪幣 '+format(state.gold)+'</span><span>訓練 '+format(materials.trainingXp)+'</span><span>突破章 '+format(materials.seals)+'</span><span>徽記 '+format(materials.emblems)+'</span></div><div class="s1-colleague-grid">'+cards+'</div></section>';
+  return;
+ }
+ if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
   const liteWeapon=state.liteInventory.find(x=>x.instanceId===state.liteLoadout?.weapon);
   const liteWeaponBase=liteBase(liteWeapon?.templateId);
@@ -1070,7 +1086,7 @@ function renderPanel(type){
   const shownIcon=liteWeaponBase?.icon||it.icon;
   const shownAttack=liteEquipmentStats(state).weaponAttack||it.attack;
   body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(state.level>=100?'MAX':xpToNext(state.level))+' · 已擊敗 '+state.cleared+' 隻</small><small>薪奴光環：同事基礎攻擊與生命 +'+((teamAura(state.level)-1)*100).toFixed(2)+'%（六人戰鬥接入中）</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+shownIcon+'</span><div class="detail"><strong>'+shownName+'</strong><small>目前武器攻擊 '+shownAttack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
-  +btn('🏵️ 流派與職業專精','liteBuilds')+btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
+  +btn('🤝 同事招募與養成','openPanel','colleagues')+btn('🏵️ 流派與職業專精','liteBuilds')+btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
  } else if(type==='liteBuilds'){
@@ -1169,6 +1185,10 @@ body.addEventListener('click',e=>{
  }
  else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague'].includes(act)){
+  commit({type:act,id:b.dataset.value});
+  renderPanel('colleagues');
+ }
  else if(act==='liteBuilds')renderPanel('liteBuilds');
  else if(act==='openPanel')renderPanel(b.dataset.value);
  else if(act==='liteChooseSkillPath')commit({type:'liteChooseSkillPath',skill:b.dataset.skill,id:b.dataset.value});
