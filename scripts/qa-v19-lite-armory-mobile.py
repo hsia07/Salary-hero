@@ -104,7 +104,10 @@ def main():
         mastery_seed={'version':19,'playerName':'專精驗收勇者','auto':False,
           'liteActiveBuild':'clockout','liteBuildProgress':{'clockout':5,'coffee':0},
           'liteBuildBranch':{'clockout':'rush','coffee':'heal'},
-          'liteSkillUses':{'burst':6,'guard':0,'drain':0}}
+          'liteSkillUses':{'burst':6,'guard':0,'drain':0},
+          'liteInventory':[make_item(11,'a-barista')],
+          'liteItemSeq':11,
+          'liteLoadout':{'weapon':None,'armor':'li-11','badge':None,'relic':None}}
         mastery_context=browser.new_context(viewport={'width':390,'height':844},
           device_scale_factor=2,is_mobile=True,has_touch=True,
           storage_state={'cookies':[],'origins':[{'origin':BASE,
@@ -123,6 +126,8 @@ def main():
         assert mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)['liteActiveBuild']=='coffee'
         mastered.locator('#panel-close').click()
         assert '咖啡續命' in mastered.locator('#lite-build-ribbon').inner_text()
+        assert mastered.locator('#world').get_attribute('data-lite-armor')=='coffee'
+        mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-mobile.png'),animations='disabled')
         mastered.locator('button[data-panel="skills"]').click()
         assert '技能使用六次' in mastered.locator('#panel-content').inner_text()
         mastered.locator('button[data-action="liteChooseSkillPath"][data-skill="burst"][data-value="heavy"]').click()
@@ -132,6 +137,10 @@ def main():
         mastered.locator('#panel-close').click()
         for art in ['lite-clockout-echo.svg','lite-coffee-echo.svg']:
             response=mastered.request.get(BASE+'/art/v19/runtime/weapons/'+art)
+            assert response.status==200,art
+            assert b'<svg' in response.body()
+        for art in ['lite-clockout-coat.svg','lite-coffee-apron.svg','lite-guardian-harness.svg']:
+            response=mastered.request.get(BASE+'/art/v19/runtime/hero/'+art)
             assert response.status==200,art
             assert b'<svg' in response.body()
         assert not errors,errors
