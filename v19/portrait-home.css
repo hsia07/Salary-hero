@@ -249,10 +249,10 @@ html{overflow-x:hidden}
 .portrait-shell:not([data-training]) .chibi-art-state,
 .portrait-shell:not([data-training]) .monster-art-status,
 .portrait-shell:not([data-training]) .footnote{display:none}
-.portrait-shell[data-dev-visible=true] .dev-gallery,
-.portrait-shell[data-dev-visible=true] .chibi-art-state,
-.portrait-shell[data-dev-visible=true] .monster-art-status,
-.portrait-shell[data-dev-visible=true] .footnote{display:block}
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .dev-gallery,
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .chibi-art-state,
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .monster-art-status,
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .footnote{display:block}
 .portrait-dev-toggle{
  display:block;margin:8px 10px 12px auto;padding:6px 10px;
  color:#c9abbb;background:#24182e;border:1px solid #856778;border-radius:12px;font-size:10px;opacity:.7;
