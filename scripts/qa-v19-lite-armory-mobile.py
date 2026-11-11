@@ -71,7 +71,40 @@ def main():
         assert state()['liteLoadout']['weapon']=='li-1'
         assert state()['liteLoadout']['badge']=='li-2'
         assert len(state()['liteInventory'])==24
-        assert 'NT
+        assert 'NT' in page.locator('#today').inner_text()
+        assert len(state()['liteInventory'])==24
+
+        # Verify real mastery selection and locked-branch UI at 390px.
+        page.locator('#lite-build-ribbon').click()
+        assert '打卡暴擊' in page.locator('#panel-content').inner_text()
+        assert '咖啡續命' in page.locator('#panel-content').inner_text()
+        page.locator('button[data-action="liteChooseBuild"][data-value="clockout"]').click()
+        assert state()['liteActiveBuild']=='clockout'
+        assert page.locator('button[data-action="liteChooseBranch"][data-value="execute"]').is_disabled()
+        page.locator('.lite-build-card[data-build="clockout"]').screenshot(
+            path=str(QA/'lite-build-clockout-mobile.png'),animations='disabled')
+        page.locator('#panel-close').click()
+        assert '打卡暴擊' in page.locator('#lite-build-ribbon').inner_text()
+
+        page.evaluate("""(key)=>{
+          const s=JSON.parse(localStorage.getItem(key));
+          s.liteBuildProgress.clockout=5;
+          localStorage.setItem(key,JSON.stringify(s));
+        }""",KEY)
+        page.reload(wait_until='domcontentloaded')
+        page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
+        page.locator('#lite-build-ribbon').click()
+        page.locator('button[data-action="liteChooseBranch"][data-value="execute"]').click()
+        assert state()['liteBuildBranch']['clockout']=='execute'
+        page.locator('button[data-action="liteChooseBuild"][data-value="coffee"]').click()
+        assert state()['liteActiveBuild']=='coffee'
+        page.locator('#panel-close').click()
+        assert '咖啡續命' in page.locator('#lite-build-ribbon').inner_text()
+        for art in ['lite-clockout-echo.svg','lite-coffee-echo.svg']:
+            response=page.request.get(BASE+'/art/v19/runtime/weapons/'+art)
+            assert response.status==200,art
+            assert b'<svg' in response.body()
+        assert not errors,errors
         context.close()
 
         # A second isolated phone resumes after two hours offline.
