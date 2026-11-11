@@ -58,7 +58,10 @@ def test_species(page,species,expected_name,expected_wave):
     # latency MUST NOT change which animation frame we claim to verify.
     samples=page.evaluate("""() => new Promise((resolve,reject) => {
       const canvas=document.querySelector('#world');
-      const points=[['hero-hit',520],['counterattack',1090],['hurt-red-flash',1310]];
+      // Leave at least 280 ms before the actual retaliation contact (1215 ms).
+      // Rendering a full Retina PNG can consume >100 ms on a shared CI runner;
+      // sampling at 1090 ms could miss the wind-up and land at 1216 ms.
+      const points=[['hero-hit',520],['counterattack',930],['hurt-red-flash',1340]];
       const output=[];
       let index=0;
       const watchdog=setTimeout(()=>reject(Error('no combat timing frames')),9000);
