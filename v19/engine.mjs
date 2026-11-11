@@ -747,7 +747,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        const regen=(skill?.id==='guard'?skillMods.guardHeal:0)+legend.guardRegen;
        if(regen){s.heroHp=Math.min(s.maxHp,s.heroHp+regen);s.last.guardRegen=regen;notice(s,'🛡️ 護衛裝備：承傷後恢復 '+regen+' HP。');}
        if(skill?.id==='guard'&&skillMods.reflectMultiplier){
-         const reflected=Math.min(s.enemy.hp-1,Math.floor(s.last.retaliationDamage*skillMods.reflectMultiplier));
+         const reflected=Math.min(s.enemy.hp-1,Math.max(1,Math.round(s.last.retaliationDamage*skillMods.reflectMultiplier)));
          if(reflected>0){s.enemy.hp-=reflected;s.last.reflected=reflected;notice(s,'🛡️ 公事包反擊！反彈 '+reflected+' 傷害！');}
        }
      }
