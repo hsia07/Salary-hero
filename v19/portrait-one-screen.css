@@ -1,0 +1,261 @@
+/* Salary Hero V19.35 — SINGLE-SCREEN portrait battle hub.
+ * The viewport in a mobile browser is NOT the full physical phone screen:
+ * 100dvh accounts for expanding browser chrome. Gameplay HUD never scrolls.
+ * Panels (inventory with 120 pieces, quests, etc.) scroll inside dialogs only.
+ * Isolated monster-training remains a separate, scrollable QA experience.
+ */
+@supports (height:100dvh){
+ html:has(#app.portrait-shell:not([data-training])),
+ body:has(#app.portrait-shell:not([data-training])){
+  width:100%;height:100dvh;max-height:100dvh;overflow:hidden;overscroll-behavior:none;
+ }
+}
+#app.portrait-shell:not([data-training]){
+ display:grid;
+ grid-template-columns:minmax(0,1fr);
+ grid-template-rows:
+  calc(clamp(50px,8dvh,65px) + env(safe-area-inset-top))
+  minmax(132px,29fr)
+  minmax(285px,61fr)
+  calc(clamp(54px,8.2dvh,66px) + env(safe-area-inset-bottom));
+ width:min(100%,430px);
+ height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;
+ overscroll-behavior:none;position:relative;isolation:isolate;
+}
+#app.portrait-shell:not([data-training])>header.hud{
+ grid-row:1;min-width:0;min-height:0;height:100%;
+ padding:calc(3px + env(safe-area-inset-top)) 8px 3px;
+ display:flex;align-items:center;overflow:hidden;
+}
+#app.portrait-shell:not([data-training]) .hud-title{width:100%;gap:5px}
+#app.portrait-shell:not([data-training]) .hud-title:before{width:21px;height:21px;font-size:11px}
+#app.portrait-shell:not([data-training]) .brand{font-size:clamp(17px,4.9vw,22px)}
+#app.portrait-shell:not([data-training]) .subtitle{font-size:8px;line-height:1.1;letter-spacing:0}
+#app.portrait-shell:not([data-training]) .currencies{flex:1;gap:3px;justify-content:flex-end;min-width:0}
+#app.portrait-shell:not([data-training]) .currency{
+ min-width:0;padding:4px 5px;font-size:10px;max-width:30%;
+ display:flex;align-items:center;gap:2px;
+}
+#app.portrait-shell:not([data-training]) .currency b{max-width:42px;font-size:10px}
+#app.portrait-shell:not([data-training])>.town-stage{
+ grid-row:2;min-height:0;height:100%;max-height:100%;
+ overflow:hidden;contain:layout paint;
+}
+#app.portrait-shell:not([data-training]) .town-name{
+ top:4px;left:3px;max-width:50%;padding:3px 5px;
+ font-size:clamp(9px,2.8vw,11px);line-height:1.2;
+}
+#app.portrait-shell:not([data-training]) .town-name small{font-size:9px;margin-top:1px}
+#app.portrait-shell:not([data-training]) .town-clock{
+ top:41px;left:7px;width:43px;height:43px;border-width:3px;
+}
+#app.portrait-shell:not([data-training]) .town-clock small{font-size:9px;top:-11px;left:-2px}
+#app.portrait-shell:not([data-training]) .town-task{
+ left:5px;bottom:7px;max-width:34%;font-size:10px;padding:5px 6px;
+}
+#app.portrait-shell:not([data-training]) .town-hero{
+ left:28%;bottom:6%;height:82%;width:35%;filter:drop-shadow(0 5px 4px #180d23);
+}
+#app.portrait-shell:not([data-training]) .town-cat{
+ right:7%;bottom:3%;width:24%;height:30%;
+}
+#app.portrait-shell:not([data-training]) .town-coffee{
+ right:30%;bottom:13%;width:12%;height:29%;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay{
+ top:5px;right:5px;width:min(43%,165px);
+ padding:5px 6px;gap:1px;border-width:1px;border-radius:8px;
+ box-shadow:0 2px 9px #100919bb,inset 0 0 10px #b4876540;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay strong{
+ font-size:clamp(12px,3.4vw,16px);line-height:1.2;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay small{font-size:9px;line-height:1.15}
+#app.portrait-shell:not([data-training]) .town-stage #work-time,
+#app.portrait-shell:not([data-training]) .town-stage .pay-right br{display:none}
+#app.portrait-shell:not([data-training]) .town-stage .pay-right button{
+ font-size:9px;line-height:1.25;margin-top:2px;padding:3px 4px;min-height:23px;
+}
+#app.portrait-shell:not([data-training]) .town-speech{
+ left:27%;top:10%;max-width:68%;font-size:10px;padding:5px 7px;
+}
+#app.portrait-shell:not([data-training])>.battle-deck{
+ grid-row:3;min-height:0;height:100%;max-height:100%;
+ display:grid;grid-template-columns:minmax(0,1fr);
+ grid-template-rows:28px minmax(0,1fr) 25px 24px;
+ overflow:hidden;position:relative;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.battle-heading{
+ grid-row:1;min-height:0;height:28px;padding:2px 7px;gap:4px;
+ overflow:hidden;font-size:11px;
+}
+#app.portrait-shell:not([data-training]) .battle-heading #town-mode-label{
+ min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;
+}
+#app.portrait-shell:not([data-training]) .battle-heading .battle-live{
+ font-size:9px;white-space:nowrap;padding:2px 4px;
+}
+#app.portrait-shell:not([data-training]) .battle-heading .battle-bestiary{
+ font-size:9px;padding:3px 4px;white-space:nowrap;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.scene{
+ grid-row:2;min-width:0;min-height:0;width:100%;height:100%;
+ overflow:hidden;background:
+ linear-gradient(90deg,#281a3760,#1a14265e),
+ url('../art/v19/runtime/backgrounds/office-night.svg') center/cover;
+}
+#app.portrait-shell:not([data-training]) .battle-deck #world{
+ display:block;width:100%;height:100%;min-height:0;
+ object-fit:contain;aspect-ratio:auto;
+ background:transparent;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .stage-head{
+ top:4px;left:3px;right:3px;gap:2px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .stage-head span{
+ padding:3px 4px;font-size:9px;line-height:1.1;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .bars{
+ left:4px;right:4px;bottom:2px;gap:4px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .bars article{
+ font-size:9px;padding:3px 4px;line-height:1.1;
+}
+#app.portrait-shell:not([data-training]) .battle-deck #enemy-trait{
+ font-size:8px;max-height:20px;margin-top:1px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .meter{
+ height:6px;margin-top:2px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.lite-build-ribbon{
+ grid-row:3;width:100%;height:25px;min-height:0;max-height:25px;
+ margin:0;border-radius:0;padding:3px 10px;
+ border-inline:0;border-bottom:0;font-size:10px;
+ overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:left;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.lite-tactical-status{
+ grid-row:4;width:100%;height:24px;min-height:0;max-height:24px;
+ margin:0;border-radius:0;padding:3px 10px;border-inline:0;
+ border-bottom:0;font-size:10px;overflow:hidden;white-space:nowrap;
+ text-overflow:ellipsis;text-align:left;
+}
+/* Buttons occupy existing battle pixels rather than adding document height. */
+#app.portrait-shell:not([data-training]) .battle-deck>.controls,
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{
+ position:absolute;z-index:12;top:calc(28px + 17%);
+ width:clamp(64px,18vw,78px);height:auto;max-height:none;
+ margin:0;padding:0;display:flex;flex-direction:column;gap:4px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.controls{left:4px}
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{right:4px}
+#app.portrait-shell:not([data-training]) .controls button,
+#app.portrait-shell:not([data-training]) .mini-actions button{
+ display:block;min-width:0;width:100%;height:auto;min-height:33px;max-height:45px;
+ border-width:1px;border-radius:8px;padding:5px 3px;
+ font-size:10px;line-height:1.18;white-space:normal;
+}
+#app.portrait-shell:not([data-training]) .controls button#attack{min-height:42px}
+#app.portrait-shell:not([data-training]) #game-log{
+ position:absolute;z-index:14;left:20%;right:20%;bottom:51px;
+ min-height:20px;max-height:26px;padding:3px 5px;font-size:9px;
+ line-height:1.22;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;
+ background:#261632df;border:1px solid #a37e66a6;border-radius:8px;
+ pointer-events:none;
+}
+/* Offline report floats above live scene and can be dismissed, no flow height. */
+#app.portrait-shell:not([data-training]) #lite-offline-report:not([hidden]){
+ position:absolute;z-index:18;top:31px;left:7px;right:7px;margin:0;
+ padding:8px;max-height:112px;overflow:hidden;
+}
+#app.portrait-shell:not([data-training]) #lite-offline-report p{font-size:10px}
+#app.portrait-shell:not([data-training]) #lite-offline-report strong{font-size:12px}
+#app.portrait-shell:not([data-training])>.tabs{
+ grid-row:4;position:relative;bottom:auto;min-height:0;
+ height:100%;max-height:100%;
+ padding:4px 3px calc(3px + env(safe-area-inset-bottom));
+ gap:2px;border-top-width:2px;
+}
+#app.portrait-shell:not([data-training]) .tabs button{
+ min-height:0;height:100%;padding:3px 1px;gap:1px;
+ border-radius:8px;font-size:9px;line-height:1.1;
+}
+#app.portrait-shell:not([data-training]) .tabs button span{
+ font-size:clamp(16px,5vw,20px);line-height:1.05;
+}
+#app.portrait-shell:not([data-training]) .tabs button.is-active{
+ transform:translateY(-1px);
+}
+/* Engineering controls remain accessible through ?dev=1 but DO NOT consume
+   regular player's screen or create a second navigation/footer. */
+#app.portrait-shell:not([data-training])>.portrait-dev-toggle{
+ display:none;position:absolute;z-index:30;right:5px;
+ bottom:calc(69px + env(safe-area-inset-bottom));margin:0;
+ width:32px;height:32px;overflow:hidden;white-space:nowrap;
+ font-size:0;border-radius:50%;
+}
+#app.portrait-shell[data-dev-enabled=true]:not([data-training])>.portrait-dev-toggle{display:block}
+#app.portrait-shell[data-dev-enabled=true]:not([data-training])>.portrait-dev-toggle:after{
+ content:'⚙';font-size:18px;
+}
+#app.portrait-shell:not([data-training])>.footnote{display:none!important}
+#app.portrait-shell:not([data-training])>.dev-gallery{display:none!important}
+/* Dialog is the ONE permitted scroll container: equipment can have 120 items. */
+#panel,#name-dialog{
+ max-height:calc(100dvh - 26px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+ overflow-y:auto;overscroll-behavior:contain;
+}
+/* Compact in-app browsers. Always give battle the remaining available pixels. */
+@media(max-height:720px){
+ #app.portrait-shell:not([data-training]){
+  grid-template-rows:
+   calc(49px + env(safe-area-inset-top))
+   minmax(120px,27fr)
+   minmax(278px,63fr)
+   calc(53px + env(safe-area-inset-bottom));
+ }
+ #app.portrait-shell:not([data-training]) .town-stage .pay-right button{font-size:8px}
+ #app.portrait-shell:not([data-training]) .battle-heading .battle-live{display:none}
+ #app.portrait-shell:not([data-training]) .town-hero{height:82%}
+ #app.portrait-shell:not([data-training]) .battle-deck>.controls,
+ #app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{top:calc(28px + 14%)}
+ #app.portrait-shell:not([data-training]) .controls button,
+ #app.portrait-shell:not([data-training]) .mini-actions button{min-height:29px;padding:4px 2px;font-size:9px}
+ #app.portrait-shell:not([data-training]) .controls button#attack{min-height:34px}
+}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]){
+  grid-template-rows:
+   calc(47px + env(safe-area-inset-top))
+   minmax(117px,25fr)
+   minmax(260px,65fr)
+   calc(78px + env(safe-area-inset-bottom));
+ }
+ #app.portrait-shell:not([data-training]) .tabs{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-template-rows:repeat(2,minmax(0,1fr));gap:2px;
+ }
+ #app.portrait-shell:not([data-training]) .tabs button{
+  flex-direction:row;min-height:0;gap:3px;font-size:9px;
+ }
+ #app.portrait-shell:not([data-training]) .tabs button span{font-size:14px}
+ #app.portrait-shell:not([data-training]) .town-clock{top:31px;width:38px;height:38px}
+ #app.portrait-shell:not([data-training]) .town-name{font-size:9px}
+ #app.portrait-shell:not([data-training]) .town-stage .pay strong{font-size:12px}
+ #app.portrait-shell:not([data-training]) .controls button,
+ #app.portrait-shell:not([data-training]) .mini-actions button{font-size:9px;min-height:27px}
+}
+@media(max-height:560px){
+ #app.portrait-shell:not([data-training]){
+  grid-template-rows:
+   calc(44px + env(safe-area-inset-top))
+   minmax(95px,23fr)
+   minmax(230px,67fr)
+   calc(51px + env(safe-area-inset-bottom));
+ }
+ #app.portrait-shell:not([data-training]) .town-clock,
+ #app.portrait-shell:not([data-training]) .town-name small,
+ #app.portrait-shell:not([data-training]) .town-stage .pay-right{display:none}
+ #app.portrait-shell:not([data-training]) .town-stage .pay{top:3px}
+ #app.portrait-shell:not([data-training]) .controls button,
+ #app.portrait-shell:not([data-training]) .mini-actions button{min-height:25px;padding:3px 1px}
+}
