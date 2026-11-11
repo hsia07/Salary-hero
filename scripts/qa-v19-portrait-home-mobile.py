@@ -43,7 +43,8 @@ def main():
         }"""),'stage tracker, battle, or dock overlaps'
         assert page.locator('.tabs button').count()==8
         assert page.locator('.storybook-nav-art').count()==8
-        assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('storybook-office.svg')""")
+        assert page.locator('#world').get_attribute('data-scene-art')=='v20-painterly-loaded', 'Canvas uses fallback rather than V20 art'
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('office-v20-painterly.svg')""")
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').startsWith('#storybook-'))""")
         # iOS Safari requires local inline symbols rather than external SVG <use>.
         assert page.locator('#storybook-inline-symbols symbol').count()==8
@@ -54,8 +55,8 @@ def main():
         # A 200 OK SVG can still be invalid or render an empty <use> icon.
         assets=page.evaluate("""async () => {
           const urls=[
-            '../art/v19/runtime/backgrounds/storybook-office.svg',
-            '../art/v19/runtime/backgrounds/storybook-corridor.svg',
+            '../art/v20/runtime/backgrounds/office-v20-painterly.svg',
+            '../art/v20/runtime/backgrounds/corridor-v20-painterly.svg',
             '../art/v19/runtime/ui/storybook-icons.svg'
           ];
           const decoded=[];
