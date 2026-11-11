@@ -43,3 +43,13 @@ test('deployment persists, swaps unique member, and removal cancels combat assis
  s=transition(s,{type:'s1RemoveColleague',slot:5});
  assert.equal(strike(s).last.colleagueAssist,0);
 });
+
+test('deployed guardian reduces live retaliation damage',()=>{
+ const base=initial();
+ const solo=strike(base);
+ const owned=transition(base,{type:'s1RecruitColleague',id:'sentinel'});
+ const deployed=transition(owned,{type:'s1DeployColleague',id:'sentinel',slot:0});
+ const guarded=strike(deployed);
+ assert.ok(guarded.last.colleagueShield>=0);
+ assert.ok(guarded.last.retaliationDamage<=solo.last.retaliationDamage);
+});
