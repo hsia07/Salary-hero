@@ -178,6 +178,7 @@ html{overflow-x:hidden}
  text-shadow:0 1px #16091c;
 }
 .battle-heading .battle-live{font-size:10px;color:#b5ecbc;border:1px solid #76a985a1;border-radius:999px;padding:2px 7px;background:#1f463354}
+.battle-bestiary{flex:none;border:1px solid #d7b075;border-radius:8px;padding:4px 7px;color:#ffe3b2;background:linear-gradient(#72475c,#38263f);font-size:10px;font-weight:800;box-shadow:inset 0 1px #fae3ae99}
 .battle-deck .scene{border-top:0;border-bottom:2px solid #dcae72;box-shadow:inset 0 0 33px #0009}
 .battle-deck #world{width:100%;height:auto;aspect-ratio:720/620;display:block}
 .battle-deck .stage-head{top:7px;left:5px;right:5px;gap:4px}
