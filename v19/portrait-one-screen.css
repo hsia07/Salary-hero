@@ -199,6 +199,18 @@
 }
 #app.portrait-shell:not([data-training])>.footnote{display:none!important}
 #app.portrait-shell:not([data-training])>.dev-gallery{display:none!important}
+/* Studio is an explicit overlay, so QA never forces the home to scroll. */
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .battle-deck>.dev-gallery{
+ display:block;position:absolute;z-index:28;
+ left:5px;right:5px;top:31px;bottom:49px;
+ max-height:none;overflow-y:auto;overscroll-behavior:contain;
+ border:2px solid #eac07d;border-radius:9px;
+ background:linear-gradient(#44304fe9,#261a35f8);box-shadow:0 8px 18px #150b20dc;
+}
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .battle-deck>.chibi-art-state,
+#app.portrait-shell[data-dev-visible=true]:not([data-training]) .battle-deck>.monster-art-status{
+ display:none!important;
+}
 /* Dialog is the ONE permitted scroll container: equipment can have 120 items. */
 #panel,#name-dialog{
  max-height:calc(100dvh - 26px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
