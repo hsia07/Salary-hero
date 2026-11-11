@@ -1066,6 +1066,13 @@ function renderPanel(type){
  }else if(type==='colleagues'){
   const progress=state.colleagueProgress;
   const materials=progress.materials;
+  const formation=state.colleagueFormation.slots;
+  const formationHtml='<div class="s1-colleague-formation">'+formation.map((member,index)=>{
+    const slotName=['前排左','前排右','中排左','中排右','後排左','後排右'][index];
+    const deployedJob=member&&SQUAD_JOBS.find(job=>member.id==='starter-'+job.id);
+    const available=SQUAD_JOBS.filter(job=>progress.members.some(m=>m.id==='starter-'+job.id)).map(job=>'<button data-action="s1DeployColleague" data-slot="'+index+'" data-value="'+job.id+'">'+escapeHTML(job.name)+'</button>').join('');
+    return '<div class="s1-formation-slot"><strong>'+slotName+'</strong><small>'+(deployedJob?escapeHTML(deployedJob.name)+' Lv.'+member.level:'空位')+'</small><details><summary>選擇同事</summary><div class="s1-formation-choices">'+available+(member?'<button data-action="s1RemoveColleague" data-slot="'+index+'">撤下</button>':'')+'</div></details></div>';
+  }).join('')+'</div>';
   const cards=SQUAD_JOBS.map(job=>{
    const member=progress.members.find(m=>m.id==='starter-'+job.id);
    if(!member)return '<article class="s1-colleague-card"><div class="s1-colleague-emblem" aria-hidden="true">✦</div><div><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(job.role)+' · 尚未招募</small></div><button data-action="s1RecruitColleague" data-value="'+job.id+'">招募</button></article>';
@@ -1075,7 +1082,7 @@ function renderPanel(type){
    const breakthroughReady=member.breakthrough<4&&member.level===[20,40,60,80][member.breakthrough]&&state.level>=member.level;
    return '<article class="s1-colleague-card"><div class="s1-colleague-emblem" aria-hidden="true">✦</div><div><strong>'+escapeHTML(job.name)+'</strong><small>Lv.'+member.level+' / '+cap+' · 突破 '+member.breakthrough+'/4</small><small>升級：訓練點 '+(cost?.trainingXp??'MAX')+'／薪幣 '+(cost?.coins??'MAX')+'</small></div><div class="s1-colleague-actions"><button data-action="s1TrainColleague" data-value="'+member.id+'" '+(!ready?'disabled':'')+'>升級</button><button data-action="s1BreakthroughColleague" data-value="'+member.id+'" '+(!breakthroughReady?'disabled':'')+'>突破</button></div></article>';
   }).join('');
-  body.innerHTML='<section class="s1-colleague-panel"><p class="s1-colleague-note">養成系統試玩版 · 角色正式分層美術與進階動畫製作中</p><div class="s1-colleague-resources"><span>薪奴 Lv.'+state.level+'</span><span>薪幣 '+format(state.gold)+'</span><span>訓練 '+format(materials.trainingXp)+'</span><span>突破章 '+format(materials.seals)+'</span><span>徽記 '+format(materials.emblems)+'</span></div><div class="s1-colleague-grid">'+cards+'</div></section>';
+  body.innerHTML='<section class="s1-colleague-panel"><p class="s1-colleague-note">養成系統試玩版 · 角色正式分層美術與進階動畫製作中</p><div class="s1-colleague-resources"><span>薪奴 Lv.'+state.level+'</span><span>薪幣 '+format(state.gold)+'</span><span>訓練 '+format(materials.trainingXp)+'</span><span>突破章 '+format(materials.seals)+'</span><span>徽記 '+format(materials.emblems)+'</span></div><h3>六人編隊</h3>'+formationHtml+'<h3>同事養成</h3><div class="s1-colleague-grid">'+cards+'</div></section>';
   return;
  }
  if(type==='hero'){
@@ -1185,8 +1192,8 @@ body.addEventListener('click',e=>{
  }
  else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
- else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague'].includes(act)){
-  commit({type:act,id:b.dataset.value});
+ else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague','s1DeployColleague','s1RemoveColleague'].includes(act)){
+  commit({type:act,id:b.dataset.value,slot:b.dataset.slot});
   renderPanel('colleagues');
  }
  else if(act==='liteBuilds')renderPanel('liteBuilds');
