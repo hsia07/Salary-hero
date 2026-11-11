@@ -29,7 +29,9 @@ test('invalid selections and duplicate heroes are rejected without mutating inpu
  assert.equal(result.fusion,'');assert.equal(result.commanderPath,'strategist');
  assert.equal(result.enemy,'training-dummy');
  assert.equal(result.seed,1);assert.equal(result.ticks,200);
- assert.deepEqual(result.imprints,{'fighter-a':'mecha'});
+ assert.deepEqual(result.imprints,{'mage-a':'shadow','medic-a':'night'});
+ // The duplicate fighter was rejected, so its requested imprint must not survive.
+ assert.equal(result.imprints['fighter-a'],undefined);
  assert.deepEqual(result.gear,{'fighter-a':'toxic-ledger'});
  assert.equal(JSON.stringify(d),before);
 });
