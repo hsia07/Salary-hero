@@ -8,6 +8,8 @@ on:
       - 'v19/chibi-attack-preview.html'
       - 'v19/chibi-art-preview.html'
       - 'v19/app.mjs'
+      - 'v19/portrait-home.mjs'
+      - 'v19/portrait-home.css'
       - 'v19/play.html'
       - 'scripts/qa-v19-layered-art.py'
       - 'scripts/qa-v19-chibi-candidate.py'
