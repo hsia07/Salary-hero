@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths:
       - 'v19/engine.mjs'
+      - 'v19/portrait-home.mjs'
+      - 'v19/portrait-home.css'
+      - 'v19/portrait-home.test.mjs'
+      - 'art/v19/runtime/portrait/**'
+      - 'scripts/qa-v19-portrait-home-mobile.py'
       - 'v19/engine.test.mjs'
       - 'v19/app.mjs'
       - 'v19/play.html'
@@ -54,6 +59,8 @@ jobs:
             sleep 1
           done
           exit 1
+      - name: Real 390px portrait RPG homepage + live UI QA
+        run: python scripts/qa-v19-portrait-home-mobile.py
       - name: Real 390px Chromium adventure interaction QA
         run: python scripts/qa-v19-encounters-mobile.py
       - name: Real 390px Chromium Lite equipment and save QA
@@ -69,4 +76,6 @@ jobs:
             art/v19/runtime/qa/lite-build-clockout-mobile.png
             art/v19/runtime/qa/lite-equipped-armor-mobile.png
             art/v19/runtime/qa/lite-equipped-armor-attack-mobile.png
+            art/v19/runtime/qa/portrait-home-390-mobile.png
+            art/v19/runtime/qa/portrait-home-full-scroll.png
           if-no-files-found: warn
