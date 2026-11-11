@@ -27,13 +27,20 @@ test('imprints change effective traits but do not mutate old squad / duplicate a
  const base=analyzeLabBuild(squad);
  assert.equal(base.counts.office,4);
  assert.equal(base.counts.mecha,1);
- const imprint=analyzeLabBuild(squad,{imprints:{medic:'mecha',mage:'shadow',guard:'night',assassin:'night'},fusion:'perpetual-overtime'});
+ const imprint=analyzeLabBuild(squad,{imprints:{medic:'mecha',mage:'shadow',assassin:'night'},fusion:'perpetual-overtime'});
  assert.equal(imprint.imprintTotal,2);
  assert.equal(imprint.counts.mecha,2);
  assert.equal(imprint.counts.shadow,2);
  assert.equal(imprint.fusion.id,'perpetual-overtime');
  assert.deepEqual(imprint.suppressed,['office','mecha']);
  assert.equal(imprint.imprints.guard,undefined);
+ // Oversubscribed imprints must NOT silently grant a third tag; the current
+ // stable rule accepts at most two valid choices in existing team-slot order.
+ const capped=analyzeLabBuild(squad,{imprints:{guard:'night',mage:'shadow',medic:'mecha'}});
+ assert.equal(capped.imprintTotal,2);
+ assert.equal(capped.imprints.guard,'night');
+ assert.equal(capped.imprints.mage,'shadow');
+ assert.equal(capped.imprints.medic,undefined);
  assert.equal(JSON.stringify(squad),copy);
  const invalid=analyzeLabBuild(squad,{imprints:{guard:'shield',mage:'???',medic:'office'},fusion:'perpetual-overtime'});
  assert.equal(invalid.imprintTotal,0);
