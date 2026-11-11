@@ -32,17 +32,20 @@ test('V20 production page uses separate art layers, no full reference screenshot
  assert.match(html,/id="v20-battle-ambient"/);
  assert.match(html,/v20-ornament-town/);
  assert.match(html,/v20-ornament-battle/);
+ assert.match(html,/v20-battle-furnishings/);
  assert.match(html,/v20-art-live\.mjs/);
  assert.match(html,/v20-art-live\.css/);
  assert.match(css,/office-blooms\.svg/);
  assert.match(css,/battle-arcane\.svg/);
+ assert.match(css,/battle-furnishings\.svg/);
  assert.doesNotMatch(css,/portrait-home-master\.webp|home-master\.webp/);
  assert.ok(html.includes('id="today"')&&html.includes('id="world"')&&html.includes('id="town-hero"'));
 });
 test('V20 illustrated props are transparent images, no painted-on characters or labels',()=>{
  for(const path of [
   '../art/v20/runtime/foreground/office-blooms.svg',
-  '../art/v20/runtime/foreground/battle-arcane.svg'
+  '../art/v20/runtime/foreground/battle-arcane.svg',
+  '../art/v20/runtime/foreground/battle-furnishings.svg'
  ]){
   const svg=read(path);
   assert.match(svg,/^<svg /);

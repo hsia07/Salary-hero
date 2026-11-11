@@ -141,3 +141,14 @@
  #app.portrait-shell:not([data-training]) .v20-ornament-town,
  #app.portrait-shell:not([data-training]) .v20-ornament-battle{filter:none}
 }
+
+/* P0.2: original independent illustrated scene furnishings — lanterns,
+   bookshelves, ivy and floor perspective, no hero/enemy/UI baked in. */
+#app.portrait-shell:not([data-training]) .v20-battle-furnishings{
+ position:absolute;inset:0;width:100%;height:100%;z-index:2;
+ pointer-events:none!important;touch-action:none;opacity:.77;
+ background:url('../art/v20/runtime/foreground/battle-furnishings.svg') center/100% 100% no-repeat;
+}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]) .v20-battle-furnishings{opacity:.66}
+}

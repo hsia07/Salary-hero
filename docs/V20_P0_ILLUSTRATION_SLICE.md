@@ -23,3 +23,9 @@
 `node --test v19/v20-art-live.test.mjs v19/v20-home.test.mjs`
 
 測試只能驗證架構、安全與輸出，不能替代與參考圖的主觀美術品質驗收。
+
+## P0.2 戰鬥場景細節補強
+
+- `art/v20/runtime/foreground/battle-furnishings.svg`：新增**原創透明插畫層**，含兩側魔法書架、帶描線的書脊、暖金吊燈、垂藤與地面透視線，特意留白中央戰鬥區，不蓋住角色或掉寶控件。
+- `v19/play.html` 與 `v19/v20-art-live.css` 接入，不增加主頁高度與任何遊戲規則。
+- 仍需與參考圖進行正式手機視覺審核，尚不可宣稱完成背景手繪品質。
