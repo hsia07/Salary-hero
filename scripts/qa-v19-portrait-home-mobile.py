@@ -133,6 +133,11 @@ def main():
             assert page.locator('#attack').is_visible()
             assert page.locator('#town-cat').is_visible()
             assert page.locator('.tabs button').count()==8
+            if width==320:
+                assert page.evaluate('getComputedStyle(document.querySelector(".tabs")).gridTemplateRows.split(" ").length')==1
+                page.locator('#town-stage .pay').click()
+                assert '薪資' in page.locator('#panel-title').inner_text()
+                page.locator('#panel-close').click()
             page.screenshot(path=str(OUT/f'portrait-one-screen-{width}x{height}.png'),full_page=False)
         page.set_viewport_size({'width':390,'height':844})
         page.screenshot(path=str(OUT/'portrait-one-screen-390x844.png'),full_page=False)
