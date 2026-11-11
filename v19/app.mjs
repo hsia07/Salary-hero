@@ -4,6 +4,7 @@ import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './ros
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
 import {LITE_STRATEGIES} from './lite-idle.mjs';
+import {LITE_BUILDS,LITE_BUILD_TIERS,liteBuildById,liteMasteryRank,liteBuildStats} from './lite-builds.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -739,6 +740,13 @@ function render(){
  document.querySelector('.enemy-meter')?.classList.toggle('elite',enemyTier==='elite');
  document.querySelector('.enemy-meter')?.classList.toggle('boss',enemyTier==='boss');
  $('#level').textContent='Lv.'+state.level+' '+playerTitle(state);
+ const buildRibbon=$('#lite-build-ribbon');
+ if(buildRibbon){
+   const build=liteBuildById(state.liteActiveBuild);
+   const rank=build?liteMasteryRank(state.liteBuildProgress?.[build.id]):0;
+   buildRibbon.dataset.build=build?.id||'none';
+   buildRibbon.textContent=build?'✦ '+build.name+' · 專精 '+rank+' 階 · '+state.liteBuildProgress[build.id]+' 熟練':'✦ 尚未選擇流派 · 點此開啟專精';
+ }
  renderCombatBars(performance.now());
  $('#enemy-name').textContent=(enemyTier==='boss'?'👑 ':enemyTier==='elite'?'✦ ':'')+(liveVariantFor(state.enemy)?.name||state.enemy.name);
  const trait=$('#enemy-trait');
@@ -796,6 +804,23 @@ function itemRow(it,kind){
  return '<div class="item '+(!owned&&kind!=='shop'?'muted':'')+'"><div class="symbol">'+(owned?it.icon:'◈')+'</div><div class="detail"><strong>'+it.name+'</strong><small>'+it.tier+' · ⚔️ 攻擊 '+it.attack+'</small></div><button data-action="'+action+'" data-value="'+it.id+'" '+(disabled?'disabled':'')+'>'+text+'</button></div>';
 }
 let liteSalvagePending=null,liteArmoryPage=0;
+function renderLiteBuilds(){
+ const active=liteBuildById(state.liteActiveBuild);
+ const cards=LITE_BUILDS.map(build=>{
+   const xp=state.liteBuildProgress?.[build.id]||0,rank=liteMasteryRank(xp);
+   const next=LITE_BUILD_TIERS[rank+1],previous=LITE_BUILD_TIERS[rank];
+   const percent=next?Math.max(0,Math.min(100,Math.round((xp-previous)/(next-previous)*100))):100;
+   const selected=active?.id===build.id;
+   const equippedBranch=state.liteBuildBranch?.[build.id];
+   const branches=build.options.map(branch=>'<button class="lite-branch '+(equippedBranch===branch.id?'active':'')+'" data-action="liteChooseBranch" data-value="'+branch.id+'" '+(!selected||rank<1?'disabled':'')+'><strong>'+escapeHTML(branch.name)+'</strong><small>'+escapeHTML(branch.text)+'</small>'+(equippedBranch===branch.id&&rank>=1?'<em>目前使用</em>':'')+'</button>').join('');
+   const talents=build.milestones.map((line,i)=>'<div class="lite-milestone '+(rank>=i?'unlocked':'locked')+'"><b>'+['I','II','III','IV'][i]+'</b><span>'+escapeHTML(line)+'</span></div>').join('');
+   return '<article class="lite-build-card '+(selected?'selected':'')+'" data-build="'+build.id+'"><div class="lite-build-heading"><div class="lite-build-glyph">'+build.icon+'</div><div><small>'+escapeHTML(build.title)+'</small><h3>'+escapeHTML(build.name)+'</h3><p>'+escapeHTML(build.description)+'</p></div></div>'+
+    '<div class="lite-build-master"><strong>專精 '+rank+' / 3</strong><span>'+xp+(next?' / '+next+' 熟練':' · 當前滿階')+'</span></div><div class="lite-master-track"><i style="width:'+percent+'%"></i></div>'+
+    '<div class="lite-milestones">'+talents+'</div><h4>✦ 第二層：專精路線</h4><div class="lite-branches">'+branches+'</div>'+
+    (selected?'<div class="lite-build-current">✓ 目前主修此流派</div>':btn('選擇 '+build.name+' 流派','liteChooseBuild',build.id))+'</article>';
+ }).join('');
+ return '<div class="lite-build-intro"><strong>🏵️ 社畜職業專精・Lite 前導版</strong><p>本階段開放兩條可自由切換的入門流派；擊敗普通怪獲得 1 熟練、菁英 2、魔王 3。到達 5／18／48 熟練後解鎖更強能力。切換不重置已學會的技能與專精。</p></div>'+cards;
+}
 function renderLiteEquipment(){
  const stats=liteEquipmentStats(state);
  const slotPanels=LITE_SLOTS.map(slot=>{
@@ -823,7 +848,7 @@ function renderLiteEquipment(){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='modes'){
   const daily=dailyDungeonFor();
@@ -848,7 +873,7 @@ function renderPanel(type){
     '<p class="letter-win">🏆 你明明還沒開打，卻莫名其妙贏了！</p><p>🪙 '+note.gold+' 金幣 · EXP '+note.xp+' · 💎 2 · 📦 寶箱 1 · 🎁 週五特殊寶箱 1 · 🎟️ 造型券 1，並恢復全部生命。</p>':
     '<p>魔王這週還沒有留下任何信。星期五進入魔王關時有機率遇到。</p>';
  }else if(type==='skills'){
-  body.innerHTML='<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
+  body.innerHTML=btn('🏵️ 查看打卡暴擊／咖啡續命流派專精','liteBuilds')+'<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
    '<p>技能書 '+state.skillBooks+' 本 · 專精 '+state.skillRank+'/5</p>'+btn('📕 研讀技能書（提升技能效果）','studySkillBook','',!state.skillBooks||state.skillRank>=5)+
    GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
  }else if(type==='hero'){
@@ -859,9 +884,11 @@ function renderPanel(type){
   const shownIcon=liteWeaponBase?.icon||it.icon;
   const shownAttack=liteEquipmentStats(state).weaponAttack||it.attack;
   body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+shownIcon+'</span><div class="detail"><strong>'+shownName+'</strong><small>目前武器攻擊 '+shownAttack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
-  +btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
+  +btn('🏵️ 流派與職業專精','liteBuilds')+btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
+ } else if(type==='liteBuilds'){
+  body.innerHTML=renderLiteBuilds();
  } else if(type==='equipment'){
   body.innerHTML=renderLiteEquipment()+'<details class="lite-legacy-shop"><summary>原有武器與鍛造（保留舊存檔）</summary><p>⚒️ 鍛造 +'+state.forgeLevel+'/10 · 強化素材 '+state.craftingMaterial+' · 黎明礦石 '+state.rareMaterials+'</p>'+btn('⚒️ 消耗材料鍛造武器','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>舊版掉寶 '+state.pendingDrops.length+' 件待領取。</p>'+btn('領取掉寶','claim'):'')+'</details>';
  } else if(type==='shop'){
@@ -925,6 +952,8 @@ body.addEventListener('click',e=>{
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
  else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(act==='liteBuilds')renderPanel('liteBuilds');
+ else if(act==='liteChooseBuild'||act==='liteChooseBranch')commit({type:act,id:b.dataset.value});
  else if(act==='liteSetAuto')commit({type:'liteSetAuto',value:!state.liteAutoEquip});
  else if(act==='liteSetStrategy')commit({type:'liteSetStrategy',id:b.dataset.value});
  else if(act==='liteAutoOptimize')commit('liteAutoOptimize');
