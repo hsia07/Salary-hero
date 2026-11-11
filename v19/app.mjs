@@ -640,6 +640,44 @@ function drawStage(now){
  if(fx&&(fx.result?.type==='hit'||fx.result?.type==='victory')&&phase<1.05&&(!chibiV2Ready||animationMs>=405)){
   const y=335-phase*80;ctx.save();ctx.globalAlpha=Math.min(1,(1.05-phase)*3);ctx.font='900 43px system-ui';ctx.textAlign='center';ctx.lineWidth=6;ctx.strokeStyle='#2d163c';ctx.strokeText('-'+fx.result.damage,546,y);ctx.fillStyle=fx.result.crit?'#fff3a9':'#ff8a9e';ctx.fillText('-'+fx.result.damage,546,y);ctx.restore();
  }
+
+ // Lite set attacks affect the rules AND have distinct timed impact feedback.
+ // Reuse approved hero/monster animation atlas; only overlay the spell FX.
+ if(fx?.result?.finisher&&animationMs>=260&&animationMs<980){
+   const progress=Math.max(0,Math.min(1,(animationMs-260)/720));
+   const alpha=(1-progress)*(motionReduced?.78:1);
+   const cx=enemyX+102,cy=enemyY+112;
+   ctx.save();ctx.globalAlpha=alpha;ctx.translate(cx,cy);ctx.rotate(-.30);
+   ctx.strokeStyle='#fff1a6';ctx.shadowColor='#ffb34d';ctx.shadowBlur=28;
+   for(let j=0;j<3;j++){
+     const radius=46+j*23+progress*75;
+     ctx.lineWidth=12-j*3;
+     ctx.beginPath();ctx.arc(0,0,radius,-2.10,-.12);ctx.stroke();
+   }
+   ctx.shadowBlur=0;ctx.font='900 26px serif';ctx.textAlign='center';
+   ctx.lineWidth=5;ctx.strokeStyle='#3c2146';ctx.fillStyle='#ffe7a6';
+   ctx.strokeText('準時下班・收工斬',-10,-150-progress*18);
+   ctx.fillText('準時下班・收工斬',-10,-150-progress*18);
+   ctx.restore();
+ }
+ if(fx?.result?.coffeeHeal&&animationMs>=180&&animationMs<1100){
+   const progress=Math.max(0,Math.min(1,(animationMs-180)/920));
+   const alpha=(1-progress)*.91;
+   const cx=heroX+135,cy=heroY+168;
+   ctx.save();ctx.globalAlpha=alpha;
+   for(let j=0;j<12;j++){
+     const angle=(j*2.3999632297),distance=24+j%4*13+progress*41;
+     const x=cx+Math.cos(angle)*distance,y=cy+Math.sin(angle)*distance-progress*82;
+     ctx.beginPath();ctx.fillStyle=j%3===0?'#fff7be':'#a7f4c0';
+     ctx.shadowColor='#80e2a7';ctx.shadowBlur=9;
+     ctx.ellipse(x,y,3+j%3,7+j%2,angle,0,Math.PI*2);ctx.fill();
+   }
+   ctx.shadowBlur=0;ctx.font='900 26px serif';ctx.textAlign='center';
+   ctx.lineWidth=5;ctx.strokeStyle='#193c36';ctx.fillStyle='#bbffd4';
+   ctx.strokeText('咖啡續命 +15',cx,cy-150-progress*26);
+   ctx.fillText('咖啡續命 +15',cx,cy-150-progress*26);
+   ctx.restore();
+ }
  if(hurtVfx.active&&fx?.result?.enemySkill){
    ctx.save();ctx.globalAlpha=Math.min(1,hurtVfx.flashAlpha+.4);
    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 25px system-ui';
