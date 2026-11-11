@@ -85,6 +85,12 @@ export function initPortraitHome({getState,openPanel,goHome}){
  cat?.addEventListener('click',()=>{line('cat')});
  coffee?.addEventListener('click',()=>{line('coffee');flash('☕ 咖啡彩蛋 · 不扣藥水，也不增加遊戲資源')});
  clock?.addEventListener('click',()=>{flash('台灣時間 '+portraitClock());openPanel('salary')});
+ // On short screens the salary board itself is the large touch target.
+ const salaryBoard=town.querySelector('.pay');
+ salaryBoard?.addEventListener('click',event=>{
+   if(event.target.closest('button'))return;
+   openPanel('salary');
+ });
  // The existing game panel dispatcher owns the town-task adventure button.
  const homeButton=document.querySelector('.tabs button[data-home]');
  const chooseTab=(button)=>{
