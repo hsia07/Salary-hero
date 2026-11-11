@@ -152,3 +152,15 @@
 @media(max-width:359px){
  #app.portrait-shell:not([data-training]) .v20-battle-furnishings{opacity:.66}
 }
+
+/* P0.3 native scenery: real Canvas battle image and DOM town backing plate. */
+#app.portrait-shell:not([data-training])>.town-stage{
+ background:
+  linear-gradient(180deg,#19102b15 0%,transparent 40%,#170e2780 100%),
+  url('../art/v20/runtime/backgrounds/office-v20-painterly.svg') center 50%/cover no-repeat;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.scene{
+ background:
+  linear-gradient(180deg,#15102a24 0%,transparent 48%,#180d2b70 100%),
+  url('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg') center center/cover no-repeat;
+}

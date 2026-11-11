@@ -299,7 +299,7 @@ function drawHurtSparks(x,y,effect){
  ctx.restore();
 }
 const assetPaths={
- bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v19/runtime/backgrounds/storybook-corridor.svg',
+ bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v20/runtime/backgrounds/corridor-v20-painterly.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
  weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
  weaponClockoutEcho:'../art/v19/runtime/weapons/lite-clockout-echo.svg',
@@ -1450,9 +1450,9 @@ setInterval(()=>{if(!document.hidden&&trainingWave===null)save();},60000);
 requestAnimationFrame(frame);
 if(!state.playerName)openNameEditor();
 Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
- try{images[k]=await imageFrom(url);}
+ try{images[k]=await imageFrom(url);if(k==='bg')world.dataset.sceneArt=trainingWave===null?'v20-painterly-loaded':'training';}
  catch(error){
-   if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
+   if(k==='bg'){world.dataset.sceneArt='fallback';images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
    else if(k==='foreground'||k==='weaponBriefcase'||k==='weaponClockoutEcho'||k==='weaponCoffeeEcho'||k==='armorClockout'||k==='armorCoffee'||k==='armorGuardian'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;

@@ -54,3 +54,20 @@ test('V20 illustrated props are transparent images, no painted-on characters or 
   assert.doesNotMatch(svg,/<text\b|foreignObject\b/);
  }
 });
+
+test('V20 painted backgrounds are actual game runtime files and never baked screenshots',()=>{
+ const app=read('./app.mjs');
+ const css=read('./v20-art-live.css');
+ const battle=read('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');
+ const town=read('../art/v20/runtime/backgrounds/office-v20-painterly.svg');
+ assert.match(app,/bg:trainingWave!==null\?.*corridor-v20-painterly\.svg/);
+ assert.match(css,/office-v20-painterly\.svg/);
+ assert.match(css,/corridor-v20-painterly\.svg/);
+ assert.match(app,/world\.dataset\.sceneArt/);
+ for(const [source,width,height] of [[town,960,560],[battle,720,620]]){
+  assert.match(source,new RegExp('viewBox="0 0 '+width+' '+height+'"'));
+  assert.match(source,/id="v20-illustration-pass"/);
+  assert.match(source,/v20-pigment/);
+  assert.doesNotMatch(source,/<text[\s>]|<foreignObject[\s>]/);
+ }
+});
