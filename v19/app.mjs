@@ -9,6 +9,7 @@ import {LITE_SKILL_PATHS,LITE_SKILL_UNLOCK_USES,liteSkillSelection} from './lite
 import {liteLegendaryEffects,liteLegendaryByTemplate} from './lite-legendaries.mjs';
 import {liteArmorPose,liteArmorAsset} from './lite-armor-poses.mjs';
 import {liteTacticalHint} from './lite-tactics.mjs';
+import {initPortraitHome} from './portrait-home.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -91,6 +92,7 @@ if(trainingNotice&&trainingWave!==null){
  if(readout)readout.hidden=!['chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'].includes(trainingSpecies);
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
+let portraitHome=null;
 $('#training-finish')?.addEventListener('click',()=>{
  if(trainingWave===null||!ready)return;
  state=primeTrainingFinisher(state,trainingSpecies);
@@ -897,6 +899,7 @@ function render(){
  $('#claim').textContent='🎁 掉寶 ('+state.pendingDrops.length+')';
  $('#chest').textContent='📦 寶箱 ('+state.chests+')';
  const weekend=$('#weekend-chest');if(weekend){weekend.textContent='🎁 週末箱 ('+state.specialChests+')';weekend.disabled=!ready||!state.specialChests;}
+ portraitHome?.update(state);
  if(currentPanel&&panel.open)renderPanel(currentPanel);
 }
 function commit(action){
@@ -986,7 +989,7 @@ function renderLiteEquipment(){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='modes'){
   const daily=dailyDungeonFor();
@@ -1029,6 +1032,25 @@ function renderPanel(type){
   body.innerHTML=renderLiteBuilds();
  } else if(type==='equipment'){
   body.innerHTML=renderLiteEquipment()+'<details class="lite-legacy-shop"><summary>原有武器與鍛造（保留舊存檔）</summary><p>⚒️ 鍛造 +'+state.forgeLevel+'/10 · 強化素材 '+state.craftingMaterial+' · 黎明礦石 '+state.rareMaterials+'</p>'+btn('⚒️ 消耗材料鍛造武器','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>舊版掉寶 '+state.pendingDrops.length+' 件待領取。</p>'+btn('領取掉寶','claim'):'')+'</details>';
+ }else if(type==='forge'){
+  body.innerHTML='<div class="center"><span class="large-symbol">⚒️</span><h3>勇者的鍛造工坊</h3><p>原本已解鎖的鍛造加成會繼續保留。本版鍛造升級可提高實際戰鬥傷害。</p></div>'+
+   '<div class="item"><div class="detail"><strong>鍛造等級 +'+state.forgeLevel+'/10</strong><small>每次攻擊基礎強化傷害 +'+(state.forgeLevel*2)+'</small></div></div>'+
+   '<div class="item"><div class="detail"><strong>🔧 強化材料 '+state.craftingMaterial+'</strong><small>每次鍛造需消耗 3 個</small></div></div>'+
+   '<div class="item"><div class="detail"><strong>💎 黎明礦石 '+state.rareMaterials+'</strong><small>每次鍛造需消耗 1 個</small></div></div>'+
+   btn('⚒️ 鍛造升級','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+
+   btn('🛡️ 前往裝備背包','openPanel','equipment');
+ }else if(type==='pets'){
+  const needed=50+state.petLevel*30;
+  body.innerHTML='<div class="center"><img class="portrait-pet-card-art" src="../art/v19/runtime/portrait/cat-companion.svg" alt="橘貓夥伴"><h3>社畜的橘貓夥伴 · Lv.'+state.petLevel+'</h3><p>你上班賺薪水，牠在魔法辦公室負責監督你休息。</p></div>'+
+   '<div class="item"><div class="detail"><strong>🐾 寵物經驗 '+state.petXp+'/'+needed+'</strong><small>餵食、每日副本與戰鬥可以累積養成進度。</small></div></div>'+
+   '<div class="item"><div class="detail"><strong>🥫 寵物食物 '+state.petFood+'</strong><small>餵食一次獲得 45 經驗，提升寵物等級後會增加實際攻擊。</small></div></div>'+
+   btn('🥣 餵食夥伴 +45 EXP','feedPet','',state.petFood<=0||state.petLevel>=50)+
+   '<p class="portrait-honest-note">目前是 Lite 版原有的單寵培養系統；多寵隊伍、進化與夥伴編成仍在後續製作。</p>';
+ }else if(type==='guild'){
+  body.innerHTML='<div class="center"><span class="large-symbol">🏰</span><h3>社畜公會籌備處</h3><p>這座公會據點現在可以查看，但尚未開啟多人、公會戰或排名伺服器。這是未來正式版的功能，不會假裝已有真人玩家。</p></div>'+
+   '<div class="item"><div class="detail"><strong>🏆 單人冒險戰績</strong><small>目前已擊敗 '+state.cleared+' 隻怪物 · 角色 Lv.'+state.level+'</small></div></div>'+
+   btn('🗺️ 先挑戰個人冒險','openPanel','modes')+
+   btn('📖 查看收集圖鑑','openPanel','collection');
  } else if(type==='shop'){
   body.innerHTML='<p>目前持有 <b>🪙 '+format(state.gold)+'</b>。購買立即扣款並裝備；進度會存檔。</p>'+ITEMS.filter(it=>it.cost).map(it=>itemRow(it,'shop')).join('');
  } else if(type==='adventure'){
@@ -1091,6 +1113,7 @@ body.addEventListener('click',e=>{
  else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
  else if(act==='liteBuilds')renderPanel('liteBuilds');
+ else if(act==='openPanel')renderPanel(b.dataset.value);
  else if(act==='liteChooseSkillPath')commit({type:'liteChooseSkillPath',skill:b.dataset.skill,id:b.dataset.value});
  else if(act==='liteSavePreset'||act==='liteLoadPreset')commit({type:act,index:Number(b.dataset.value)});
  else if(act==='liteChooseBuild'||act==='liteChooseBranch')commit({type:act,id:b.dataset.value});
@@ -1112,6 +1135,7 @@ body.addEventListener('click',e=>{
  else commit(act);
 });
 document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>openPanel(b.dataset.panel));
+portraitHome=initPortraitHome({getState:()=>state,openPanel,goHome:()=>{}});
 $('#pay-details').onclick=()=>openPanel('salary');
 const nameDialog=$('#name-dialog'),nameInput=$('#player-name-input'),nameMessage=$('#name-message'),namePreview=$('#name-preview');
 function openNameEditor(){
@@ -1304,6 +1328,7 @@ function payRender(){
  $('#pay-status').textContent='台灣時間 · '+p.status;
  $('#pay-month').textContent='本週 '+money(p.week)+' · 本月 '+money(p.month);
  $('#work-time').textContent=p.on?'🟢 上班 '+p.workedHours.toFixed(2)+' h':'08:00–17:00';
+ portraitHome?.updateClock(Date.now());
  if(currentPanel==='salary'&&panel.open)renderPanel('salary');
 }
 function frame(now){
