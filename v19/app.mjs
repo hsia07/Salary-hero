@@ -299,7 +299,7 @@ function drawHurtSparks(x,y,effect){
  ctx.restore();
 }
 const assetPaths={
- bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v20/runtime/backgrounds/corridor-v20-painterly.svg',
+ bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v20/runtime/backgrounds/battle-painterly.webp?v=p07',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
  weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
  weaponClockoutEcho:'../art/v19/runtime/weapons/lite-clockout-echo.svg',
@@ -458,11 +458,11 @@ function drawStage(now){
  ctx.setTransform(PIXEL_SCALE,0,0,PIXEL_SCALE,0,0);
  ctx.clearRect(0,0,W,H);
  drawImageCover(images.bg,bgShift);
- const dim=ctx.createLinearGradient(0,0,0,H);dim.addColorStop(0,'#1b173319');dim.addColorStop(.65,'#23163432');dim.addColorStop(1,'#20142a8c');ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
+ const dim=ctx.createLinearGradient(0,0,0,H);if(trainingWave===null){dim.addColorStop(0,'#1b173305');dim.addColorStop(.65,'#23163413');dim.addColorStop(1,'#20142a57');}else{dim.addColorStop(0,'#1b173319');dim.addColorStop(.65,'#23163432');dim.addColorStop(1,'#20142a8c');}ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
  // Living environment: separate floating light sources, mist, floor and sparks.
  for(let i=0;i<14;i++){const x=(i*113+Math.sin(time*.3+i)*13)%W,y=(i*79+Math.sin(time*.8+i)*14)%(H-60);glow(x,y,7+i%4*4,i%3?'#ffc4703b':'#aa8bff48');}
  glow(126,88,135,'#ffd58a34');glow(614,165,175,'#a575ff35');
- ctx.fillStyle='#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle=trainingWave===null?'#38214834':'#382148aa';ctx.beginPath();ctx.ellipse(365,550,380,81,0,0,Math.PI*2);ctx.fill();
  const phase=fx?Math.min((now-fx.start)/1000,2):3;
  const animationMs=fx?Math.max(0,(now-fx.start)*state.speed):Infinity;
  const chibiV2Ready=chibiV2Mode&&Boolean(images.chibiIdle&&images.chibiAttackV2);
@@ -1468,9 +1468,14 @@ setInterval(()=>{if(!document.hidden&&trainingWave===null)save();},60000);
 requestAnimationFrame(frame);
 if(!state.playerName)openNameEditor();
 Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
- try{images[k]=await imageFrom(url);if(k==='bg')world.dataset.sceneArt=trainingWave===null?'v20-painterly-loaded':'training';}
+ try{images[k]=await imageFrom(url);if(k==='bg')world.dataset.sceneArt=trainingWave===null?'v20-raster-loaded':'training';}
  catch(error){
-   if(k==='bg'){world.dataset.sceneArt='fallback';images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
+   if(k==='bg'){
+      // Raster art is optional: a failed WebP must never disable combat.
+      world.dataset.sceneArt='v20-svg-fallback';
+      try{images[k]=await imageFrom('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');}
+      catch(backupError){world.dataset.sceneArt='fallback';images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Both V20 backgrounds unavailable:',error,backupError);}
+    }
    else if(k==='foreground'||k==='weaponBriefcase'||k==='weaponClockoutEcho'||k==='weaponCoffeeEcho'||k==='armorClockout'||k==='armorCoffee'||k==='armorGuardian'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;

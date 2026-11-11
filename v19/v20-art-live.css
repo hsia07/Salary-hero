@@ -157,12 +157,12 @@
 #app.portrait-shell:not([data-training])>.town-stage{
  background:
   linear-gradient(180deg,#19102b15 0%,transparent 40%,#170e2780 100%),
-  url('../art/v20/runtime/backgrounds/office-v20-painterly.svg') center 50%/cover no-repeat;
+  url('../art/v20/runtime/backgrounds/town-painterly.webp?v=p07') center 50%/cover no-repeat;
 }
 #app.portrait-shell:not([data-training]) .battle-deck>.scene{
  background:
   linear-gradient(180deg,#15102a24 0%,transparent 48%,#180d2b70 100%),
-  url('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg') center center/cover no-repeat;
+  url('../art/v20/runtime/backgrounds/battle-painterly.webp?v=p07') center center/cover no-repeat;
 }
 
 /* P0.5: iOS-compatible INLINE SVG gameplay resource art.
@@ -265,4 +265,14 @@
 }
 @media(prefers-reduced-motion:reduce){
  #app.portrait-shell:not([data-training]) #v20-loot-preview.is-loot-new{animation:none}
+}
+/* P0.7: the two opaque illustrated WebP background plates replace vector
+ * background composition. Keep only a very faint independent metallic edge;
+ * the gameplay canvas and controls always remain in front. */
+#app.portrait-shell:not([data-training]) .v20-ornament-town{opacity:.24;filter:none}
+#app.portrait-shell:not([data-training]) .v20-ornament-battle{opacity:.16;filter:none}
+#app.portrait-shell:not([data-training]) .v20-battle-furnishings{display:none}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]) .v20-ornament-town{opacity:.17}
+ #app.portrait-shell:not([data-training]) .v20-ornament-battle{opacity:.12}
 }

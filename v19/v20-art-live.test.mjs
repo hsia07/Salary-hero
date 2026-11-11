@@ -60,9 +60,9 @@ test('V20 painted backgrounds are actual game runtime files and never baked scre
  const css=read('./v20-art-live.css');
  const battle=read('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');
  const town=read('../art/v20/runtime/backgrounds/office-v20-painterly.svg');
- assert.match(app,/bg:trainingWave!==null\?.*corridor-v20-painterly\.svg/);
- assert.match(css,/office-v20-painterly\.svg/);
- assert.match(css,/corridor-v20-painterly\.svg/);
+ assert.match(app,/bg:trainingWave!==null\?.*battle-painterly\.webp/);
+ assert.match(css,/town-painterly\.webp/);
+ assert.match(css,/battle-painterly\.webp/);
  assert.match(app,/world\.dataset\.sceneArt/);
  for(const [source,width,height] of [[town,960,560],[battle,720,620]]){
   assert.match(source,new RegExp('viewBox="0 0 '+width+' '+height+'"'));
@@ -96,4 +96,17 @@ test('V20 multi-layer illustrated backgrounds are rasterized once, live battle s
  assert.match(app,/world\.dataset\.sceneCache/);
  assert.match(app,/drawMonsterAtlasFrame/);
  assert.match(app,/drawImageCover\(images\.bg,bgShift\)/);
+});
+
+test('P0.7 committed raster environment is a valid lightweight opaque WebP with no baked UI',()=>{
+ // In the final game, all character, enemy and UI elements remain outside the binary background.
+ for(const [path,width,height] of [
+  ['../art/v20/runtime/backgrounds/battle-painterly.webp',720,620],
+  ['../art/v20/runtime/backgrounds/town-painterly.webp',960,560]
+ ]){
+  const bytes=readFileSync(resolve(here,path));
+  assert.equal(bytes.toString('ascii',0,4),'RIFF');
+  assert.equal(bytes.toString('ascii',8,12),'WEBP');
+  assert.ok(bytes.length>15000&&bytes.length<160000,'mobile-sized scene art');
+ }
 });
