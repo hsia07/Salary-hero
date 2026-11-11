@@ -11,7 +11,7 @@ import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyP
 import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
-import {SQUAD_JOBS} from './v21-squad-core.mjs';
+import {SQUAD_JOBS,squadStats} from './v21-squad-core.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -684,11 +684,21 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    }
    if(specialistHit.cooldownReduction)s.skillCooldowns.burst=Math.max(0,s.skillCooldowns.burst-specialistHit.cooldownReduction);
    if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+Math.max(1,25+s.skillRank*5+skillMods.drainHeal));
+   // S1 interim squad assist: recruited starters participate in real damage
+   // calculations. Dedicated seven-actor sprite choreography is still pending.
+   const deployed=SQUAD_JOBS.flatMap(job=>{
+     const member=s.colleagueProgress.members.find(m=>m.id==='starter-'+job.id);
+     return member?[{id:member.id,job:job.id,level:member.level,stars:1}]:[];
+   }).slice(0,6);
+   const squadDraft={slots:Array.from({length:6},(_,i)=>deployed[i]||null)};
+   const squadAttack=squadStats(squadDraft,s.level).filter(Boolean).reduce((total,m)=>total+m.attack,0);
+   const colleagueAssist=deployed.length?Math.max(1,Math.round(squadAttack*.16)):0;
+   if(colleagueAssist){damage+=colleagueAssist;notice(s,'🤝 '+deployed.length+' 位同事協力：追加 '+colleagueAssist+' 傷害！');}
    const enemyHpBefore=s.enemy.hp;
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
    const lifeSteal=Math.floor(Math.min(damage,enemyHpBefore)*Math.min(.35,liteStats.lifeSteal+liteSpecialist.lifeSteal));
    if(lifeSteal)s.heroHp=Math.min(s.maxHp,s.heroHp+lifeSteal);
-   s.last={type:'hit',damage,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
+   s.last={type:'hit',damage,colleagueAssist,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
      tacticalExtra:tactical.extra,tacticalHeal:tactical.heal,tacticalSpent:tactical.spent,tacticalExtracted:tactical.extracted,tacticalStun:tactical.skipRetaliation,
      liteBuild:liteSpecialist.id,buildProc:specialistHit.proc,buildDamage:specialistHit.extra,
      poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal};
