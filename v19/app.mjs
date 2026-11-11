@@ -5,6 +5,8 @@ import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
 import {LITE_STRATEGIES} from './lite-idle.mjs';
 import {LITE_BUILDS,LITE_BUILD_TIERS,liteBuildById,liteMasteryRank,liteBuildStats} from './lite-builds.mjs';
+import {LITE_SKILL_PATHS,LITE_SKILL_UNLOCK_USES,liteSkillSelection} from './lite-skills.mjs';
+import {liteLegendaryEffects,liteLegendaryByTemplate} from './lite-legendaries.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -878,8 +880,18 @@ function renderLiteBuilds(){
  }).join('');
  return '<div class="lite-build-intro"><strong>🏵️ 社畜職業專精・Lite 前導版</strong><p>本階段開放兩條可自由切換的入門流派；擊敗普通怪獲得 1 熟練、菁英 2、魔王 3。到達 5／18／48 熟練後解鎖更強能力。切換不重置已學會的技能與專精。</p></div>'+cards;
 }
+function renderLiteSkillStudies(){
+ return '<div class="lite-special-intro">📕 技能使用六次後解鎖兩種互斥變形；可以免費切換，不需要抽卡。</div>'+
+ LITE_SKILL_PATHS.map(spec=>{
+   const uses=state.liteSkillUses?.[spec.id]||0;
+   const unlocked=uses>=LITE_SKILL_UNLOCK_USES;
+   const active=liteSkillSelection(state,spec.id);
+   return '<article class="lite-skill-study"><div class="lite-skill-study-head"><strong>'+escapeHTML(spec.name)+'</strong><small>'+Math.min(uses,LITE_SKILL_UNLOCK_USES)+' / '+LITE_SKILL_UNLOCK_USES+' 次'+(unlocked?' · 專精已開啟':' · 尚未開啟')+'</small></div><div class="lite-master-track"><i style="width:'+Math.min(100,uses/LITE_SKILL_UNLOCK_USES*100)+'%"></i></div><div class="lite-skill-options">'+spec.choices.map(option=>'<button class="lite-branch '+(active===option.id?'active':'')+'" data-action="liteChooseSkillPath" data-skill="'+spec.id+'" data-value="'+option.id+'" '+(unlocked?'':'disabled')+'><strong>'+escapeHTML(option.name)+'</strong><small>'+escapeHTML(option.description)+'</small>'+(active===option.id?'<em>使用中</em>':'')+'</button>').join('')+'</div></article>';
+ }).join('');
+}
 function renderLiteEquipment(){
- const stats=liteEquipmentStats(state);
+ const stats=liteEquipmentStats(state),legend=liteLegendaryEffects(state);
+ const presetControl='<section class="lite-presets"><h3>📋 兩組快速配裝</h3><p>保存目前的四欄裝備、流派和技能變形；一鍵切換，不會消耗任何道具。</p>'+[0,1].map(i=>'<div class="lite-preset"><span>'+(i===0?'速刷配置':'高塔配置')+'<small>'+(state.litePresets?.[i]?'已存檔：'+escapeHTML(liteBuildById(state.litePresets[i].build)?.name||'流派'):'尚未保存')+'</small></span>'+btn('保存','liteSavePreset',i,!liteBuildById(state.liteActiveBuild))+btn('套用','liteLoadPreset',i,!state.litePresets?.[i])+'</div>').join('')+'</section>';
  const slotPanels=LITE_SLOTS.map(slot=>{
    const item=state.liteInventory.find(it=>it.instanceId===state.liteLoadout?.[slot.id]);
    const base=item?liteBase(item.templateId):null;
@@ -889,6 +901,7 @@ function renderLiteEquipment(){
  const activeSets=LITE_SETS.filter(set=>stats.sets[set.id]>=2);
  const autoOptions='<div class="lite-auto"><h3>🤖 智慧換裝託管</h3><p>換裝會評估完整四欄與套裝協定；已鎖定、穿戴中的裝備不會自動換掉，裝備也不會自動分解。</p>'+btn(state.liteAutoEquip?'自動換裝 ON':'自動換裝 OFF','liteSetAuto')+
    '<div class="lite-pages">'+LITE_STRATEGIES.map(strategy=>'<button class="lite-strategy '+(state.liteAutoStrategy===strategy.id?'active':'')+'" data-action="liteSetStrategy" data-value="'+strategy.id+'" aria-pressed="'+(state.liteAutoStrategy===strategy.id?'true':'false')+'">'+escapeHTML(strategy.name)+'</button>').join('')+'</div>'+btn('✨ 立即依策略最佳配裝','liteAutoOptimize')+'</div>';
+ const uniqueLine=legend.active.length?'<div class="lite-legend-overview">✦ 目前啟動 '+legend.active.length+' 件傳說裝備獨特效果</div>':'';
  const sets='<div class="lite-sets"><h3>✦ 套裝協定</h3>'+(activeSets.length?activeSets.map(set=>'<p>✦ <strong>'+escapeHTML(set.name)+'</strong> · '+escapeHTML(set.description)+'</p>').join(''):'<p>穿戴同系列兩件裝備即可啟動戰鬥特效。</p>')+'</div>';
  const pages=Math.max(1,Math.ceil(state.liteInventory.length/20));
  liteArmoryPage=Math.min(liteArmoryPage,pages-1);
@@ -899,9 +912,11 @@ function renderLiteEquipment(){
    const actions='<div class="lite-item-actions">'+btn(isEquipped?'穿戴中':'穿上','liteEquip',item.instanceId,isEquipped)+
      btn(item.locked?'🔒 解鎖':'🔓 鎖定','liteLock',item.instanceId)+
      btn(liteSalvagePending===item.instanceId?'確定分解':'分解','liteSalvage',item.instanceId,item.locked||isEquipped)+'</div>';
-   return '<article class="lite-item" data-rarity="'+rarity.id+'"><div class="lite-item-heading"><div><span class="lite-rarity">'+rarity.name+' · Lv.'+item.itemLevel+'</span><strong>'+escapeHTML(base.name)+'</strong></div><small>'+LITE_SLOTS.find(x=>x.id===base.slot)?.name+(base.setId?' · '+LITE_SETS.find(x=>x.id===base.setId)?.name:'')+'</small></div><div class="lite-item-stats">'+escapeHTML(liteStatLine(item))+'</div><div class="lite-item-affixes">'+escapeHTML(liteAffixLine(item)||'無附加詞條')+'</div>'+actions+'</article>';
+   const unique=item.rarity==='legendary'?liteLegendaryByTemplate(item.templateId):null;
+   const uniqueBadge=unique?'<div class="lite-unique"><strong>✦ '+escapeHTML(unique.name)+'</strong><small>'+escapeHTML(unique.description)+'</small></div>':'';
+   return '<article class="lite-item" data-rarity="'+rarity.id+'"><div class="lite-item-heading"><div><span class="lite-rarity">'+rarity.name+' · Lv.'+item.itemLevel+'</span><strong>'+escapeHTML(base.name)+'</strong></div><small>'+LITE_SLOTS.find(x=>x.id===base.slot)?.name+(base.setId?' · '+LITE_SETS.find(x=>x.id===base.setId)?.name:'')+'</small></div><div class="lite-item-stats">'+escapeHTML(liteStatLine(item))+'</div><div class="lite-item-affixes">'+escapeHTML(liteAffixLine(item)||'無附加詞條')+'</div>'+uniqueBadge+actions+'</article>';
  }).join('');
- return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+autoOptions+'<h3>戰利品背包 · '+(liteArmoryPage+1)+'/'+pages+' 頁</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+(pages>1?'<div class="lite-pages">'+btn('較新的裝備','litePrevious','',liteArmoryPage===0)+btn('較舊的裝備','liteNext','',liteArmoryPage===pages-1)+'</div>':'')+'</div>';
+ return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+uniqueLine+presetControl+autoOptions+'<h3>戰利品背包 · '+(liteArmoryPage+1)+'/'+pages+' 頁</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+(pages>1?'<div class="lite-pages">'+btn('較新的裝備','litePrevious','',liteArmoryPage===0)+btn('較舊的裝備','liteNext','',liteArmoryPage===pages-1)+'</div>':'')+'</div>';
 }
 function renderPanel(type){
  currentPanel=type;
@@ -932,7 +947,7 @@ function renderPanel(type){
  }else if(type==='skills'){
   body.innerHTML=btn('🏵️ 查看打卡暴擊／咖啡續命流派專精','liteBuilds')+'<p>技能在實際戰鬥中生效，使用後依攻擊次數冷卻；自動模式會優先施放可使用的技能。</p>'+
    '<p>技能書 '+state.skillBooks+' 本 · 專精 '+state.skillRank+'/5</p>'+btn('📕 研讀技能書（提升技能效果）','studySkillBook','',!state.skillBooks||state.skillRank>=5)+
-   GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('');
+   GAME_SKILLS.map(skill=>'<div class="item"><div class="detail"><strong>'+skill.name+'</strong><small>'+skill.description+' · 冷卻 '+skill.cooldown+' 回合</small></div>'+btn(state.skillCooldowns[skill.id]?'冷卻 '+state.skillCooldowns[skill.id]:'施放','skill',skill.id,!!state.skillCooldowns[skill.id])+'</div>').join('')+renderLiteSkillStudies();
  }else if(type==='hero'){
   const it=ITEMS.find(x=>x.id===state.equipped);
   const liteWeapon=state.liteInventory.find(x=>x.instanceId===state.liteLoadout?.weapon);
@@ -1010,6 +1025,8 @@ body.addEventListener('click',e=>{
  else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
  else if(act==='liteBuilds')renderPanel('liteBuilds');
+ else if(act==='liteChooseSkillPath')commit({type:'liteChooseSkillPath',skill:b.dataset.skill,id:b.dataset.value});
+ else if(act==='liteSavePreset'||act==='liteLoadPreset')commit({type:act,index:Number(b.dataset.value)});
  else if(act==='liteChooseBuild'||act==='liteChooseBranch')commit({type:act,id:b.dataset.value});
  else if(act==='liteSetAuto')commit({type:'liteSetAuto',value:!state.liteAutoEquip});
  else if(act==='liteSetStrategy')commit({type:'liteSetStrategy',id:b.dataset.value});
