@@ -522,15 +522,22 @@ function drawStage(now){
  const outfitBase=liteBase(outfit?.templateId);
  const armorKey=liteArmorAsset(outfit,outfitBase),armorArt=armorKey?images[armorKey]:null;
  world.dataset.liteArmor=armorKey?outfitBase.setId:'none';
+ world.dataset.liteArmorPose='none';
  if(trainingWave===null&&chibiReady&&armorArt){
    const mode=hurtPoseIndex>=0&&hurtCell?'hurt':attacking&&chibiV2Ready?'attack':'idle';
    const poseIndex=mode==='hurt'?hurtPoseIndex:mode==='attack'?attackFrameAt(animationMs):0;
    const layer=liteArmorPose(mode,poseIndex);
+   world.dataset.liteArmorPose=mode+'-'+poseIndex;
    ctx.save();
    ctx.translate(layer.x,layer.y);
    ctx.rotate(layer.rotation);
    ctx.globalAlpha=.92;
-   // Keep the straps and shoulder silhouette in sync with the native artwork.
+   const rarity=liteRarity(outfit.rarity).id;
+   if(rarity==='legendary'||rarity==='epic'){
+     ctx.shadowColor=rarity==='legendary'?'#ffdda5':'#cfaaff';
+     ctx.shadowBlur=rarity==='legendary'?18:9;
+   }
+   // Keep the straps and shoulder silhouette in sync with native pose art.
    ctx.drawImage(armorArt,-layer.width/2,-layer.height/2,layer.width,layer.height);
    ctx.restore();
  }
