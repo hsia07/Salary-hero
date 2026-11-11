@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="132" viewBox="0 0 160 132">
+<defs>
+<linearGradient id="leather" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#476861"/><stop offset=".31" stop-color="#2d514d"/><stop offset=".76" stop-color="#263f47"/><stop offset="1" stop-color="#1c2935"/></linearGradient>
+<linearGradient id="gold" x1="0" y1=".12" x2="1" y2="1"><stop stop-color="#fff3be"/><stop offset=".3" stop-color="#d5a76f"/><stop offset=".7" stop-color="#926d65"/><stop offset="1" stop-color="#ecd29b"/></linearGradient>
+<radialGradient id="vial"><stop stop-color="#eaffcc"/><stop offset=".45" stop-color="#93e8b8"/><stop offset="1" stop-color="#258f84"/></radialGradient>
+</defs>
+<!-- Organic garment-shaped overlay; torso remains the original chibi sprite. -->
+<path d="M49 16Q43 20 33 34L26 52L38 61L53 40L60 22M110 16Q128 23 138 51L127 61L105 35" fill="#314a49" stroke="#1f2933" stroke-width="8" stroke-linejoin="round"/>
+<path d="M49 16Q43 20 33 34L26 52L38 61L53 40L60 22M110 16Q128 23 138 51L127 61L105 35" fill="none" stroke="url(#gold)" stroke-width="4"/>
+<path d="M57 29Q79 42 104 29L118 115Q84 134 41 116Z" fill="url(#leather)" stroke="#1e2736" stroke-width="7" stroke-linejoin="round"/>
+<path d="M58 33Q80 47 103 33L111 104Q78 116 49 105Z" fill="none" stroke="url(#gold)" stroke-opacity=".62" stroke-width="3"/>
+<path d="M45 68Q80 76 113 68" stroke="#f1d69b" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M50 76Q79 86 111 77L106 105Q80 116 55 105Z" fill="#243b3e" stroke="#c99f6f" stroke-width="3"/>
+<path d="M65 87Q79 94 97 87M66 98Q80 105 96 98" stroke="#8db8a0" stroke-width="2" fill="none" opacity=".85"/>
+<path d="M43 58l15 4m44 0l17-5" fill="none" stroke="#f0d296" stroke-width="5" stroke-linecap="round"/>
+<g transform="rotate(-8 78 57)">
+<path d="M72 44L86 44L88 62Q79 71 69 62Z" fill="url(#vial)" stroke="#f1d99e" stroke-width="4"/>
+<path d="M75 40H84V46H75Z" fill="#594357" stroke="#e1c28a" stroke-width="2"/>
+<path d="M72 55Q79 59 86 54" stroke="#d5ffe1" stroke-width="2" fill="none"/>
+<circle cx="80" cy="54" r="3" fill="#f4ffd4"/>
+</g>
+<g fill="url(#gold)" stroke="#4d4952" stroke-width="2"><circle cx="50" cy="65" r="4"/><circle cx="111" cy="65" r="4"/></g>
+<path d="M44 113Q79 129 112 113" stroke="#cda978" stroke-width="3" fill="none"/>
+</svg>
