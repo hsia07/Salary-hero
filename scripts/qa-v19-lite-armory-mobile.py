@@ -127,7 +127,13 @@ def main():
         mastered.locator('#panel-close').click()
         assert '咖啡續命' in mastered.locator('#lite-build-ribbon').inner_text()
         assert mastered.locator('#world').get_attribute('data-lite-armor')=='coffee'
+        mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="idle-0"',timeout=6000)
         mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-mobile.png'),animations='disabled')
+        # Verify the outfit tracks actual hand-drawn attack frames, not only idle.
+        mastered.locator('#attack').click()
+        mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose?.startsWith("attack-")',timeout=7000)
+        mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-attack-mobile.png'),animations='disabled')
+        mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="idle-0"',timeout=7000)
         mastered.locator('button[data-panel="skills"]').click()
         assert '技能使用六次' in mastered.locator('#panel-content').inner_text()
         mastered.locator('button[data-action="liteChooseSkillPath"][data-skill="burst"][data-value="heavy"]').click()
