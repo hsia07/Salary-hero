@@ -1,5 +1,5 @@
 // Salary Hero S1 progression math v0.1. Pure, side-effect-free functions.
-// Provisional balance numbers; not yet wired into the live game.
+// Provisional balance numbers; V19 battle and S1 colleague flows use this module.
 export const MAX_LEVEL = 100;
 export const BREAK_CAPS = Object.freeze([20, 40, 60, 80, 100]);
 const integer = (n) => Number.isSafeInteger(n) && n >= 0;
