@@ -1,5 +1,6 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
+import {xpToNext,teamAura} from './s1-progression.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -1068,7 +1069,7 @@ function renderPanel(type){
   const shownName=liteWeaponBase?.name||it.name;
   const shownIcon=liteWeaponBase?.icon||it.icon;
   const shownAttack=liteEquipmentStats(state).weaponAttack||it.attack;
-  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(50+state.level*30)+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+shownIcon+'</span><div class="detail"><strong>'+shownName+'</strong><small>目前武器攻擊 '+shownAttack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
+  body.innerHTML='<div class="center"><span class="large-symbol">🧑‍💼</span><h3>Lv.'+state.level+' '+escapeHTML(playerTitle(state))+'</h3></div><div class="item"><div class="detail"><strong>生命 '+Math.ceil(state.heroHp)+'/'+state.maxHp+'</strong><small>經驗 '+state.xp+'/'+(state.level>=100?'MAX':xpToNext(state.level))+' · 已擊敗 '+state.cleared+' 隻</small><small>第 '+state.wave+' 關 · '+(state.activeMode==='dungeon'?'今日副本：普通→普通→菁英→魔王（目前借用普通怪美術）':'六種普通怪循環推進')+'</small></div></div><div class="item"><span class="symbol">'+shownIcon+'</span><div class="detail"><strong>'+shownName+'</strong><small>目前武器攻擊 '+shownAttack+' · 藥水 '+state.potions+'</small></div></div>'+'<div class="item"><div class="detail"><strong>目前選用：'+escapeHTML(skinById(state.activeSkin)?.name||'平凡社畜')+'</strong><small>已取得 '+state.ownedSkins.length+'/'+SKINS.length+' 套造型 · 🎟️ '+state.skinTickets+' 張造型券</small></div></div>'
   +btn('🏵️ 流派與職業專精','liteBuilds')+btn('✎ 修改遊戲名稱','rename')+btn('🎭 造型衣櫃與活動抽獎','styles')+btn('治療 +65 HP','heal','',!state.potions||state.heroHp===state.maxHp);
  } else if(type==='styles'){
   body.innerHTML=renderSkinPanel(state);
