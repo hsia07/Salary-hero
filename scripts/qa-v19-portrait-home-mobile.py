@@ -32,7 +32,7 @@ def main():
         assert page.locator('#v20-stage-pips .is-current').count()==1
         assert '第 1 關' in page.locator('#v20-wave-text').inner_text()
         assert page.locator('#v20-pet-level').inner_text()=='Lv.2'
-        assert page.locator('#v20-loot-count').inner_text().strip().isdigit(), 'loot count must remain a live integer'
+        assert page.locator('#v20-loot-count').text_content().strip().isdigit(), 'loot count must remain a live integer'
         assert page.locator('#v20-stage-chest').is_enabled()
         page.locator('#v21-loot-toggle').click()
         assert page.locator('#v20-loot-preview').is_visible()
