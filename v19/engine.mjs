@@ -9,6 +9,7 @@ import {LITE_SKILL_PATHS,liteSkillUses,liteSkillPaths,liteSkillById,liteSkillSel
 import {liteLegendaryEffects} from './lite-legendaries.mjs';
 import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyPreset} from './lite-presets.mjs';
 import {liteTacticalHit} from './lite-tactics.mjs';
+import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -134,6 +135,10 @@ export function loopEnemyFor(wave,mode='campaign',now=Date.now()){
   hp,maxHp:hp,turns:0,attack:atk,dungeonId:daily?.id||null,standIn:!!daily&&tier!=='normal'};
 }
 export const STORAGE_KEY='salary-hero-v19-save-1';
+export function slaveProgress(state){
+ const level=Math.max(1,Math.min(100,Math.floor(Number(state?.level)||1)));
+ return {level,xp:Math.max(0,Math.floor(Number(state?.xp)||0)),xpRequired:xpToNext(level),teamAura:teamAura(level)};
+}
 export function todayTW(now=Date.now()){
  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(now)).map(p=>[p.type,p.value]));
  return [parts.year,parts.month,parts.day].join('-');
@@ -217,7 +222,7 @@ export function normalize(raw,now=Date.now()){
    xp:Math.max(0,Math.floor(Number(raw.liteOfflineReport.xp)||0)),
    items:Math.max(0,Math.min(6,Math.floor(Number(raw.liteOfflineReport.items)||0)))
  }:null;
- n.level=Math.max(1,Math.min(500,Math.floor(Number(n.level)||1)));
+ n.level=Math.max(1,Math.min(100,Math.floor(Number(n.level)||1)));
  for(const k of ['xp','gold','gems','potions','chests','specialChests','skillBooks','skillFragments','petXp','petFood','craftingMaterial','rareMaterials','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.skillRank=Math.max(0,Math.min(5,Math.floor(Number(raw.skillRank)||0)));
  n.forgeLevel=Math.max(0,Math.min(10,Math.floor(Number(raw.forgeLevel)||0)));
@@ -331,8 +336,15 @@ function recalcLiteHp(s){
  s.heroHp=Math.min(s.maxHp,Math.max(0,s.heroHp+Math.max(0,s.maxHp-previous)));
 }
 function awardXP(s,amount){
- s.xp+=amount;
- while(s.xp>=50+s.level*30){s.xp-=50+s.level*30;s.level++;s.baseMaxHp+=9;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);notice(s,'✨ 升到 Lv.'+s.level+'，生命上限增加！');}
+ // Existing rewards (combat, dungeons, encounters, offline) now share S1 XP math.
+ // The live save schema remains v19; previously earned levels are preserved.
+ const previous=s.level;
+ const result=gainSlaveXp({level:Math.min(100,Math.max(1,s.level)),xp:s.xp},Math.max(0,Math.floor(Number(amount)||0)));
+ s.level=result.level;s.xp=result.xp;
+ for(let level=previous+1;level<=s.level;level++){
+  s.baseMaxHp+=9;s.maxHp+=9;s.heroHp=Math.min(s.maxHp,s.heroHp+22);
+ }
+ if(result.levelsGained)notice(s,'✨ 薪奴升到 Lv.'+s.level+'！全隊基礎攻擊與生命加成 '+((teamAura(s.level)-1)*100).toFixed(2)+'%；同事等級上限提高。');
 }
 function awardPetXP(s,amount){
  s.petXp+=amount;
