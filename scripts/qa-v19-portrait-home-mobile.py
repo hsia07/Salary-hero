@@ -32,9 +32,9 @@ def main():
         # A 200 OK SVG can still be invalid or render an empty <use> icon.
         assets=page.evaluate("""async () => {
           const urls=[
-            '/Salary-hero/art/v19/runtime/backgrounds/storybook-office.svg',
-            '/Salary-hero/art/v19/runtime/backgrounds/storybook-corridor.svg',
-            '/Salary-hero/art/v19/runtime/ui/storybook-icons.svg'
+            '../art/v19/runtime/backgrounds/storybook-office.svg',
+            '../art/v19/runtime/backgrounds/storybook-corridor.svg',
+            '../art/v19/runtime/ui/storybook-icons.svg'
           ];
           const decoded=[];
           for(const url of urls){
