@@ -38,7 +38,7 @@ def main():
         assert not page.locator('#name-dialog').evaluate('(d)=>d.open')
         assert page.evaluate('document.documentElement.scrollWidth > innerWidth+3') is False
         assert 'NT$' in page.locator('#today').inner_text()
-        page.locator('button[data-panel="equipment"]').click()
+        page.locator('.tabs button[data-panel="equipment"]').click()
         assert page.locator('#panel').is_visible()
         assert '25/120' in page.locator('.lite-armory-title').inner_text()
         assert page.locator('.lite-item').count()==20
@@ -86,7 +86,7 @@ def main():
             path=str(QA/'lite-build-clockout-mobile.png'),animations='disabled')
         page.locator('#panel-close').click()
         assert '打卡暴擊' in page.locator('#lite-build-ribbon').inner_text()
-        page.locator('button[data-panel="equipment"]').click()
+        page.locator('.tabs button[data-panel="equipment"]').click()
         page.locator('button[data-action="liteSavePreset"][data-value="0"]').click()
         assert state()['litePresets'][0]['loadout']['weapon']=='li-1'
         page.locator('button[data-action="liteUnequip"][data-value="weapon"]').click()
@@ -187,7 +187,7 @@ def main():
             offline.locator('#auto').click()
         offline.locator('#lite-offline-dismiss').click()
         assert offline.locator('#lite-offline-report').is_hidden()
-        offline.locator('button[data-panel="equipment"]').click()
+        offline.locator('.tabs button[data-panel="equipment"]').click()
         offline.locator('button[data-action="liteSetAuto"]').click()
         offline.locator('button[data-action="liteSetStrategy"][data-value="survival"]').click()
         offline.locator('button[data-action="liteAutoOptimize"]').click()
