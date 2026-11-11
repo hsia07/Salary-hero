@@ -39,6 +39,6 @@ export function liteApplyPreset(state,index){
  for(const [id,value] of Object.entries(preset.skillPaths)){
    if((state.liteSkillUses[id]||0)>=LITE_SKILL_UNLOCK_USES)state.liteSkillPaths[id]=value;
  }
- state.liteCombo=0;state.liteToxinStacks=0;
+ state.liteCombo=0;state.liteToxinStacks=0;state.liteMarks=0;
  return preset;
 }
