@@ -8,6 +8,7 @@ on:
       - "v19/portrait-home.css"
       - "v19/portrait-one-screen.css"
       - "v19/storybook-skin.css"
+      - "v19/iphone-hud-fixes.css"
       - "art/v19/runtime/backgrounds/storybook-*.svg"
       - "art/v19/runtime/ui/storybook-icons.svg"
       - "v19/portrait-home.test.mjs"
