@@ -86,13 +86,20 @@ def main():
         page.locator('#panel-close').click()
         assert '打卡暴擊' in page.locator('#lite-build-ribbon').inner_text()
 
-        page.evaluate("""(key)=>{
-          const s=JSON.parse(localStorage.getItem(key));
-          s.liteBuildProgress.clockout=5;
-          localStorage.setItem(key,JSON.stringify(s));
-        }""",KEY)
+        # The outgoing page writes its in-memory state on pagehide. Use a
+        # document-start test hook so the simulated unlocked save is applied
+        # AFTER pagehide but BEFORE the new game reads localStorage.
+        page.add_init_script("""() => {
+          const key='salary-hero-v19-save-1';
+          const s=JSON.parse(localStorage.getItem(key)||'null');
+          if(s?.liteBuildProgress){
+            s.liteBuildProgress.clockout=5;
+            localStorage.setItem(key,JSON.stringify(s));
+          }
+        }""")
         page.reload(wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
+        assert state()['liteBuildProgress']['clockout']>=5,'simulated mastered save should survive pagehide'
         page.locator('#lite-build-ribbon').click()
         page.locator('button[data-action="liteChooseBranch"][data-value="execute"]').click()
         assert state()['liteBuildBranch']['clockout']=='execute'
