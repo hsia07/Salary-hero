@@ -1,0 +1,55 @@
+name: V21 Illustrated Forge Mobile QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v19/v21-forge-atelier.mjs'
+      - 'v19/v21-forge-atelier.css'
+      - 'v19/v21-forge-atelier.test.mjs'
+      - 'art/v21/runtime/forge/**'
+      - 'v19/play.html'
+      - 'v19/app.mjs'
+      - 'scripts/qa-v21-forge-mobile.py'
+      - '.github/workflows/v21-forge-mobile.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  forge-portrait:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate artist scene and forge mechanics
+        run: |
+          node --check v19/v21-forge-atelier.mjs
+          node --test v19/v21-forge-atelier.test.mjs
+      - name: Install Chromium phone browser
+        run: |
+          python -m pip install --disable-pip-version-check 'playwright>=1.56,<2'
+          python -m playwright install --with-deps chromium
+      - name: Serve actual game
+        run: |
+          python -m http.server 8766 --bind 127.0.0.1 --directory . >/tmp/v21-forge-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8766/v19/play.html >/dev/null && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Real illustrated forge interaction on portrait phone sizes
+        run: python scripts/qa-v21-forge-mobile.py
+      - name: Upload actual interactive screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v21-illustrated-forge-mobile
+          path: |
+            art/v19/runtime/qa/v21-forge-atelier-390.png
+            art/v19/runtime/qa/v21-forge-atelier-success-390.png
+            art/v19/runtime/qa/v21-forge-atelier-320.png
+          if-no-files-found: warn

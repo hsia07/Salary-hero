@@ -13,6 +13,7 @@ import {initPortraitHome} from './portrait-home.mjs';
 import {initV20Home} from './v20-home.mjs';
 import {initV21UnifiedStage} from './v21-unified-stage.mjs';
 import {initV21ResearchLab} from './v21-research-lab.mjs';
+import {renderV21ForgeAtelier,v21ForgeInspect,v21ForgeSuccess} from './v21-forge-atelier.mjs';
 import {drawV20FloorAtmosphere} from './v20-scene-light.mjs';
 import {v20CombatAnchors,drawV20ContactShadow} from './v20-battle-stage.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
@@ -1076,13 +1077,8 @@ function renderPanel(type){
  } else if(type==='equipment'){
   body.innerHTML=renderLiteEquipment()+'<details class="lite-legacy-shop"><summary>原有武器與鍛造（保留舊存檔）</summary><p>⚒️ 鍛造 +'+state.forgeLevel+'/10 · 強化素材 '+state.craftingMaterial+' · 黎明礦石 '+state.rareMaterials+'</p>'+btn('⚒️ 消耗材料鍛造武器','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+ITEMS.map(it=>itemRow(it,'equip')).join('')+(state.pendingDrops.length?'<p>舊版掉寶 '+state.pendingDrops.length+' 件待領取。</p>'+btn('領取掉寶','claim'):'')+'</details>';
  }else if(type==='forge'){
-  body.innerHTML='<div class="center"><span class="large-symbol">⚒️</span><h3>勇者的鍛造工坊</h3><p>原本已解鎖的鍛造加成會繼續保留。本版鍛造升級可提高實際戰鬥傷害。</p></div>'+
-   '<div class="item"><div class="detail"><strong>鍛造等級 +'+state.forgeLevel+'/10</strong><small>每次攻擊基礎強化傷害 +'+(state.forgeLevel*2)+'</small></div></div>'+
-   '<div class="item"><div class="detail"><strong>🔧 強化材料 '+state.craftingMaterial+'</strong><small>每次鍛造需消耗 3 個</small></div></div>'+
-   '<div class="item"><div class="detail"><strong>💎 黎明礦石 '+state.rareMaterials+'</strong><small>每次鍛造需消耗 1 個</small></div></div>'+
-   btn('⚒️ 鍛造升級','forge','',state.forgeLevel>=10||state.craftingMaterial<3||state.rareMaterials<1)+
-   btn('🛡️ 前往裝備背包','openPanel','equipment');
- }else if(type==='pets'){
+   body.innerHTML=renderV21ForgeAtelier(state);
+  }else if(type==='pets'){
   const needed=50+state.petLevel*30;
   body.innerHTML='<div class="center"><img class="portrait-pet-card-art" src="../art/v19/runtime/portrait/cat-companion.svg" alt="橘貓夥伴"><h3>社畜的橘貓夥伴 · Lv.'+state.petLevel+'</h3><p>你上班賺薪水，牠在魔法辦公室負責監督你休息。</p></div>'+
    '<div class="item"><div class="detail"><strong>🐾 寵物經驗 '+state.petXp+'/'+needed+'</strong><small>餵食、每日副本與戰鬥可以累積養成進度。</small></div></div>'+
@@ -1151,6 +1147,7 @@ function renderPanel(type){
 function openPanel(type){renderPanel(type);if(!panel.open)panel.showModal();}
 $('#panel-close').onclick=()=>panel.close();panel.addEventListener('close',()=>{currentPanel=''});
 body.addEventListener('click',e=>{
+ if(e.target.closest('button[data-forge-inspect]')){v21ForgeInspect(body);return;}
  const b=e.target.closest('button[data-action]');if(!b||b.disabled)return;
  const act=b.dataset.action;
  if(act==='mode')commit({type:'mode',id:b.dataset.value});
@@ -1164,7 +1161,12 @@ body.addEventListener('click',e=>{
  else if(act==='drawSkin')commit('drawSkin');
  else if(act==='favoriteStyle')commit({type:'toggleFavoriteStyle',id:b.dataset.value});
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
- else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
+ else if(act==='forge'){
+   const previousForgeLevel=state.forgeLevel;
+   commit('forge');
+   if(state.forgeLevel>previousForgeLevel)v21ForgeSuccess(body,previousForgeLevel,state.forgeLevel);
+ }
+ else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
  else if(act==='liteBuilds')renderPanel('liteBuilds');
  else if(act==='openPanel')renderPanel(b.dataset.value);

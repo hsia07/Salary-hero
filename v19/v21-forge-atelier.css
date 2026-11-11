@@ -1,0 +1,60 @@
+/* V21 — truly illustrated interactive forge. The source WebP is one original
+ * room illustration only; live weapon image, flame, sparks, upgrade animation,
+ * materials and buttons remain separate interactive layers. */
+#panel-content .v21-forge-atelier{display:grid;gap:12px;font-family:system-ui,'Noto Sans TC',sans-serif;color:#fcebc8}
+#panel-content .v21-forge-diorama{position:relative;isolation:isolate;overflow:hidden;border:2px ridge #ffdf9a;border-radius:16px;aspect-ratio:1.7;min-height:164px;background:#291529;box-shadow:0 7px 21px #0d071d9c,inset 0 0 15px #f3bf6b65}
+#panel-content .v21-forge-painting{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 52%;filter:saturate(1.05) contrast(1.035)}
+#panel-content .v21-forge-diorama::before{content:'';position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(0deg,#160a25d9,transparent 39%,#1d123b44 87%),radial-gradient(circle at 38% 46%,#ffbe5438,transparent 49%)}
+#panel-content .v21-forge-furnace-glow{position:absolute;z-index:2;left:8%;top:15%;width:49%;height:59%;pointer-events:none;border-radius:50%;mix-blend-mode:screen;background:radial-gradient(ellipse,#ffe8a054,#ff872428 35%,transparent 71%);filter:blur(9px);animation:v21-forge-furnace 1.7s ease-in-out infinite alternate}
+#panel-content .v21-forge-forged-light{position:absolute;z-index:4;left:39%;top:41%;width:37%;height:30%;pointer-events:none;border-radius:50%;background:radial-gradient(ellipse,#fff8e4, #ffd67f 22%,#fb79276e 43%,transparent 74%);mix-blend-mode:screen;opacity:0;transform:scale(.3)}
+#panel-content .v21-forge-diorama.is-striking,#panel-content .v21-forge-diorama.is-forged{animation:v21-forge-impact .66s cubic-bezier(.22,.68,.15,1)}
+#panel-content .v21-forge-diorama.is-striking .v21-forge-forged-light{animation:v21-forge-light .59s ease-out both}
+#panel-content .v21-forge-diorama.is-forged .v21-forge-forged-light{animation:v21-forge-light 1.15s ease-out both}
+#panel-content .v21-forge-sparks{position:absolute;z-index:5;inset:0;pointer-events:none}
+#panel-content .v21-forge-spark{position:absolute;left:54%;top:59%;width:clamp(3px,.9vw,6px);height:clamp(7px,1.8vw,11px);border-radius:100% 0 90% 25%;background:linear-gradient(#fff9ed,#ffd36c 45%,#f67b29);box-shadow:0 0 7px #ffd68f,0 0 12px #f78b41;opacity:0;transform-origin:center 110%}
+#panel-content .v21-forge-diorama.is-striking .v21-forge-spark,#panel-content .v21-forge-diorama.is-forged .v21-forge-spark{animation:v21-forge-spark .85s cubic-bezier(.22,.74,.42,1) both;animation-delay:calc(var(--i) * 24ms)}
+#panel-content .v21-forge-scene-caption{position:absolute;left:10px;top:10px;z-index:6;display:grid;gap:2px;text-shadow:0 2px 5px #110a20,0 0 12px #1c082f}
+#panel-content .v21-forge-scene-caption small{font-size:9px;letter-spacing:.14em;color:#ffe6b8}
+#panel-content .v21-forge-scene-caption strong{font:900 clamp(13px,4.5vw,19px) Georgia,'Noto Serif TC',serif;color:#fff7e5}
+#panel-content .v21-forge-inspect{position:absolute;z-index:7;right:8px;bottom:7px;min-height:34px;padding:7px 12px;border-radius:8px;border:1px ridge #f8d29a;color:#fff0ca;background:linear-gradient(#64445ecb,#25162edb);box-shadow:0 1px 9px #140719a0;font-weight:750;font-size:12px;cursor:pointer}
+#panel-content .v21-forge-weapon-showcase{display:flex;align-items:center;gap:12px;min-height:126px;border:3px ridge #c99a69;border-radius:17px;padding:10px 12px;background:radial-gradient(ellipse at 16% 37%,#b477583b,transparent 54%),linear-gradient(140deg,#51334d,#231a32 75%);box-shadow:inset 0 1px #ffe8be83,0 5px 12px #11091a98}
+#panel-content .v21-forge-weapon-portrait{position:relative;display:flex;align-items:center;justify-content:center;flex:0 0 94px;height:104px;border:2px solid #bb8f6b;border-radius:13px;overflow:hidden;background:radial-gradient(circle,#7d5064,#321d39 65%)}
+#panel-content .v21-forge-weapon-aura{position:absolute;inset:10px;border:2px solid #ffe3a15c;border-radius:50%;box-shadow:0 0 19px #fbcf5b8c,inset 0 0 15px #ffd48740;animation:v21-forge-aura 3.1s ease-in-out infinite alternate}
+#panel-content .v21-forge-weapon-icon{position:relative;width:84px;height:89px;object-fit:contain;filter:drop-shadow(0 2px 4px #120919) drop-shadow(0 0 8px #f9c16e)}
+#panel-content .v21-forge-diorama.is-forged~.v21-forge-weapon-showcase .v21-forge-weapon-icon{animation:v21-forge-weapon-rise .95s ease-out both}
+#panel-content .v21-forge-weapon-detail{flex:1;min-width:0;display:grid;gap:4px}
+#panel-content .v21-forge-kicker{font-size:9px;color:#dcb587;letter-spacing:.12em}
+#panel-content .v21-forge-weapon-detail h3{font-size:16px;margin:0;color:#fff0cd;line-height:1.22}
+#panel-content .v21-forge-rank{font-size:12px;color:#f5d29e}
+#panel-content .v21-forge-rank strong{font-size:20px;color:#fff8e7;text-shadow:0 0 7px #ffcc62}
+#panel-content .v21-forge-level-pips{display:flex;gap:3px;min-width:0}
+#panel-content .v21-forge-level-pips span{flex:1;height:7px;min-width:1px;border-radius:3px;border:1px solid #77566d;background:linear-gradient(#291d31,#49354b)}
+#panel-content .v21-forge-level-pips span.is-complete{border-color:#ffe3a7;background:linear-gradient(#fff3bb,#c8904f);box-shadow:0 0 6px #ebb46991}
+#panel-content .v21-forge-weapon-detail p{margin:3px 0 0;font-size:11px;color:#ddc5b4;line-height:1.4}
+#panel-content .v21-forge-weapon-detail p strong,#panel-content .v21-forge-weapon-detail p b{color:#ffdf97}
+#panel-content .v21-forge-materials{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#panel-content .v21-forge-material{display:flex;gap:6px;align-items:center;min-width:0;border:2px ridge #a9806b;border-radius:11px;background:linear-gradient(145deg,#533748,#2c233b);padding:8px 7px}
+#panel-content .v21-forge-material.is-short{border-color:#b4666b}
+#panel-content .v21-forge-material-art{display:grid;place-items:center;width:31px;height:33px;flex:none;border-radius:9px;background:#7c5b626c;font-size:24px;filter:drop-shadow(0 0 4px #ffdc9975)}
+#panel-content .v21-forge-material>div{display:grid;gap:1px;flex:1;min-width:0}
+#panel-content .v21-forge-material b{font-size:11px;color:#ffdeb2;white-space:nowrap}
+#panel-content .v21-forge-material small{font-size:9px;color:#c8aeac;white-space:nowrap}
+#panel-content .v21-forge-material>strong{font-size:17px;color:#fff3dd;flex:none;font-variant-numeric:tabular-nums}
+#panel-content .v21-forge-caption{min-height:36px;display:grid;place-items:center;text-align:center;padding:9px 12px;border-radius:9px;color:#ffe8bb;font-size:12px;background:#312138a8;border:1px solid #9c755e}
+#panel-content .v21-forge-actions{display:grid;grid-template-columns:1fr auto;gap:8px}
+#panel-content .v21-forge-hammer{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:7px 9px;border:2px ridge #ffdc9a;border-radius:11px;color:#2b1831;background:linear-gradient(#fff0b0 0%,#d9a45b 48%,#a86a45);font-size:13px;font-weight:900;box-shadow:inset 0 1px #fffaf2,0 4px 0 #543247,0 5px 9px #12091f}
+#panel-content .v21-forge-hammer:disabled{cursor:not-allowed;filter:grayscale(.8);opacity:.65}
+#panel-content .v21-forge-hammer:not(:disabled):active{transform:translateY(3px);box-shadow:inset 0 1px #fffaf2,0 1px 0 #543247}
+#panel-content .v21-forge-hammer-icon{font-size:25px;line-height:1.1;transform:rotate(-26deg);filter:drop-shadow(0 2px 2px #94562c)}
+#panel-content .v21-forge-hammer:not(:disabled):active .v21-forge-hammer-icon{transform:rotate(23deg) translateY(3px)}
+#panel-content .v21-forge-inventory{min-width:90px;padding:8px 11px;border:2px ridge #bd9b78;border-radius:11px;background:linear-gradient(#6b4b68,#382842);color:#ffe5bc;font-size:11px;cursor:pointer}
+#panel-content .v21-forge-rule-note{margin:0;color:#bca9a9;font-size:10px;line-height:1.5;text-align:center}
+#panel-content .v21-forge-inspect:focus-visible,#panel-content .v21-forge-hammer:focus-visible,#panel-content .v21-forge-inventory:focus-visible{outline:2px solid #fff0b3;outline-offset:2px}
+@keyframes v21-forge-furnace{from{opacity:.38;transform:translate(0,0) scale(.94)}to{opacity:.86;transform:translate(2px,-2px) scale(1.14)}}
+@keyframes v21-forge-impact{0%,10%{transform:translate(0)}18%{transform:translate(-2px,2px)}25%{transform:translate(3px,-1px)}34%{transform:translate(-1px,-2px)}60%,100%{transform:translate(0)}}
+@keyframes v21-forge-light{0%{opacity:0;transform:scale(.15)}13%{opacity:1;transform:scale(1.7)}40%{opacity:.72;transform:scale(2.35)}100%{opacity:0;transform:scale(3.2)}}
+@keyframes v21-forge-spark{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:1}38%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.25)}}
+@keyframes v21-forge-aura{from{opacity:.4;transform:scale(.95) rotate(0)}to{opacity:.85;transform:scale(1.11) rotate(13deg)}}
+@keyframes v21-forge-weapon-rise{0%{opacity:1;transform:translateY(0) scale(1)}18%{opacity:.8;transform:translateY(7px) scale(.9)}36%{opacity:1;transform:translateY(-22px) scale(1.22)}58%{transform:translateY(-15px) scale(1.14)}100%{transform:translateY(0) scale(1)}}
+@media (max-width:359px){#panel-content .v21-forge-atelier{gap:9px}#panel-content .v21-forge-diorama{min-height:142px}#panel-content .v21-forge-weapon-portrait{flex-basis:74px;height:84px}#panel-content .v21-forge-weapon-icon{width:69px;height:73px}#panel-content .v21-forge-weapon-showcase{gap:8px;padding:8px}#panel-content .v21-forge-weapon-detail h3{font-size:13px}#panel-content .v21-forge-material{gap:3px;padding:6px 4px}#panel-content .v21-forge-material-art{font-size:20px;width:27px}#panel-content .v21-forge-material b{font-size:10px}#panel-content .v21-forge-material>strong{font-size:14px}#panel-content .v21-forge-inventory{min-width:73px;padding:7px;font-size:10px}}
+@media (prefers-reduced-motion:reduce){#panel-content .v21-forge-furnace-glow,#panel-content .v21-forge-weapon-aura,#panel-content .v21-forge-diorama.is-striking,#panel-content .v21-forge-diorama.is-forged,#panel-content .v21-forge-spark,#panel-content .v21-forge-weapon-icon,#panel-content .v21-forge-forged-light{animation-duration:.001s!important;animation-iteration-count:1!important}}
