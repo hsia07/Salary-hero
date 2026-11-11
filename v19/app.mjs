@@ -11,6 +11,7 @@ import {liteArmorPose,liteArmorAsset} from './lite-armor-poses.mjs';
 import {liteTacticalHint} from './lite-tactics.mjs';
 import {initPortraitHome} from './portrait-home.mjs';
 import {initV20Home} from './v20-home.mjs';
+import {initV21UnifiedStage} from './v21-unified-stage.mjs';
 import {drawV20FloorAtmosphere} from './v20-scene-light.mjs';
 import {v20CombatAnchors,drawV20ContactShadow} from './v20-battle-stage.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
@@ -95,7 +96,7 @@ if(trainingNotice&&trainingWave!==null){
  if(readout)readout.hidden=!['chair-golem','meeting-ghost','deadline-clock','keyboard-piranha'].includes(trainingSpecies);
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
-let portraitHome=null,v20Home=null;
+let portraitHome=null,v20Home=null,v21Stage=null;
 $('#training-finish')?.addEventListener('click',()=>{
  if(trainingWave===null||!ready)return;
  state=primeTrainingFinisher(state,trainingSpecies);
@@ -938,6 +939,7 @@ function render(){
  const weekend=$('#weekend-chest');if(weekend){weekend.textContent='🎁 週末箱 ('+state.specialChests+')';weekend.disabled=!ready||!state.specialChests;}
  portraitHome?.update(state);
  v20Home?.update(state);
+ v21Stage?.update(state);
  if(currentPanel&&panel.open)renderPanel(currentPanel);
 }
 function commit(action){
@@ -1186,6 +1188,7 @@ body.addEventListener('click',e=>{
 document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>openPanel(b.dataset.panel));
 portraitHome=initPortraitHome({getState:()=>state,openPanel,goHome:()=>{}});
 v20Home=initV20Home({getState:()=>state});
+v21Stage=initV21UnifiedStage({getState:()=>state});
 $('#pay-details').onclick=()=>openPanel('salary');
 const nameDialog=$('#name-dialog'),nameInput=$('#player-name-input'),nameMessage=$('#name-message'),namePreview=$('#name-preview');
 function openNameEditor(){

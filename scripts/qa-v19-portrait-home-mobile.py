@@ -21,8 +21,10 @@ def main():
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.goto(BASE+'/v19/play.html?dev=1',wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
-        assert page.locator('#app').get_attribute('data-home-version')=='v20-reference-layout'
-        assert page.locator('#town-stage').is_visible()
+        assert page.locator('#app').get_attribute('data-home-version')=='v21-unified-stage'
+        assert page.locator('#town-stage').is_hidden()
+        assert page.locator('#v21-salary-bar').is_visible()
+        assert page.locator('#v21-view-battle').get_attribute('aria-pressed')=='true'
         assert page.locator('#world').is_visible()
         assert page.locator('.battle-deck').is_visible()
         assert page.locator('#v20-stage-progress').is_visible()
@@ -32,6 +34,7 @@ def main():
         assert page.locator('#v20-pet-level').inner_text()=='Lv.2'
         assert page.locator('#v20-loot-count').inner_text()=='0'
         assert page.locator('#v20-stage-chest').is_enabled()
+        page.locator('#v21-loot-toggle').click()
         assert page.locator('#v20-loot-preview').is_visible()
         assert page.evaluate("""() => {
           const rail=document.querySelector('.mini-actions').getBoundingClientRect();
@@ -40,6 +43,7 @@ def main():
         }"""),'right loot panel obscures the live HP bars'
         assert page.locator('#v20-loot-item-art').get_attribute('src').endswith('worn-briefcase.svg')
         assert page.locator('#v20-loot-preview').get_attribute('data-loot-tier')=='none'
+        page.locator('#v21-loot-toggle').click()
         assert page.evaluate("""() => {
           const scene=document.querySelector('.battle-deck .scene').getBoundingClientRect();
           const stage=document.querySelector('#v20-stage-progress').getBoundingClientRect();
@@ -48,10 +52,10 @@ def main():
           return stage.bottom<=battle.top+2 && battle.bottom<=dock.top+2
               && scene.height>180;
         }"""),'stage tracker, battle, or dock overlaps'
-        assert page.locator('.tabs button').count()==8
-        assert page.locator('.storybook-nav-art').count()==8
+        assert page.locator('.tabs button').count()==5
+        assert page.locator('.tabs .storybook-nav-art').count()==5
         assert page.evaluate("""() => getComputedStyle(document.querySelector('.tabs button')).borderImageSource.includes('royal-nav-frame.webp')"""),'hand-painted nav frame missing'
-        assert page.evaluate("""() => getComputedStyle(document.querySelector('.town-stage .pay')).borderImageSource.includes('royal-pay-frame.webp')"""),'salary frame missing'
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('.v21-salary-bar .pay')).borderImageSource.includes('royal-pay-frame.webp')"""),'salary frame missing'
         assert page.evaluate("""() => getComputedStyle(document.querySelector('.mini-actions')).borderImageSource.includes('royal-loot-frame.webp')"""),'loot rail frame missing'
 
         assert page.locator('#world').get_attribute('data-scene-art')=='v20-library-p10-loaded', 'Canvas uses fallback rather than new WebP art'
@@ -147,6 +151,11 @@ def main():
         assert metrics['controlsVisible'],metrics
 
         # Every main scene hotspot is an accessible, actual button.
+        page.locator('#v21-view-office').click()
+        assert page.locator('#town-stage').is_visible()
+        assert page.locator('#battle-deck').is_hidden()
+        assert page.locator('#v21-office-status').is_visible()
+        assert page.locator('#today').is_visible()
         page.locator('#town-cat').click()
         assert page.locator('#town-speech').is_visible()
         assert '喵' in page.locator('#town-speech').inner_text()
@@ -163,12 +172,17 @@ def main():
         page.locator('#town-task').click()
         assert '奇遇' in page.locator('#panel-title').inner_text()
         page.locator('#panel-close').click()
+        page.locator('#v21-view-battle').click()
         page.locator('#v20-stage-entry').click()
         assert '冒險' in page.locator('#panel-title').inner_text()
         page.locator('#panel-close').click()
+        page.locator('#v21-view-battle').click()
+        assert page.locator('#battle-deck').is_visible()
+        page.locator('#v21-loot-toggle').click()
         page.locator('#v20-loot-preview').click()
         assert '裝備' in page.locator('#panel-title').inner_text()
         page.locator('#panel-close').click()
+        page.locator('#v21-loot-toggle').click()
         page.locator('#v20-pet-shortcut').click()
         assert '寵物' in page.locator('#panel-title').inner_text()
         page.locator('#panel-close').click()
@@ -185,24 +199,32 @@ def main():
         # Portrait nav is not merely decorative.
         for name,keyword in [('hero','角色'),('modes','冒險'),('equipment','裝備'),('forge','鍛造'),
                              ('pets','寵物'),('guild','公會'),('shop','商店')]:
-            page.locator(f'.tabs button[data-panel="{name}"]').click()
+            if name in ('forge','pets','guild','shop'):
+                page.locator('#v21-more-toggle').click()
+                page.locator(f'#v21-more-menu button[data-panel="{name}"]').click()
+            else:
+                page.locator(f'.tabs button[data-panel="{name}"]').click()
             assert page.locator('#panel').is_visible(),name
             assert keyword in page.locator('#panel-title').inner_text(),name
             page.locator('#panel-close').click()
         # The pet screen is wired to the existing REAL pet feeding game rules.
-        page.locator('.tabs button[data-panel="pets"]').click()
+        page.locator('#v21-more-toggle').click()
+        page.locator('#v21-more-menu button[data-panel="pets"]').click()
         before=page.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
         page.locator('#panel-content button[data-action="feedPet"]').click()
         after=page.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
         assert after['petFood']==before['petFood']-1
         assert after['petXp']>before['petXp']
         page.locator('#panel-close').click()
-        page.locator('.tabs button[data-panel="forge"]').click()
+        page.locator('#v21-more-toggle').click()
+        page.locator('#v21-more-menu button[data-panel="forge"]').click()
         assert page.locator('#panel-content button[data-action="forge"]').count()==1
         page.locator('#panel-close').click()
         page.locator('.tabs button[data-home]').click()
         assert page.locator('.tabs button[data-home]').get_attribute('aria-current')=='page'
         assert page.locator('.tabs button.is-active').count()==1
+        assert page.locator('#v21-view-office').get_attribute('aria-pressed')=='true'
+        page.locator('#v21-view-battle').click()
 
         # Old combat is still live, not baked into the background.
         hp=page.locator('#enemy-hp-fill').get_attribute('style')
@@ -237,8 +259,11 @@ def main():
             assert metrics['controlsVisible'],(width,height,metrics)
             assert page.evaluate('document.scrollingElement.scrollWidth<=innerWidth+3')
             assert page.locator('#attack').is_visible()
+            assert page.locator('#town-stage').is_hidden()
+            page.locator('#v21-view-office').click()
             assert page.locator('#town-cat').is_visible()
-            assert page.locator('.tabs button').count()==8
+            page.locator('#v21-view-battle').click()
+            assert page.locator('.tabs button').count()==5
             assert page.locator('#v20-stage-progress').is_visible()
             assert page.locator('#v20-stage-pips .v20-stage-pip').count()==4
             assert page.evaluate("""() => {
@@ -246,13 +271,13 @@ def main():
               const battle=document.querySelector('#battle-deck').getBoundingClientRect();
               const dock=document.querySelector('.tabs').getBoundingClientRect();
               const left=document.querySelector('#auto').getBoundingClientRect();
-              const right=document.querySelector('#v20-loot-preview').getBoundingClientRect();
+              const right=document.querySelector('#v21-loot-toggle').getBoundingClientRect();
               return stage.bottom<=battle.top+2 && battle.bottom<=dock.top+2
                  && left.right<right.left && left.top>=battle.top && right.top>=battle.top;
             }"""),(width,height,'left/right controls overlap' )
             if width==320:
                 assert page.evaluate('getComputedStyle(document.querySelector(".tabs")).gridTemplateRows.split(" ").length')==1
-                page.locator('#town-stage .pay').click()
+                page.locator('#v21-salary-bar .pay').click()
                 assert '薪資' in page.locator('#panel-title').inner_text()
                 page.locator('#panel-close').click()
             page.screenshot(path=str(OUT/f'portrait-one-screen-{width}x{height}.png'),full_page=False)
@@ -268,6 +293,8 @@ def main():
             '/v19/iphone-hud-fixes.css',
             '/v19/v20-home.css',
             '/v19/v20-royal-material.css',
+            '/v19/v21-unified-stage.css',
+            '/v19/v21-unified-stage.mjs',
             '/v19/v20-scene-light.mjs',
             '/v19/v20-battle-stage.mjs',
             '/v19/v20-p09-composition.css',
@@ -287,6 +314,6 @@ def main():
             assert resp.status==200,url
         assert not errors,errors
         browser.close()
-    print('PASS: V20 five-zone single-screen, real four-wave tracker/chest, loot panel, salary, combat and eight-nav QA on 390,375,320px')
+    print('PASS: V21 unified stage office/battle switching, continuous salary, live combat, five-nav with more menu on 390,375,320px')
 if __name__=='__main__':
     main()

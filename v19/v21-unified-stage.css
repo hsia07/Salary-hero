@@ -1,0 +1,287 @@
+/* V21 one-stage mobile architecture: a single large playable illustration.
+ * Both real scenes stay mounted and ticking. Switching is CSS visibility only.
+ * In-app Safari 100dvh, no page scroll, all actual interactive controls retained.
+ */
+#app.portrait-shell:not([data-training]){
+ display:grid;
+ grid-template-columns:minmax(0,1fr);
+ grid-template-rows:
+  calc(clamp(44px,6.8dvh,56px) + env(safe-area-inset-top))
+  clamp(69px,10dvh,84px)
+  38px
+  30px
+  minmax(0,1fr)
+  calc(58px + env(safe-area-inset-bottom));
+ height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;
+}
+#app.portrait-shell:not([data-training])>.hud{
+ grid-row:1;min-width:0;height:100%;min-height:0;padding-block:3px;
+}
+#app.portrait-shell:not([data-training])>.v21-salary-bar{
+ grid-row:2;min-width:0;min-height:0;position:relative;
+ display:flex;padding:5px 10px;align-items:stretch;
+ background:linear-gradient(180deg,#3d2947,#231a35);
+ border-block:2px ridge #f8d49b;box-shadow:inset 0 1px #fff3c77a,0 2px 10px #140a23a3;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar>.pay{
+ position:relative;inset:auto;max-width:none;width:100%;height:100%;
+ box-sizing:border-box;min-height:0;
+ display:grid;grid-template-columns:minmax(0,1fr) auto;
+ gap:6px;align-items:center;margin:0;padding:3px 11px;
+ background:radial-gradient(ellipse at 35% 10%,#b57f8b50,transparent 72%),
+ linear-gradient(145deg,#4c3154,#271d3c 82%);
+ border:3px solid transparent;
+ border-image-source:url('../art/v20/runtime/ui/royal-pay-frame.webp');
+ border-image-slice:30 30 28 28;border-image-width:10px 11px;
+ border-image-repeat:stretch;
+ box-shadow:inset 0 0 11px #9a607a42,0 1px 6px #160a26a0;
+ font-family:Georgia,'Noto Serif TC',serif;color:#fff0cf;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar .pay>div{min-width:0}
+#app.portrait-shell:not([data-training]) .v21-salary-bar .pay>div:first-child::before{
+ content:'✦ 今日薪資';display:block;
+ font-size:11px;line-height:14px;font-weight:900;color:#ffe0ab;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar #pay-status{
+ display:none;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar #today{
+ font-family:Georgia,'Noto Serif TC',serif;display:block;
+ font-size:clamp(19px,5.2vw,26px);line-height:1.03;white-space:nowrap;
+ font-variant-numeric:tabular-nums;letter-spacing:.1px;
+ color:#fff8e8;text-shadow:0 1px #644359,0 0 9px #ffcd9a78;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar #pay-month{
+ display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;
+ font-size:clamp(9px,2.35vw,11px);white-space:nowrap;color:#ffdaad;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar .pay-right{
+ min-width:62px;align-self:center;text-align:right;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar #work-time{
+ display:block;font-size:clamp(8px,2.2vw,10px);white-space:nowrap;color:#fbe3c0;
+}
+#app.portrait-shell:not([data-training]) .v21-salary-bar .pay-right br{display:none}
+#app.portrait-shell:not([data-training]) .v21-salary-bar #pay-details{
+ display:block;width:100%;font-size:clamp(9px,2.3vw,11px);
+ padding:4px 6px;min-height:30px;white-space:nowrap;
+ border-radius:8px;border:1px solid #edd19a;
+ background:linear-gradient(#795474,#3e2b51);color:#fff0d7;
+}
+#app.portrait-shell:not([data-training])>.v21-stage-switch{
+ grid-row:3;display:grid;grid-template-columns:1fr 1fr;
+ padding:3px 10px;gap:8px;min-height:0;
+ background:linear-gradient(#33233f,#21172f);border-bottom:1px solid #d2a46c;
+}
+#app.portrait-shell:not([data-training]) .v21-stage-switch button{
+ font-size:clamp(12px,3vw,14px);font-weight:900;
+ font-family:Georgia,'Noto Serif TC',serif;border:1px solid #936b79;
+ border-radius:9px;padding:3px 7px;color:#ddc4c7;
+ background:linear-gradient(#49334f,#2d2240);cursor:pointer;
+}
+#app.portrait-shell:not([data-training]) .v21-stage-switch button.is-active{
+ background:linear-gradient(#a87567,#5e3d60 85%);
+ border-color:#fbd69c;color:#fff4d7;
+ box-shadow:0 0 9px #f7c78965,inset 0 1px #fff3cb9d;
+}
+#app.portrait-shell:not([data-training])>.v20-stage-strip,
+#app.portrait-shell:not([data-training])>.v21-office-status{
+ grid-row:4;grid-column:1;height:30px;min-height:0;max-height:30px;
+ position:relative;overflow:hidden;z-index:7;
+}
+#app.portrait-shell:not([data-training])>.v20-stage-strip{
+ padding:1px 7px;border-width:2px;
+}
+#app.portrait-shell:not([data-training])>.v21-office-status{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:6px;padding:2px 9px;
+ color:#ffdfb2;font-size:11px;white-space:nowrap;
+ background:linear-gradient(180deg,#553754,#2d2141);
+ border-block:2px ridge #e9b982;
+}
+#app.portrait-shell:not([data-training]) .v21-office-status #v21-office-activity{
+ min-width:0;overflow:hidden;text-overflow:ellipsis;
+}
+#app.portrait-shell:not([data-training]) .v21-office-status button{
+ flex:none;min-height:23px;cursor:pointer;
+ border-radius:7px;border:1px solid #f3c889;background:#5c4161;
+ color:#fff0cc;font-size:10px;padding:1px 8px;
+}
+#app.portrait-shell:not([data-training])>.town-stage,
+#app.portrait-shell:not([data-training])>.battle-deck{
+ grid-row:5;grid-column:1;
+ width:100%;height:100%;min-height:0;max-height:100%;
+ transition:opacity .23s ease;
+ overflow:hidden;
+}
+#app.portrait-shell:not([data-training])>.town-stage{
+ z-index:2;contain:layout paint;position:relative;
+}
+#app.portrait-shell:not([data-training])>.battle-deck{
+ z-index:3;position:relative;
+ grid-template-rows:24px minmax(0,1fr) 20px 24px 23px;
+}
+#app.portrait-shell:not([data-training])[data-v21-view="battle"]>.town-stage,
+#app.portrait-shell:not([data-training])[data-v21-view="office"]>.battle-deck{
+ opacity:0;visibility:hidden;pointer-events:none;
+}
+#app.portrait-shell:not([data-training])[data-v21-view="battle"]>.v21-office-status,
+#app.portrait-shell:not([data-training])[data-v21-view="office"]>.v20-stage-strip{
+ display:none;
+}
+#app.portrait-shell:not([data-training]) .town-hero{
+ height:clamp(160px,64%,335px);width:45%;left:25%;bottom:12%;
+}
+#app.portrait-shell:not([data-training]) .town-cat{
+ width:23%;height:22%;right:8%;bottom:7%;
+}
+#app.portrait-shell:not([data-training]) .town-coffee{
+ width:13%;height:18%;right:29%;bottom:17%;
+}
+#app.portrait-shell:not([data-training]) .town-name{
+ top:10px;left:8px;font-size:12px;max-width:55%;
+}
+#app.portrait-shell:not([data-training]) .town-clock{top:49px;left:8px}
+#app.portrait-shell:not([data-training]) .town-task{
+ bottom:12px;left:10px;font-size:12px;max-width:40%;
+}
+#app.portrait-shell:not([data-training]) .town-speech{
+ top:24%;left:37%;max-width:55%;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.battle-heading{
+ height:24px;max-height:24px;
+}
+/* Always-visible compact battle shortcuts across the TOP of the stage, not
+ * large side rails covering combatants and animation silhouettes. */
+#app.portrait-shell:not([data-training]) .battle-deck>.controls{
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ left:7px;right:68px;top:calc(24px + 28px);
+ width:auto;max-width:none;min-height:0;height:33px;
+ gap:3px;padding:0;margin:0;z-index:16;
+ background:none;border:0;box-shadow:none;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.controls button{
+ width:100%;min-width:0;min-height:31px;max-height:33px;height:33px;
+ font-size:clamp(8px,2.25vw,10px);
+ line-height:1.1;padding:3px 1px;border-radius:7px;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.controls #attack{
+ min-height:31px;max-height:33px;height:33px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .stage-head{
+ top:4px;left:4px;right:4px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.v21-loot-toggle{
+ position:absolute;right:7px;top:calc(24px + 28px);
+ z-index:24;height:33px;width:56px;
+ font-size:11px;font-weight:900;line-height:1;
+ display:flex;align-items:center;justify-content:center;gap:2px;
+ border:2px ridge #efc68c;border-radius:8px;cursor:pointer;
+ background:linear-gradient(#77516d,#38264a);color:#ffebbb;
+ box-shadow:0 0 7px #edb87980;
+}
+#app.portrait-shell:not([data-training]) #v21-loot-notice:not([hidden]){
+ position:absolute;right:-3px;top:-7px;
+ background:linear-gradient(#f6d99e,#c68b58);border:1px solid #ffe7a7;
+ color:#3b2541;min-width:16px;height:16px;padding:1px 2px;
+ border-radius:9px;text-align:center;font-size:10px;line-height:13px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{
+ position:absolute;right:6px;top:calc(24px + 67px);
+ z-index:26;width:103px;height:auto;max-height:min(280px,68%);
+ display:flex;flex-direction:column;gap:3px;padding:4px;
+ opacity:0;visibility:hidden;pointer-events:none;
+ transform:translateY(-7px);
+ transition:opacity .18s ease,transform .18s ease;
+}
+#app.portrait-shell:not([data-training])[data-v21-loot="open"] .battle-deck>.mini-actions{
+ opacity:1;visibility:visible;pointer-events:auto;transform:none;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions button{
+ min-height:30px;max-height:45px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .bars{z-index:8;}
+#app.portrait-shell:not([data-training])>.tabs{
+ grid-row:6;grid-column:1;display:grid;
+ grid-template-columns:repeat(5,minmax(0,1fr));
+ padding:3px 5px calc(3px + env(safe-area-inset-bottom));
+ gap:4px;min-height:0;max-height:100%;height:100%;
+}
+#app.portrait-shell:not([data-training])>.tabs button{
+ font-size:clamp(10px,2.6vw,12px);min-height:0;max-height:100%;
+ height:100%;padding:2px 1px;
+}
+#app.portrait-shell:not([data-training])>.tabs #v21-more-toggle{
+ border:2px ridge #f3ca91;background:linear-gradient(#68516c,#322544);
+ color:#ffe8b1;cursor:pointer;
+}
+#app.portrait-shell:not([data-training])>.tabs #v21-more-toggle[aria-expanded="true"]{
+ box-shadow:0 0 11px #ffcf87;border-color:#ffe7bb;
+}
+#app.portrait-shell:not([data-training])>.v21-more-menu{
+ position:absolute;z-index:55;
+ bottom:calc(60px + env(safe-area-inset-bottom));
+ left:8px;right:8px;
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:6px;padding:10px 7px;
+ background:linear-gradient(145deg,#5e4261f5,#241a3cf7);
+ border:3px ridge #f3ca85;border-radius:13px;
+ box-shadow:0 0 18px #160b28d6,inset 0 1px #fff3cd72;
+}
+#app.portrait-shell:not([data-training])>.v21-more-menu[hidden]{display:none!important}
+#app.portrait-shell:not([data-training]) .v21-more-menu button{
+ display:flex;flex-direction:column;gap:4px;align-items:center;
+ min-width:0;min-height:59px;
+ padding:6px 2px;color:#fff0c6;cursor:pointer;
+ border:2px ridge #edc289;border-radius:10px;
+ background:linear-gradient(#785474,#342640);
+ font-size:11px;
+}
+#app.portrait-shell:not([data-training]) .v21-more-menu .storybook-nav-art{
+ display:block;width:28px;height:28px;flex:none;
+}
+#app.portrait-shell:not([data-training]) :is(.v21-stage-switch button,.v21-more-menu button,.v21-office-status button,.v21-loot-toggle):focus-visible{
+ outline:2px solid #fff3be;outline-offset:2px;
+}
+@media(max-width:359px),(max-height:715px){
+ #app.portrait-shell:not([data-training]){
+  grid-template-rows:
+   calc(43px + env(safe-area-inset-top))
+   69px 33px 27px minmax(0,1fr)
+   calc(54px + env(safe-area-inset-bottom));
+ }
+ #app.portrait-shell:not([data-training])>.v21-stage-switch{padding:2px 8px}
+ #app.portrait-shell:not([data-training])>.v20-stage-strip,
+ #app.portrait-shell:not([data-training])>.v21-office-status{
+  height:27px;max-height:27px;font-size:10px;
+ }
+ #app.portrait-shell:not([data-training]) .v21-salary-bar>.pay{padding:2px 8px}
+ #app.portrait-shell:not([data-training]) .v21-salary-bar #today{font-size:18px}
+ #app.portrait-shell:not([data-training]) .v21-salary-bar #pay-month{font-size:9px}
+ #app.portrait-shell:not([data-training]) .v21-salary-bar #pay-details{font-size:9px;padding:2px 4px;min-height:25px}
+ #app.portrait-shell:not([data-training]) .battle-deck>.controls{top:calc(24px + 24px);height:30px;right:62px;gap:2px}
+ #app.portrait-shell:not([data-training]) .battle-deck>.controls button,
+ #app.portrait-shell:not([data-training]) .battle-deck>.controls #attack{height:30px;min-height:30px;max-height:30px;font-size:8px}
+ #app.portrait-shell:not([data-training]) .battle-deck>.v21-loot-toggle{
+  top:calc(24px + 24px);height:30px;width:51px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{top:calc(24px + 59px)}
+ #app.portrait-shell:not([data-training]) .town-hero{height:65%;bottom:12%}
+ #app.portrait-shell:not([data-training])>.tabs button{font-size:9px}
+ #app.portrait-shell:not([data-training])>.v21-more-menu{bottom:calc(56px + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){
+ #app.portrait-shell:not([data-training])>.town-stage,
+ #app.portrait-shell:not([data-training])>.battle-deck,
+ #app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{transition:none}
+}
+
+/* The isolated monster-rehearsal route intentionally keeps its old stage.
+   Do not let V21 navigation or the moved salary card cover QA fight controls. */
+#app.portrait-shell[data-training]>.v21-salary-bar,
+#app.portrait-shell[data-training]>.v21-stage-switch,
+#app.portrait-shell[data-training]>.v21-office-status,
+#app.portrait-shell[data-training] .v21-loot-toggle,
+#app.portrait-shell[data-training]>.v21-more-menu{display:none!important}

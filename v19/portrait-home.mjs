@@ -86,7 +86,7 @@ export function initPortraitHome({getState,openPanel,goHome}){
  coffee?.addEventListener('click',()=>{line('coffee');flash('☕ 咖啡彩蛋 · 不扣藥水，也不增加遊戲資源')});
  clock?.addEventListener('click',()=>{flash('台灣時間 '+portraitClock());openPanel('salary')});
  // On short screens the salary board itself is the large touch target.
- const salaryBoard=town.querySelector('.pay');
+ const salaryBoard=document.querySelector('#v21-salary-bar .pay')||town.querySelector('.pay');
  salaryBoard?.addEventListener('click',event=>{
    if(event.target.closest('button'))return;
    openPanel('salary');
