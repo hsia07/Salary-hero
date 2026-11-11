@@ -29,6 +29,27 @@ def main():
         assert page.locator('.storybook-nav-art').count()==8
         assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('storybook-office.svg')""")
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').includes('storybook-icons.svg#'))""")
+        # A 200 OK SVG can still be invalid or render an empty <use> icon.
+        assets=page.evaluate("""async () => {
+          const urls=[
+            '/Salary-hero/art/v19/runtime/backgrounds/storybook-office.svg',
+            '/Salary-hero/art/v19/runtime/backgrounds/storybook-corridor.svg',
+            '/Salary-hero/art/v19/runtime/ui/storybook-icons.svg'
+          ];
+          const decoded=[];
+          for(const url of urls){
+            const image=new Image();image.src=url;
+            await image.decode();
+            decoded.push([image.naturalWidth,image.naturalHeight]);
+          }
+          return decoded;
+        }""")
+        assert all(w>10 and h>10 for w,h in assets),assets
+        nav_bounds=page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art')].map(svg=>{
+           const b=svg.getBBox();return [b.width,b.height];
+        })""")
+        assert all(w>10 and h>10 for w,h in nav_bounds),nav_bounds
+
         assert page.locator('#today').inner_text().startswith('NT$')
         assert '試玩勇者' in page.locator('#town-player-name').inner_text()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+3'), 'portrait horizontal overflow'
