@@ -61,6 +61,7 @@ def main():
   # the independent preview always allows deterministic visual-only inspection.
   hp_before=page.locator('#hero-hp-text').inner_text()
   # Development-only preview is intentionally collapsed on the production UI.
+  page.locator('#portrait-dev-toggle').click()
   page.locator('.dev-gallery > summary').click()
   page.locator('#hurt-demo-quick').click()
   page.wait_for_timeout(90)
