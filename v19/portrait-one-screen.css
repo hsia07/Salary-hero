@@ -240,16 +240,44 @@
    calc(47px + env(safe-area-inset-top))
    minmax(117px,25fr)
    minmax(260px,65fr)
-   calc(78px + env(safe-area-inset-bottom));
+   calc(55px + env(safe-area-inset-bottom));
  }
  #app.portrait-shell:not([data-training]) .tabs{
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  grid-template-rows:repeat(2,minmax(0,1fr));gap:2px;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  grid-template-rows:minmax(0,1fr);gap:1px;
+  padding-inline:1px;
  }
  #app.portrait-shell:not([data-training]) .tabs button{
-  flex-direction:row;min-height:0;gap:3px;font-size:9px;
+  flex-direction:column;min-height:0;gap:0;
+  font-size:8px;white-space:nowrap;overflow:hidden;border-radius:6px;padding:2px 0;
  }
- #app.portrait-shell:not([data-training]) .tabs button span{font-size:14px}
+ #app.portrait-shell:not([data-training]) .tabs button span{
+  font-size:15px!important;line-height:18px!important;
+  flex:0 0 18px;max-height:18px;max-width:100%;overflow:hidden;
+ }
+ #app.portrait-shell:not([data-training]) .hud-title>div:first-child{
+  flex:1 1 auto;min-width:0;overflow:hidden;
+ }
+ #app.portrait-shell:not([data-training]) .brand{
+  font-size:16px;overflow:hidden;text-overflow:ellipsis;
+ }
+ #app.portrait-shell:not([data-training]) .subtitle{display:none}
+ #app.portrait-shell:not([data-training]) .currencies{flex:0 0 auto;max-width:42%}
+ #app.portrait-shell:not([data-training]) .currency{
+  max-width:41px;flex:0 1 41px;padding:3px;
+ }
+ #app.portrait-shell:not([data-training]) .town-stage #pay-status,
+ #app.portrait-shell:not([data-training]) .town-stage .pay-right,
+ #app.portrait-shell:not([data-training]) .battle-deck .stage-head{display:none}
+ #app.portrait-shell:not([data-training]) .town-stage .pay{
+  width:40%;top:4px;right:3px;padding:5px 6px;
+ }
+ #app.portrait-shell:not([data-training]) .town-stage .pay small{
+  font-size:9px;line-height:1.15;
+ }
+ #app.portrait-shell:not([data-training]) .town-stage .pay strong{font-size:13px}
+ #app.portrait-shell:not([data-training]) .town-cat{height:33%;bottom:0;right:6%}
+ #app.portrait-shell:not([data-training]) .town-coffee{height:25%;bottom:8%;right:29%}
  #app.portrait-shell:not([data-training]) .town-clock{top:31px;width:38px;height:38px}
  #app.portrait-shell:not([data-training]) .town-name{font-size:9px}
  #app.portrait-shell:not([data-training]) .town-stage .pay strong{font-size:12px}
