@@ -12,6 +12,7 @@ import {liteTacticalHint} from './lite-tactics.mjs';
 import {initPortraitHome} from './portrait-home.mjs';
 import {initV20Home} from './v20-home.mjs';
 import {drawV20FloorAtmosphere} from './v20-scene-light.mjs';
+import {v20CombatAnchors,drawV20ContactShadow} from './v20-battle-stage.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -493,8 +494,12 @@ function drawStage(now){
    ?(animationMs<345?0:animationMs<405?(animationMs-345)/60*106:
      animationMs<650?106:106*Math.max(0,1-(animationMs-650)/155))
    :(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
- const heroX=100+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
- shadow(heroX+133,515,110,17);
+ const staged=v20CombatAnchors({training:trainingWave!==null,
+  boss:Boolean(state.enemy?.boss||(fx?.result?.type==='victory'&&fx.oldEnemy?.boss)),
+  elite:Boolean(state.enemy?.tier==='elite'||(fx?.result?.type==='victory'&&fx.oldEnemy?.tier==='elite'))});
+ const heroX=staged.heroX+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
+ if(trainingWave===null)drawV20ContactShadow(ctx,heroX+133,staged.floorY,{width:92});
+ else shadow(heroX+133,515,110,17);
  // Class identity is expressed as ambient light, NOT as a faux costume layer.
  if(state.liteActiveBuild==='clockout'){
    glow(heroX+156,heroY+149,91,'#ffca7036');
@@ -617,7 +622,7 @@ function drawStage(now){
  const illustratedPaperInScene=hasIllustratedMonster(state.enemy?.typeId)||
    (victory&&hasIllustratedMonster(fx?.oldEnemy?.typeId));
  // No rigid-body bobble/shake on approved, separately illustrated poses.
- const enemyX=458+(illustratedPaperInScene?0:Math.sin(time*1.75)*4)+(attacking&&hitWindow&&!illustratedPaperInScene?Math.sin(now/22)*7:0);
+ const enemyX=staged.enemyX+(illustratedPaperInScene?0:Math.sin(time*1.75)*4)+(attacking&&hitWindow&&!illustratedPaperInScene?Math.sin(now/22)*7:0);
  const enemyY=248+(illustratedPaperInScene?0:Math.sin(time*2)*5);
  // The defeated actor plays its own disintegration, while the next species
  // materializes in the SAME slot with no empty frame between waves.
@@ -663,7 +668,9 @@ function drawStage(now){
      ctx.restore();
    }
  };
- shadow(enemyX+90,525,state.enemy.boss?100:84,17);
+ if(trainingWave===null)drawV20ContactShadow(ctx,enemyX+90,staged.floorY,
+   {width:state.enemy.boss?101:state.enemy.tier==='elite'?90:79});
+ else shadow(enemyX+90,525,state.enemy.boss?100:84,17);
  if(victory)drawEnemy(fx.oldEnemy,fadingOld,oldVisual);
  drawEnemy(state.enemy,enteringNew,currentVisual);
  if(fx?.wave&&approvedMonsterArt.has('paper-gremlin')&&
@@ -732,7 +739,7 @@ function drawStage(now){
    ctx.beginPath();ctx.arc(chibiV2Ready?heroX+270:395,370,110,-1.4,1.3);ctx.stroke();ctx.lineWidth=6;ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(chibiV2Ready?heroX+275:400,366,124,-1.4,1.3);ctx.stroke();ctx.restore();
  }
  if(fx&&(fx.result?.type==='hit'||fx.result?.type==='victory')&&phase<1.05&&(!chibiV2Ready||animationMs>=405)){
-  const y=335-phase*80;ctx.save();ctx.globalAlpha=Math.min(1,(1.05-phase)*3);ctx.font='900 43px system-ui';ctx.textAlign='center';ctx.lineWidth=6;ctx.strokeStyle='#2d163c';ctx.strokeText('-'+fx.result.damage,546,y);ctx.fillStyle=fx.result.crit?'#fff3a9':'#ff8a9e';ctx.fillText('-'+fx.result.damage,546,y);ctx.restore();
+  const y=335-phase*80;ctx.save();ctx.globalAlpha=Math.min(1,(1.05-phase)*3);ctx.font='900 43px system-ui';ctx.textAlign='center';ctx.lineWidth=6;ctx.strokeStyle='#2d163c';ctx.strokeText('-'+fx.result.damage,enemyX+90,y);ctx.fillStyle=fx.result.crit?'#fff3a9':'#ff8a9e';ctx.fillText('-'+fx.result.damage,enemyX+90,y);ctx.restore();
  }
 
  // Lite set attacks affect the rules AND have distinct timed impact feedback.

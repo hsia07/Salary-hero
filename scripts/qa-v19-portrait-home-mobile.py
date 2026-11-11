@@ -33,6 +33,11 @@ def main():
         assert page.locator('#v20-loot-count').inner_text()=='0'
         assert page.locator('#v20-stage-chest').is_enabled()
         assert page.locator('#v20-loot-preview').is_visible()
+        assert page.evaluate("""() => {
+          const rail=document.querySelector('.mini-actions').getBoundingClientRect();
+          const hp=document.querySelector('.battle-deck .bars').getBoundingClientRect();
+          return rail.bottom<=hp.top+6;
+        }"""),'right loot panel obscures the live HP bars'
         assert page.locator('#v20-loot-item-art').get_attribute('src').endswith('worn-briefcase.svg')
         assert page.locator('#v20-loot-preview').get_attribute('data-loot-tier')=='none'
         assert page.evaluate("""() => {
@@ -262,6 +267,8 @@ def main():
             '/v19/v20-home.css',
             '/v19/v20-royal-material.css',
             '/v19/v20-scene-light.mjs',
+            '/v19/v20-battle-stage.mjs',
+            '/v19/v20-p09-composition.css',
             '/art/v20/runtime/ui/royal-nav-frame.webp',
             '/art/v20/runtime/ui/royal-pay-frame.webp',
             '/art/v20/runtime/ui/royal-loot-frame.webp',

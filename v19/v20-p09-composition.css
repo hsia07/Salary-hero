@@ -1,0 +1,68 @@
+/* 《薪水勇者》V20 P0.9: clear center arena while retaining portrait 100dvh.
+ * Does NOT change the shell's row heights or add a scroll region.
+ * The top-right loot station remains independently interactive.
+ */
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{
+  top:calc(24px + 5%);
+  gap:2px;
+  padding:3px 3px 4px;
+  border-image-width:12px 9px 10px 8px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .v20-loot-heading{
+  height:20px;max-height:20px;line-height:18px;font-size:10px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck #v20-loot-preview{
+  height:42px;min-height:42px;grid-template-rows:minmax(0,26px) 11px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions :is(#claim,#chest,#weekend-chest){
+  min-height:29px;
+  padding:2px 1px;
+  gap:0;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions :is(#claim,#chest,#weekend-chest)::before{
+  width:20px;height:20px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.controls{
+  top:calc(24px + 10%);
+}
+#app.portrait-shell:not([data-training]) .battle-deck .bars{
+  z-index:8;
+  /* HP information is always over the 3D world, never hidden by stage props. */
+}
+#app.portrait-shell:not([data-training]) .battle-deck .bars article{
+  box-shadow:inset 0 1px 1px #ffe9b69c,0 3px 9px #11091fb6;
+}
+/* More breathing room for the illustrations: atmosphere should be faint and
+   stay behind characters, not blanket the art in bright SVG bloom. */
+#app.portrait-shell:not([data-training]) .v20-ornament-battle{
+  opacity:.09;
+}
+@media(max-width:359px), (max-height:715px){
+ #app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{
+   top:calc(24px + 3%);
+   gap:1px;
+   padding:2px 2px 3px;
+   border-image-width:8px 6px 8px 6px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck .v20-loot-heading{
+   height:16px;max-height:16px;line-height:15px;font-size:8px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck #v20-loot-preview{
+   height:33px;min-height:33px;grid-template-rows:20px 9px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck>.mini-actions :is(#claim,#chest,#weekend-chest){
+   min-height:25px;padding:1px;
+   line-height:1.04;font-size:7px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck>.mini-actions :is(#claim,#chest,#weekend-chest)::before{
+   width:15px;height:15px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck>.controls{
+   top:calc(24px + 6%);
+ }
+}
+@media (prefers-reduced-motion:reduce){
+ #app.portrait-shell:not([data-training]) .v20-stage-pip.is-current{
+   animation:none;
+ }
+}
