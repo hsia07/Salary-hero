@@ -6,6 +6,8 @@ on:
       - "v19/engine.mjs"
       - "v19/lite-equipment.mjs"
       - "v19/lite-idle.mjs"
+      - "v19/lite-builds.mjs"
+      - "v19/lite-builds.test.mjs"
       - "v19/lite-idle.test.mjs"
       - "v19/lite-equipment.test.mjs"
       - "v19/roster.mjs"
@@ -68,6 +70,7 @@ jobs:
           node --check v19/engine.mjs
           node --check v19/lite-equipment.mjs
           node --check v19/lite-idle.mjs
+          node --check v19/lite-builds.mjs
           node --check v19/weekend-chaos.mjs
           node --check v19/roster.mjs
           node --check v19/skins.mjs
@@ -84,4 +87,4 @@ jobs:
           node --check v19/hurt-timing.mjs
           node --check v19/hurt-effects.mjs
       - name: Run all engine and cosmetics rules tests
-        run: node --test v19/lite-idle.test.mjs v19/lite-equipment.test.mjs v19/guard-candidate.test.mjs v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/coffee-candidate.test.mjs v19/paper-combat.test.mjs v19/paper-art.test.mjs v19/sprite-atlas.test.mjs v19/monster-motion.test.mjs v19/engine.test.mjs v19/weekly-dungeons.test.mjs v19/weekend-chaos.test.mjs v19/playable-modes.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs
+        run: node --test v19/lite-builds.test.mjs v19/lite-idle.test.mjs v19/lite-equipment.test.mjs v19/guard-candidate.test.mjs v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/coffee-candidate.test.mjs v19/paper-combat.test.mjs v19/paper-art.test.mjs v19/sprite-atlas.test.mjs v19/monster-motion.test.mjs v19/engine.test.mjs v19/weekly-dungeons.test.mjs v19/weekend-chaos.test.mjs v19/playable-modes.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs
