@@ -331,6 +331,24 @@ function imageFrom(url){
   const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('無法載入 '+url));img.src=url.startsWith('data:')?url:new URL(url,import.meta.url).href;
  });
 }
+/* P0.6: SVG atmosphere and decorative foreground are not animated,
+ * so rasterize each once. Otherwise a full SVG filter and hundreds of
+ * brush strokes may be evaluated on every 60fps battle frame on iPhone.
+ * Chibi character/monster atlas frames, attacks and HP remain live. */
+function v20CacheStaticSceneArt(image){
+ if(!image)return image;
+ try{
+  const backing=document.createElement('canvas');
+  backing.width=LOGICAL_WIDTH;backing.height=LOGICAL_HEIGHT;
+  const brush=backing.getContext('2d',{alpha:true});
+  if(!brush)return image;
+  brush.drawImage(image,0,0,backing.width,backing.height);
+  return backing;
+ }catch(error){
+  console.warn('V20 靜態場景快取失敗，改用原素材渲染：',error);
+  return image;
+ }
+}
 function drawImageCover(img,offset){
  const W=LOGICAL_WIDTH,H=LOGICAL_HEIGHT,ratio=Math.max(W/img.width,H/img.height),w=img.width*ratio,h=img.height*ratio;
  ctx.drawImage(img,(W-w)/2+offset,(H-h)/2-25,w,h);
@@ -1458,6 +1476,12 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
    }else throw error;
  }
 })).then(()=>{
+ if(trainingWave===null){
+  const oldBackground=images.bg,oldForeground=images.foreground;
+  images.bg=v20CacheStaticSceneArt(oldBackground);
+  images.foreground=v20CacheStaticSceneArt(oldForeground);
+  world.dataset.sceneCache=images.bg instanceof HTMLCanvasElement?'rasterized':'uncached';
+ }
  ready=true;lastAttack=performance.now();
  // Do not mislabel a missing/invalid image as fully functional.
  const attackCell=images.chibiAttackV2?validateAttackAtlas(images.chibiAttackV2.naturalWidth,images.chibiAttackV2.naturalHeight):0;

@@ -87,3 +87,13 @@ test('V20 live resource badges use dedicated inline RPG art with original IDs',(
  assert.match(html,/class="v20-resource-icon"/);
  assert.doesNotMatch(html,/<span class="currency">(?:🪙|💎|🎟)/);
 });
+
+test('V20 multi-layer illustrated backgrounds are rasterized once, live battle sprites remain separate',()=>{
+ const app=read('./app.mjs');
+ assert.match(app,/function v20CacheStaticSceneArt\(image\)/);
+ assert.match(app,/images\.bg=v20CacheStaticSceneArt\(oldBackground\)/);
+ assert.match(app,/images\.foreground=v20CacheStaticSceneArt\(oldForeground\)/);
+ assert.match(app,/world\.dataset\.sceneCache/);
+ assert.match(app,/drawMonsterAtlasFrame/);
+ assert.match(app,/drawImageCover\(images\.bg,bgShift\)/);
+});
