@@ -289,13 +289,29 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  color:#dbcbb8;text-align:left;font-family:serif;font-size:12px;font-weight:700;letter-spacing:.2px;cursor:pointer}
 .lite-tactical-status[data-build=clockout]{border-color:#e3b773;color:#ffe3ac;background:linear-gradient(115deg,#4e3443,#261d35)}
 .lite-tactical-status[data-build=coffee]{border-color:#92cbaa;color:#c9f8df;background:linear-gradient(115deg,#244a45,#231d36)}
-</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
-<main id="app">
-<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.27</div></div>
+</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"><link rel="stylesheet" href="./portrait-home.css?v=portrait-home-v19-34"></head><body>
+<main id="app" class="portrait-shell" data-dev-visible="false" data-home-version="portrait-v19-34">
+<header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 動態直式首頁 V19.34</div></div>
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
-<div class="pay"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
-<div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details">本週／本月薪資 <span aria-hidden="true">›</span></button></div></div>
 </header>
+<section class="town-stage" id="town-stage" aria-label="可互動的勇者辦公室據點">
+ <div class="town-window-light" aria-hidden="true"></div><div class="town-curtain" aria-hidden="true"></div><div class="town-lamp-glow" aria-hidden="true"></div>
+ <i class="town-star one" aria-hidden="true"></i><i class="town-star two" aria-hidden="true"></i><i class="town-star three" aria-hidden="true"></i><i class="town-star four" aria-hidden="true"></i>
+ <div class="town-name"><span id="town-player-name">平凡社畜</span><small id="town-player-level">Lv.1 · 出勤中</small></div>
+ <button id="town-clock" class="town-clock" type="button" aria-label="查看台灣時間與薪資"><small id="town-clock-time">08:00</small><i class="town-clock-hand" id="town-clock-hand" aria-hidden="true"></i></button>
+ <div class="town-desk" aria-hidden="true"></div>
+ <button id="town-hero" class="town-hotspot town-hero" type="button" aria-label="查看主角和培養資料">
+   <span class="town-hero-glow" aria-hidden="true"></span>
+   <img src="../art/v19/candidates/characters/starter/chibi/idle-candidate.webp" alt="" draggable="false">
+ </button>
+ <button id="town-cat" class="town-hotspot town-cat" type="button" aria-label="摸摸桌上的橘貓" data-playing="false"><img src="../art/v19/runtime/portrait/cat-companion.svg" alt="" draggable="false"></button>
+ <button id="town-coffee" class="town-hotspot town-coffee" type="button" aria-label="點擊冒著蒸氣的魔法咖啡" data-playing="false"><img src="../art/v19/runtime/portrait/coffee-mug.svg" alt="" draggable="false"></button>
+ <button id="town-task" class="town-task" type="button">📜 冒險任務</button>
+ <div class="pay" aria-label="真實預估薪資看板"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
+ <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details" type="button">查看薪資明細 ›</button></div></div>
+ <p class="town-speech" id="town-speech" role="status" hidden>今天要準時下班。</p>
+ <div class="town-toast" id="town-toast" role="status" hidden></div>
+</section>
 <div id="training-mode-notice" class="training-mode-notice" role="status" hidden>
  <strong>⚔️ 實戰練習：<span id="training-monster-name">怪物</span></strong>
  <div>可攻擊、被反擊、擊倒並重戰。這裡的戰鬥不會改變正式遊戲存檔、裝備或薪資。</div>
@@ -303,6 +319,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  <div id="training-animation-readout" class="training-animation-readout" hidden aria-live="off">🚨 正在載入機兵動作即時驗收……</div>
  <a href="./play.html">返回原本的遊戲進度</a>
 </div>
+<section class="battle-deck" id="battle-deck" aria-label="即時戰鬥與冒險控制"><div class="battle-heading"><span id="town-mode-label">⚔️ 辦公室遠征 · 第 1 關</span><span class="battle-live">● 即時戰鬥</span></div>
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
@@ -345,7 +362,9 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <section id="lite-offline-report" class="lite-offline-report" aria-label="離線巡邏收穫" hidden><div><strong>🌙 離線巡邏結算</strong><p id="lite-offline-summary"></p></div><button id="lite-offline-dismiss" type="button">收下戰利品</button></section>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button><button id="weekend-chest">🎁 週末箱 (0)</button></section>
-<nav class="tabs" aria-label="遊戲功能"><button data-panel="modes"><span>📆</span>副本</button><button data-panel="skills"><span>✨</span>技能</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
+</section><!-- /battle-deck -->
+<nav class="tabs" aria-label="手機主選單"><button data-home="true" class="is-active" aria-current="page"><span>🏠</span>首頁</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="modes"><span>🗺️</span>冒險</button><button data-panel="equipment"><span>⚔️</span>裝備</button><button data-panel="forge"><span>⚒️</span>鍛造</button><button data-panel="pets"><span>🐈</span>寵物</button><button data-panel="guild"><span>🏰</span>公會</button><button data-panel="shop"><span>🛍️</span>商店</button></nav>
+<button id="portrait-dev-toggle" class="portrait-dev-toggle" type="button" aria-expanded="false">⚙ 美術／工程驗收</button>
 
 
 
@@ -361,4 +380,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=lite-tactics-v19-33"></script></body></html>
+<script type="module" src="./app.mjs?v=portrait-home-v19-34"></script></body></html>
