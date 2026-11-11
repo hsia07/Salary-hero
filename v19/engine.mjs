@@ -10,7 +10,8 @@ import {liteLegendaryEffects} from './lite-legendaries.mjs';
 import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyPreset} from './lite-presets.mjs';
 import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
-import {normalizeColleagueProgress,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
+import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
+import {SQUAD_JOBS} from './v21-squad-core.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -371,6 +372,20 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  const s=normalize(raw,now),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
  switch(a.type){
+ case 's1RecruitColleague':{
+   // Prototype recruitment: one initial colleague per currently implemented job.
+   // Expanded 24-colleague gacha/recruitment is not yet implemented.
+   if(s.trainingIsolated){notice(s,'美術練習模式不允許招募。');break;}
+   const job=SQUAD_JOBS.find(x=>x.id===a.id);
+   if(!job){s.last={type:'colleagueRecruit',ok:false,reason:'unknown-job'};break;}
+   const id='starter-'+job.id;
+   if(s.colleagueProgress.members.some(m=>m.id===id)){s.last={type:'colleagueRecruit',ok:false,reason:'already-owned'};break;}
+   const recruited=enrollColleague(s.colleagueProgress,id,s.level);
+   if(!recruited.ok){s.last={type:'colleagueRecruit',ok:false,reason:recruited.reason};break;}
+   s.colleagueProgress=recruited.state;
+   s.last={type:'colleagueRecruit',ok:true,id,job:job.id};
+   notice(s,'🤝 同事加入隊伍：'+job.name+'！');break;
+ }
  case 's1TrainColleague':{
    if(s.trainingIsolated){notice(s,'美術練習模式不允許養成。');break;}
    s.colleagueProgress.materials.coins=s.gold;
