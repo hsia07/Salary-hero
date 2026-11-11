@@ -11,6 +11,7 @@ import {liteArmorPose,liteArmorAsset} from './lite-armor-poses.mjs';
 import {liteTacticalHint} from './lite-tactics.mjs';
 import {initPortraitHome} from './portrait-home.mjs';
 import {initV20Home} from './v20-home.mjs';
+import {drawV20FloorAtmosphere} from './v20-scene-light.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -459,6 +460,7 @@ function drawStage(now){
  ctx.clearRect(0,0,W,H);
  drawImageCover(images.bg,bgShift);
  const dim=ctx.createLinearGradient(0,0,0,H);if(trainingWave===null){dim.addColorStop(0,'#1b173305');dim.addColorStop(.65,'#23163413');dim.addColorStop(1,'#20142a57');}else{dim.addColorStop(0,'#1b173319');dim.addColorStop(.65,'#23163432');dim.addColorStop(1,'#20142a8c');}ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
+ if(trainingWave===null)drawV20FloorAtmosphere(ctx,now,{reducedMotion:motionReduced});
  // Living environment: separate floating light sources, mist, floor and sparks.
  for(let i=0;i<14;i++){const x=(i*113+Math.sin(time*.3+i)*13)%W,y=(i*79+Math.sin(time*.8+i)*14)%(H-60);glow(x,y,7+i%4*4,i%3?'#ffc4703b':'#aa8bff48');}
  glow(126,88,135,'#ffd58a34');glow(614,165,175,'#a575ff35');

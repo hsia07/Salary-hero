@@ -45,6 +45,10 @@ def main():
         }"""),'stage tracker, battle, or dock overlaps'
         assert page.locator('.tabs button').count()==8
         assert page.locator('.storybook-nav-art').count()==8
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('.tabs button')).borderImageSource.includes('royal-nav-frame.webp')"""),'hand-painted nav frame missing'
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('.town-stage .pay')).borderImageSource.includes('royal-pay-frame.webp')"""),'salary frame missing'
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('.mini-actions')).borderImageSource.includes('royal-loot-frame.webp')"""),'loot rail frame missing'
+
         assert page.locator('#world').get_attribute('data-scene-art')=='v20-raster-loaded', 'Canvas uses fallback rather than new WebP art'
         assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('town-painterly.webp')""")
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').startsWith('#storybook-'))""")
@@ -256,6 +260,11 @@ def main():
             '/v19/storybook-skin.css',
             '/v19/iphone-hud-fixes.css',
             '/v19/v20-home.css',
+            '/v19/v20-royal-material.css',
+            '/v19/v20-scene-light.mjs',
+            '/art/v20/runtime/ui/royal-nav-frame.webp',
+            '/art/v20/runtime/ui/royal-pay-frame.webp',
+            '/art/v20/runtime/ui/royal-loot-frame.webp',
             '/v19/v20-home.mjs',
             '/art/v19/runtime/backgrounds/storybook-office.svg',
             '/art/v19/runtime/backgrounds/storybook-corridor.svg',
