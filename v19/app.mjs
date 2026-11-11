@@ -888,7 +888,12 @@ function render(){
  if(offlineBanner){
    const report=state.liteOfflineReport;
    offlineBanner.hidden=!report;
-   if(report)$('#lite-offline-summary').textContent='巡邏 '+report.minutes+' 分鐘 · 金幣 +'+report.gold+' · EXP +'+report.xp+' · 新裝備 '+report.items+' 件';
+   if(report){
+     const full='巡邏 '+report.minutes+' 分鐘 · 金幣 +'+report.gold+' · EXP +'+report.xp+' · 新裝備 '+report.items+' 件';
+     $('#lite-offline-summary').textContent='🌙 離線 +'+format(report.gold)+' 金幣';
+     offlineBanner.title=full+' · 點擊查看完整結算';
+     offlineBanner.setAttribute('aria-label','離線巡邏獎勵：'+full);
+   }
  }
  $('#auto').textContent='🤖 自動 '+(state.auto?'ON':'OFF');
  $('#auto').setAttribute('aria-pressed',String(state.auto));
@@ -989,7 +994,7 @@ function renderLiteEquipment(){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',offline:'離線巡邏收益',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
  if(type==='modes'){
   const daily=dailyDungeonFor();
@@ -1090,6 +1095,16 @@ function renderPanel(type){
         return '<div class="item '+(known?'':'muted')+'"><span class="symbol">'+(known?e.icon:'◼️')+'</span><div class="detail"><strong>'+(known?escapeHTML(e.name):'??? 未發現敵人')+'</strong><small>'+(known?escapeHTML(e.family+' · '+e.traitText):'擊敗後解鎖資料')+'</small></div></div>';
       }).join('')).join('')
     +'<h3>📦 裝備收藏</h3>'+ITEMS.map(it=>'<div class="item '+(!state.owned.includes(it.id)?'muted':'')+'"><span class="symbol">'+(state.owned.includes(it.id)?it.icon:'◼️')+'</span><div class="detail"><strong>'+(state.owned.includes(it.id)?it.name:'??? 尚未取得')+'</strong><small>'+it.tier+'裝備</small></div></div>').join('');
+ }else if(type==='offline'){
+  const report=state.liteOfflineReport;
+  body.innerHTML=report?
+   '<div class="center"><span class="large-symbol">🌙</span><h3>夜間巡邏結算</h3><p>角色離線時獲得的獎勵已經計入存檔，不需要重複領取。</p></div>'+
+   '<div class="item"><div class="detail"><strong>⏱️ 巡邏時間</strong><small>'+report.minutes+' 分鐘</small></div></div>'+
+   '<div class="item"><div class="detail"><strong>🪙 金幣</strong><small>+'+format(report.gold)+'</small></div></div>'+
+   '<div class="item"><div class="detail"><strong>✨ 經驗值</strong><small>+'+format(report.xp)+'</small></div></div>'+
+   '<div class="item"><div class="detail"><strong>🎁 新裝備</strong><small>'+report.items+' 件</small></div></div>'+
+   btn('知道了，收起通知','liteDismissOffline'):
+   '<p>目前沒有待查看的離線巡邏結算。</p>';
  }else if(type==='salary'){
   const p=salaryAt();
   body.innerHTML='<div class="center"><h3>'+p.year+'/'+p.monthNumber+'/'+p.day+' · '+p.status+'</h3><p>今日 <strong>'+money(p.today,2)+'</strong></p></div><div class="item"><span>本週累積</span><strong>'+money(p.week)+'</strong></div><div class="item"><span>本月累積</span><strong>'+money(p.month)+'</strong></div><div class="item"><span>月薪設定</span><strong>'+money(p.monthly)+'</strong></div><p>依台灣時間週一至週五 08:00–17:00、午休計薪推估。未納入國定假日、請假、稅費與加班，與遊戲金幣完全獨立。</p><a href="../salary-center-v2.html" target="_blank" rel="noopener">開啟原有詳細薪資設定中心</a>';
@@ -1103,6 +1118,7 @@ body.addEventListener('click',e=>{
  if(act==='mode')commit({type:'mode',id:b.dataset.value});
  else if(act==='skill')skillAttack(b.dataset.value);
  else if(act==='letter')renderPanel('letter');
+ else if(act==='liteDismissOffline'){commit('liteDismissOffline');panel.close();}
  else if(act==='rename')openNameEditor();
  else if(act==='styles')renderPanel('styles');
  else if(act==='equipSkin')commit({type:'equipSkin',id:b.dataset.value});
@@ -1424,7 +1440,9 @@ document.addEventListener('visibilitychange',()=>{
  if(document.hidden)save();
  else{state=transition(state,'liteOffline',Math.random,Date.now());save();render();}
 });
-$('#lite-offline-dismiss')?.addEventListener('click',()=>commit('liteDismissOffline'));
+$('#lite-offline-dismiss')?.addEventListener('click',event=>{event.stopPropagation();commit('liteDismissOffline')});
+$('#lite-offline-report')?.addEventListener('click',event=>{if(event.target.closest('button'))return;openPanel('offline')});
+$('#lite-offline-report')?.addEventListener('keydown',event=>{if(event.target.closest('button'))return;if(event.key==='Enter'||event.key===' '){event.preventDefault();openPanel('offline')}});
 setInterval(()=>{if(!document.hidden&&trainingWave===null)save();},60000);
 requestAnimationFrame(frame);
 if(!state.playerName)openNameEditor();
