@@ -5,7 +5,7 @@ export const LITE_BUILD_TIERS=Object.freeze([0,5,18,48]);
 export const LITE_BUILDS=Object.freeze([
  Object.freeze({
    id:'clockout',name:'打卡暴擊',title:'準點處刑者',icon:'⚡',accent:'#f9ca74',
-   description:'攻速節奏、連擊爆發與收工斬。每第四次攻擊額外追擊，搭配打卡套裝更強。',
+   description:'暴擊與連擊取得打卡印記（上限 3），爆肝連擊消耗 2～3 印記打出超時結算；每四次攻擊另有專屬追擊。',
    options:Object.freeze([
      Object.freeze({id:'rush',name:'連環打卡',text:'每 3 次攻擊觸發小幅連擊追擊，適合速刷。'}),
      Object.freeze({id:'execute',name:'主管處刑',text:'每 4 次攻擊觸發更強的追擊，對魔王再增傷。'})
