@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 160" width="220" height="160" role="img" aria-label="趴在桌上的橘色貓咪">
+<defs>
+ <linearGradient id="fur" x1=".05" y1="0" x2=".9" y2="1"><stop stop-color="#ffe7ac"/><stop offset=".37" stop-color="#e9a567"/><stop offset=".8" stop-color="#ba674c"/><stop offset="1" stop-color="#8a4050"/></linearGradient>
+ <radialGradient id="warm"><stop stop-color="#fff2c6" stop-opacity=".75"/><stop offset="1" stop-color="#d69e6b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="dark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#53354e"/><stop offset="1" stop-color="#241b35"/></linearGradient>
+</defs>
+<ellipse cx="109" cy="141" rx="96" ry="17" fill="#27172e" opacity=".6"/>
+<ellipse cx="123" cy="68" rx="100" ry="65" fill="url(#warm)"/>
+<path d="M169 118Q216 120 211 82Q206 70 197 80Q202 107 167 101" fill="none" stroke="#6d3a45" stroke-width="22" stroke-linecap="round"/>
+<path d="M170 116Q209 114 207 86" fill="none" stroke="#efad6f" stroke-width="13" stroke-linecap="round"/>
+<path d="M72 89Q75 61 107 51Q151 39 176 74Q191 99 166 125L92 134Q61 120 72 89Z" fill="url(#fur)" stroke="#60384a" stroke-width="5"/>
+<path d="M96 79Q111 97 117 118M146 70Q159 84 164 104" stroke="#b46d55" stroke-width="7" fill="none" opacity=".58"/>
+<path d="M27 64L25 14L57 31Q89 9 108 25L125 8L136 60Q146 83 136 102Q110 132 59 122Q21 117 17 89Q13 72 27 64Z" fill="url(#fur)" stroke="#6b3d4b" stroke-width="5"/>
+<path d="M31 53L31 22L57 44M109 38L123 19L128 57" fill="#cf7890" stroke="#804e5b" stroke-width="3"/>
+<path d="M34 61Q49 44 64 56M86 57Q102 47 115 64" stroke="#714556" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M42 82Q57 96 72 81M83 83Q100 96 113 78" stroke="#533e52" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M77 83L85 83L81 89Z" fill="#a75261"/><path d="M81 89q-5 8-11 3m11-3q6 7 12 2" stroke="#733d4e" stroke-width="2" fill="none"/>
+<path d="M58 90l-33 0m31 8l-33 9m75-16 35-3m-37 9 38 7" stroke="#ffeaca" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+<path d="M62 111Q63 123 78 135Q90 145 105 132M106 112Q119 129 131 132Q147 143 152 124" fill="#f7c487" stroke="#77465b" stroke-width="4"/>
+<path d="M61 109Q75 117 89 111M105 111Q118 120 130 110" stroke="#fff0c0" stroke-width="3" fill="none"/>
+<g fill="#fff7d8" opacity=".85"><circle cx="53" cy="78" r="3"/><circle cx="105" cy="76" r="3"/></g>
+</svg>
