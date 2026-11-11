@@ -270,6 +270,18 @@ html{overflow-x:hidden}
 @keyframes portrait-toast{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes portrait-pulse{50%{box-shadow:0 0 15px 4px #f85b81ad}}
 @keyframes portrait-bubble{from{opacity:0;transform:scale(.87) translateY(5px)}to{opacity:1;transform:scale(1) translateY(0)}}
+/* Isolated monster rehearsal keeps its existing full-height battle interaction. */
+#app.portrait-shell[data-training] .town-stage,
+#app.portrait-shell[data-training] .battle-heading{display:none}
+#app.portrait-shell[data-training] .battle-deck .controls{
+ position:static;display:grid;grid-template-columns:1.25fr 1fr 1fr;width:auto;
+ margin:0;padding:10px 10px 8px;gap:7px;background:linear-gradient(#38213f,#2b1d39);
+}
+#app.portrait-shell[data-training] .battle-deck .mini-actions{
+ position:static;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ width:auto;margin:0;padding:0 10px 11px;gap:5px;background:linear-gradient(#38213f,#2b1d39);
+}
+#app.portrait-shell[data-training] .portrait-dev-toggle{display:none}
 @media(max-width:359px){
  .portrait-shell .currency{font-size:10px;padding:4px 5px}
  .portrait-shell .brand{font-size:18px}
