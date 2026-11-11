@@ -3,6 +3,7 @@ import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transiti
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
+import {LITE_STRATEGIES} from './lite-idle.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {drawMonsterActor,drawMonsterVfx,monsterAnimationState} from './monster-motion.mjs';
@@ -42,6 +43,8 @@ const save=()=>{
  // Art rehearsal is an entirely separate simulated battle. It MUST NOT modify
  // salary, inventory, currency, unlocks, level or any official save.
  if(trainingWave!==null)return;
+ // Mark the latest active moment: old foreground play time must not be paid twice as offline time.
+ state.liteLastSeenAt=Date.now();
  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.warn('存檔失敗',e)}
 };
 const format=n=>Number(n||0).toLocaleString('zh-TW');
@@ -50,7 +53,7 @@ const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<
 function loadGame(){
  if(trainingWave!==null)return trainingStateFor(trainingSpecies,initial,enemyFor);
  let raw;try{raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')}catch{}
- if(raw?.version===19)return normalize(raw);
+ if(raw?.version===19)return transition(raw,'liteOffline',Math.random,Date.now());
  const s=initial();
  // One-time migration: keep genuine V18 combat progress and work-shop unlocks.
  try{
@@ -708,6 +711,12 @@ function render(){
  }
  const liteDrop=state.last?.liteDrop?state.liteInventory.find(it=>it.instanceId===state.last.liteDrop):null;
  $('#game-log').textContent=liteDrop?'✨ '+liteRarity(liteDrop.rarity).name+'裝備掉落：'+liteBase(liteDrop.templateId).name+'！打開裝備背包查看。':state.log[0]||'冒險中';
+ const offlineBanner=$('#lite-offline-report');
+ if(offlineBanner){
+   const report=state.liteOfflineReport;
+   offlineBanner.hidden=!report;
+   if(report)$('#lite-offline-summary').textContent='巡邏 '+report.minutes+' 分鐘 · 金幣 +'+report.gold+' · EXP +'+report.xp+' · 新裝備 '+report.items+' 件';
+ }
  $('#auto').textContent='🤖 自動 '+(state.auto?'ON':'OFF');
  $('#auto').setAttribute('aria-pressed',String(state.auto));
  $('#speed').textContent='⏩ 速度 ×'+state.speed;
@@ -758,6 +767,8 @@ function renderLiteEquipment(){
  }).join('');
  const summary='<div class="lite-stats">⚔️ 裝備攻擊 '+(stats.weaponAttack||0)+'＋'+stats.attack+'　❤️ 生命 +'+stats.hp+'　🛡️ 護甲 '+stats.armor+'<p>暴擊 +'+(stats.crit*100).toFixed(1)+'% · 吸血 +'+(stats.lifeSteal*100).toFixed(1)+'% · 額外減傷 '+(stats.damageReduction*100).toFixed(1)+'%</p></div>';
  const activeSets=LITE_SETS.filter(set=>stats.sets[set.id]>=2);
+ const autoOptions='<div class="lite-auto"><h3>🤖 智慧換裝託管</h3><p>換裝會評估完整四欄與套裝協定；已鎖定、穿戴中的裝備不會自動換掉，裝備也不會自動分解。</p>'+btn(state.liteAutoEquip?'自動換裝 ON':'自動換裝 OFF','liteSetAuto')+
+   '<div class="lite-pages">'+LITE_STRATEGIES.map(strategy=>'<button class="lite-strategy '+(state.liteAutoStrategy===strategy.id?'active':'')+'" data-action="liteSetStrategy" data-value="'+strategy.id+'" aria-pressed="'+(state.liteAutoStrategy===strategy.id?'true':'false')+'">'+escapeHTML(strategy.name)+'</button>').join('')+'</div>'+btn('✨ 立即依策略最佳配裝','liteAutoOptimize')+'</div>';
  const sets='<div class="lite-sets"><h3>✦ 套裝協定</h3>'+(activeSets.length?activeSets.map(set=>'<p>✦ <strong>'+escapeHTML(set.name)+'</strong> · '+escapeHTML(set.description)+'</p>').join(''):'<p>穿戴同系列兩件裝備即可啟動戰鬥特效。</p>')+'</div>';
  const pages=Math.max(1,Math.ceil(state.liteInventory.length/20));
  liteArmoryPage=Math.min(liteArmoryPage,pages-1);
@@ -770,7 +781,7 @@ function renderLiteEquipment(){
      btn(liteSalvagePending===item.instanceId?'確定分解':'分解','liteSalvage',item.instanceId,item.locked||isEquipped)+'</div>';
    return '<article class="lite-item" data-rarity="'+rarity.id+'"><div class="lite-item-heading"><div><span class="lite-rarity">'+rarity.name+' · Lv.'+item.itemLevel+'</span><strong>'+escapeHTML(base.name)+'</strong></div><small>'+LITE_SLOTS.find(x=>x.id===base.slot)?.name+(base.setId?' · '+LITE_SETS.find(x=>x.id===base.setId)?.name:'')+'</small></div><div class="lite-item-stats">'+escapeHTML(liteStatLine(item))+'</div><div class="lite-item-affixes">'+escapeHTML(liteAffixLine(item)||'無附加詞條')+'</div>'+actions+'</article>';
  }).join('');
- return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+'<h3>戰利品背包 · '+(liteArmoryPage+1)+'/'+pages+' 頁</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+(pages>1?'<div class="lite-pages">'+btn('較新的裝備','litePrevious','',liteArmoryPage===0)+btn('較舊的裝備','liteNext','',liteArmoryPage===pages-1)+'</div>':'')+'</div>';
+ return '<div class="lite-armory"><div class="lite-armory-title"><span>✦ V20 LITE 刷寶工坊</span><strong>背包 '+state.liteInventory.length+'/120 件</strong></div><p>新掉落的裝備自動入庫，每件詞條獨立，穿上即影響戰鬥。鎖定可以防止誤分解；分解需要確認兩次。</p><div class="lite-slots">'+slotPanels+'</div>'+summary+sets+autoOptions+'<h3>戰利品背包 · '+(liteArmoryPage+1)+'/'+pages+' 頁</h3>'+(items||'<p>背包還沒有新裝備。打倒怪物就有機會取得第一件有隨機詞條的裝備。</p>')+(pages>1?'<div class="lite-pages">'+btn('較新的裝備','litePrevious','',liteArmoryPage===0)+btn('較舊的裝備','liteNext','',liteArmoryPage===pages-1)+'</div>':'')+'</div>';
 }
 function renderPanel(type){
  currentPanel=type;
@@ -876,6 +887,9 @@ body.addEventListener('click',e=>{
  else if(act==='choice')commit({type:'encounterChoose',choice:Number(b.dataset.value)});
  else if(act==='studySkillBook'||act==='forge'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(act==='liteSetAuto')commit({type:'liteSetAuto',value:!state.liteAutoEquip});
+ else if(act==='liteSetStrategy')commit({type:'liteSetStrategy',id:b.dataset.value});
+ else if(act==='liteAutoOptimize')commit('liteAutoOptimize');
  else if(act==='litePrevious'||act==='liteNext'){
    liteSalvagePending=null;liteArmoryPage=Math.max(0,liteArmoryPage+(act==='liteNext'?1:-1));renderPanel('equipment');
  }
@@ -1168,7 +1182,16 @@ function frame(now){
 }
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)lastAttack=performance.now()});
 window.addEventListener('pagehide',save);
-render();payRender();setInterval(payRender,1000);requestAnimationFrame(frame);
+render();payRender();setInterval(payRender,1000);
+// Browsers pause inactive tabs; settle only once on return, never run fake background animation.
+document.addEventListener('visibilitychange',()=>{
+ if(trainingWave!==null)return;
+ if(document.hidden)save();
+ else{state=transition(state,'liteOffline',Math.random,Date.now());save();render();}
+});
+$('#lite-offline-dismiss')?.addEventListener('click',()=>commit('liteDismissOffline'));
+setInterval(()=>{if(!document.hidden&&trainingWave===null)save();},60000);
+requestAnimationFrame(frame);
 if(!state.playerName)openNameEditor();
 Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
