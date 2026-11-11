@@ -157,7 +157,7 @@
 #app.portrait-shell:not([data-training])>.town-stage{
  background:
   linear-gradient(180deg,#19102b15 0%,transparent 40%,#170e2780 100%),
-  url('../art/v20/runtime/backgrounds/town-painterly.webp?v=p07') center 50%/cover no-repeat;
+  url('../art/v20/runtime/backgrounds/town-library-v20-p11.webp?v=p11') center 45%/cover no-repeat;
 }
 #app.portrait-shell:not([data-training]) .battle-deck>.scene{
  background:

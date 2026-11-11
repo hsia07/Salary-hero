@@ -1,0 +1,85 @@
+/* Salary Hero V20 P0.11 – painterly home/town stage.
+ * The town background contains scenery only. Character, cat, coffee, salary,
+ * timer and every hotspot stay separate real DOM elements.
+ * No new layout height, no scrolling, no full-screen screenshot.
+ */
+#app.portrait-shell:not([data-training])>.town-stage{
+  background:
+    linear-gradient(180deg,rgba(17,11,34,.07) 0%,transparent 40%,rgba(21,9,30,.26) 100%),
+    url('../art/v20/runtime/backgrounds/town-library-v20-p11.webp?v=p11') center 45%/cover no-repeat,
+    url('../art/v20/runtime/backgrounds/town-painterly.webp?v=p07') center 50%/cover no-repeat;
+  background-color:#211a3c;
+  box-shadow:inset 0 2px 4px #fff0c68c,inset 0 -7px 16px #120b24a6,0 0 11px #d4a87959;
+}
+/* The new painting already has detailed bookcases/flowers. Strip redundant
+ * vector overlays instead of covering the real artwork with dense UI filigree.
+ */
+#app.portrait-shell:not([data-training]) .v20-ornament-town{
+  opacity:.08;filter:none;
+}
+#app.portrait-shell:not([data-training])>.town-stage:after{
+  opacity:.22;
+  background-size:100% auto;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 8%,transparent 20%,transparent 80%,#000 94%,#000 100%);
+  mask-image:linear-gradient(90deg,#000 0%,#000 8%,transparent 20%,transparent 80%,#000 94%,#000 100%);
+}
+#app.portrait-shell:not([data-training])>.town-stage:before{
+  background:
+    radial-gradient(ellipse at 20% 30%,rgba(255,211,143,.29),transparent 24%),
+    radial-gradient(ellipse at 81% 30%,rgba(255,190,134,.25),transparent 28%),
+    radial-gradient(ellipse at 46% 38%,rgba(135,149,244,.13),transparent 46%);
+  opacity:.78;
+  animation:v20-p11-ambient-pulse 8s ease-in-out infinite alternate;
+}
+#app.portrait-shell:not([data-training]) .town-window-light{
+  background:
+    radial-gradient(ellipse at 55% 15%,rgba(202,217,255,.21),transparent 53%),
+    linear-gradient(115deg,transparent 22%,rgba(153,191,255,.075) 50%,transparent 76%);
+  animation:v20-p11-window 11s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+#app.portrait-shell:not([data-training]) .town-lamp-glow{
+  opacity:.62;filter:blur(3px);
+  background:radial-gradient(ellipse at 33% 24%,rgba(255,215,145,.43),transparent 69%);
+  animation:v20-p11-lantern 7.5s ease-in-out infinite alternate;
+}
+#app.portrait-shell:not([data-training]) .town-desk{
+  background:
+   repeating-linear-gradient(95deg,rgba(255,219,171,.085) 0 2px,transparent 2px 22px,rgba(35,20,40,.15) 23px 25px,transparent 26px 52px),
+   radial-gradient(ellipse at 50% 0,rgba(253,216,146,.32),transparent 72%),
+   linear-gradient(180deg,#ffe5b6 0%,#ba8262 7%,#643c4a 19%,#4c2f43 57%,#2a1b32 100%);
+  border-top:4px ridge #ffe2a6;
+  box-shadow:inset 0 1px #fff5d3,0 -7px 15px #21112b7d,0 -2px 12px #ffc7826c;
+}
+#app.portrait-shell:not([data-training]) .town-desk:after{
+  background:
+   repeating-linear-gradient(91deg,transparent 0 19px,rgba(248,193,138,.075) 20px 21px,transparent 22px 47px),
+   linear-gradient(98deg,rgba(31,16,37,.7),rgba(211,154,107,.19),rgba(30,15,36,.65));
+  box-shadow:inset 0 1px 4px #f1c78f44,inset 0 4px 11px #140b24a0;
+}
+#app.portrait-shell:not([data-training]) .town-hero{
+  filter:drop-shadow(0 5px 3px #100b25e8) drop-shadow(0 0 9px #ffdfae59);
+}
+#app.portrait-shell:not([data-training]) .town-cat{
+  filter:drop-shadow(0 4px 3px #0c071adf) drop-shadow(0 0 4px #ffdeaa63);
+}
+@keyframes v20-p11-ambient-pulse{
+  from{opacity:.60}to{opacity:.89}
+}
+@keyframes v20-p11-window{
+  from{opacity:.39;transform:translateX(-.6%)}
+  to{opacity:.7;transform:translateX(.6%)}
+}
+@keyframes v20-p11-lantern{
+  from{opacity:.42}to{opacity:.66}
+}
+@media (max-width:359px),(max-height:715px){
+ #app.portrait-shell:not([data-training]) .v20-ornament-town{opacity:.04}
+ #app.portrait-shell:not([data-training])>.town-stage:after{opacity:.15}
+ #app.portrait-shell:not([data-training]) .town-window-light{opacity:.33}
+}
+@media(prefers-reduced-motion:reduce){
+ #app.portrait-shell:not([data-training])>.town-stage:before,
+ #app.portrait-shell:not([data-training]) .town-window-light,
+ #app.portrait-shell:not([data-training]) .town-lamp-glow{animation:none}
+}

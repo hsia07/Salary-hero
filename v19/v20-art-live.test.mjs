@@ -61,7 +61,7 @@ test('V20 painted backgrounds are actual game runtime files and never baked scre
  const battle=read('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');
  const town=read('../art/v20/runtime/backgrounds/office-v20-painterly.svg');
  assert.match(app,/bg:trainingWave!==null\?.*battle-library-v20-p10\.webp/);
- assert.match(css,/town-painterly\.webp/);
+ assert.match(css,/town-library-v20-p11\.webp/);
  assert.match(css,/battle-library-v20-p10\.webp/);
  assert.match(app,/world\.dataset\.sceneArt/);
  for(const [source,width,height] of [[town,960,560],[battle,720,620]]){
@@ -95,7 +95,7 @@ test('V20 multi-layer illustrated backgrounds are rasterized once, live battle s
  assert.match(app,/images\.foreground=v20CacheStaticSceneArt\(oldForeground\)/);
  assert.match(app,/world\.dataset\.sceneCache/);
  assert.match(app,/drawMonsterAtlasFrame/);
- assert.match(app,/drawImageCover\(images\.bg,bgShift\)/);
+ assert.match(app,/drawImageCover\(images\.bg,bgShift,trainingWave===null\)/);
 });
 
 test('P0.7 committed raster environment is a valid lightweight opaque WebP with no baked UI',()=>{
@@ -122,4 +122,21 @@ test('P0.10 final environment art is a separate real, lightweight no-UI WebP ass
  assert.match(app,/v20-p07-fallback/);
  assert.match(app,/fullBleed\?16:0/);
  assert.match(css,/battle-library-v20-p10\.webp/);
+});
+
+test('P0.11 town shares the painterly environment style without baking salary or actors into art',()=>{
+ const html=read('./play.html');
+ const css=read('./v20-art-live.css');
+ const townCss=read('./v20-p11-town.css');
+ const scene=readFileSync(resolve(here,'../art/v20/runtime/backgrounds/town-library-v20-p11.webp'));
+ assert.equal(scene.toString('ascii',0,4),'RIFF');
+ assert.equal(scene.toString('ascii',8,12),'WEBP');
+ assert.ok(scene.length>50000&&scene.length<250000,'mobile-sized town environment');
+ assert.match(css,/town-library-v20-p11\.webp/);
+ assert.match(townCss,/town-library-v20-p11\.webp/);
+ assert.match(html,/v20-p11-town\.css/);
+ for(const id of ['town-hero','town-cat','town-coffee','today','pay-month','town-task','town-clock','pay-details']){
+   assert.ok(html.includes('id="'+id+'"'),'interactive '+id+' must stay in the real DOM');
+ }
+ assert.doesNotMatch(townCss,/content\s*:\s*["']NT\$/);
 });

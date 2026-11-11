@@ -55,7 +55,7 @@ def main():
         assert page.evaluate("""() => getComputedStyle(document.querySelector('.mini-actions')).borderImageSource.includes('royal-loot-frame.webp')"""),'loot rail frame missing'
 
         assert page.locator('#world').get_attribute('data-scene-art')=='v20-library-p10-loaded', 'Canvas uses fallback rather than new WebP art'
-        assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('town-painterly.webp')""")
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('town-library-v20-p11.webp')""")
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').startsWith('#storybook-'))""")
         # iOS Safari requires local inline symbols rather than external SVG <use>.
         assert page.locator('#storybook-inline-symbols symbol[id^="storybook-"]').count()==8
@@ -67,7 +67,7 @@ def main():
         # A 200 OK SVG can still be invalid or render an empty <use> icon.
         assets=page.evaluate("""async () => {
           const urls=[
-            '../art/v20/runtime/backgrounds/town-painterly.webp',
+            '../art/v20/runtime/backgrounds/town-library-v20-p11.webp',
             '../art/v20/runtime/backgrounds/battle-library-v20-p10.webp',
             '../art/v19/runtime/ui/storybook-icons.svg'
           ];
@@ -79,7 +79,8 @@ def main():
           }
           return decoded;
         }""")
-        assert assets[1]==[720,620],('P0.10 no-UI painting dimensions',assets)
+        assert assets[0]==[960,560],('P0.11 town painting dimensions',assets)
+        assert assets[1]==[720,620],('P0.10 battle painting dimensions',assets)
         assert all(w>10 and h>10 for w,h in assets),assets
         nav_bounds=page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art')].map(svg=>{
            const b=svg.getBBox();return [b.width,b.height];
@@ -270,6 +271,8 @@ def main():
             '/v19/v20-scene-light.mjs',
             '/v19/v20-battle-stage.mjs',
             '/v19/v20-p09-composition.css',
+            '/v19/v20-p11-town.css',
+            '/art/v20/runtime/backgrounds/town-library-v20-p11.webp',
             '/art/v20/runtime/ui/royal-nav-frame.webp',
             '/art/v20/runtime/ui/royal-pay-frame.webp',
             '/art/v20/runtime/ui/royal-loot-frame.webp',
