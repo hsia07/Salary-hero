@@ -6,6 +6,7 @@ on:
       - "v19/engine.mjs"
       - "v19/portrait-home.mjs"
       - "v19/portrait-home.css"
+      - "v19/portrait-one-screen.css"
       - "v19/portrait-home.test.mjs"
       - "art/v19/runtime/portrait/**"
       - "v19/lite-equipment.mjs"
