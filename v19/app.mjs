@@ -299,6 +299,9 @@ const assetPaths={
  weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
  weaponClockoutEcho:'../art/v19/runtime/weapons/lite-clockout-echo.svg',
  weaponCoffeeEcho:'../art/v19/runtime/weapons/lite-coffee-echo.svg',
+ armorClockout:'../art/v19/runtime/hero/lite-clockout-coat.svg',
+ armorCoffee:'../art/v19/runtime/hero/lite-coffee-apron.svg',
+ armorGuardian:'../art/v19/runtime/hero/lite-guardian-harness.svg',
  hero:'../art/v19/candidates/hero/idle.svg',
  heroAttack:'../art/v19/candidates/hero/attack.svg',
  heroHurt:'../art/v19/candidates/hero/hurt.svg',
@@ -510,6 +513,20 @@ function drawStage(now){
   }
  }else{
   drawHurtTintedSprite(pose,0,0,pose.naturalWidth,pose.naturalHeight,0,0,236,306,hurtVfx);
+ }
+ // Lite armor layer: independent, detailed illustrated garment pieces are mapped
+ // to the existing approved chibi IDLE torso. Do not reuse on moving frames:
+ // attack/hurt poses displace the shoulders and require their own atlas alignment.
+ const outfit=state.liteInventory.find(it=>it.instanceId===state.liteLoadout?.armor);
+ const outfitBase=liteBase(outfit?.templateId);
+ const armorArt=outfitBase?.setId==='clockout'?images.armorClockout:
+   outfitBase?.setId==='coffee'?images.armorCoffee:
+   outfitBase?.setId==='guardian'?images.armorGuardian:null;
+ world.dataset.liteArmor=outfitBase?.setId||'none';
+ if(trainingWave===null&&chibiReady&&!attacking&&!hurtVfx.active&&armorArt){
+   ctx.save();ctx.globalAlpha=.97;
+   ctx.drawImage(armorArt,83,190,94,83);
+   ctx.restore();
  }
  // Engineering preview only: nondefault outfits have no approved animation sprites yet.
  if(state.activeSkin!=='starter'){
@@ -1338,7 +1355,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
  catch(error){
    if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
-   else if(k==='foreground'||k==='weaponBriefcase'||k==='weaponClockoutEcho'||k==='weaponCoffeeEcho'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
+   else if(k==='foreground'||k==='weaponBriefcase'||k==='weaponClockoutEcho'||k==='weaponCoffeeEcho'||k==='armorClockout'||k==='armorCoffee'||k==='armorGuardian'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;
  }
