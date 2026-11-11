@@ -289,7 +289,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  color:#dbcbb8;text-align:left;font-family:serif;font-size:12px;font-weight:700;letter-spacing:.2px;cursor:pointer}
 .lite-tactical-status[data-build=clockout]{border-color:#e3b773;color:#ffe3ac;background:linear-gradient(115deg,#4e3443,#261d35)}
 .lite-tactical-status[data-build=coffee]{border-color:#92cbaa;color:#c9f8df;background:linear-gradient(115deg,#244a45,#231d36)}
-</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"><link rel="stylesheet" href="./portrait-home.css?v=portrait-home-v19-34a"><link rel="stylesheet" href="./portrait-one-screen.css?v=portrait-one-screen-v19-35"><link rel="stylesheet" href="./storybook-skin.css?v=storybook-v19-37"><link rel="stylesheet" href="./iphone-hud-fixes.css?v=iphone-fixes-v19-37"><link rel="stylesheet" href="./v20-home.css?v=v20-home-first-1"></head><body>
+</style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"><link rel="stylesheet" href="./portrait-home.css?v=portrait-home-v19-34a"><link rel="stylesheet" href="./portrait-one-screen.css?v=portrait-one-screen-v19-35"><link rel="stylesheet" href="./storybook-skin.css?v=storybook-v19-37"><link rel="stylesheet" href="./iphone-hud-fixes.css?v=iphone-fixes-v19-37"><link rel="stylesheet" href="./v20-home.css?v=v20-home-first-1"><link rel="stylesheet" href="./v20-art-live.css?v=p0-illustration-1"></head><body>
 <main id="app" class="portrait-shell" data-dev-visible="false" data-home-version="v20-reference-layout" data-dev-enabled="false">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" id="storybook-inline-symbols" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none">
 <title>薪水勇者・金紫魔法手遊八款正式風格選單圖示</title>
@@ -394,6 +394,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="currencies"><span class="currency">🪙 <b id="gold">0</b></span><span class="currency">💎 <b id="gems">0</b></span><span class="currency">🎟️ <b id="skin-tickets">0</b></span></div></div>
 </header>
 <section class="town-stage" id="town-stage" aria-label="可互動的勇者辦公室據點">
+ <div class="v20-ornament-town" aria-hidden="true"></div><canvas id="v20-town-ambient" class="v20-ambient-canvas" aria-hidden="true"></canvas>
  <div class="town-window-light" aria-hidden="true"></div><div class="town-curtain" aria-hidden="true"></div><div class="town-lamp-glow" aria-hidden="true"></div>
  <i class="town-star one" aria-hidden="true"></i><i class="town-star two" aria-hidden="true"></i><i class="town-star three" aria-hidden="true"></i><i class="town-star four" aria-hidden="true"></i>
  <div class="town-name"><span id="town-player-name">平凡社畜</span><small id="town-player-level">Lv.1 · 出勤中</small></div>
@@ -433,7 +434,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  <a href="./play.html">返回原本的遊戲進度</a>
 </div>
 <section class="battle-deck" id="battle-deck" aria-label="即時戰鬥與冒險控制"><div class="battle-heading"><span id="town-mode-label">⚔️ 辦公室遠征 · 第 1 關</span><span class="battle-live">● 即時戰鬥</span><section id="lite-offline-report" class="lite-offline-report" role="button" tabindex="0" aria-label="查看離線巡邏收穫" hidden><div><strong>🌙 離線巡邏結算</strong><p id="lite-offline-summary"></p></div><button id="lite-offline-dismiss" type="button" aria-label="關閉離線收益提示">收起</button></section><button class="battle-bestiary" type="button" data-panel="collection">📖 圖鑑</button></div>
-<section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
+<section class="scene" aria-label="動態冒險場景"><div class="v20-ornament-battle" aria-hidden="true"></div><canvas id="v20-battle-ambient" class="v20-ambient-canvas" aria-hidden="true"></canvas><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <button id="v20-pet-shortcut" type="button" class="v20-pet-shortcut" data-panel="pets" aria-label="查看寵物培養"><img src="../art/v19/runtime/portrait/cat-companion.svg" alt=""><small id="v20-pet-level">Lv.1</small></button>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
@@ -494,4 +495,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=v20-home-first-1"></script></body></html>
+<script type="module" src="./app.mjs?v=v20-home-first-1"></script><script type="module" src="./v20-art-live.mjs?v=p0-illustration-1"></script></body></html>

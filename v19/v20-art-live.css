@@ -1,0 +1,143 @@
+/* V20 P0 illustration integration: actual transparent SVG ornament artwork
+ * and independent low-power ambient canvases, NEVER a dead screenshot UI.
+ * Existing salary, chibi hero, enemy atlas, buttons and saves are untouched.
+ */
+#app.portrait-shell:not([data-training]) .v20-ornament-town,
+#app.portrait-shell:not([data-training]) .v20-ornament-battle,
+#app.portrait-shell:not([data-training]) .v20-ambient-canvas{
+ position:absolute;inset:0;width:100%;height:100%;
+ pointer-events:none!important;touch-action:none;user-select:none;
+}
+#app.portrait-shell:not([data-training]) .v20-ornament-town{
+ z-index:3;opacity:.95;
+ background:url('../art/v20/runtime/foreground/office-blooms.svg') center center/100% 100% no-repeat;
+ filter:drop-shadow(0 0 3px #ffd1844b);
+}
+#app.portrait-shell:not([data-training]) .v20-ornament-battle{
+ z-index:2;opacity:.83;
+ background:url('../art/v20/runtime/foreground/battle-arcane.svg') center center/100% 100% no-repeat;
+}
+#app.portrait-shell:not([data-training]) .v20-ambient-canvas{z-index:2;display:block;}
+#app.portrait-shell:not([data-training]) #v20-battle-ambient{z-index:3;}
+/* The screenshot's material character: engraved metallic highlights, not flat web cards. */
+#app.portrait-shell:not([data-training])>.hud{
+ border-bottom:3px solid #b17a57;
+ box-shadow:
+   inset 0 1px 0 #fff0cb98,inset 0 -3px 0 #6e4054,
+   inset 0 -5px 0 #f5c47777,0 2px 10px #140a1caa;
+}
+#app.portrait-shell:not([data-training]) .currency{
+ position:relative;overflow:hidden;
+ border:2px solid #f7d89a;
+ box-shadow:inset 0 1px #fff9d7,inset 0 -2px #452637,
+   0 1px 0 #a56855,0 0 8px #ffca7f4a;
+ background:radial-gradient(ellipse at 38% 8%,#ad6c69b3,transparent 55%),
+    linear-gradient(180deg,#52354a,#23172f 77%);
+}
+/* Reference screenshot's dark embossed salary plaque.
+ * Actual amounts remain owned by #today and #pay-month.
+ */
+#app.portrait-shell:not([data-training]) .town-stage .pay{
+ background:
+  radial-gradient(ellipse at 78% 5%,#c98e6c40,transparent 44%),
+  linear-gradient(145deg,#4b2e54e8 0%,#261b3aed 55%,#1d1732f7 100%);
+ border:3px ridge #f6cc83;border-radius:11px;
+ box-shadow:
+  0 0 0 1px #44233e,0 0 0 3px #ffe1a353,
+  inset 0 1px #fff4b9a8,inset 0 0 20px #b2777144,
+  0 5px 13px #120a20d6;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay strong{
+ color:#fff3d6;font-size:clamp(13px,3.5vw,17px);
+ text-shadow:0 1px #543047,0 0 7px #ffe0a770;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay small,
+#app.portrait-shell:not([data-training]) .town-stage #work-time{
+ color:#ffdfaf;text-shadow:0 1px 2px #16091f;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay>div:first-child:before{
+ color:#fff0c5;text-shadow:0 1px 2px #311a38;
+ font-size:clamp(10px,2.7vw,12px);
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay-right button{
+ border:1px solid #f1c47c;
+ background:linear-gradient(#86617a,#3b294f);
+ color:#fff5d3;
+}
+/* Make the stage divider read as a cast gold artifact instead of a website row. */
+#app.portrait-shell:not([data-training])>.v20-stage-strip{
+ border-top:3px ridge #ffe1a3;border-bottom:3px ridge #f6c67e;
+ background:
+   radial-gradient(ellipse at 51% 0,#e6bb826b,transparent 66%),
+   linear-gradient(180deg,#60415b,#30213f 72%,#241732);
+ box-shadow:inset 0 1px #fff4c6ba,inset 0 -2px #6b3854,0 2px 7px #0e071d;
+}
+#app.portrait-shell:not([data-training]) .v20-stage-title{
+ text-shadow:0 1px #1b0b2b,0 0 6px #fbd49587;
+}
+#app.portrait-shell:not([data-training]) .v20-stage-chest{
+ border-color:#ffde9e;
+ box-shadow:inset 0 1px #fff9ddaa,inset 0 -3px #55304b,
+  0 0 9px #f5c27966;
+}
+/* Foreground decorative details must never occlude the battle HUD. */
+#app.portrait-shell:not([data-training]) .battle-deck>.scene{
+ isolation:isolate;
+ box-shadow:inset 0 3px 15px #ffdf9b24,inset 0 -7px 24px #120821a0;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .stage-head,
+#app.portrait-shell:not([data-training]) .battle-deck .bars{
+ position:absolute;z-index:6;
+}
+#app.portrait-shell:not([data-training]) .battle-deck #world{
+ position:relative;z-index:1;
+}
+/* Embossed loot tray with a real clickable inventory target. */
+#app.portrait-shell:not([data-training]) .battle-deck>.mini-actions{
+ border:3px ridge #ffe0a0;
+ box-shadow:inset 0 1px #fff5d0bc,inset 0 0 18px #cda4bb2c,
+   0 2px 9px #0e071cae,0 0 10px #edaa6454;
+}
+#app.portrait-shell:not([data-training]) .mini-actions #v20-loot-preview{
+ background:radial-gradient(ellipse at 45% 28%,#b38aba97,transparent 60%),
+   linear-gradient(160deg,#5c3b69,#261a43);
+ border:2px ridge #ffe3a9;
+ box-shadow:inset 0 1px #fff0d3,0 0 9px #b47eee7b;
+}
+#app.portrait-shell:not([data-training]) .mini-actions #v20-loot-preview svg{
+ filter:drop-shadow(0 1px 1px #120921) drop-shadow(0 0 8px #dfb0ff);
+}
+/* Each destination remains an accessible button, styled as a metal artifact. */
+#app.portrait-shell:not([data-training])>.tabs{
+ border-top:4px ridge #ffdf9f;
+ background:radial-gradient(ellipse at 50% 2%,#bf805b65,transparent 72%),
+    linear-gradient(#684258,#352540 69%,#221932);
+ box-shadow:inset 0 1px #fff5cbac,0 -3px 13px #ffd08a4f,0 -7px 20px #190d29c2;
+}
+#app.portrait-shell:not([data-training])>.tabs button{
+ overflow:visible;border:2px ridge #f3c68d;
+ background:radial-gradient(ellipse at 50% 0,#cc94784f,transparent 61%),
+    linear-gradient(#6c465a,#3a2844 75%,#281c36);
+ box-shadow:inset 0 1px #fff2c8ac,inset 0 -3px #32203f,
+   0 2px 5px #140a20b8;
+}
+#app.portrait-shell:not([data-training])>.tabs button.is-active{
+ border-color:#ffe8a7;
+ background:radial-gradient(ellipse at 50% 12%,#f0bb7cb5,transparent 73%),
+    linear-gradient(#b3795a,#704658 65%,#3c2745);
+ box-shadow:inset 0 1px #fff7d6,0 0 12px #ffd090c2,0 -2px 8px #ffc17687;
+}
+#app.portrait-shell:not([data-training])>.tabs button.is-active:before{
+ content:'';position:absolute;z-index:-1;inset:-3px;border-radius:12px;
+ border:1px solid #fff4b4a6;box-shadow:0 0 8px #ffd39385;
+ pointer-events:none;
+}
+@media (max-width:359px){
+ #app.portrait-shell:not([data-training]) .v20-ornament-town{opacity:.73}
+ #app.portrait-shell:not([data-training]) .v20-ornament-battle{opacity:.62}
+ #app.portrait-shell:not([data-training]) .town-stage .pay strong{font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+ #app.portrait-shell:not([data-training]) .v20-ornament-town,
+ #app.portrait-shell:not([data-training]) .v20-ornament-battle{filter:none}
+}
