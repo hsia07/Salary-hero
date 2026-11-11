@@ -847,7 +847,16 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      }
      const reduced=Math.max(1,Math.ceil(retaliation*(1-Math.min(.72,liteStats.damageReduction+legend.damageReduction))*85/(85+liteStats.armor)));
      const reduction=skill?.id==='guard'?Math.max(.1,Math.max(.25,.5-.05*s.skillRank)-skillMods.guardReduction):1;
-     s.heroHp=Math.max(0,s.heroHp-(slacking?0:Math.max(1,Math.ceil(reduced*reduction))));
+     const retaliationBeforeGuard=slacking?0:Math.max(1,Math.ceil(reduced*reduction));
+     const allyGuard=Math.min(retaliationBeforeGuard,squadTurn.shield);
+     const enemySlowed=squadTurn.slow&&!slacking;
+     const allySlowReduction=enemySlowed?Math.ceil((retaliationBeforeGuard-allyGuard)*.2):0;
+     const actualRetaliation=Math.max(0,retaliationBeforeGuard-allyGuard-allySlowReduction);
+     s.heroHp=Math.max(0,s.heroHp-actualRetaliation);
+     s.last.colleagueShield=allyGuard;
+     s.last.colleagueSlowReduction=allySlowReduction;
+     if(allyGuard)notice(s,'🛡️ 同事替你擋下 '+allyGuard+' 點傷害！');
+     if(allySlowReduction)notice(s,'❄️ 法師延緩攻勢：減少 '+allySlowReduction+' 點傷害！');
      // Persist the actual HP lost within this attack result. If the hero dies and
      // instantly respawns, comparing only before/after HP would miss the injury.
      s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
