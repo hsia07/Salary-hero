@@ -73,3 +73,16 @@ test('V20 painted backgrounds are actual game runtime files and never baked scre
   assert.doesNotMatch(source,/<text[\s>]|<foreignObject[\s>]/);
  }
 });
+
+test('V20 live resource badges use dedicated inline RPG art with original IDs',()=>{
+ const html=read('./play.html');
+ for(const symbol of ['coin','gem','ticket','skull','chest']){
+  assert.match(html,new RegExp('id="v20-'+symbol+'-art"'));
+  assert.match(html,new RegExp('href="#v20-'+symbol+'-art"'));
+ }
+ for(const id of ['gold','gems','skin-tickets','v20-stage-chest','v20-stage-entry']){
+  assert.ok(html.includes('id="'+id+'"'));
+ }
+ assert.match(html,/class="v20-resource-icon"/);
+ assert.doesNotMatch(html,/<span class="currency">(?:🪙|💎|🎟)/);
+});

@@ -164,3 +164,27 @@
   linear-gradient(180deg,#15102a24 0%,transparent 48%,#180d2b70 100%),
   url('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg') center center/cover no-repeat;
 }
+
+/* P0.5: iOS-compatible INLINE SVG gameplay resource art.
+ * No external <use>, no emojis, live counters still remain in the DOM.
+ */
+#app.portrait-shell:not([data-training]) .v20-resource-icon{
+ display:inline-block;flex:none;width:clamp(15px,4.2vw,21px);height:clamp(15px,4.2vw,21px);
+ overflow:visible;filter:drop-shadow(0 0 4px #ffc37c88);
+ vertical-align:middle;
+}
+#app.portrait-shell:not([data-training]) .currency .v20-resource-icon + b{
+ font-variant-numeric:tabular-nums;
+}
+#app.portrait-shell:not([data-training]) .v20-stage-skull{
+ display:inline-block;flex:0 0 20px;width:20px;height:20px;max-height:100%;
+ filter:drop-shadow(0 0 5px #ffd6aaad);
+}
+#app.portrait-shell:not([data-training]) .v20-stage-chest .v20-chest-icon{
+ display:inline-block;flex:0 0 25px;width:25px;height:25px;filter:drop-shadow(0 0 5px #ffd3a6);
+}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]) .v20-resource-icon{width:15px;height:15px}
+ #app.portrait-shell:not([data-training]) .v20-stage-skull{flex-basis:17px;width:17px;height:17px}
+ #app.portrait-shell:not([data-training]) .v20-stage-chest .v20-chest-icon{width:21px;height:21px;flex-basis:21px}
+}

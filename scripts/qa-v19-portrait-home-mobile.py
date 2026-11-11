@@ -47,8 +47,9 @@ def main():
         assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('office-v20-painterly.svg')""")
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').startsWith('#storybook-'))""")
         # iOS Safari requires local inline symbols rather than external SVG <use>.
-        assert page.locator('#storybook-inline-symbols symbol').count()==8
-        assert page.evaluate("""() => [...document.querySelectorAll('#storybook-inline-symbols [id]')].every(e=>e.id==='storybook-inline-symbols'||e.id.startsWith('storybook-'))"""),'SVG names must never collide with application state IDs'
+        assert page.locator('#storybook-inline-symbols symbol[id^="storybook-"]').count()==8
+        assert page.locator('#storybook-inline-symbols symbol[id^="v20-"]').count()==5
+        assert page.evaluate("""() => [...document.querySelectorAll('#storybook-inline-symbols [id]')].every(e=>e.id==='storybook-inline-symbols'||e.id.startsWith('storybook-')||e.id.startsWith('v20-'))"""),'SVG names must never collide with application state IDs'
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>
            document.getElementById((x.getAttribute('href')||'').slice(1))
         )""")
@@ -79,6 +80,7 @@ def main():
         assert page.evaluate("""() => document.querySelectorAll('[id="gold"]').length===1 &&
            document.querySelector('#gold').tagName.toLowerCase()==='b'"""),'SVG ID collision with real gold'
         assert page.locator('#gold').inner_text().strip()=='895','real 895 gold count was hijacked by SVG defs'
+        assert page.locator('.v20-resource-icon').count()==3
         assert page.locator('#gold').is_visible()
         assert page.locator('#gems').is_visible()
         assert page.locator('#skin-tickets').is_visible()
