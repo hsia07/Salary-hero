@@ -42,6 +42,8 @@ export function portraitHomeState(s){
 export function initPortraitHome({getState,openPanel,goHome}){
  const root=document.querySelector('#app'),town=document.querySelector('#town-stage');
  if(!root||!town)return {update(){},updateClock(){}};
+ // The engineering drawer exists for reviewers at ?dev=1, not on the player's HUD.
+ root.dataset.devEnabled=new URLSearchParams(location.search).get('dev')==='1'?'true':'false';
  const stageName=document.querySelector('#town-player-name');
  const level=document.querySelector('#town-player-level');
  const speech=document.querySelector('#town-speech');
@@ -97,7 +99,7 @@ export function initPortraitHome({getState,openPanel,goHome}){
    if(panel.open)panel.close();
    chooseTab(homeButton);
    goHome?.();
-   root.scrollIntoView({behavior:reduced?'instant':'smooth',block:'start'});
+   // Home has no document scrolling; switching tabs is entirely in place.
  });
  for(const b of buttons.filter(v=>v.hasAttribute('data-panel')))b.addEventListener('click',()=>chooseTab(b));
  panel?.addEventListener('close',()=>chooseTab(homeButton));
