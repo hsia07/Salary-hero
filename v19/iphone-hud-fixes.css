@@ -123,3 +123,45 @@
   min-width:27px;font-size:8px;
  }
 }
+
+/* The currency count is always visible. Three compact jewel badges are
+   two-line (icon + real number), never a flex child shrunk to 0px on iPhone. */
+#app.portrait-shell:not([data-training]) .hud-title{gap:3px}
+#app.portrait-shell:not([data-training]) .hud-title>div:first-child{
+ flex:0 1 auto;max-width:42%;overflow:hidden;
+}
+#app.portrait-shell:not([data-training]) .currencies{
+ flex:0 0 auto;width:auto;max-width:none;gap:3px;
+ display:flex;justify-content:flex-end;
+}
+#app.portrait-shell:not([data-training]) .currency{
+ flex:0 0 56px!important;width:56px!important;min-width:56px!important;
+ max-width:none!important;height:39px;min-height:39px;
+ padding:2px 4px!important;box-sizing:border-box;
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ gap:0!important;overflow:hidden;
+ font-size:17px!important;line-height:18px!important;
+ border-radius:13px;
+}
+#app.portrait-shell:not([data-training]) .currency b{
+ display:block!important;flex:0 0 12px!important;
+ box-sizing:border-box;min-width:20px!important;max-width:100%!important;
+ width:auto!important;height:12px!important;
+ visibility:visible!important;opacity:1!important;
+ font-size:10px!important;line-height:12px!important;
+ font-family:Georgia,'Noto Serif TC',serif!important;
+ font-variant-numeric:tabular-nums;text-align:center;
+ color:#fff4d2;text-shadow:0 1px #190c20;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]) .currency{
+  flex:0 0 44px!important;width:44px!important;min-width:44px!important;
+  height:36px;min-height:36px;padding:2px!important;
+  font-size:15px!important;
+ }
+ #app.portrait-shell:not([data-training]) .currency b{
+  font-size:9px!important;line-height:11px!important;height:11px!important;
+ }
+}
