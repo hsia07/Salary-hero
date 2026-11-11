@@ -215,6 +215,54 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .lite-strategy.active{border-color:#f6cf88;color:#fff0c8;background:linear-gradient(#825968,#583851);box-shadow:inset 0 0 12px #e8b78133}
 
 @media(max-width:355px){.lite-armory-title{flex-direction:column;align-items:flex-start}.lite-slot{min-height:95px}.lite-item-heading{flex-direction:column}.lite-item-heading small{text-align:left;max-width:none}}
+
+/* Build progression — collectible fantasy panel, independent from the pixel-art actor atlas. */
+.lite-build-ribbon{display:block;width:calc(100% - 24px);margin:9px 12px 6px;padding:10px 12px;
+ border:1px solid #d2a96f;border-radius:11px;background:radial-gradient(ellipse at 0 0,#8c6a6650,transparent 54%),linear-gradient(110deg,#46304b,#241b36);
+ color:#f9dfaa;box-shadow:inset 0 0 19px #160c2945,0 2px 10px #0b071280;font-family:serif;font-weight:800;font-size:13px;text-align:left;
+ letter-spacing:.2px;cursor:pointer}
+.lite-build-ribbon[data-build=clockout]{border-color:#f5cb84;color:#ffe4ac}
+.lite-build-ribbon[data-build=coffee]{border-color:#92c7a9;color:#d5f8de}
+#app[data-training] .lite-build-ribbon{display:none}
+.lite-build-intro{padding:14px;border:1px solid #b28c67;border-radius:11px;background:radial-gradient(circle at 0 0,#7c56802b,transparent 65%),linear-gradient(#3a2845,#201c34);color:#e5d0b3}
+.lite-build-intro strong{font-family:serif;color:#ffe0a0;font-size:17px}
+.lite-build-intro p{font-size:12px;color:#dfcbd0;line-height:1.65;margin:6px 0 0}
+.lite-build-card{margin:13px 0;border:1px solid #a68769;border-radius:14px;padding:13px;
+ background:radial-gradient(ellipse at 80% 0,#82537530,transparent 65%),linear-gradient(145deg,#3e2a47,#221c35);
+ box-shadow:inset 0 0 24px #14091e55,0 4px 15px #10071466}
+.lite-build-card[data-build=coffee]{border-color:#6c9b88}
+.lite-build-card.selected{outline:1px solid #f2d5a2;outline-offset:2px}
+.lite-build-heading{display:flex;align-items:flex-start;gap:12px}
+.lite-build-glyph{flex:none;width:62px;height:67px;display:grid;place-items:center;border:1px solid #d3a671;border-radius:13px;
+ background:radial-gradient(circle at 45% 25%,#d6b76d4b,#4a3150 60%,#231b33);
+ font-size:37px;filter:drop-shadow(0 0 7px #f6d18042)}
+.lite-build-card[data-build=coffee] .lite-build-glyph{border-color:#9bcead;background:radial-gradient(circle at 45% 20%,#9bd9ad55,#354e4c 55%,#211c32)}
+.lite-build-heading>div:last-child{min-width:0;flex:1}
+.lite-build-heading small{font-size:10px;letter-spacing:1px;color:#bda8c2}
+.lite-build-heading h3{margin:2px 0 4px;font-family:serif;font-size:20px;color:#ffdda1}
+.lite-build-card[data-build=coffee] h3{color:#c8f2d6}
+.lite-build-heading p{font-size:12px;color:#e3cbd1;margin:4px 0;line-height:1.65}
+.lite-build-master{display:flex;justify-content:space-between;margin:11px 0 5px;gap:8px;font-size:12px;color:#eedac4}
+.lite-build-master span{color:#bfb1d0}
+.lite-master-track{height:10px;border-radius:20px;border:1px solid #b99166;background:#1e1527;overflow:hidden;box-shadow:inset 0 2px 4px #0008}
+.lite-master-track i{height:100%;display:block;background:linear-gradient(90deg,#bb7c58,#f7d79a);box-shadow:0 0 10px #ffc56a}
+.lite-build-card[data-build=coffee] .lite-master-track i{background:linear-gradient(90deg,#487b70,#b8f8d2)}
+.lite-milestones{display:grid;gap:6px;margin:12px 0}
+.lite-milestone{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:9px;font-size:11px;color:#dccce3;line-height:1.5}
+.lite-milestone b{border:1px solid #93765e;border-radius:6px;background:#412d43;color:#f0d29f;text-align:center;padding:5px 0}
+.lite-milestone.locked{opacity:.5}
+.lite-milestone.unlocked b{border-color:#dfc18b;background:#6d4957;box-shadow:0 0 8px #f8c98335}
+.lite-build-card h4{color:#f6dbac;font-size:12px;margin:10px 0 8px}
+.lite-branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.lite-branch{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px 8px;
+ border:1px solid #997782;border-radius:10px;background:linear-gradient(#43304b,#281f37);color:#e8d7dc;text-align:left;font:inherit}
+.lite-branch strong{font-size:12px;color:#ffe6b9}
+.lite-branch small{font-size:10px;line-height:1.55;color:#d3bfcf}
+.lite-branch em{font-style:normal;font-size:10px;font-weight:800;color:#f9dca0}
+.lite-branch.active{border-color:#ebc38e;background:linear-gradient(#654357,#3c2a43)}
+.lite-branch:disabled{opacity:.58}
+.lite-build-current{padding:10px;text-align:center;color:#c3f0c4;font-size:12px;font-weight:700}
+@media(max-width:340px){.lite-branches{grid-template-columns:1fr}.lite-build-glyph{width:48px;height:56px;font-size:30px}}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
 <header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.27</div></div>
@@ -232,6 +280,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
+<button id="lite-build-ribbon" class="lite-build-ribbon" type="button" data-panel="liteBuilds">✦ 尚未選擇流派 · 點此開啟專精</button>
 <div class="chibi-art-state" id="chibi-art-state" role="status" hidden>正在檢查 Q 版高畫質主角……</div>
 <div class="monster-art-status" id="monster-art-status" role="status">🎨 正在自動載入紙妖與邪惡杯靈兩套 Q 版逐格動畫……</div>
 <details class="dev-gallery"><summary>🧪 怪物動畫與美術測試（點此展開）</summary><div class="chibi-quick-preview">
@@ -285,4 +334,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=lite-idle-v19-30"></script></body></html>
+<script type="module" src="./app.mjs?v=lite-builds-v19-31"></script></body></html>
