@@ -10,6 +10,7 @@ import {liteLegendaryEffects} from './lite-legendaries.mjs';
 import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyPreset} from './lite-presets.mjs';
 import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
+import {normalizeColleagueProgress,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -159,6 +160,7 @@ export function enemyFor(wave){
 export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,baseMaxHp:110,
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
+   colleagueProgress:{version:1,members:[],materials:{trainingXp:0,coins:0,seals:0,emblems:0}},
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,liteActiveBuild:'none',liteBuildProgress:{clockout:0,coffee:0},liteBuildBranch:{clockout:'rush',coffee:'heal'},liteToxinStacks:0,liteToxinKey:'',liteMarks:0,liteSkillUses:{burst:0,guard:0,drain:0},liteSkillPaths:{burst:null,guard:null,drain:null},litePresets:[null,null],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
@@ -223,6 +225,9 @@ export function normalize(raw,now=Date.now()){
    items:Math.max(0,Math.min(6,Math.floor(Number(raw.liteOfflineReport.items)||0)))
  }:null;
  n.level=Math.max(1,Math.min(100,Math.floor(Number(n.level)||1)));
+ n.colleagueProgress=normalizeColleagueProgress(raw.colleagueProgress,n.level);
+ // Salary Hero's existing gold is the single source of truth for training coins.
+ n.colleagueProgress.materials.coins=Math.max(0,Math.floor(Number(raw.gold)||0));
  for(const k of ['xp','gold','gems','potions','chests','specialChests','skillBooks','skillFragments','petXp','petFood','craftingMaterial','rareMaterials','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.skillRank=Math.max(0,Math.min(5,Math.floor(Number(raw.skillRank)||0)));
  n.forgeLevel=Math.max(0,Math.min(10,Math.floor(Number(raw.forgeLevel)||0)));
@@ -366,6 +371,24 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  const s=normalize(raw,now),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
  switch(a.type){
+ case 's1TrainColleague':{
+   if(s.trainingIsolated){notice(s,'美術練習模式不允許養成。');break;}
+   s.colleagueProgress.materials.coins=s.gold;
+   const result=trainColleague(s.colleagueProgress,a.id,s.level);
+   if(!result.ok){s.last={type:'colleagueTraining',ok:false,reason:result.reason};notice(s,'同事升級失敗：'+result.reason);break;}
+   s.colleagueProgress=result.state;s.gold=result.state.materials.coins;
+   s.last={type:'colleagueTraining',ok:true,id:a.id,level:result.state.members.find(m=>m.id===a.id).level};
+   notice(s,'✨ 同事升級成功！');break;
+ }
+ case 's1BreakthroughColleague':{
+   if(s.trainingIsolated){notice(s,'美術練習模式不允許養成。');break;}
+   s.colleagueProgress.materials.coins=s.gold;
+   const result=breakthroughColleague(s.colleagueProgress,a.id,s.level);
+   if(!result.ok){s.last={type:'colleagueBreakthrough',ok:false,reason:result.reason};notice(s,'同事突破失敗：'+result.reason);break;}
+   s.colleagueProgress=result.state;s.gold=result.state.materials.coins;
+   s.last={type:'colleagueBreakthrough',ok:true,id:a.id};
+   notice(s,'🌟 同事突破成功！');break;
+ }
  case 'setName':{
    const nickname=cleanPlayerName(a.value);
    if(!nickname){notice(s,'請輸入 1–12 個字的遊戲名稱。');break;}
@@ -665,6 +688,11 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      s.gold+=reward;s.cleared++;
      const mastery=liteGrantMastery(s,dead.tier);
      if(mastery?.rankUp)notice(s,'🏵️ 流派熟練度升階！'+liteBuildById(mastery.id).name+' 專精 '+mastery.rank+' 階，解鎖新能力。');
+     // Each genuine victory grants training materials; elites/bosses also grant seals.
+     // No separate coin currency: existing gold pays training costs.
+     s.colleagueProgress.materials.trainingXp+=boss?120:elite?60:20;
+     if(elite||boss)s.colleagueProgress.materials.seals+=boss?2:1;
+     if(boss)s.colleagueProgress.materials.emblems+=1;
      const earnedXP=boss?75:elite?38+s.wave*4:12+s.wave*2;
      awardXP(s,Math.round(earnedXP*(dungeon?.xpScale||1)));
      if(dungeon?.weekday===4)s.craftingMaterial+=2;
