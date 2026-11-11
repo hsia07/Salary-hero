@@ -1,0 +1,294 @@
+/* Salary Hero V19.34 — portrait RPG home. Every visible control is a genuine
+ * DOM button or the existing live battle canvas. No static screenshot UI.
+ * Loaded AFTER ornate-theme.css to keep one design system.
+ */
+:root{--portrait-gold:#e9bf79;--portrait-gold-lite:#fff0bb;--portrait-rose:#9b617a;--portrait-night:#1c1530}
+html{overflow-x:hidden}
+#app.portrait-shell{
+ width:min(100%,430px);overflow:clip;overflow-clip-margin:0;
+ background:radial-gradient(ellipse at 50% 0%,#72507655,transparent 27%),linear-gradient(#2e1d39,#171328 58%,#281730);
+ border-inline:2px solid #b98968;min-height:100dvh;
+}
+.portrait-shell .hud{
+ padding:calc(8px + env(safe-area-inset-top)) 9px 7px;
+ border-bottom:2px solid #f4c98a;
+ background:linear-gradient(145deg,#402646,#251730 56%,#3b253c);
+ box-shadow:0 3px 13px #0805169c,inset 0 1px #fbe7b966;
+}
+.portrait-shell .hud:after{inset:3px;border-radius:5px;pointer-events:none}
+.portrait-shell .hud-title{gap:6px;align-items:center}
+.portrait-shell .hud-title>div:first-child{min-width:0}
+.portrait-shell .brand{
+ white-space:nowrap;font-family:Georgia,'Noto Serif TC',serif;
+ font-size:clamp(19px,5.5vw,25px);letter-spacing:.2px;
+ color:#ffdf9a;text-shadow:0 1px #533248,0 0 13px #f8bd6b6e;
+}
+.portrait-shell .subtitle{font-size:9px;letter-spacing:.7px;color:#e5c2ae}
+.portrait-shell .currencies{display:flex;gap:4px;flex-wrap:nowrap;max-width:none;align-items:center}
+.portrait-shell .currency{
+ padding:5px 6px;border:1px solid #e6c18e;border-radius:999px;
+ font-size:11px;box-shadow:inset 0 1px #fff1c78a,0 2px 8px #10081d;
+ background:linear-gradient(175deg,#46304b,#22182e);
+}
+.portrait-shell .currency b{font-size:11px;max-width:55px;overflow:hidden;vertical-align:middle;display:inline-block;text-overflow:ellipsis}
+.portrait-shell .hud-title:before{
+ content:'✦';color:#f3d28f;border:1px solid #a78264;flex:none;
+ width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+ background:radial-gradient(circle,#67435a,#23182d);box-shadow:0 0 9px #dfb27444;
+}
+/* The illustrated headquarters: each click target is an independent hit area. */
+.town-stage{
+ position:relative;isolation:isolate;height:clamp(208px,62vw,264px);
+ overflow:hidden;border-bottom:3px solid #f1c384;
+ background:#3a2842 url('../art/v19/runtime/backgrounds/office-night.svg') center 31%/cover no-repeat;
+ box-shadow:inset 0 -32px 45px #140d25a8,inset 0 2px 5px #edd0a570;
+}
+.town-stage:before{
+ content:'';position:absolute;inset:-18% -12%;z-index:0;pointer-events:none;
+ background:radial-gradient(ellipse at 52% 48%,#ffc58b36,transparent 36%),radial-gradient(ellipse at 95% 34%,#d28dcd22,transparent 55%);
+ animation:portrait-light 6s ease-in-out infinite alternate;
+}
+.town-stage:after{
+ content:'';position:absolute;z-index:8;pointer-events:none;inset:4px;
+ border:1px solid #ffdc986b;border-radius:8px;box-shadow:inset 0 0 24px #180d2a99;
+}
+.town-stage button{font:inherit;cursor:pointer;touch-action:manipulation}
+.town-stage button:focus-visible{outline:3px solid #ffefb6;outline-offset:-2px}
+.town-window-light{
+ position:absolute;inset:0;pointer-events:none;z-index:1;
+ background:linear-gradient(110deg,transparent 20%,#f5d5bc12 50%,transparent 80%);
+ transform:translateX(-30%);animation:portrait-ray 10s ease-in-out infinite alternate;
+}
+.town-curtain{
+ position:absolute;left:-12%;top:0;bottom:0;width:34%;z-index:1;pointer-events:none;
+ background:linear-gradient(92deg,#2515309c,transparent 94%);
+}
+.town-star{position:absolute;width:4px;height:4px;border-radius:50%;z-index:2;pointer-events:none;
+ background:#fff4cb;box-shadow:0 0 9px 3px #ffdca085;animation:portrait-twinkle 3.3s ease-in-out infinite alternate}
+.town-star.one{top:19%;left:42%;animation-delay:-.2s}.town-star.two{top:13%;left:69%;animation-delay:-1.1s}
+.town-star.three{top:49%;left:79%;animation-delay:-2s}.town-star.four{top:31%;left:19%;animation-delay:-2.8s}
+.town-lamp-glow{position:absolute;z-index:2;left:0;bottom:3%;width:40%;height:48%;pointer-events:none;
+ background:radial-gradient(ellipse at 30% 60%,#ffbd7f55,transparent 70%);animation:portrait-lamp 3.9s ease-in-out infinite alternate}
+.town-desk{
+ position:absolute;z-index:2;left:-4%;right:-4%;bottom:0;height:24%;
+ background:linear-gradient(180deg,#bb855c 0%,#623f47 12%,#37223c 18%,#593747 46%,#26182d 100%);
+ border-top:5px ridge #f3ca81;box-shadow:inset 0 2px #fff3b458,0 -12px 21px #1b112949,0 -2px 7px #f0b77a67;
+ pointer-events:none;
+}
+.town-desk:after{
+ content:'';position:absolute;left:4%;right:4%;bottom:12%;height:42%;
+ border:2px solid #e2b26f66;border-radius:7px;background:linear-gradient(90deg,#28172d55,#c2865138,#28172d55);
+}
+/* A real SVG/character asset sits above the living office art. */
+.town-hotspot{
+ position:absolute;z-index:5;border:0;background:none;padding:0;color:#fff0cd;
+ -webkit-tap-highlight-color:transparent;
+}
+.town-hotspot img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.town-hotspot:active{filter:brightness(1.18);transform:translateY(2px)}
+.town-hero{
+ left:28%;bottom:16%;height:72%;width:37%;min-height:0;
+ filter:drop-shadow(0 10px 6px #180d23b0);
+}
+.town-hero img{animation:portrait-idle 3.1s ease-in-out infinite;transform-origin:50% 84%}
+.town-hero .town-hero-glow{
+ position:absolute;z-index:-1;inset:20% 0 3%;border-radius:50%;
+ background:radial-gradient(ellipse at 50% 65%,#f6bd8070,transparent 66%);
+ animation:portrait-lamp 4s alternate infinite;
+}
+.town-cat{
+ right:6%;bottom:16%;width:25%;height:36%;
+ filter:drop-shadow(0 5px 5px #1a1325cb);
+}
+.town-cat img{transform-origin:64% 84%;animation:portrait-cat 4.2s ease-in-out infinite}
+.town-cat[data-playing=true] img{animation:portrait-cat-joy .48s ease-out 2}
+.town-coffee{
+ right:30%;bottom:23%;width:12%;height:33%;
+ filter:drop-shadow(0 0 8px #ffda8775);
+}
+.town-coffee img{animation:portrait-mug 3.9s ease-in-out infinite}
+.town-coffee[data-playing=true]{filter:drop-shadow(0 0 19px #ffe0a9)}
+.town-clock{
+ left:3%;top:21%;width:51px;height:51px;border:4px ridge #f1c58c;border-radius:50%;
+ color:#4d3146;background:radial-gradient(circle at 40% 30%,#fff7da,#edc994 74%,#93616d);
+ box-shadow:0 2px 0 #41283a,0 5px 16px #180f26;
+}
+.town-clock:before{content:'';position:absolute;inset:5px;border:1px solid #805768;border-radius:50%}
+.town-clock-hand{
+ position:absolute;left:49%;top:48%;height:16px;width:2px;background:#553047;
+ transform-origin:50% 0;transform:rotate(174deg);border-radius:5px;
+}
+.town-clock-hand:after{content:'';position:absolute;top:0;width:9px;height:9px;left:-4px;border-radius:50%;background:#b07b66}
+.town-clock small{position:absolute;top:-17px;left:-6px;color:#ffe4af;font-size:10px;white-space:nowrap;text-shadow:0 2px 4px #130a20}
+.town-task{
+ position:absolute;z-index:5;left:3%;bottom:15%;border:1px solid #dcb77d;border-radius:10px;
+ background:linear-gradient(#66445e,#281a36);padding:6px 8px;color:#ffe2a6;
+ font-weight:800;font-size:11px;box-shadow:0 4px 9px #13091c9e;max-width:30%;
+}
+.town-name{
+ position:absolute;left:4%;top:6px;z-index:4;max-width:53%;color:#fbe3b5;
+ font-family:Georgia,serif;font-size:12px;font-weight:800;text-shadow:0 2px 4px #110c20;
+ background:#2b1b35bd;border:1px solid #b18a6e;padding:5px 7px;border-radius:8px;
+}
+.town-name small{display:block;margin-top:2px;font-size:9px;color:#edc99d;font-weight:600}
+.town-speech{
+ position:absolute;z-index:7;left:36%;top:12%;max-width:58%;min-width:92px;
+ padding:7px 10px;border-radius:11px 11px 11px 2px;border:1px solid #f3d49d;
+ background:#2b203ce8;color:#fff0d2;font-size:11px;line-height:1.4;
+ box-shadow:0 4px 15px #170d2599,0 0 16px #dba77d44;
+ transform-origin:bottom left;
+ transition:opacity .22s,transform .22s;
+ pointer-events:none;
+}
+.town-speech[hidden]{display:none}
+.town-speech.is-appearing{animation:portrait-bubble .28s ease-out}
+.town-stage .pay{
+ position:absolute;z-index:6;right:6px;top:50px;width:min(41%,155px);margin:0;
+ padding:8px 9px;display:flex;flex-direction:column;gap:3px;
+ align-items:flex-start;
+ border:2px ridge #f7cb85;border-radius:10px;
+ background:linear-gradient(150deg,#533653f1,#2d1d3ce9);
+ box-shadow:0 5px 11px #130b23ae,inset 0 0 14px #b4876540;
+}
+.town-stage .pay strong{font-size:clamp(13px,3.8vw,18px);line-height:1.2;color:#fff0bc;text-shadow:0 0 10px #f9c77852}
+.town-stage .pay small{font-size:10px;line-height:1.35;color:#f1ceaa}
+.town-stage .pay-right{width:100%;text-align:left;white-space:normal}
+.town-stage #work-time{font-size:10px}
+.town-stage .pay-right button{margin-top:4px;width:100%;font-size:10px;padding:5px 4px;border-radius:7px}
+.town-toast{
+ position:absolute;z-index:9;left:9%;right:9%;bottom:8%;text-align:center;pointer-events:none;
+ border:1px solid #f5d194;border-radius:9px;
+ background:linear-gradient(100deg,#4d3152ed,#24192ee9,#4d3152ed);
+ padding:8px;color:#ffe8bd;font-size:12px;box-shadow:0 4px 16px #080717bd;
+ animation:portrait-toast .29s ease-out;
+}
+.town-toast[hidden]{display:none}
+/* Decorative gold battle frame uses the existing functioning canvas engine. */
+.battle-deck{
+ position:relative;isolation:isolate;background:#24162e;
+ border-top:2px solid #6d4453;border-bottom:2px solid #edc07a;
+ box-shadow:inset 0 0 20px #f4be6f22;
+}
+.battle-heading{
+ display:flex;justify-content:space-between;align-items:center;gap:10px;
+ min-height:31px;padding:5px 11px 4px;
+ border-block:1px solid #ffdfa54c;
+ background:linear-gradient(90deg,#4d304c,#2a1f38,#51304c);
+ font-family:Georgia,serif;font-size:13px;font-weight:900;color:#ffdfaa;
+ text-shadow:0 1px #16091c;
+}
+.battle-heading .battle-live{font-size:10px;color:#b5ecbc;border:1px solid #76a985a1;border-radius:999px;padding:2px 7px;background:#1f463354}
+.battle-deck .scene{border-top:0;border-bottom:2px solid #dcae72;box-shadow:inset 0 0 33px #0009}
+.battle-deck #world{width:100%;height:auto;aspect-ratio:720/620;display:block}
+.battle-deck .stage-head{top:7px;left:5px;right:5px;gap:4px}
+.battle-deck .stage-head span{padding:5px 7px;max-width:71%;font-size:10px;border-width:1px;line-height:1.35}
+.battle-deck .stage-head #level{font-size:10px;max-width:39%}
+.battle-deck .bars{left:5px;right:5px;bottom:5px;gap:5px}
+.battle-deck .bars article{font-size:10px;padding:5px;border-width:1px;background:#28172ed9}
+.battle-deck #enemy-trait{max-height:24px;overflow:hidden;font-size:9px}
+.battle-deck .meter{height:8px;border-width:1px}
+.battle-deck .controls,.battle-deck .mini-actions{
+ position:absolute;z-index:8;padding:0;display:flex;flex-direction:column;
+ background:none;width:83px;gap:5px;
+ pointer-events:auto;
+}
+.battle-deck .controls{top:95px;left:5px}
+.battle-deck .mini-actions{top:82px;right:5px}
+.battle-deck .controls button,.battle-deck .mini-actions button{
+ width:100%;min-height:33px;padding:5px 3px;border:1px solid #f5cb82;
+ border-radius:9px;white-space:normal;line-height:1.22;font-size:11px;letter-spacing:-.1px;
+ background:linear-gradient(#83546aef,#48314cf2);
+ text-shadow:0 1px #1a1020;
+ box-shadow:inset 0 1px #fff5ce8f,0 2px 7px #0e081cb0;
+}
+.battle-deck .controls button#attack{min-height:42px;background:linear-gradient(#cb8764,#78425a 72%,#55314f)}
+.battle-deck .controls button:disabled,.battle-deck .mini-actions button:disabled{opacity:.52}
+.battle-deck .lite-build-ribbon{
+ width:calc(100% - 14px);margin:6px 7px 4px;padding:6px 9px;
+ font-size:11px;border-radius:8px;min-height:27px;
+}
+.battle-deck .lite-tactical-status{
+ width:calc(100% - 14px);margin:0 7px 6px;padding:6px 9px;
+ font-size:11px;border-radius:7px;
+}
+.portrait-shell .log{min-height:32px;padding:5px 9px;font-size:11px;line-height:1.35}
+/* All eight main menus are live app destinations. */
+.portrait-shell .tabs{
+ position:sticky;z-index:40;bottom:0;
+ display:grid;grid-template-columns:repeat(8,minmax(0,1fr));
+ gap:3px;padding:6px 3px calc(5px + env(safe-area-inset-bottom));
+ border-top:3px ridge #ffdf9f;
+ background:linear-gradient(#5a3b54,#30213b 50%,#1d172d);
+ box-shadow:0 -9px 27px #1d1025ad,inset 0 1px #fff0c9a3;
+}
+.portrait-shell .tabs button{
+ position:relative;min-width:0;min-height:50px;padding:5px 1px 4px;
+ display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;
+ border:1px solid #cf9e71;border-radius:9px;
+ background:linear-gradient(#875967,#4a3049 59%,#32243b);
+ color:#fff0d0;font-size:9px;line-height:1.2;font-weight:900;
+ transition:transform .12s,filter .12s,box-shadow .15s;
+ box-shadow:inset 0 2px #ffecbb77,inset 0 -2px #211729,0 2px 5px #160c24;
+}
+.portrait-shell .tabs button span{display:block;font-size:20px;line-height:1.05}
+.portrait-shell .tabs button:active{transform:translateY(2px) scale(.96)}
+.portrait-shell .tabs button.is-active,.portrait-shell .tabs button[aria-current=page]{
+ color:#fff5cd;border-color:#ffe6a8;
+ background:linear-gradient(#b8795e,#7e4e61 58%,#51334c);
+ box-shadow:inset 0 2px #fff8dcb0,0 0 11px #f1c78091,0 -2px 9px #ffe2ab55;
+ transform:translateY(-3px);
+}
+.portrait-shell .tabs button.has-notice:after{
+ content:'';position:absolute;right:2px;top:2px;width:8px;height:8px;border-radius:50%;
+ border:1px solid #ffe4b7;background:#e94c70;box-shadow:0 0 8px #f85b81ad;
+ animation:portrait-pulse 2s ease-in-out infinite;
+}
+/* Hide studio QA bulk from the player WITHOUT deleting tools or test links. */
+.portrait-shell:not([data-training]) .dev-gallery,
+.portrait-shell:not([data-training]) .chibi-art-state,
+.portrait-shell:not([data-training]) .monster-art-status,
+.portrait-shell:not([data-training]) .footnote{display:none}
+.portrait-shell[data-dev-visible=true] .dev-gallery,
+.portrait-shell[data-dev-visible=true] .chibi-art-state,
+.portrait-shell[data-dev-visible=true] .monster-art-status,
+.portrait-shell[data-dev-visible=true] .footnote{display:block}
+.portrait-dev-toggle{
+ display:block;margin:8px 10px 12px auto;padding:6px 10px;
+ color:#c9abbb;background:#24182e;border:1px solid #856778;border-radius:12px;font-size:10px;opacity:.7;
+}
+.portrait-dev-toggle:active{opacity:1}
+.portrait-shell #panel{width:min(94vw,425px)}
+@keyframes portrait-idle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(2px) scale(1.009,.995)}}
+@keyframes portrait-light{to{transform:translateX(4%) scale(1.1);opacity:.65}}
+@keyframes portrait-ray{to{transform:translateX(38%);opacity:.6}}
+@keyframes portrait-lamp{to{opacity:.65;transform:scale(1.09)}}
+@keyframes portrait-twinkle{0%,100%{opacity:.13;transform:scale(.6)}50%{opacity:1;transform:scale(1.4)}}
+@keyframes portrait-cat{0%,100%{transform:rotate(0)}50%{transform:rotate(1.5deg) translateY(1px)}}
+@keyframes portrait-cat-joy{0%{transform:rotate(0)}40%{transform:rotate(-8deg) translateY(-8px)}80%{transform:rotate(5deg)}100%{transform:rotate(0)}}
+@keyframes portrait-mug{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes portrait-toast{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes portrait-pulse{50%{box-shadow:0 0 15px 4px #f85b81ad}}
+@keyframes portrait-bubble{from{opacity:0;transform:scale(.87) translateY(5px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:359px){
+ .portrait-shell .currency{font-size:10px;padding:4px 5px}
+ .portrait-shell .brand{font-size:18px}
+ .portrait-shell .subtitle{font-size:8px}
+ .town-stage{height:206px}
+ .town-stage .pay{top:44px;width:42%}
+ .town-stage .pay strong{font-size:13px}
+ .town-cat{width:26%;right:5%}
+ .town-hero{left:28%;width:35%}
+ .battle-deck .controls,.battle-deck .mini-actions{width:72px}
+ .battle-deck .controls button,.battle-deck .mini-actions button{font-size:10px;min-height:30px}
+ .battle-deck .controls{top:85px}.battle-deck .mini-actions{top:75px}
+ .portrait-shell .tabs{gap:2px;padding-inline:2px}
+ .portrait-shell .tabs button{font-size:8px;min-height:46px}
+ .portrait-shell .tabs button span{font-size:17px}
+}
+@media(min-width:431px){.portrait-shell .town-stage{height:260px}}
+@media(prefers-reduced-motion:reduce){
+ .town-stage:before,.town-window-light,.town-star,.town-lamp-glow,
+ .town-hero img,.town-cat img,.town-coffee img,.town-toast,.town-speech,
+ .portrait-shell .tabs button.has-notice:after{animation:none!important}
+ .town-hotspot:active,.portrait-shell .tabs button:active{transform:none}
+}
