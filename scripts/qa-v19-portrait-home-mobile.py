@@ -31,6 +31,7 @@ def main():
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').startsWith('#storybook-'))""")
         # iOS Safari requires local inline symbols rather than external SVG <use>.
         assert page.locator('#storybook-inline-symbols symbol').count()==8
+        assert page.evaluate("""() => [...document.querySelectorAll('#storybook-inline-symbols [id]')].every(e=>e.id==='storybook-inline-symbols'||e.id.startsWith('storybook-'))"""),'SVG names must never collide with application state IDs'
         assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>
            document.getElementById((x.getAttribute('href')||'').slice(1))
         )""")
@@ -58,6 +59,9 @@ def main():
         assert page.locator('#today').inner_text().startswith('NT$')
         assert '試玩勇者' in page.locator('#town-player-name').inner_text()
         # This one-screen home must display text values as well as currency icons.
+        assert page.evaluate("""() => document.querySelectorAll('[id="gold"]').length===1 &&
+           document.querySelector('#gold').tagName.toLowerCase()==='b'"""),'SVG ID collision with real gold'
+        assert page.locator('#gold').inner_text().strip()=='895','real 895 gold count was hijacked by SVG defs'
         assert page.locator('#gold').is_visible()
         assert page.locator('#gems').is_visible()
         assert page.locator('#skin-tickets').is_visible()
@@ -158,6 +162,11 @@ def main():
         page.wait_for_function('() => document.querySelector("#world")?.dataset.art!==undefined',timeout=12000)
         assert page.locator('#world').get_attribute('width') is not None
         assert page.locator('#attack').is_visible()
+        assert page.evaluate("""() => {
+          const scene=document.querySelector('.battle-deck .scene').getBoundingClientRect();
+          const ticker=document.querySelector('#game-log').getBoundingClientRect();
+          return ticker.top>=scene.bottom-2 && ticker.height>=15 && ticker.height<=25;
+        }"""),'combat message ticker overlaps actor HP bars'
         assert 'NT$' in page.locator('#today').inner_text()
         assert page.locator('#monster-art-status').is_hidden()
         page.locator('#portrait-dev-toggle').click()
