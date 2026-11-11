@@ -4,6 +4,7 @@ Uses throwaway browser storage; never touches the player's production save.
 """
 import json
 import time
+import base64
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -131,8 +132,21 @@ def main():
         mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-mobile.png'),animations='disabled')
         # Verify the outfit tracks actual hand-drawn attack frames, not only idle.
         mastered.locator('#attack').click()
-        mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="attack-4"',timeout=7000)
-        mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-attack-mobile.png'),animations='disabled')
+        # Capture canvas bytes DURING the impact frame; Playwright's screenshot
+        # waits for screenshot stability and can silently photograph IDLE.
+        impact_png=mastered.evaluate("""() => new Promise((resolve,reject)=>{
+          let count=0;
+          const canvas=document.querySelector('#world');
+          function capture(){
+            if(canvas.dataset.liteArmorPose==='attack-4'){
+              resolve(canvas.toDataURL('image/png').split(',')[1]);return;
+            }
+            if(++count>280){reject(new Error('No actual attack-4 frame rendered'));return;}
+            requestAnimationFrame(capture);
+          }
+          capture();
+        })""")
+        (QA/'lite-equipped-armor-attack-mobile.png').write_bytes(base64.b64decode(impact_png))
         mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="idle-0"',timeout=7000)
         mastered.locator('#lite-tactical-status').click()
         assert '技能使用六次' in mastered.locator('#panel-content').inner_text()
