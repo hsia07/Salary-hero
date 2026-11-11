@@ -9,7 +9,7 @@ export const LITE_SKILL_PATHS=Object.freeze([
  ])}),
  Object.freeze({id:'guard',name:'🛡️ 摸魚防護',choices:Object.freeze([
   Object.freeze({id:'safe',name:'帶薪喘息',description:'本次反擊再減傷 25%，並在受擊後恢復 8 生命。'}),
-  Object.freeze({id:'counter',name:'公事包反擊',description:'反彈實際所受傷害的 35% 給敵人（不會直接擊殺）。'})
+  Object.freeze({id:'counter',name:'公事包反擊',description:'反彈實際所受傷害的 35%（至少 1 點），不會直接擊殺敵人。'})
  ])}),
  Object.freeze({id:'drain',name:'☕ 咖啡續命',choices:Object.freeze([
   Object.freeze({id:'brew',name:'無限續杯',description:'咖啡回血額外 +22。'}),
