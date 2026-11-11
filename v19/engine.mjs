@@ -3,6 +3,7 @@ import {enemyDesignFor,tierForWave,ALL_ENEMIES,HERO_STYLES} from './roster.mjs';
 import {SKINS,SKIN_EVENTS,skinById,drawPool,pickSkin,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {WEEKEND_CHAOS_EVENTS,weekendChaosDraw,weekendChaosById} from './weekend-chaos.mjs';
 import {LITE_SLOTS,liteBase,liteRarity,liteNormalizeInventory,liteNormalizeLoadout,liteEquipmentStats,liteRollDrop} from './lite-equipment.mjs';
+import {LITE_STRATEGIES,liteOfflineEstimate,liteAutoPlan} from './lite-idle.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -149,7 +150,7 @@ export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,baseMaxHp:110,
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
-   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
+   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:Date.now(),liteOfflineReport:null,potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw,now=Date.now()){
@@ -193,6 +194,15 @@ export function normalize(raw,now=Date.now()){
  n.liteLoadout=liteNormalizeLoadout(raw.liteLoadout,n.liteInventory);
  n.liteItemSeq=Math.max(...n.liteInventory.map(x=>Number(x.instanceId.slice(3))||0),Math.max(0,Math.floor(Number(raw.liteItemSeq)||0)));
  n.liteCombo=Math.max(0,Math.min(100000,Math.floor(Number(raw.liteCombo)||0)));
+ n.liteAutoEquip=raw.liteAutoEquip===true;
+ n.liteAutoStrategy=LITE_STRATEGIES.some(x=>x.id===raw.liteAutoStrategy)?raw.liteAutoStrategy:'balanced';
+ n.liteLastSeenAt=Number.isFinite(Number(raw.liteLastSeenAt))&&Number(raw.liteLastSeenAt)>0?Math.floor(Number(raw.liteLastSeenAt)):now;
+ n.liteOfflineReport=raw.liteOfflineReport&&typeof raw.liteOfflineReport==='object'&&Number.isFinite(raw.liteOfflineReport.gold)?{
+   minutes:Math.max(0,Math.floor(Number(raw.liteOfflineReport.minutes)||0)),
+   gold:Math.max(0,Math.floor(Number(raw.liteOfflineReport.gold)||0)),
+   xp:Math.max(0,Math.floor(Number(raw.liteOfflineReport.xp)||0)),
+   items:Math.max(0,Math.min(6,Math.floor(Number(raw.liteOfflineReport.items)||0)))
+ }:null;
  n.level=Math.max(1,Math.min(500,Math.floor(Number(n.level)||1)));
  for(const k of ['xp','gold','gems','potions','chests','specialChests','skillBooks','skillFragments','petXp','petFood','craftingMaterial','rareMaterials','cleared','wave'])n[k]=Math.max(k==='wave'?1:0,Math.floor(Number(n[k])||0));
  n.skillRank=Math.max(0,Math.min(5,Math.floor(Number(raw.skillRank)||0)));
@@ -449,6 +459,45 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.last={type:'liteSalvage',id:a.id,gold:reward};
    notice(s,'⚒️ 分解 '+liteBase(it.templateId).name+'，獲得 '+reward+' 金幣。');break;
  }
+ case 'liteSetAuto':{
+   s.liteAutoEquip=a.value===true;
+   s.last={type:'liteAuto',enabled:s.liteAutoEquip};
+   notice(s,s.liteAutoEquip?'🤖 智慧換裝已開啟：只替換有顯著改善的裝備，不分解物品。':'🤖 智慧換裝已關閉。');break;
+ }
+ case 'liteSetStrategy':{
+   if(!LITE_STRATEGIES.some(x=>x.id===a.id))break;
+   s.liteAutoStrategy=a.id;s.last={type:'liteStrategy',strategy:a.id};
+   notice(s,'🤖 換裝目標：'+LITE_STRATEGIES.find(x=>x.id===a.id).name);break;
+ }
+ case 'liteAutoOptimize':{
+   const oldWeapon=ITEMS.find(it=>it.id===s.equipped)?.attack||12;
+   const plan=liteAutoPlan(s,s.liteAutoStrategy,oldWeapon);
+   if(plan.changed){s.liteLoadout=plan.loadout;recalcLiteHp(s);
+     notice(s,'🤖 已套用 '+LITE_STRATEGIES.find(x=>x.id===plan.strategy).name+' 配裝，套裝與戰力一起評估。');
+   }else notice(s,'🤖 目前已是適合此策略的配置，沒有強行換裝。');
+   s.last={type:'liteAutoOptimize',changed:plan.changed,strategy:plan.strategy};break;
+ }
+ case 'liteOffline':{
+   // Only a previously recorded timestamp can mint an offline payout.
+   const report=liteOfflineEstimate(s,now);
+   s.liteLastSeenAt=now;
+   if(!report){s.last={type:'liteOffline',credited:false};break;}
+   s.gold+=report.gold;awardXP(s,report.xp);
+   let items=0;
+   let seed=(Math.floor(report.from/60000)^report.minutes^s.wave)>>>0;
+   const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+   for(let i=0;i<report.itemCount;i++){
+     let first=true;
+     const rng=()=>{if(first){first=false;return 0;}return random();};
+     if(liteRollDrop(s,rng,'normal',false))items++;
+   }
+   s.liteOfflineReport={minutes:report.minutes,gold:report.gold,xp:report.xp,items};
+   s.last={type:'liteOffline',credited:true,...s.liteOfflineReport};
+   notice(s,'🌙 離線巡邏 '+report.minutes+' 分鐘：金幣 +'+report.gold+'、EXP +'+report.xp+'、裝備 '+items+' 件。');break;
+ }
+ case 'liteDismissOffline':{
+   s.liteOfflineReport=null;s.last={type:'liteDismissOffline'};break;
+ }
  case 'studySkillBook':{
    if(!s.skillBooks||s.skillRank>=5){notice(s,'技能書不足或技能專精已滿。');break;}
    s.skillBooks--;s.skillRank++;s.last={type:'study',rank:s.skillRank};
@@ -548,6 +597,12 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        liteDrop=liteRollDrop(s,rng,dead.tier,dungeon?.weekday===1);
        if(liteDrop){const base=liteBase(liteDrop.templateId);
          notice(s,'✨ 新裝備：'+liteRarity(liteDrop.rarity).name+'・'+base.name+'（'+LITE_SLOTS.find(x=>x.id===base.slot).name+'），已放入背包。');
+         if(s.liteAutoEquip){
+           const legacyAttack=ITEMS.find(it=>it.id===s.equipped)?.attack||12;
+           const plan=liteAutoPlan(s,s.liteAutoStrategy,legacyAttack);
+           if(plan.changed){s.liteLoadout=plan.loadout;recalcLiteHp(s);
+             notice(s,'🤖 智慧換裝已依 '+LITE_STRATEGIES.find(x=>x.id===plan.strategy).name+' 更新配裝。');}
+         }
        }
      }
      s.wave++;s.modeWaves[s.activeMode]=s.wave;
