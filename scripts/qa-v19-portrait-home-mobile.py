@@ -21,14 +21,19 @@ def main():
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.goto(BASE+'/v19/play.html?dev=1',wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
-        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-36'
+        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-37'
         assert page.locator('#town-stage').is_visible()
         assert page.locator('#world').is_visible()
         assert page.locator('.battle-deck').is_visible()
         assert page.locator('.tabs button').count()==8
         assert page.locator('.storybook-nav-art').count()==8
         assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('storybook-office.svg')""")
-        assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').includes('storybook-icons.svg#'))""")
+        assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').startsWith('#storybook-'))""")
+        # iOS Safari requires local inline symbols rather than external SVG <use>.
+        assert page.locator('#storybook-inline-symbols symbol').count()==8
+        assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>
+           document.getElementById((x.getAttribute('href')||'').slice(1))
+        )""")
         # A 200 OK SVG can still be invalid or render an empty <use> icon.
         assets=page.evaluate("""async () => {
           const urls=[
@@ -52,6 +57,26 @@ def main():
 
         assert page.locator('#today').inner_text().startswith('NT$')
         assert '試玩勇者' in page.locator('#town-player-name').inner_text()
+        # This one-screen home must display text values as well as currency icons.
+        assert page.locator('#gold').is_visible()
+        assert page.locator('#gems').is_visible()
+        assert page.locator('#skin-tickets').is_visible()
+        assert page.evaluate("""() => ['gold','gems','skin-tickets'].every(id=>{
+          const e=document.getElementById(id),r=e.getBoundingClientRect();
+          return r.width>=8&&r.height>=8;
+        })""")
+        # Synthetic report exercises ONLY layout, never grants or changes rewards.
+        page.evaluate("""() => {const e=document.querySelector('#lite-offline-report');
+          e.hidden=false;document.querySelector('#lite-offline-summary').textContent='🌙 離線 +78 金幣';
+        }""")
+        assert page.evaluate("""() => {
+          const p=document.querySelector('#lite-offline-report').getBoundingClientRect();
+          const h=document.querySelector('.battle-heading').getBoundingClientRect();
+          const scene=document.querySelector('.scene').getBoundingClientRect();
+          return p.top>=h.top-1 && p.bottom<=h.bottom+2 && p.bottom<=scene.top+2;
+        }"""),'offline report overlaps live actors'
+        page.screenshot(path=str(OUT/'portrait-compact-offline-hud.png'),full_page=False)
+        page.evaluate("""() => document.querySelector('#lite-offline-report').hidden=true""")
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+3'), 'portrait horizontal overflow'
         assert page.evaluate('document.querySelector("#town-stage").getBoundingClientRect().height >=190')
         assert page.locator('#town-clock-time').inner_text().count(':')==1
@@ -172,6 +197,7 @@ def main():
             '/art/v19/candidates/characters/starter/chibi/idle-candidate.webp',
             '/v19/portrait-one-screen.css',
             '/v19/storybook-skin.css',
+            '/v19/iphone-hud-fixes.css',
             '/art/v19/runtime/backgrounds/storybook-office.svg',
             '/art/v19/runtime/backgrounds/storybook-corridor.svg',
             '/art/v19/runtime/ui/storybook-icons.svg',
