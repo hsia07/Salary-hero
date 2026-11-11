@@ -283,6 +283,12 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .lite-skill-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
 .lite-skill-options .lite-branch{min-height:92px}
 @media(max-width:345px){.lite-preset .panel-button{min-width:43px}.lite-skill-options{grid-template-columns:1fr}}
+
+.lite-tactical-status{width:calc(100% - 24px);margin:0 12px 9px;padding:9px 11px;
+ border:1px solid #977d70;border-radius:9px;background:linear-gradient(105deg,#30253c,#20192b);
+ color:#dbcbb8;text-align:left;font-family:serif;font-size:12px;font-weight:700;letter-spacing:.2px;cursor:pointer}
+.lite-tactical-status[data-build=clockout]{border-color:#e3b773;color:#ffe3ac;background:linear-gradient(115deg,#4e3443,#261d35)}
+.lite-tactical-status[data-build=coffee]{border-color:#92cbaa;color:#c9f8df;background:linear-gradient(115deg,#244a45,#231d36)}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
 <header class="hud"><div class="hud-title"><div><div class="brand">⚜ 薪水勇者</div><div class="subtitle">SALARY HERO · 可玩主版本 19.27</div></div>
@@ -301,6 +307,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
 <button id="lite-build-ribbon" class="lite-build-ribbon" type="button" data-panel="liteBuilds">✦ 尚未選擇流派 · 點此開啟專精</button>
+<button id="lite-tactical-status" class="lite-tactical-status" type="button" data-build="none" data-panel="skills">🏵️ 選擇流派，解鎖戰術連攜</button>
 <div class="chibi-art-state" id="chibi-art-state" role="status" hidden>正在檢查 Q 版高畫質主角……</div>
 <div class="monster-art-status" id="monster-art-status" role="status">🎨 正在自動載入紙妖與邪惡杯靈兩套 Q 版逐格動畫……</div>
 <details class="dev-gallery"><summary>🧪 怪物動畫與美術測試（點此展開）</summary><div class="chibi-quick-preview">
@@ -354,4 +361,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=lite-skills-v19-32"></script></body></html>
+<script type="module" src="./app.mjs?v=lite-tactics-v19-33"></script></body></html>
