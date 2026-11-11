@@ -68,6 +68,7 @@ test('V20 painted backgrounds are actual game runtime files and never baked scre
   assert.match(source,new RegExp('viewBox="0 0 '+width+' '+height+'"'));
   assert.match(source,/id="v20-illustration-pass"/);
   assert.match(source,/id="v20-fantasy-window"/);
+  assert.ok(source.indexOf('id="v20-fantasy-window-top"')>source.indexOf('id="v20-illustration-pass"'),'new fantasy skyline must not be covered by the legacy city skyline');
   assert.match(source,/id="v20-castle-clip"/);
   assert.match(source,/v20-pigment/);
   assert.doesNotMatch(source,/<text[\s>]|<foreignObject[\s>]/);
