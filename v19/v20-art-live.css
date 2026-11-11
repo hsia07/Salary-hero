@@ -188,3 +188,81 @@
  #app.portrait-shell:not([data-training]) .v20-stage-skull{flex-basis:17px;width:17px;height:17px}
  #app.portrait-shell:not([data-training]) .v20-stage-chest .v20-chest-icon{width:21px;height:21px;flex-basis:21px}
 }
+
+/* P0.6: fully independent illustrated equipment drop icons. The true
+ * pendingDrops array controls what appears; no decorative fake payout. */
+#app.portrait-shell:not([data-training]) #v20-loot-preview{
+ min-height:47px;position:relative;isolation:isolate;
+ grid-template-rows:minmax(0,31px) 12px;
+ background:radial-gradient(ellipse at 50% 24%,#bfa2bb6e,transparent 72%),
+ linear-gradient(150deg,#422d57,#271a43 78%);
+ border:2px ridge #fbe0a2;
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview .v20-loot-art{
+ display:block;object-fit:contain;pointer-events:none;
+ width:clamp(23px,7vw,37px);height:clamp(23px,7vw,33px);
+ margin:auto;filter:drop-shadow(0 2px 1px #180d31) drop-shadow(0 0 6px #ebb0ff);
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview #v20-loot-item-label{
+ max-width:100%;font-size:clamp(7px,2.25vw,9px);
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ line-height:12px;text-align:center;
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview[data-loot-tier="rare"]{
+ box-shadow:inset 0 0 6px #abcbff80,0 0 8px #8ba9ff93;
+ border-color:#9ad0ff;
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview[data-loot-tier="epic"]{
+ box-shadow:inset 0 0 8px #e1abff89,0 0 10px #e8a0ffac;
+ border-color:#d7a3f2;
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview[data-loot-tier="legendary"]{
+ box-shadow:inset 0 0 9px #f6bb7fa3,0 0 13px #ffcd76c1;
+ border-color:#ffe6a1;
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview[data-loot-tier="none"] .v20-loot-art{
+ filter:drop-shadow(0 1px 2px #130b2a);opacity:.7;
+}
+#app.portrait-shell:not([data-training]) #v20-loot-preview.is-loot-new{
+ animation:v20-loot-arrival .76s cubic-bezier(.18,.82,.2,1) both;
+}
+@keyframes v20-loot-arrival{
+ 0%{filter:brightness(.8);transform:scale(.92)}
+ 25%{filter:brightness(1.95) drop-shadow(0 0 13px #ffdf9c);transform:scale(1.07)}
+ 58%{filter:brightness(1.3);transform:scale(.985)}
+ 100%{filter:brightness(1);transform:scale(1)}
+}
+/* Existing real claim/chest/weekend buttons still have their original IDs,
+ * handlers and live textContent; ::before supplies the separate art layer. */
+#app.portrait-shell:not([data-training]) .mini-actions :is(#claim,#chest,#weekend-chest){
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:0;overflow:hidden;text-align:center;
+ font-size:clamp(7px,2.2vw,9px);white-space:nowrap;
+}
+#app.portrait-shell:not([data-training]) .mini-actions :is(#claim,#chest,#weekend-chest)::before{
+ content:'';display:block;flex:none;width:clamp(15px,5vw,25px);
+ height:clamp(15px,5vw,25px);
+ background-position:center;background-repeat:no-repeat;background-size:contain;
+ filter:drop-shadow(0 0 4px #ffdf9d88);
+}
+#app.portrait-shell:not([data-training]) .mini-actions #claim::before{
+ background-image:url('../art/v20/runtime/items/loot-parcel.svg');
+}
+#app.portrait-shell:not([data-training]) .mini-actions #chest::before{
+ background-image:url('../art/v20/runtime/items/loot-chest.svg');
+}
+#app.portrait-shell:not([data-training]) .mini-actions #weekend-chest::before{
+ background-image:url('../art/v20/runtime/items/loot-weekend.svg');
+}
+#app.portrait-shell:not([data-training]) .mini-actions :is(#claim,#chest,#weekend-chest):disabled::before{
+ filter:grayscale(.45) brightness(.82);
+}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]) #v20-loot-preview .v20-loot-art{width:23px;height:22px}
+ #app.portrait-shell:not([data-training]) #v20-loot-preview{grid-template-rows:24px 10px}
+ #app.portrait-shell:not([data-training]) .mini-actions :is(#claim,#chest,#weekend-chest)::before{width:16px;height:16px}
+ #app.portrait-shell:not([data-training]) .mini-actions :is(#claim,#chest,#weekend-chest){font-size:7px;line-height:1.07;padding:1px 0}
+}
+@media(prefers-reduced-motion:reduce){
+ #app.portrait-shell:not([data-training]) #v20-loot-preview.is-loot-new{animation:none}
+}

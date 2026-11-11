@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initial} from './engine.mjs';
-import {v20StageProgress} from './v20-home.mjs';
+import {v20StageProgress,v20LootVisual} from './v20-home.mjs';
 
 test('V20 wave beads represent the actual live four-wave cycle',()=>{
  for(const [wave,completed] of [[1,0],[2,1],[3,2],[4,3],[5,0],[8,3],[9,0],[101,0]]){
@@ -42,4 +42,28 @@ test('V20 keeps completed-wave tracker independent from salary and currencies',(
  const before=structuredClone(s);
  v20StageProgress(s);
  assert.deepEqual(s,before);
+});
+
+test('V20 actual loot sprite tracks real item metadata without fake payouts',()=>{
+ const items=[
+ ['briefcase','worn-briefcase.svg','common'],
+ ['laptop','enchanted-laptop.svg','rare'],
+ ['notice','resignation-scroll.svg','epic'],
+ ['excalibur','legend-blade.svg','legendary']
+ ];
+ for(const [id,art,tier] of items){
+  const state={pendingDrops:[id]};
+  const before=JSON.stringify(state);
+  const result=v20LootVisual(state);
+  assert.equal(result.id,id);
+  assert.equal(result.art,art);
+  assert.equal(result.tier,tier);
+  assert.equal(result.count,1);
+  assert.equal(JSON.stringify(state),before);
+ }
+ assert.deepEqual(v20LootVisual({pendingDrops:[]}),{
+  id:'none',name:'裝備',tier:'none',art:'worn-briefcase.svg',count:0
+ });
+ assert.equal(v20LootVisual({pendingDrops:['evil/../../file.svg']}).art,'worn-briefcase.svg');
+ assert.equal(v20LootVisual({pendingDrops:[{id:'laptop'},'notice']}).count,2);
 });

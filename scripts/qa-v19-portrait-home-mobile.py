@@ -33,6 +33,8 @@ def main():
         assert page.locator('#v20-loot-count').inner_text()=='0'
         assert page.locator('#v20-stage-chest').is_enabled()
         assert page.locator('#v20-loot-preview').is_visible()
+        assert page.locator('#v20-loot-item-art').get_attribute('src').endswith('worn-briefcase.svg')
+        assert page.locator('#v20-loot-preview').get_attribute('data-loot-tier')=='none'
         assert page.evaluate("""() => {
           const scene=document.querySelector('.battle-deck .scene').getBoundingClientRect();
           const stage=document.querySelector('#v20-stage-progress').getBoundingClientRect();
