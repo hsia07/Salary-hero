@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="320" viewBox="0 0 220 320">
+<defs>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5c0"/><stop offset=".28" stop-color="#e4b770"/><stop offset=".6" stop-color="#a9714d"/><stop offset="1" stop-color="#f8e3a9"/></linearGradient>
+ <linearGradient id="blade" x1="0" y1="0" x2="1" y2=".78"><stop stop-color="#fffde9"/><stop offset=".28" stop-color="#e7f0ea"/><stop offset=".64" stop-color="#a2bec5"/><stop offset=".9" stop-color="#715c87"/><stop offset="1" stop-color="#fff0c1"/></linearGradient>
+ <linearGradient id="grip" x1="0" y1="0" x2="1" y2=".7"><stop stop-color="#5a304b"/><stop offset=".5" stop-color="#24152f"/><stop offset="1" stop-color="#84565b"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#ffe4a4" stop-opacity=".7"/><stop offset=".35" stop-color="#c98b6a" stop-opacity=".22"/><stop offset="1" stop-color="#ffd38e" stop-opacity="0"/></radialGradient>
+ <filter id="aura" x="-45%" y="-35%" width="190%" height="170%"><feGaussianBlur stdDeviation="6"/></filter>
+</defs>
+<!-- Independent, transparent clock-out sword illusion, not a replacement actor pose. -->
+<ellipse cx="119" cy="130" rx="90" ry="110" fill="url(#halo)"/>
+<g transform="rotate(19 107 158)">
+<path d="M100 205C86 164 81 108 102 40Q109 13 115 7Q130 49 127 103Q126 166 112 205Z" fill="#fff6c7" opacity=".40" filter="url(#aura)"/>
+<path d="M100 205C88 158 86 110 102 43L115 9Q135 75 125 133L113 205Z" fill="url(#blade)" stroke="#fff1c4" stroke-width="4" stroke-linejoin="round"/>
+<path d="M112 19Q116 99 107 201" fill="none" stroke="#fffefd" stroke-opacity=".93" stroke-width="3"/>
+<path d="M117 29Q127 90 118 158" fill="none" stroke="#536889" stroke-opacity=".48" stroke-width="2"/>
+<path d="M93 146q11-12 18-5m-17-34q12-11 21-4m-17-29q8-9 16-7" stroke="#d7b86d" stroke-width="2.3" opacity=".7" fill="none"/>
+<path d="M66 211Q101 194 151 209Q141 219 121 225L106 221L85 226Q72 224 66 211Z" fill="#372741" stroke="url(#gold)" stroke-width="6"/>
+<path d="M62 212Q87 190 108 200Q138 189 159 211" fill="none" stroke="#f5d99e" stroke-width="3" stroke-linecap="round"/>
+<path d="M103 206l8-11 8 10-8 13z" fill="#fef2c2" stroke="#71516a" stroke-width="3"/>
+<path d="M106 221L113 272Q116 287 104 304Q90 283 96 267L96 223Z" fill="url(#grip)" stroke="#d8af70" stroke-width="4"/>
+<path d="M98 237l15 5m-13 8l14 4m-13 9l12 5m-9 10l9 5" stroke="#f7db98" stroke-opacity=".72" stroke-width="3"/>
+<path d="M95 303q9 10 20 0" stroke="#f9d799" stroke-width="6" fill="none" stroke-linecap="round"/>
+<circle cx="108" cy="213" r="9" fill="#402841" stroke="#fff1c3" stroke-width="3"/>
+<path d="M108 207v7l4 3" stroke="#f8df9e" stroke-width="2" stroke-linecap="round" fill="none"/>
+</g>
+<g stroke="#f7dfab" stroke-width="2.8" stroke-linecap="round" opacity=".75">
+ <path d="M34 107l7 8m-7 0l7-8m120-48l7 8m-7 0l7-8m-6 153l7 8m-7 0l7-8"/>
+</g>
+</svg>
