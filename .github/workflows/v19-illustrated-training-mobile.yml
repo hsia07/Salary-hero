@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'v19/app.mjs'
+      - 'v19/portrait-home.mjs'
+      - 'v19/portrait-home.css'
       - 'v19/play.html'
       - 'v19/training-mode.mjs'
       - 'v19/training-mode.test.mjs'
