@@ -295,6 +295,8 @@ const assetPaths={
  bg:'../art/v19/runtime/backgrounds/office-night.svg',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
  weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
+ weaponClockoutEcho:'../art/v19/runtime/weapons/lite-clockout-echo.svg',
+ weaponCoffeeEcho:'../art/v19/runtime/weapons/lite-coffee-echo.svg',
  hero:'../art/v19/candidates/hero/idle.svg',
  heroAttack:'../art/v19/candidates/hero/attack.svg',
  heroHurt:'../art/v19/candidates/hero/hurt.svg',
@@ -463,6 +465,22 @@ function drawStage(now){
    :(attacking?(phase<.20?phase/.20*86:phase<.39?86:86*Math.max(0,1-(phase-.39)/.27)):0);
  const heroX=100+lunge,heroY=227+(chibiReady?0:Math.sin(time*3.2)*4);
  shadow(heroX+133,515,110,17);
+ // Class identity is expressed as ambient light, NOT as a faux costume layer.
+ if(state.liteActiveBuild==='clockout'){
+   glow(heroX+156,heroY+149,91,'#ffca7036');
+   for(let i=0;i<7;i++){
+     const angle=time*.73+i*2.39996;
+     const x=heroX+142+Math.cos(angle)*(67+i%3*9),y=heroY+170+Math.sin(angle)*31;
+     glow(x,y,7,'#ffe4a66e');
+   }
+ }else if(state.liteActiveBuild==='coffee'){
+   glow(heroX+137,heroY+182,113,'#8be8b43b');
+   for(let i=0;i<8;i++){
+     const angle=time*.65+i*2.39996;
+     const x=heroX+145+Math.cos(angle)*(43+i%3*17),y=heroY+200+Math.sin(angle)*28;
+     glow(x,y,10,'#abf3c168');
+   }
+ }
  ctx.save();ctx.translate(heroX+120+hurtVfx.shakeX,heroY+148+hurtVfx.shakeY);
  ctx.rotate(chibiReady?0:(attacking&&phase<.32?-.09:Math.sin(time*1.4)*.018));
  ctx.translate(-120,-148);
@@ -500,6 +518,26 @@ function drawStage(now){
    }
  }
  ctx.restore();
+ // Equipped clockwork blades and alchemist staffs display their own illustrated
+ // floating weapon echoes. Source hero sheets are not layered costumes; do not
+ // paint over limbs or claim that every shirt/helmet sprite has been redrawn.
+ if(trainingWave===null){
+   const worn=state.liteInventory.find(it=>it.instanceId===state.liteLoadout?.weapon);
+   const base=liteBase(worn?.templateId);
+   const art=base?.setId==='clockout'?images.weaponClockoutEcho:base?.setId==='coffee'?images.weaponCoffeeEcho:null;
+   if(art){
+     ctx.save();
+     const floatY=Math.sin(time*1.8)*5;
+     const tier=liteRarity(worn.rarity).id;
+     const tint=tier==='legendary'?'#ffe3a880':tier==='epic'?'#cba3ff75':tier==='rare'?'#a3d4ff57':'#ffe4bc35';
+     glow(heroX+282,heroY+142+floatY,62,tint);
+     ctx.translate(heroX+282,heroY+148+floatY);
+     ctx.rotate(Math.sin(time*1.3)*.08);
+     ctx.globalAlpha=hurtVfx.active?.52:.94;
+     ctx.drawImage(art,-34,-75,68,102);
+     ctx.restore();
+   }
+ }
  glow(heroX+162,heroY+163,state.equipped==='excalibur'?105:46,state.equipped==='excalibur'?'#73ddff50':'#ffd28b25');
  if(!chibiReady&&!hurtVfx.active)drawWeapon(heroX+188,heroY+222,phase);
  if(hurtVfx.active){
@@ -644,7 +682,7 @@ function drawStage(now){
 
  // Lite set attacks affect the rules AND have distinct timed impact feedback.
  // Reuse approved hero/monster animation atlas; only overlay the spell FX.
- if(fx?.result?.finisher&&animationMs>=260&&animationMs<980){
+ if((fx?.result?.finisher||(fx?.result?.liteBuild==='clockout'&&fx?.result?.buildProc))&&animationMs>=260&&animationMs<980){
    const progress=Math.max(0,Math.min(1,(animationMs-260)/720));
    const alpha=(1-progress)*(motionReduced?.78:1);
    const cx=enemyX+102,cy=enemyY+112;
@@ -657,11 +695,12 @@ function drawStage(now){
    }
    ctx.shadowBlur=0;ctx.font='900 26px serif';ctx.textAlign='center';
    ctx.lineWidth=5;ctx.strokeStyle='#3c2146';ctx.fillStyle='#ffe7a6';
-   ctx.strokeText('準時下班・收工斬',-10,-150-progress*18);
-   ctx.fillText('準時下班・收工斬',-10,-150-progress*18);
+   const label=fx?.result?.finisher?'準時下班・收工斬':'打卡專精・追擊';
+   ctx.strokeText(label,-10,-150-progress*18);
+   ctx.fillText(label,-10,-150-progress*18);
    ctx.restore();
  }
- if(fx?.result?.coffeeHeal&&animationMs>=180&&animationMs<1100){
+ if((fx?.result?.coffeeHeal||fx?.result?.buildHeal>0)&&animationMs>=180&&animationMs<1100){
    const progress=Math.max(0,Math.min(1,(animationMs-180)/920));
    const alpha=(1-progress)*.91;
    const cx=heroX+135,cy=heroY+168;
@@ -675,8 +714,26 @@ function drawStage(now){
    }
    ctx.shadowBlur=0;ctx.font='900 26px serif';ctx.textAlign='center';
    ctx.lineWidth=5;ctx.strokeStyle='#193c36';ctx.fillStyle='#bbffd4';
-   ctx.strokeText('咖啡續命 +15',cx,cy-150-progress*26);
-   ctx.fillText('咖啡續命 +15',cx,cy-150-progress*26);
+   const label='咖啡續命 +'+((fx?.result?.coffeeHeal?15:0)+(fx?.result?.buildHeal||0));
+   ctx.strokeText(label,cx,cy-150-progress*26);
+   ctx.fillText(label,cx,cy-150-progress*26);
+   ctx.restore();
+ }
+ if(fx?.result?.poisonDamage>0&&animationMs>=310&&animationMs<1080){
+   const life=Math.min(1,(animationMs-310)/770);
+   ctx.save();ctx.globalAlpha=(1-life)*.87;
+   for(let i=0;i<9;i++){
+     const angle=i*2.39996+time*.1;
+     const rad=27+i%4*15+life*27;
+     const px=enemyX+100+Math.cos(angle)*rad;
+     const py=enemyY+116+Math.sin(angle)*rad-life*39;
+     glow(px,py,12+i%3*5,i%3===0?'#f3ffae8c':'#88e4b49e');
+   }
+   ctx.font='900 22px serif';ctx.textAlign='center';ctx.fillStyle='#c7ffd5';
+   ctx.strokeStyle='#2d2345';ctx.lineWidth=5;
+   const label='腐蝕 -'+fx.result.poisonDamage;
+   ctx.strokeText(label,enemyX+96,enemyY+13-life*21);
+   ctx.fillText(label,enemyX+96,enemyY+13-life*21);
    ctx.restore();
  }
  if(hurtVfx.active&&fx?.result?.enemySkill){
@@ -1264,7 +1321,7 @@ Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
  try{images[k]=await imageFrom(url);}
  catch(error){
    if(k==='bg'){images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Using fallback office background:',error);}
-   else if(k==='foreground'||k==='weaponBriefcase'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
+   else if(k==='foreground'||k==='weaponBriefcase'||k==='weaponClockoutEcho'||k==='weaponCoffeeEcho'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
    }else throw error;
  }
