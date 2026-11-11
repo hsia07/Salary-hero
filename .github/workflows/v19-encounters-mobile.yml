@@ -10,6 +10,9 @@ on:
       - 'scripts/qa-v19-encounters-mobile.py'
       - 'scripts/qa-v19-lite-armory-mobile.py'
       - 'v19/lite-equipment.mjs'
+      - 'v19/lite-builds.mjs'
+      - 'v19/lite-builds.test.mjs'
+      - 'art/v19/runtime/weapons/lite-*.svg'
       - '.github/workflows/v19-encounters-mobile.yml'
   workflow_dispatch:
 
@@ -56,4 +59,5 @@ jobs:
           path: |
             art/v19/runtime/qa/encounter-storybook-mobile.png
             art/v19/runtime/qa/lite-armory-mobile.png
+            art/v19/runtime/qa/lite-build-clockout-mobile.png
           if-no-files-found: warn
