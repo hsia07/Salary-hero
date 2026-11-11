@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="132" viewBox="0 0 160 132">
+<defs>
+<linearGradient id="steel" x1=".2" y1="0" x2=".9" y2="1"><stop stop-color="#f8e4c3"/><stop offset=".2" stop-color="#a9b8bb"/><stop offset=".55" stop-color="#67748a"/><stop offset=".85" stop-color="#444058"/><stop offset="1" stop-color="#d5bd94"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#fff1bc"/><stop offset=".4" stop-color="#c39960"/><stop offset=".7" stop-color="#72515d"/><stop offset="1" stop-color="#f2d99b"/></linearGradient>
+<radialGradient id="gem"><stop stop-color="#fff4c2"/><stop offset=".24" stop-color="#f2b88e"/><stop offset=".72" stop-color="#b75364"/><stop offset="1" stop-color="#5b2e53"/></radialGradient>
+</defs>
+<!-- Ornate, shoulder-hugging guard harness without redrawing the hero anatomy. -->
+<path d="M48 17Q22 12 9 39Q3 54 22 68Q43 73 59 50L65 31Z" fill="url(#steel)" stroke="#30293d" stroke-width="7"/>
+<path d="M110 17Q139 12 151 43Q153 59 137 69Q116 71 101 51L97 30Z" fill="url(#steel)" stroke="#30293d" stroke-width="7"/>
+<path d="M14 47Q26 22 52 26M110 24Q137 25 145 48" fill="none" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
+<path d="M20 52Q36 60 50 42M115 43Q130 59 141 53" fill="none" stroke="#fff3cc" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+<path d="M54 30L80 40L105 30L114 100Q100 116 80 126Q62 119 45 99Z" fill="url(#steel)" stroke="#35283d" stroke-width="7" stroke-linejoin="round"/>
+<path d="M56 41L79 54L102 41L104 92Q92 109 80 115Q65 109 56 94Z" fill="#6a687b" fill-opacity=".44" stroke="url(#gold)" stroke-width="4"/>
+<path d="M80 53L93 67L86 85L74 85L67 67Z" fill="url(#gem)" stroke="#eecf99" stroke-width="4"/>
+<path d="M80 59L87 69L81 77L74 69Z" fill="#fff0c2" opacity=".75"/>
+<path d="M54 86Q78 101 106 86M55 99Q81 116 105 99" fill="none" stroke="#e9c78f" stroke-width="3"/>
+<path d="M48 57Q35 80 43 110L51 119L61 114Q55 88 60 67M110 62Q125 89 118 112L109 117L101 110Q104 86 100 65" fill="#4c465f" stroke="#ad8b76" stroke-width="4"/>
+<g fill="#f7dd9d" stroke="#5d4d5c" stroke-width="2"><circle cx="39" cy="47" r="5"/><circle cx="126" cy="48" r="5"/><circle cx="59" cy="103" r="4"/><circle cx="101" cy="102" r="4"/></g>
+</svg>
