@@ -85,6 +85,14 @@ def main():
             path=str(QA/'lite-build-clockout-mobile.png'),animations='disabled')
         page.locator('#panel-close').click()
         assert '打卡暴擊' in page.locator('#lite-build-ribbon').inner_text()
+        page.locator('button[data-panel="equipment"]').click()
+        page.locator('button[data-action="liteSavePreset"][data-value="0"]').click()
+        assert state()['litePresets'][0]['loadout']['weapon']=='li-1'
+        page.locator('button[data-action="liteUnequip"][data-value="weapon"]').click()
+        assert state()['liteLoadout']['weapon'] is None
+        page.locator('button[data-action="liteLoadPreset"][data-value="0"]').click()
+        assert state()['liteLoadout']['weapon']=='li-1'
+        page.locator('#panel-close').click()
 
         # Cross-reload progress belongs to this original character.
         assert state()['liteActiveBuild']=='clockout'
@@ -95,7 +103,8 @@ def main():
         # no pagehide handler can overwrite the simulation.
         mastery_seed={'version':19,'playerName':'專精驗收勇者','auto':False,
           'liteActiveBuild':'clockout','liteBuildProgress':{'clockout':5,'coffee':0},
-          'liteBuildBranch':{'clockout':'rush','coffee':'heal'}}
+          'liteBuildBranch':{'clockout':'rush','coffee':'heal'},
+          'liteSkillUses':{'burst':6,'guard':0,'drain':0}}
         mastery_context=browser.new_context(viewport={'width':390,'height':844},
           device_scale_factor=2,is_mobile=True,has_touch=True,
           storage_state={'cookies':[],'origins':[{'origin':BASE,
@@ -114,6 +123,13 @@ def main():
         assert mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)['liteActiveBuild']=='coffee'
         mastered.locator('#panel-close').click()
         assert '咖啡續命' in mastered.locator('#lite-build-ribbon').inner_text()
+        mastered.locator('button[data-panel="skills"]').click()
+        assert '技能使用六次' in mastered.locator('#panel-content').inner_text()
+        mastered.locator('button[data-action="liteChooseSkillPath"][data-skill="burst"][data-value="heavy"]').click()
+        saved_skill=mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
+        assert saved_skill['liteSkillPaths']['burst']=='heavy'
+        assert mastered.locator('button[data-action="liteChooseSkillPath"][data-skill="guard"][data-value="safe"]').is_disabled()
+        mastered.locator('#panel-close').click()
         for art in ['lite-clockout-echo.svg','lite-coffee-echo.svg']:
             response=mastered.request.get(BASE+'/art/v19/runtime/weapons/'+art)
             assert response.status==200,art
@@ -163,7 +179,7 @@ def main():
         assert not errors,errors
         offline_context.close()
         browser.close()
-    print('PASS: mobile gear, two mastery builds, unlocked branch, real illustrated weapon assets, offline payout, safe auto equip, save and salary.')
+    print('PASS: mobile gear, two mastery builds, skill variants, two gear presets, unlocked branch, real illustrated weapon assets, offline payout, safe auto equip, save and salary.')
 
 if __name__=='__main__':
     main()
