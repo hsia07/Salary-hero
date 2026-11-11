@@ -165,3 +165,32 @@
   font-size:9px!important;line-height:11px!important;height:11px!important;
  }
 }
+
+/* The event ticker gets its OWN row, instead of overlapping either HP bar.
+   The existing combat animations remain on their original live canvas. */
+#app.portrait-shell:not([data-training])>.battle-deck{
+ grid-template-rows:28px minmax(0,1fr) 20px 25px 24px;
+}
+#app.portrait-shell:not([data-training]) .battle-deck #game-log{
+ position:relative;grid-row:3;
+ top:auto;bottom:auto;left:auto;right:auto;
+ width:100%;height:20px;max-height:20px;min-height:0;
+ margin:0;padding:2px 8px;border-radius:0;
+ display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ line-height:14px;font-size:10px;text-align:center;
+ background:linear-gradient(90deg,#674259,#36273e,#674259);
+ border:0;border-top:1px solid #e6b57f;border-bottom:1px solid #e6b57f;
+ box-shadow:inset 0 1px #fff1bf65;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.lite-build-ribbon{grid-row:4}
+#app.portrait-shell:not([data-training]) .battle-deck>.lite-tactical-status{grid-row:5}
+@media(max-height:650px){
+ #app.portrait-shell:not([data-training])>.battle-deck{
+  grid-template-rows:28px minmax(0,1fr) 18px 24px 23px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck #game-log{
+  height:18px;max-height:18px;line-height:12px;font-size:9px;
+ }
+ #app.portrait-shell:not([data-training]) .battle-deck>.lite-build-ribbon{height:24px;max-height:24px}
+ #app.portrait-shell:not([data-training]) .battle-deck>.lite-tactical-status{height:23px;max-height:23px}
+}
