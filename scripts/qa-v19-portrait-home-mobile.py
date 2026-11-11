@@ -11,7 +11,7 @@ KEY='salary-hero-v19-save-1'
 def main():
     errors=[]
     seed={'version':19,'playerName':'試玩勇者','auto':False,'level':13,'gold':895,'gems':17,
-          'petFood':2,'petLevel':2,'skinTickets':4}
+          'petFood':2,'petLevel':2,'skinTickets':4,'chests':1}
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True,args=['--disable-dev-shm-usage'])
         context=browser.new_context(viewport={'width':390,'height':844},device_scale_factor=2,
@@ -21,10 +21,26 @@ def main():
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.goto(BASE+'/v19/play.html?dev=1',wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
-        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-37'
+        assert page.locator('#app').get_attribute('data-home-version')=='v20-reference-layout'
         assert page.locator('#town-stage').is_visible()
         assert page.locator('#world').is_visible()
         assert page.locator('.battle-deck').is_visible()
+        assert page.locator('#v20-stage-progress').is_visible()
+        assert page.locator('#v20-stage-pips .v20-stage-pip').count()==4
+        assert page.locator('#v20-stage-pips .is-current').count()==1
+        assert '第 1 關' in page.locator('#v20-wave-text').inner_text()
+        assert page.locator('#v20-pet-level').inner_text()=='Lv.2'
+        assert page.locator('#v20-loot-count').inner_text()=='0'
+        assert page.locator('#v20-stage-chest').is_enabled()
+        assert page.locator('#v20-loot-preview').is_visible()
+        assert page.evaluate("""() => {
+          const scene=document.querySelector('.battle-deck .scene').getBoundingClientRect();
+          const stage=document.querySelector('#v20-stage-progress').getBoundingClientRect();
+          const battle=document.querySelector('#battle-deck').getBoundingClientRect();
+          const dock=document.querySelector('.tabs').getBoundingClientRect();
+          return stage.bottom<=battle.top+2 && battle.bottom<=dock.top+2
+              && scene.height>180;
+        }"""),'stage tracker, battle, or dock overlaps'
         assert page.locator('.tabs button').count()==8
         assert page.locator('.storybook-nav-art').count()==8
         assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('storybook-office.svg')""")
@@ -83,6 +99,7 @@ def main():
         page.evaluate("""() => document.querySelector('#lite-offline-report').hidden=true""")
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+3'), 'portrait horizontal overflow'
         assert page.evaluate('document.querySelector("#town-stage").getBoundingClientRect().height >=190')
+        assert page.evaluate('document.querySelector("#v20-stage-progress").getBoundingClientRect().height>=30')
         assert page.locator('#town-clock-time').inner_text().count(':')==1
         assert page.locator('.town-star').count()>=4
         assert not page.locator('.dev-gallery').is_visible()
@@ -130,6 +147,21 @@ def main():
         page.locator('#town-task').click()
         assert '奇遇' in page.locator('#panel-title').inner_text()
         page.locator('#panel-close').click()
+        page.locator('#v20-stage-entry').click()
+        assert '冒險' in page.locator('#panel-title').inner_text()
+        page.locator('#panel-close').click()
+        page.locator('#v20-loot-preview').click()
+        assert '裝備' in page.locator('#panel-title').inner_text()
+        page.locator('#panel-close').click()
+        page.locator('#v20-pet-shortcut').click()
+        assert '寵物' in page.locator('#panel-title').inner_text()
+        page.locator('#panel-close').click()
+        # The stage chest shortcut delegates to the real chest open action once.
+        chest_before=page.evaluate('(key)=>JSON.parse(localStorage.getItem(key)).chests',KEY)
+        page.locator('#v20-stage-chest').click()
+        chest_after=page.evaluate('(key)=>JSON.parse(localStorage.getItem(key)).chests',KEY)
+        assert chest_after==chest_before-1,(chest_before,chest_after)
+        assert page.locator('#v20-stage-chest').is_disabled()
         page.locator('.battle-bestiary').click()
         assert '圖鑑' in page.locator('#panel-title').inner_text()
         page.locator('#panel-close').click()
@@ -191,6 +223,17 @@ def main():
             assert page.locator('#attack').is_visible()
             assert page.locator('#town-cat').is_visible()
             assert page.locator('.tabs button').count()==8
+            assert page.locator('#v20-stage-progress').is_visible()
+            assert page.locator('#v20-stage-pips .v20-stage-pip').count()==4
+            assert page.evaluate("""() => {
+              const stage=document.querySelector('#v20-stage-progress').getBoundingClientRect();
+              const battle=document.querySelector('#battle-deck').getBoundingClientRect();
+              const dock=document.querySelector('.tabs').getBoundingClientRect();
+              const left=document.querySelector('#auto').getBoundingClientRect();
+              const right=document.querySelector('#v20-loot-preview').getBoundingClientRect();
+              return stage.bottom<=battle.top+2 && battle.bottom<=dock.top+2
+                 && left.right<right.left && left.top>=battle.top && right.top>=battle.top;
+            }"""),(width,height,'left/right controls overlap' )
             if width==320:
                 assert page.evaluate('getComputedStyle(document.querySelector(".tabs")).gridTemplateRows.split(" ").length')==1
                 page.locator('#town-stage .pay').click()
@@ -207,6 +250,8 @@ def main():
             '/v19/portrait-one-screen.css',
             '/v19/storybook-skin.css',
             '/v19/iphone-hud-fixes.css',
+            '/v19/v20-home.css',
+            '/v19/v20-home.mjs',
             '/art/v19/runtime/backgrounds/storybook-office.svg',
             '/art/v19/runtime/backgrounds/storybook-corridor.svg',
             '/art/v19/runtime/ui/storybook-icons.svg',
@@ -216,6 +261,6 @@ def main():
             assert resp.status==200,url
         assert not errors,errors
         browser.close()
-    print('PASS: zero-scroll 390x844, 375x667, 320x568; salary, live battle, eight nav pages and no JS errors')
+    print('PASS: V20 five-zone single-screen, real four-wave tracker/chest, loot panel, salary, combat and eight-nav QA on 390,375,320px')
 if __name__=='__main__':
     main()
