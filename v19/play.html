@@ -306,7 +306,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  </button>
  <button id="town-cat" class="town-hotspot town-cat" type="button" aria-label="摸摸桌上的橘貓" data-playing="false"><img src="../art/v19/runtime/portrait/cat-companion.svg" alt="" draggable="false"></button>
  <button id="town-coffee" class="town-hotspot town-coffee" type="button" aria-label="點擊冒著蒸氣的魔法咖啡" data-playing="false"><img src="../art/v19/runtime/portrait/coffee-mug.svg" alt="" draggable="false"></button>
- <button id="town-task" class="town-task" type="button">📜 冒險任務</button>
+ <button id="town-task" class="town-task" type="button" data-panel="adventure">📜 今日奇遇</button>
  <div class="pay" aria-label="真實預估薪資看板"><div><small id="pay-status">台灣時間 · 計算中</small><strong id="today">NT$0.00</strong><small id="pay-month">本月 NT$0</small></div>
  <div class="pay-right"><span id="work-time">08:00–17:00</span><br><button id="pay-details" type="button">查看薪資明細 ›</button></div></div>
  <p class="town-speech" id="town-speech" role="status" hidden>今天要準時下班。</p>
@@ -319,7 +319,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
  <div id="training-animation-readout" class="training-animation-readout" hidden aria-live="off">🚨 正在載入機兵動作即時驗收……</div>
  <a href="./play.html">返回原本的遊戲進度</a>
 </div>
-<section class="battle-deck" id="battle-deck" aria-label="即時戰鬥與冒險控制"><div class="battle-heading"><span id="town-mode-label">⚔️ 辦公室遠征 · 第 1 關</span><span class="battle-live">● 即時戰鬥</span></div>
+<section class="battle-deck" id="battle-deck" aria-label="即時戰鬥與冒險控制"><div class="battle-heading"><span id="town-mode-label">⚔️ 辦公室遠征 · 第 1 關</span><span class="battle-live">● 即時戰鬥</span><button class="battle-bestiary" type="button" data-panel="collection">📖 圖鑑</button></div>
 <section class="scene" aria-label="動態冒險場景"><canvas id="world" width="720" height="620" aria-label="獨立角色與敵人的即時戰鬥畫面，點擊敵人可攻擊"></canvas>
 <div class="stage-head"><span id="wave">第 1 關 · 辦公室走廊</span><span id="level">Lv.1 社畜勇者</span></div>
 <div class="bars"><article>❤️ 勇者 <b id="hero-hp-text">110/110</b><div class="meter"><i id="hero-hp-fill"></i></div></article><article>⚔️ <b id="enemy-name">暴走報表怪</b><div class="meter enemy-meter"><i id="enemy-hp-fill"></i></div><small id="enemy-trait">敵人特性載入中</small></article></div></section>
