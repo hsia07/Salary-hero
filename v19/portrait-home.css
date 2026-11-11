@@ -97,13 +97,13 @@ html{overflow-x:hidden}
  animation:portrait-lamp 4s alternate infinite;
 }
 .town-cat{
- right:6%;bottom:16%;width:25%;height:36%;
+ right:6%;bottom:6%;width:25%;height:29%;
  filter:drop-shadow(0 5px 5px #1a1325cb);
 }
 .town-cat img{transform-origin:64% 84%;animation:portrait-cat 4.2s ease-in-out infinite}
 .town-cat[data-playing=true] img{animation:portrait-cat-joy .48s ease-out 2}
 .town-coffee{
- right:30%;bottom:23%;width:12%;height:33%;
+ right:30%;bottom:15%;width:12%;height:24%;
  filter:drop-shadow(0 0 8px #ffda8775);
 }
 .town-coffee img{animation:portrait-mug 3.9s ease-in-out infinite}
@@ -143,7 +143,7 @@ html{overflow-x:hidden}
 .town-speech[hidden]{display:none}
 .town-speech.is-appearing{animation:portrait-bubble .28s ease-out}
 .town-stage .pay{
- position:absolute;z-index:6;right:6px;top:50px;width:min(41%,155px);margin:0;
+ position:absolute;z-index:6;right:6px;top:13px;width:min(41%,155px);margin:0;
  padding:8px 9px;display:flex;flex-direction:column;gap:3px;
  align-items:flex-start;
  border:2px ridge #f7cb85;border-radius:10px;
@@ -275,7 +275,7 @@ html{overflow-x:hidden}
  .portrait-shell .brand{font-size:18px}
  .portrait-shell .subtitle{font-size:8px}
  .town-stage{height:206px}
- .town-stage .pay{top:44px;width:42%}
+ .town-stage .pay{top:12px;width:42%}
  .town-stage .pay strong{font-size:13px}
  .town-cat{width:26%;right:5%}
  .town-hero{left:28%;width:35%}
