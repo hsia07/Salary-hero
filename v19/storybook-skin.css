@@ -1,0 +1,339 @@
+/* Salary Hero V19.36 — the user's approved V18 portrait master is the color
+ * and material standard, not the purple-and-flat V19.34 engineering prototype.
+ *
+ * Main rule: repaint existing interactive DOM/Canvas layers rather than placing
+ * one dead screenshot over the page. All touches, salary, battle and equipment
+ * still come from live state. Keep V19.35 100dvh no-scroll geometry intact.
+ *
+ * Palette extracted visually from art/v18/portrait-home-master.webp:
+ * warm illuminated amber metal, dark blue-violet enchanted interiors,
+ * rosewood, parchment ivory, electric-cyan fairy highlights and cherry pink.
+ */
+:root{
+ --storybook-ink:#1e1831;--storybook-wine:#513149;--storybook-rose:#b36e7f;
+ --storybook-gold:#f4c775;--storybook-amber:#e8a65f;--storybook-ivory:#fff0ce;
+ --storybook-blue:#6ca2d9;--storybook-lavender:#a996dc;
+}
+html,body{
+ background:radial-gradient(ellipse at 50% 6%,#5d4b75 0%,#241932 64%,#140e23 100%);
+ color:#fff0cf;
+}
+#app.portrait-shell{
+ border-color:#e7b17b;
+ background:radial-gradient(ellipse at 40% 19%,#8070a139,transparent 54%),linear-gradient(160deg,#3e2c47,#21192f 46%,#352442);
+ box-shadow:0 0 0 2px #f7d6978c,0 0 40px #090615b8,0 0 90px #be855044;
+}
+#app.portrait-shell:not([data-training])>.hud{
+ background:
+ radial-gradient(ellipse at 48% 0%,#a47e674d,transparent 64%),
+ linear-gradient(180deg,#50374c 0%,#332844 50%,#25192d 100%);
+ border-bottom:3px ridge #f8d38f;
+ box-shadow:inset 0 1px #fff3d0d6,inset 0 -3px #684150,0 3px 12px #180b2494,0 0 20px #d6a5654d;
+}
+#app.portrait-shell:not([data-training]) .hud-title:before{
+ content:'❧';font-family:Georgia,serif;
+ font-size:22px;font-weight:900;width:29px;height:29px;line-height:1;
+ border:2px ridge #f7d58d;
+ background:radial-gradient(circle at 35% 24%,#ab6c58,#513148 55%,#311d34);
+ box-shadow:inset 0 1px #ffeed091,0 2px 6px #160b29,0 0 11px #e9b46e61;
+ color:#ffdc8b;text-shadow:0 1px #553046,0 0 7px #ffe7ae;
+}
+#app.portrait-shell:not([data-training]) .brand{
+ font-family:'Noto Serif TC','Songti TC','PMingLiU',Georgia,serif;
+ font-weight:1000;letter-spacing:.8px;
+ color:#ffe9ad;
+ -webkit-text-stroke:.3px #885138;
+ text-shadow:
+ 0 1px 0 #fff8d3,1px 2px 0 #bd7d3f,1px 3px 0 #59324a,
+ -1px 1px 0 #a9694c,0 0 7px #ffbf66a3,0 0 19px #f6b05d70;
+}
+#app.portrait-shell:not([data-training]) .subtitle{
+ color:#f9d9aa;text-shadow:0 1px 2px #170e27;font-family:Georgia,'Noto Serif TC',serif;
+}
+#app.portrait-shell:not([data-training]) .currency{
+ color:#fff6d3;border:2px ridge #f6cb82;
+ background:radial-gradient(ellipse at 35% 10%,#8f5e65,#3c2941 59%,#24172f 100%);
+ box-shadow:inset 0 1px #ffefcaaa,inset 0 -2px #190e27,0 2px 5px #13091cb0,0 0 7px #e4a85c50;
+ text-shadow:0 1px 2px #160a1e;
+}
+#app.portrait-shell:not([data-training]) .currency b{font-family:Georgia,serif;letter-spacing:.1px}
+#app.portrait-shell:not([data-training]) .currency:first-child{box-shadow:inset 0 1px #fff3cf,0 0 9px #ffc36d72}
+#app.portrait-shell:not([data-training])>.town-stage{
+ background:
+ linear-gradient(180deg,#21152a1e 0%,#4f284d00 24%,#2b192b0f 66%,#130c1ea8 100%),
+ url('../art/v19/runtime/backgrounds/storybook-office.svg') center 50%/cover no-repeat;
+ border-bottom:3px ridge #ffdfa1;
+ box-shadow:inset 0 2px 6px #fff1bb8b,inset 0 -11px 24px #210d2d98,0 0 18px #ffc57a37;
+}
+#app.portrait-shell:not([data-training]) .town-stage:before{
+ background:
+ radial-gradient(ellipse at 51% 24%,#fff0b578,transparent 38%),
+ radial-gradient(ellipse at 78% 59%,#ffd49f40,transparent 38%),
+ linear-gradient(110deg,transparent 12%,#dca7ca15 40%,transparent 69%);
+ animation:portrait-light 7s ease-in-out infinite alternate;
+}
+#app.portrait-shell:not([data-training]) .town-stage:after{
+ inset:0;border:0;box-shadow:inset 0 0 0 2px #f8c782a0,inset 0 0 21px #190c2796;
+ background:url('../art/v19/runtime/foreground/cherry-filigree.svg') center top/100% auto no-repeat;
+ opacity:.83;
+}
+#app.portrait-shell:not([data-training]) .town-desk{
+ background:linear-gradient(180deg,#ffe0a9 0%,#a56b55 8%,#613b48 19%,#543449 50%,#2a1d35 100%);
+ border-top:5px ridge #ffd48c;box-shadow:inset 0 1px #fff5c2,0 -10px 19px #1b0d286e,0 -2px 15px #ffd18b69;
+}
+#app.portrait-shell:not([data-training]) .town-desk:after{
+ border:1px solid #e4ac77b6;background:linear-gradient(100deg,#2b192e99,#d59a6c27,#2b182e66);
+ box-shadow:inset 0 2px 7px #2b142b80;
+}
+#app.portrait-shell:not([data-training]) .town-lamp-glow{
+ background:radial-gradient(ellipse at 30% 30%,#ffe4a7bb 0%,#f6b17f45 34%,transparent 68%);
+}
+#app.portrait-shell:not([data-training]) .town-name{
+ color:#ffe4a3;border:2px ridge #e9bb7e;border-radius:8px;
+ background:linear-gradient(130deg,#653b4ac7,#2b2038e3);
+ box-shadow:0 2px 8px #170c27b8,inset 0 1px #ffebaf96;
+ text-shadow:0 1px 2px #1b122b;
+}
+#app.portrait-shell:not([data-training]) .town-name small{color:#ffe0ac}
+#app.portrait-shell:not([data-training]) .town-hero{
+ filter:drop-shadow(0 7px 3px #190b2bcc) drop-shadow(0 0 13px #ffd59155);
+}
+#app.portrait-shell:not([data-training]) .town-hero .town-hero-glow{
+ background:radial-gradient(ellipse at 50% 69%,#ffd19a86,transparent 70%);
+ filter:blur(3px);
+}
+#app.portrait-shell:not([data-training]) .town-cat{
+ filter:drop-shadow(0 6px 4px #170d28dd) drop-shadow(0 1px 3px #ffdc9652);
+}
+#app.portrait-shell:not([data-training]) .town-coffee{
+ filter:drop-shadow(0 0 12px #ffe7a3aa) drop-shadow(0 4px 2px #160b21c9);
+}
+#app.portrait-shell:not([data-training]) .town-clock{
+ border:4px ridge #ffd993;
+ color:#664359;background:radial-gradient(circle at 39% 25%,#fffee0 0%,#f7dcad 47%,#c99473 83%,#8c5b6d);
+ box-shadow:inset 0 1px #fff8d3,0 3px 6px #120b22,0 0 11px #ffcc7d8c;
+}
+#app.portrait-shell:not([data-training]) .town-clock small{
+ color:#fff0ca;text-shadow:0 0 5px #171025,0 1px 3px #0a0615;
+}
+#app.portrait-shell:not([data-training]) .town-task{
+ color:#5d3b49;text-shadow:0 1px #fff7da;border:2px ridge #f6cb88;
+ background:linear-gradient(135deg,#fff3cc,#e6c195 54%,#bf8c7d);
+ box-shadow:0 3px 8px #1c122dbb,inset 0 1px #fffdec,inset 0 -3px #80586b80;
+ font-family:'Noto Serif TC',serif;font-weight:950;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay{
+ position:absolute;isolation:isolate;
+ background:
+ radial-gradient(circle at 84% 10%,#fffef0,transparent 32%),
+ repeating-linear-gradient(0deg,#fff9e0 0,#fff5d9 2px,#e8c49b 3px,#fff0cc 5px);
+ border:3px ridge #f4c57b;border-radius:10px;
+ box-shadow:0 0 0 1px #683d53,0 0 0 3px #ffc96d65,inset 0 0 0 2px #fff2ba,inset 0 0 18px #b77d6c52,0 6px 11px #100c1cc9;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay:before{
+ content:'❦';position:absolute;right:6px;top:-6px;color:#bd7d4c;
+ font:900 19px Georgia;transform:rotate(15deg);text-shadow:0 1px #fffad1;
+ pointer-events:none;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay:after{
+ content:'';position:absolute;inset:3px;border:1px solid #c5956d66;border-radius:6px;pointer-events:none;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay strong{
+ color:#61364a;text-shadow:0 1px #fff8d4;
+ font-family:Georgia,'Noto Serif TC',serif;font-weight:950;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay small,
+#app.portrait-shell:not([data-training]) .town-stage #work-time{
+ color:#714956;text-shadow:0 1px #fff8d4;
+ font-family:Georgia,'Noto Serif TC',serif;font-weight:800;
+}
+#app.portrait-shell:not([data-training]) .town-stage .pay-right button{
+ color:#fff6cf;border:2px ridge #bf875f;
+ background:linear-gradient(#9a6b5f,#674358 63%,#493347);
+ box-shadow:inset 0 1px #ffe7b8,0 2px 4px #8c5b57aa;
+}
+#app.portrait-shell:not([data-training]) .town-speech,
+#app.portrait-shell:not([data-training]) .town-toast{
+ color:#fff2d1;border:2px ridge #ffd18b;
+ background:linear-gradient(115deg,#65445ceb,#2f223fe8);
+ box-shadow:0 3px 13px #180b2db8,0 0 12px #ffba7447;
+}
+#app.portrait-shell:not([data-training])>.battle-deck{
+ border-top:3px ridge #f2c588;border-bottom:3px ridge #efc27b;
+ background:
+ linear-gradient(90deg,#38243e,#2f2547 40%,#3b2847);
+ box-shadow:inset 0 1px #fff5cb74,0 -2px 15px #ffd39661,0 3px 12px #100b1bb5;
+}
+#app.portrait-shell:not([data-training]) .battle-heading{
+ background:
+ radial-gradient(ellipse at 48% 0%,#a76c76a1,transparent 78%),
+ linear-gradient(180deg,#79545d,#543850 43%,#2c2341 100%);
+ border-bottom:3px ridge #facb82;color:#fff0c1;
+ font-family:Georgia,'Noto Serif TC',serif;font-weight:950;
+ text-shadow:0 1px 2px #1b0e26,0 0 7px #ebb5747c;
+ box-shadow:inset 0 2px #fff1c1a8,0 3px 8px #190f29d0;
+}
+#app.portrait-shell:not([data-training]) .battle-heading #town-mode-label:before{
+ content:'☠ ';color:#ffe0a0;text-shadow:0 0 8px #ffd786;margin-right:2px;
+}
+#app.portrait-shell:not([data-training]) .battle-live{
+ color:#e5ffd4;border:1px solid #b6dd9b;background:linear-gradient(#427252,#1e4339);
+ box-shadow:0 0 8px #8cd7ab6b,inset 0 1px #c9f9b3;
+}
+#app.portrait-shell:not([data-training]) .battle-bestiary{
+ color:#fff1c5;border:2px ridge #f5c782;
+ background:linear-gradient(#8b5767,#4a354b);
+ box-shadow:inset 0 1px #ffe8bb,0 0 7px #f6bb6a6b;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.scene{
+ border-bottom:3px ridge #ffc983;
+ background:
+ linear-gradient(180deg,#24182b22,#24173100 49%,#140c25ad),
+ url('../art/v19/runtime/backgrounds/storybook-corridor.svg') center/cover;
+ box-shadow:inset 0 2px 13px #ffcf8644,inset 0 -10px 22px #1c0b2796;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.scene:after{
+ content:'';position:absolute;z-index:4;inset:1px;pointer-events:none;
+ border:2px solid #f3bb7963;border-radius:5px;
+ box-shadow:inset 0 0 17px #ffdba12f,inset 0 0 2px #fff7d2;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .stage-head span{
+ color:#ffe4b6;border:2px ridge #d5a46c;
+ background:linear-gradient(120deg,#57374dcf,#31223ccf);
+ box-shadow:inset 0 1px #ffdfaa88,0 2px 8px #170e2a88;
+ font-family:Georgia,'Noto Serif TC',serif;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .bars article{
+ background:linear-gradient(100deg,#512f4dde,#2c1e40dc);
+ border:2px ridge #dfae73;border-radius:8px;
+ box-shadow:inset 0 1px #f9deaf6b,0 3px 7px #170d26bf;
+ color:#fff1c8;text-shadow:0 1px #170c20;
+}
+#app.portrait-shell:not([data-training]) .battle-deck .meter{
+ background:#27172d;border:1px solid #ffcc89;
+ box-shadow:0 1px #fff0c06b,inset 0 1px #150d22;
+}
+#app.portrait-shell:not([data-training]) .controls button,
+#app.portrait-shell:not([data-training]) .mini-actions button{
+ color:#fff2cd;font-family:Georgia,'Noto Serif TC',serif;font-weight:950;
+ border:2px ridge #ffd28a;border-radius:9px;
+ background:
+ radial-gradient(ellipse at 50% -12%,#ffdea45c,transparent 70%),
+ linear-gradient(180deg,#98636e 0%,#6c465e 38%,#3c294b 100%);
+ box-shadow:inset 0 2px #fff2b28a,inset 0 -2px #2d203e,0 4px 5px #0c0a1aa9,0 0 7px #e7ae7055;
+ text-shadow:0 2px 2px #240f27;
+}
+#app.portrait-shell:not([data-training]) .controls button:active,
+#app.portrait-shell:not([data-training]) .mini-actions button:active{
+ filter:brightness(1.25);
+ box-shadow:inset 0 1px #ffeec2,0 1px 3px #190b29;
+}
+#app.portrait-shell:not([data-training]) .controls button#attack{
+ color:#fff9d5;border-color:#ffdfa2;
+ background:
+ radial-gradient(ellipse at 50% 0,#ffe3ab91,transparent 71%),
+ linear-gradient(#df9b64,#99616c 40%,#63364f 100%);
+ box-shadow:inset 0 2px #fff8cd,0 3px 8px #1a0d27bd,0 0 12px #f7b468a0;
+}
+#app.portrait-shell:not([data-training]) .controls button#auto:not(:disabled){
+ border-color:#ffdf9c;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.lite-build-ribbon{
+ color:#ffecbb;font-family:Georgia,'Noto Serif TC',serif;
+ border-top:2px solid #eac17a;
+ background:linear-gradient(90deg,#5d3752,#2b1e40 53%,#5e3954);
+ text-shadow:0 1px #190d28;
+}
+#app.portrait-shell:not([data-training]) .battle-deck>.lite-tactical-status{
+ color:#f1d9c1;font-family:Georgia,'Noto Serif TC',serif;
+ border-top:1px solid #f1c17b8a;
+ background:linear-gradient(90deg,#4b344e,#261d37 48%,#423047);
+}
+#app.portrait-shell:not([data-training]) #game-log{
+ color:#ffe8bf;font-family:Georgia,'Noto Serif TC',serif;
+ border:2px ridge #e9b77b;
+ background:linear-gradient(100deg,#624256e6,#2b1e3de9,#644053e8);
+ box-shadow:inset 0 1px #ffe9b073,0 2px 7px #150b23a6;
+}
+#app.portrait-shell:not([data-training])>.tabs{
+ background:
+ radial-gradient(ellipse at 50% 0,#daa16e49,transparent 70%),
+ linear-gradient(180deg,#624052 0%,#3c2948 54%,#21182f 100%);
+ border-top:4px ridge #ffdc95;
+ box-shadow:inset 0 1px #fff4b8,0 -3px 18px #e6a36c83,0 -12px 20px #1d0a2866;
+}
+#app.portrait-shell:not([data-training]) .tabs button{
+ color:#ffe9b4;letter-spacing:.15px;
+ font-family:'Noto Serif TC',Georgia,serif;font-weight:1000;
+ border:2px ridge #dda973;border-radius:9px;
+ background:
+ radial-gradient(ellipse at 30% 0,#bb8c7244,transparent 65%),
+ linear-gradient(145deg,#805068,#51364d 50%,#3b2942 100%);
+ box-shadow:inset 0 1px #ffdfb79c,inset 0 -3px #29182f,0 2px 6px #13091ea6;
+ text-shadow:0 1px 2px #15071d;
+}
+#app.portrait-shell:not([data-training]) .tabs button.is-active,
+#app.portrait-shell:not([data-training]) .tabs button[aria-current=page]{
+ border-color:#fff0b9;color:#fff7d3;
+ background:
+ radial-gradient(ellipse at 50% 4%,#ffe3a69c,transparent 55%),
+ linear-gradient(135deg,#d49362 0%,#9c5869 53%,#5d3b51 100%);
+ box-shadow:inset 0 1px #fff8d6,0 0 10px #ffd991bc,0 0 3px #ffecb9a9;
+ transform:translateY(-1px);
+}
+#app.portrait-shell:not([data-training]) .tabs .storybook-nav-art{
+ width:clamp(25px,7vw,36px);height:clamp(25px,7vw,36px);
+ max-width:100%;max-height:70%;display:block;flex:0 1 auto;
+ margin:0 auto;overflow:visible;
+ filter:drop-shadow(0 1px 1px #180b23c2) drop-shadow(0 0 4px #ffc67539);
+}
+#app.portrait-shell:not([data-training]) .tabs button.is-active .storybook-nav-art{
+ filter:drop-shadow(0 0 3px #fff0be) drop-shadow(0 0 7px #ffc065bd);
+}
+#app.portrait-shell:not([data-training]) .tabs button.has-notice:after{
+ border:2px solid #ffe4ad;background:#e74e60;
+ box-shadow:0 0 7px #ed8b79,0 0 12px #ee5488;
+}
+/* Detail screens use the same material language, but their content MAY scroll in
+ * a dialog — the home itself never scrolls or turns into a static screenshot. */
+#panel,#name-dialog{
+ border:4px ridge #f8c985;border-radius:15px;
+ background:
+ radial-gradient(ellipse at 50% -9%,#bb89765c,transparent 64%),
+ linear-gradient(148deg,#65475c,#372944 38%,#241b35 100%);
+ box-shadow:inset 0 0 0 1px #ffe6b29c,inset 0 0 24px #dca27c29,0 18px 60px #070515e5;
+}
+#panel header{
+ background:linear-gradient(90deg,#65415a,#403049 57%,#654158);
+ border-bottom:2px ridge #e2b17a;border-radius:8px 8px 2px 2px;
+ padding:8px 10px;
+}
+#panel h2,#name-dialog h2{
+ font-family:Georgia,'Noto Serif TC',serif;font-weight:1000;
+ color:#ffe8b0;text-shadow:0 1px #703e45,0 0 10px #ffcd7966;
+}
+#panel .item{
+ border:2px ridge #d9ac76;background:linear-gradient(120deg,#634458,#33263d);
+ box-shadow:inset 0 1px #f4d3a682,0 2px 5px #140b21;
+}
+#panel .panel-button,#panel .item button,#name-dialog button{
+ border:2px ridge #efbd77;color:#fff5cd;
+ background:linear-gradient(#b27b6a,#825166 43%,#553951);
+ text-shadow:0 1px #2b142c;box-shadow:inset 0 1px #ffebc1b3,0 3px 5px #170d22;
+}
+@media(max-width:359px){
+ #app.portrait-shell:not([data-training]) .tabs .storybook-nav-art{
+  width:21px;height:21px;max-height:52%;flex:0 0 21px;
+ }
+ #app.portrait-shell:not([data-training]) .tabs button{font-size:8px}
+ #app.portrait-shell:not([data-training]) .hud-title:before{
+  width:19px;height:19px;font-size:17px;border-width:1px;
+ }
+ #app.portrait-shell:not([data-training]) .town-stage .pay{
+  border-width:2px;
+ }
+ #app.portrait-shell:not([data-training]) .town-stage .pay:before{font-size:13px;right:2px;top:-3px}
+}
+@media(prefers-reduced-motion:reduce){
+ #app.portrait-shell:not([data-training]) .town-stage:before{animation:none}
+}
