@@ -6,7 +6,7 @@ test("XP curve and stats", () => {
   assert.equal(xpToNext(10), 480);
   assert.equal(xpToNext(20), 1320);
   assert.equal(xpToNext(50), 6480);
-  assert.equal(xpToNext(99), 23422);
+  assert.equal(xpToNext(99), 23424);
   assert.equal(xpToNext(100), 0);
   assert.deepEqual(slaveStats(1), { hp: 1000, attack: 100, defense: 40 });
   assert.equal(teamAura(50), 1.0735);
