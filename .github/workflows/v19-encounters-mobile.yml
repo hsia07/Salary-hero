@@ -5,6 +5,9 @@ on:
     paths:
       - 'v19/engine.mjs'
       - 'v19/portrait-home.mjs'
+      - 'v19/v20-home.mjs'
+      - 'v19/v20-home.css'
+      - 'v19/v20-home.test.mjs'
       - 'v19/portrait-home.css'
       - 'v19/portrait-one-screen.css'
       - 'v19/storybook-skin.css'
