@@ -92,7 +92,7 @@ def main():
         assert all(w>10 and h>10 for w,h in nav_bounds),nav_bounds
 
         assert page.locator('#today').inner_text().startswith('NT$')
-        assert '試玩勇者' in page.locator('#town-player-name').inner_text()
+        assert '試玩勇者' in page.locator('#town-player-name').text_content()
         # This one-screen home must display text values as well as currency icons.
         assert page.evaluate("""() => document.querySelectorAll('[id="gold"]').length===1 &&
            document.querySelector('#gold').tagName.toLowerCase()==='b'"""),'SVG ID collision with real gold'
@@ -120,7 +120,7 @@ def main():
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+3'), 'portrait horizontal overflow'
         assert page.evaluate('document.querySelector("#town-stage").getBoundingClientRect().height >=190')
         assert page.evaluate('document.querySelector("#v20-stage-progress").getBoundingClientRect().height>=30')
-        assert page.locator('#town-clock-time').inner_text().count(':')==1
+        assert page.locator('#town-clock-time').text_content().count(':')==1
         assert page.locator('.town-star').count()>=4
         assert not page.locator('.dev-gallery').is_visible()
         def no_scroll():
