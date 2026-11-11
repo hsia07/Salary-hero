@@ -8,6 +8,7 @@ on:
       - 'v19/portrait-home.css'
       - 'v19/portrait-one-screen.css'
       - 'v19/storybook-skin.css'
+      - 'v19/iphone-hud-fixes.css'
       - 'art/v19/runtime/backgrounds/storybook-*.svg'
       - 'art/v19/runtime/ui/storybook-icons.svg'
       - 'scripts/qa-v19-chibi-browser.py'
@@ -83,6 +84,7 @@ jobs:
             art/v19/runtime/qa/lite-equipped-armor-attack-mobile.png
             art/v19/runtime/qa/portrait-home-390-mobile.png
             art/v19/runtime/qa/portrait-one-screen-390x844.png
+            art/v19/runtime/qa/portrait-compact-offline-hud.png
             art/v19/runtime/qa/portrait-one-screen-375x667.png
             art/v19/runtime/qa/portrait-one-screen-320x568.png
             art/v19/runtime/qa/portrait-home-full-scroll.png
