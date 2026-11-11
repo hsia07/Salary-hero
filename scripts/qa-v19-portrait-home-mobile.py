@@ -21,11 +21,14 @@ def main():
         page.on('pageerror',lambda error:errors.append(str(error)))
         page.goto(BASE+'/v19/play.html?dev=1',wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
-        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-35'
+        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-36'
         assert page.locator('#town-stage').is_visible()
         assert page.locator('#world').is_visible()
         assert page.locator('.battle-deck').is_visible()
         assert page.locator('.tabs button').count()==8
+        assert page.locator('.storybook-nav-art').count()==8
+        assert page.evaluate("""() => getComputedStyle(document.querySelector('#town-stage')).backgroundImage.includes('storybook-office.svg')""")
+        assert page.evaluate("""() => [...document.querySelectorAll('.tabs .storybook-nav-art use')].every(x=>(x.getAttribute('href')||'').includes('storybook-icons.svg#'))""")
         assert page.locator('#today').inner_text().startswith('NT$')
         assert '試玩勇者' in page.locator('#town-player-name').inner_text()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+3'), 'portrait horizontal overflow'
@@ -147,6 +150,10 @@ def main():
             '/art/v19/runtime/portrait/coffee-mug.svg',
             '/art/v19/candidates/characters/starter/chibi/idle-candidate.webp',
             '/v19/portrait-one-screen.css',
+            '/v19/storybook-skin.css',
+            '/art/v19/runtime/backgrounds/storybook-office.svg',
+            '/art/v19/runtime/backgrounds/storybook-corridor.svg',
+            '/art/v19/runtime/ui/storybook-icons.svg',
             '/v19/portrait-home.css',
             '/v19/portrait-home.mjs']:
             resp=page.request.get(BASE+url)
