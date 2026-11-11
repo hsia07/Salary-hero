@@ -12,6 +12,7 @@ import {liteTacticalHint} from './lite-tactics.mjs';
 import {initPortraitHome} from './portrait-home.mjs';
 import {initV20Home} from './v20-home.mjs';
 import {initV21UnifiedStage} from './v21-unified-stage.mjs';
+import {initV21ResearchLab} from './v21-research-lab.mjs';
 import {drawV20FloorAtmosphere} from './v20-scene-light.mjs';
 import {v20CombatAnchors,drawV20ContactShadow} from './v20-battle-stage.mjs';
 import {renderSkinPanel} from './skin-ui.mjs';
@@ -97,6 +98,7 @@ if(trainingNotice&&trainingWave!==null){
 }
 let currentPanel='',ready=false,lastAttack=0,fx=null,images={},failure='',lastFrame=0;
 let portraitHome=null,v20Home=null,v21Stage=null;
+const labUI=initV21ResearchLab();
 $('#training-finish')?.addEventListener('click',()=>{
  if(trainingWave===null||!ready)return;
  state=primeTrainingFinisher(state,trainingSpecies);
@@ -940,7 +942,7 @@ function render(){
  portraitHome?.update(state);
  v20Home?.update(state);
  v21Stage?.update(state);
- if(currentPanel&&panel.open)renderPanel(currentPanel);
+ if(currentPanel&&panel.open&&currentPanel!=='research')renderPanel(currentPanel);
 }
 function commit(action){
  const type=typeof action==='string'?action:action?.type;
@@ -1029,8 +1031,9 @@ function renderLiteEquipment(){
 }
 function renderPanel(type){
  currentPanel=type;
- const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',offline:'離線巡邏收益',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心'};
+ const headers={forge:'社畜鍛造工坊',pets:'寵物與夥伴',guild:'公會據點・未來開放',offline:'離線巡邏收益',liteBuilds:'流派專精・轉職前導',letter:'魔王的下班通知',modes:'冒險模式',skills:'戰鬥技能',hero:'角色狀態',styles:'造型衣櫃・活動與抽獎',equipment:'裝備背包',adventure:'每日奇遇',collection:'怪物圖鑑',shop:'商店',salary:'薪資中心',research:'戰術研究室'};
  $('#panel-title').textContent=headers[type]||'薪水勇者';
+ if(type==='research'){labUI.mount(body);return;}
  if(type==='modes'){
   const daily=dailyDungeonFor();
   const chaos=state.activeMode==='dungeon'&&daily.weekend?WEEKEND_CHAOS_EVENTS.find(x=>x.id===state.weekendChaosEvent?.id):null;

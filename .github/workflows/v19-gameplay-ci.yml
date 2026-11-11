@@ -12,6 +12,8 @@ on:
       - "v19/v21-squad-core.test.mjs"
       - "v19/v21-build-lab.mjs"
       - "v19/v21-build-lab.test.mjs"
+      - "v19/v21-research-lab.mjs"
+      - "v19/v21-research-lab.test.mjs"
       - "v19/portrait-home.css"
       - "v19/portrait-one-screen.css"
       - "v19/storybook-skin.css"
@@ -93,6 +95,7 @@ jobs:
           node --check v19/engine.mjs
           node --check v19/v21-squad-core.mjs
           node --check v19/v21-build-lab.mjs
+          node --check v19/v21-research-lab.mjs
           node --check v19/portrait-home.mjs
           node --check v19/v20-home.mjs
           node --check v19/lite-equipment.mjs
@@ -119,4 +122,4 @@ jobs:
           node --check v19/hurt-timing.mjs
           node --check v19/hurt-effects.mjs
       - name: Run all engine and cosmetics rules tests
-        run: node --test v19/v21-build-lab.test.mjs v19/v21-squad-core.test.mjs v19/v20-home.test.mjs v19/portrait-home.test.mjs v19/lite-tactics.test.mjs v19/lite-deep.test.mjs v19/lite-builds.test.mjs v19/lite-idle.test.mjs v19/lite-equipment.test.mjs v19/guard-candidate.test.mjs v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/coffee-candidate.test.mjs v19/paper-combat.test.mjs v19/paper-art.test.mjs v19/sprite-atlas.test.mjs v19/monster-motion.test.mjs v19/engine.test.mjs v19/weekly-dungeons.test.mjs v19/weekend-chaos.test.mjs v19/playable-modes.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs
+        run: node --test v19/v21-research-lab.test.mjs v19/v21-build-lab.test.mjs v19/v21-squad-core.test.mjs v19/v20-home.test.mjs v19/portrait-home.test.mjs v19/lite-tactics.test.mjs v19/lite-deep.test.mjs v19/lite-builds.test.mjs v19/lite-idle.test.mjs v19/lite-equipment.test.mjs v19/guard-candidate.test.mjs v19/combat-feedback.test.mjs v19/training-mode.test.mjs v19/coffee-combat.test.mjs v19/coffee-candidate.test.mjs v19/paper-combat.test.mjs v19/paper-art.test.mjs v19/sprite-atlas.test.mjs v19/monster-motion.test.mjs v19/engine.test.mjs v19/weekly-dungeons.test.mjs v19/weekend-chaos.test.mjs v19/playable-modes.test.mjs v19/skins.test.mjs v19/attack-timing.test.mjs v19/hurt-timing.test.mjs v19/hurt-effects.test.mjs

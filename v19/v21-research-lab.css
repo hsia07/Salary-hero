@@ -1,0 +1,69 @@
+/* V21 S2 — actual interactive portrait build research, inside the existing dialog.
+ * No new homepage row and no static UI screenshot. */
+#panel:has(.v21-research-lab){width:min(96vw,530px);max-width:96vw;max-height:90dvh;padding:12px;overscroll-behavior:contain;}
+#panel:has(.v21-research-lab)>header{position:sticky;top:-12px;z-index:30;background:linear-gradient(180deg,#442e50,#2b203d);margin:-12px -12px 0;padding:12px 13px;border-bottom:2px ridge #e8b678;border-radius:14px 14px 0 0;}
+#panel:has(.v21-research-lab)>header h2{font-size:clamp(15px,4.5vw,21px);}
+#panel-content:has(.v21-research-lab){padding-top:8px;}
+.v21-research-lab{--lab-gold:#f4d195;--lab-mauve:#9e718b;--lab-ink:#23192f;display:flex;flex-direction:column;gap:11px;font-family:system-ui,'Noto Sans TC',sans-serif;color:#fbe8c6;font-size:12px;line-height:1.45;}
+.v21-lab-intro{background:radial-gradient(ellipse at top,#85647670,transparent 80%),linear-gradient(135deg,#62415c,#2c203e);border:2px ridge #e6be7d;border-radius:13px;padding:12px;box-shadow:inset 0 1px #fff0cb8c,0 3px 9px #0d081d80;}
+.v21-lab-intro small{font-size:9px;color:#f8d69b;letter-spacing:1.1px;font-weight:900;}
+.v21-lab-intro h3{font-size:20px;line-height:1.1;margin:5px 0 8px;color:#fff0c4;text-shadow:0 2px 6px #201025;}
+.v21-lab-intro p{margin:0!important;font-size:12px;line-height:1.55;color:#e9d3c8;}
+.v21-lab-intro b{color:#ffdc9c;}
+.v21-lab-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.v21-lab-overview span{display:flex;align-items:center;justify-content:space-between;gap:2px;padding:7px 5px;background:linear-gradient(#61435b,#31233d);border:1px solid #a87c6b;border-radius:8px;font-size:11px;white-space:nowrap;}
+.v21-lab-overview b{color:#ffdc9a;font-size:13px;font-variant-numeric:tabular-nums;}
+.v21-lab-section{border:2px ridge #b98d77;background:radial-gradient(ellipse at 50% 0,#80566c44,transparent 95%),linear-gradient(#382943,#251b36);border-radius:11px;padding:10px 8px;}
+.v21-lab-section>h3{display:flex;align-items:baseline;gap:7px;font-size:15px;line-height:1.25;margin:0 0 10px;color:#f6d59f;}
+.v21-lab-section>h3 small{font-size:10px;font-weight:500;color:#cdb5b7;}
+.v21-lab-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.v21-lab-unit{min-width:0;display:flex;flex-direction:column;gap:6px;background:linear-gradient(145deg,#614557,#322640 85%);border:2px ridge #ae876d;border-radius:11px;padding:7px;box-shadow:inset 0 1px #fff0c13b,0 2px 5px #150f20bb;}
+.v21-lab-unit-title{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;color:#fff0ce;font-size:12px;font-weight:800;}
+.v21-lab-unit-title b{display:flex;align-items:center;justify-content:center;flex:none;width:21px;height:21px;border:1px solid #efce92;border-radius:6px;color:#f8deae;background:#4c324c;font-size:11px;}
+.v21-lab-unit-title span{overflow:hidden;text-overflow:ellipsis;}
+.v21-research-lab label{display:flex;flex-direction:column;gap:3px;font-size:10px;color:#e0c4bd;font-weight:700;min-width:0;}
+.v21-research-lab select,.v21-research-lab input{display:block;box-sizing:border-box;width:100%;height:36px;min-width:0;margin:0;padding:5px 18px 5px 7px;border:1px solid #ad846e;border-radius:7px;background:#241b33;color:#ffebc4;font:700 11px system-ui,'Noto Sans TC',sans-serif;text-overflow:ellipsis;outline-offset:2px;}
+.v21-research-lab input{padding-right:4px;font-variant-numeric:tabular-nums;}
+.v21-research-lab select:focus-visible,.v21-research-lab input:focus-visible{outline:2px solid #ffe5a0;}
+.v21-lab-unit-tags,.v21-lab-traits{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0!important;min-height:20px;}
+.v21-lab-unit-tags span,.v21-lab-traits span{font-size:10px;line-height:1.2;border:1px solid #d4a579;border-radius:6px;padding:2px 5px;color:#ffe4b8;background:#46314b;}
+.v21-lab-unit-details{border-top:1px solid #c5997370;margin-top:3px;padding-top:5px;}
+.v21-lab-unit-details summary{cursor:pointer;touch-action:manipulation;min-height:24px;font-size:10px;color:#ffdda0;font-weight:800;}
+.v21-lab-unit-details>div{display:flex;flex-direction:column;gap:6px;margin-top:5px;}
+.v21-lab-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.v21-lab-section>label{margin-top:8px;}
+.v21-lab-hint,.v21-lab-disclaimer{font-size:11px;line-height:1.6;color:#d8babb;}
+.v21-lab-hint{margin:7px 0 0!important;}
+.v21-lab-disclaimer{margin:4px 2px 14px!important;border-left:2px solid #c69b78;padding-left:9px;}
+.v21-lab-message{font-size:11px;color:#ffdfad;min-height:15px;margin:0!important;}
+.v21-lab-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.v21-lab-actions button{min-height:40px;padding:7px 5px;border:2px ridge #e8bd7a;border-radius:9px;color:#ffe9bf;background:linear-gradient(#7c5669,#432b50);font-size:12px;font-weight:800;cursor:pointer;touch-action:manipulation;}
+.v21-lab-actions .v21-lab-primary{grid-column:1/-1;min-height:46px;font-size:15px;color:#fff7dd;background:linear-gradient(#b88b5b,#704256 85%);border-color:#ffe6aa;box-shadow:0 0 10px #ecb87763;}
+.v21-lab-actions .v21-lab-secondary{grid-column:1/-1;min-height:32px;font-size:10px;background:linear-gradient(#56445e,#362942);}
+.v21-lab-actions button:disabled{opacity:.44;cursor:not-allowed;}
+.v21-lab-report{background:radial-gradient(ellipse at top,#73557755,transparent 75%),#281d3a;border:2px ridge #ddac75;border-radius:12px;padding:10px;}
+.v21-lab-report h3{margin:0 0 7px;font-size:15px;color:#ffe8b5;}
+.v21-lab-report h4{margin:9px 0 5px;font-size:12px;color:#f4cea1;}
+.v21-lab-report>p{margin:0 0 8px!important;color:#e4cfc2;font-size:11px;}
+.v21-lab-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+.v21-lab-metrics>div{display:flex;justify-content:space-between;align-items:center;gap:6px;border:1px solid #846879;border-radius:7px;background:#382b46;padding:6px;font-size:11px;}
+.v21-lab-metrics b{color:#ffdfae;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.v21-lab-damage{display:flex;flex-direction:column;gap:5px;}
+.v21-lab-damage>div{display:grid;grid-template-columns:74px minmax(0,1fr) 54px;align-items:center;gap:5px;font-size:10px;}
+.v21-lab-damage meter{width:100%;height:9px;}
+.v21-lab-damage b{text-align:right;color:#f6d39d;font-variant-numeric:tabular-nums;}
+#v21-lab-comparison table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px;}
+#v21-lab-comparison th,#v21-lab-comparison td{border-bottom:1px solid #826878;padding:6px 4px;text-align:right;}
+#v21-lab-comparison th:first-child,#v21-lab-comparison td:first-child{text-align:left;}
+#v21-lab-comparison th{color:#ffda9b;}
+#v21-lab-comparison small{font-size:10px;color:#d7b8bb;}
+/* Keep existing fixed mobile homepage; the dialog alone can scroll. */
+#app.portrait-shell:not([data-training])>.v21-more-menu{grid-template-columns:repeat(3,minmax(0,1fr));}
+#app.portrait-shell:not([data-training])>.v21-more-menu button{min-height:52px;}
+@media(max-width:359px){#panel:has(.v21-research-lab){padding:9px;max-height:92dvh;}
+ .v21-lab-roster{grid-template-columns:1fr;}
+ .v21-lab-unit{padding:9px;}
+ .v21-research-lab select{font-size:12px;}
+ .v21-lab-settings{grid-template-columns:1fr 1fr;}
+}
+@media(prefers-reduced-motion:reduce){.v21-research-lab *{scroll-behavior:auto!important;}}
