@@ -3,6 +3,7 @@
 Checks current default mobile game, not an old opt-in preview or just loader syntax.
 """
 from pathlib import Path
+import base64
 from playwright.sync_api import sync_playwright
 
 BASE='http://127.0.0.1:8766'
@@ -65,7 +66,10 @@ def main():
   page.locator('.dev-gallery > summary').click()
   page.locator('#hurt-demo-quick').click()
   page.wait_for_timeout(90)
-  page.locator('#world').screenshot(path=str(OUT/'v19-default-HD-hurt-red-flash.png'))
+  # The developer review gallery floats ABOVE the canvas in the no-scroll game.
+  # Read canvas pixels directly so artwork remains inspectable without scrolling.
+  frame=page.evaluate("""() => document.querySelector('#world').toDataURL('image/png').split(',')[1]""")
+  (OUT/'v19-default-HD-hurt-red-flash.png').write_bytes(base64.b64decode(frame))
   if page.locator('#hero-hp-text').inner_text()!=hp_before:
    raise AssertionError('Preview hurt incorrectly changed real player HP')
   if errors:raise AssertionError('JavaScript runtime errors: '+repr(errors))
