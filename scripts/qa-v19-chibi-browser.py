@@ -58,8 +58,11 @@ def main():
   page.locator('#attack').click()
   page.wait_for_timeout(340)
   page.locator('#world').screenshot(path=str(OUT/'v19-default-HD-attack.png'))
-  # Automatic injury should follow a nonlethal enemy retaliation, but regardless
-  # the independent preview always allows deterministic visual-only inspection.
+  # Wait for the previous REAL attack and any delayed enemy retaliation to
+  # complete BEFORE measuring a visual-only hurt preview. Otherwise a legitimate
+  # timed retaliation is incorrectly blamed on the developer preview.
+  page.wait_for_timeout(2100)
+  page.wait_for_function("document.querySelector('#attack')?.disabled === false",timeout=8000)
   hp_before=page.locator('#hero-hp-text').inner_text()
   # Development-only preview is intentionally collapsed on the production UI.
   page.locator('#portrait-dev-toggle').click()
