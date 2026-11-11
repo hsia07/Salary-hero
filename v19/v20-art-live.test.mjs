@@ -60,9 +60,9 @@ test('V20 painted backgrounds are actual game runtime files and never baked scre
  const css=read('./v20-art-live.css');
  const battle=read('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');
  const town=read('../art/v20/runtime/backgrounds/office-v20-painterly.svg');
- assert.match(app,/bg:trainingWave!==null\?.*battle-painterly\.webp/);
+ assert.match(app,/bg:trainingWave!==null\?.*battle-library-v20-p10\.webp/);
  assert.match(css,/town-painterly\.webp/);
- assert.match(css,/battle-painterly\.webp/);
+ assert.match(css,/battle-library-v20-p10\.webp/);
  assert.match(app,/world\.dataset\.sceneArt/);
  for(const [source,width,height] of [[town,960,560],[battle,720,620]]){
   assert.match(source,new RegExp('viewBox="0 0 '+width+' '+height+'"'));
@@ -109,4 +109,17 @@ test('P0.7 committed raster environment is a valid lightweight opaque WebP with 
   assert.equal(bytes.toString('ascii',8,12),'WEBP');
   assert.ok(bytes.length>15000&&bytes.length<160000,'mobile-sized scene art');
  }
+});
+
+test('P0.10 final environment art is a separate real, lightweight no-UI WebP asset',()=>{
+ const app=read('./app.mjs');
+ const css=read('./v20-art-live.css');
+ const scene=readFileSync(resolve(here,'../art/v20/runtime/backgrounds/battle-library-v20-p10.webp'));
+ assert.equal(scene.toString('ascii',0,4),'RIFF');
+ assert.equal(scene.toString('ascii',8,12),'WEBP');
+ assert.ok(scene.length>70000&&scene.length<350000,'one 720x620 mobile painted scene');
+ assert.match(app,/v20-library-p10-loaded/);
+ assert.match(app,/v20-p07-fallback/);
+ assert.match(app,/fullBleed\?16:0/);
+ assert.match(css,/battle-library-v20-p10\.webp/);
 });

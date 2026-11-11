@@ -162,7 +162,7 @@
 #app.portrait-shell:not([data-training]) .battle-deck>.scene{
  background:
   linear-gradient(180deg,#15102a24 0%,transparent 48%,#180d2b70 100%),
-  url('../art/v20/runtime/backgrounds/battle-painterly.webp?v=p07') center center/cover no-repeat;
+  url('../art/v20/runtime/backgrounds/battle-library-v20-p10.webp?v=p10') center center/cover no-repeat;
 }
 
 /* P0.5: iOS-compatible INLINE SVG gameplay resource art.

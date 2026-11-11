@@ -301,7 +301,7 @@ function drawHurtSparks(x,y,effect){
  ctx.restore();
 }
 const assetPaths={
- bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v20/runtime/backgrounds/battle-painterly.webp?v=p07',
+ bg:trainingWave!==null?'../art/v19/runtime/backgrounds/office-night.svg':'../art/v20/runtime/backgrounds/battle-library-v20-p10.webp?v=p10',
  foreground:'../art/v19/runtime/foreground/cherry-filigree.svg',
  weaponBriefcase:'../art/v19/runtime/weapons/ornate-briefcase.svg',
  weaponClockoutEcho:'../art/v19/runtime/weapons/lite-clockout-echo.svg',
@@ -351,9 +351,13 @@ function v20CacheStaticSceneArt(image){
   return image;
  }
 }
-function drawImageCover(img,offset){
- const W=LOGICAL_WIDTH,H=LOGICAL_HEIGHT,ratio=Math.max(W/img.width,H/img.height),w=img.width*ratio,h=img.height*ratio;
- ctx.drawImage(img,(W-w)/2+offset,(H-h)/2-25,w,h);
+function drawImageCover(img,offset,fullBleed=false){
+ // P0.10: preserve the exact training camera while safely panning the new
+ // 720x620 original painting without ever exposing empty Canvas edges.
+ const W=LOGICAL_WIDTH,H=LOGICAL_HEIGHT,pad=fullBleed?16:0;
+ const ratio=Math.max((W+pad*2)/img.width,(H+pad*2)/img.height);
+ const w=img.width*ratio,h=img.height*ratio;
+ ctx.drawImage(img,(W-w)/2+offset,(H-h)/2+(fullBleed?0:-25),w,h);
 }
 function circle(x,y,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
 function glow(x,y,r,col){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,'#0000');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
@@ -459,7 +463,7 @@ function drawStage(now){
  const W=LOGICAL_WIDTH,H=LOGICAL_HEIGHT,time=now/1000,bgShift=Math.sin(time*.35)*10;
  ctx.setTransform(PIXEL_SCALE,0,0,PIXEL_SCALE,0,0);
  ctx.clearRect(0,0,W,H);
- drawImageCover(images.bg,bgShift);
+ drawImageCover(images.bg,bgShift,trainingWave===null);
  const dim=ctx.createLinearGradient(0,0,0,H);if(trainingWave===null){dim.addColorStop(0,'#1b173305');dim.addColorStop(.65,'#23163413');dim.addColorStop(1,'#20142a57');}else{dim.addColorStop(0,'#1b173319');dim.addColorStop(.65,'#23163432');dim.addColorStop(1,'#20142a8c');}ctx.fillStyle=dim;ctx.fillRect(0,0,W,H);
  if(trainingWave===null)drawV20FloorAtmosphere(ctx,now,{reducedMotion:motionReduced});
  // Living environment: separate floating light sources, mist, floor and sparks.
@@ -1477,13 +1481,17 @@ setInterval(()=>{if(!document.hidden&&trainingWave===null)save();},60000);
 requestAnimationFrame(frame);
 if(!state.playerName)openNameEditor();
 Promise.all(Object.entries(assetPaths).map(async ([k,url])=>{
- try{images[k]=await imageFrom(url);if(k==='bg')world.dataset.sceneArt=trainingWave===null?'v20-raster-loaded':'training';}
+ try{images[k]=await imageFrom(url);if(k==='bg')world.dataset.sceneArt=trainingWave===null?'v20-library-p10-loaded':'training';}
  catch(error){
    if(k==='bg'){
       // Raster art is optional: a failed WebP must never disable combat.
-      world.dataset.sceneArt='v20-svg-fallback';
-      try{images[k]=await imageFrom('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');}
-      catch(backupError){world.dataset.sceneArt='fallback';images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('Both V20 backgrounds unavailable:',error,backupError);}
+      world.dataset.sceneArt='v20-p07-fallback';
+      try{images[k]=await imageFrom('../art/v20/runtime/backgrounds/battle-painterly.webp?v=p07');}
+      catch(backupError){
+       world.dataset.sceneArt='v20-svg-fallback';
+       try{images[k]=await imageFrom('../art/v20/runtime/backgrounds/corridor-v20-painterly.svg');}
+       catch(lastError){world.dataset.sceneArt='fallback';images[k]=await imageFrom('../art/enchanted-office.svg');console.warn('All V20 battle backgrounds unavailable:',error,backupError,lastError);}
+      }
     }
    else if(k==='foreground'||k==='weaponBriefcase'||k==='weaponClockoutEcho'||k==='weaponCoffeeEcho'||k==='armorClockout'||k==='armorCoffee'||k==='armorGuardian'||k==='minion'||k==='boss'||k==='chibiIdle'||k==='chibiAttackV2'||k==='chibiHurtV1'){
      images[k]=null;console.warn('Optional art preview layer skipped:',k,error);
