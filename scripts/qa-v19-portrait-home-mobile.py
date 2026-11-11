@@ -19,9 +19,9 @@ def main():
                 'origin':BASE,'localStorage':[{'name':KEY,'value':json.dumps(seed,ensure_ascii=False)}]}]})
         page=context.new_page()
         page.on('pageerror',lambda error:errors.append(str(error)))
-        page.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
+        page.goto(BASE+'/v19/play.html?dev=1',wait_until='domcontentloaded')
         page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
-        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-34'
+        assert page.locator('#app').get_attribute('data-home-version')=='portrait-v19-35'
         assert page.locator('#town-stage').is_visible()
         assert page.locator('#world').is_visible()
         assert page.locator('.battle-deck').is_visible()
@@ -29,10 +29,36 @@ def main():
         assert page.locator('#today').inner_text().startswith('NT$')
         assert '試玩勇者' in page.locator('#town-player-name').inner_text()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+3'), 'portrait horizontal overflow'
-        assert page.evaluate('document.querySelector("#town-stage").getBoundingClientRect().height >=200')
+        assert page.evaluate('document.querySelector("#town-stage").getBoundingClientRect().height >=190')
         assert page.locator('#town-clock-time').inner_text().count(':')==1
         assert page.locator('.town-star').count()>=4
         assert not page.locator('.dev-gallery').is_visible()
+        def no_scroll():
+            return page.evaluate("""() => {
+              const h=innerHeight;
+              const app=document.querySelector('#app').getBoundingClientRect();
+              const dock=document.querySelector('.tabs').getBoundingClientRect();
+              const battle=document.querySelector('#battle-deck').getBoundingClientRect();
+              const town=document.querySelector('#town-stage').getBoundingClientRect();
+              return {
+                height:h,
+                scrollHeight:document.scrollingElement.scrollHeight,
+                horizontal:document.scrollingElement.scrollWidth,
+                appTop:app.top,
+                appBottom:app.bottom,
+                dockTop:dock.top,
+                dockBottom:dock.bottom,
+                townHeight:town.height,
+                battleHeight:battle.height,
+                controlsVisible:document.querySelector('#attack').getBoundingClientRect().bottom<=battle.bottom
+              };
+            }""")
+        metrics=no_scroll()
+        assert metrics['scrollHeight']<=metrics['height']+2,metrics
+        assert metrics['appBottom']<=metrics['height']+2,metrics
+        assert metrics['dockBottom']<=metrics['height']+2,metrics
+        assert metrics['dockTop']>=0,metrics
+        assert metrics['controlsVisible'],metrics
 
         # Every main scene hotspot is an accessible, actual button.
         page.locator('#town-cat').click()
@@ -93,17 +119,35 @@ def main():
 
         page.screenshot(path=str(OUT/'portrait-home-390-mobile.png'),full_page=False,animations='disabled')
         page.screenshot(path=str(OUT/'portrait-home-full-scroll.png'),full_page=True,animations='disabled')
+        # The home remains exactly one screen in short in-app browsers as well.
+        for width,height in [(375,667),(320,568)]:
+            page.set_viewport_size({'width':width,'height':height})
+            page.wait_for_timeout(120)
+            metrics=no_scroll()
+            assert metrics['scrollHeight']<=metrics['height']+2,(width,height,metrics)
+            assert metrics['dockBottom']<=metrics['height']+2,(width,height,metrics)
+            assert metrics['townHeight']>=110,(width,height,metrics)
+            assert metrics['battleHeight']>=240,(width,height,metrics)
+            assert metrics['controlsVisible'],(width,height,metrics)
+            assert page.evaluate('document.scrollingElement.scrollWidth<=innerWidth+3')
+            assert page.locator('#attack').is_visible()
+            assert page.locator('#town-cat').is_visible()
+            assert page.locator('.tabs button').count()==8
+            page.screenshot(path=str(OUT/f'portrait-one-screen-{width}x{height}.png'),full_page=False)
+        page.set_viewport_size({'width':390,'height':844})
+        page.screenshot(path=str(OUT/'portrait-one-screen-390x844.png'),full_page=False)
         # Real art must load in the browser.
         for url in [
             '/art/v19/runtime/portrait/cat-companion.svg',
             '/art/v19/runtime/portrait/coffee-mug.svg',
             '/art/v19/candidates/characters/starter/chibi/idle-candidate.webp',
+            '/v19/portrait-one-screen.css',
             '/v19/portrait-home.css',
             '/v19/portrait-home.mjs']:
             resp=page.request.get(BASE+url)
             assert resp.status==200,url
         assert not errors,errors
         browser.close()
-    print('PASS: portrait mobile 390px, salary, interactive office, eight nav pages, real pet feeding, live combat, QA drawer and no JS errors')
+    print('PASS: zero-scroll 390x844, 375x667, 320x568; salary, live battle, eight nav pages and no JS errors')
 if __name__=='__main__':
     main()
