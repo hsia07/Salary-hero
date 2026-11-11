@@ -6,6 +6,8 @@ on:
       - 'v19/engine.mjs'
       - 'v19/portrait-home.mjs'
       - 'v19/portrait-home.css'
+      - 'v19/portrait-one-screen.css'
+      - 'scripts/qa-v19-chibi-browser.py'
       - 'v19/portrait-home.test.mjs'
       - 'art/v19/runtime/portrait/**'
       - 'scripts/qa-v19-portrait-home-mobile.py'
@@ -77,5 +79,8 @@ jobs:
             art/v19/runtime/qa/lite-equipped-armor-mobile.png
             art/v19/runtime/qa/lite-equipped-armor-attack-mobile.png
             art/v19/runtime/qa/portrait-home-390-mobile.png
+            art/v19/runtime/qa/portrait-one-screen-390x844.png
+            art/v19/runtime/qa/portrait-one-screen-375x667.png
+            art/v19/runtime/qa/portrait-one-screen-320x568.png
             art/v19/runtime/qa/portrait-home-full-scroll.png
           if-no-files-found: warn
