@@ -2,6 +2,7 @@
  * Pure decisions only. The engine owns persistence, actual payouts and save validation.
  */
 import {LITE_SLOTS,liteBase,liteEquipmentStats} from './lite-equipment.mjs';
+import {liteLegendaryEffects} from './lite-legendaries.mjs';
 export const LITE_STRATEGIES=Object.freeze([
  Object.freeze({id:'balanced',name:'智慧平衡',description:'兼顧攻擊、續航與二件套效果'}),
  Object.freeze({id:'survival',name:'高塔保命',description:'優先生命、護甲、吸血與防禦套裝'}),
@@ -24,7 +25,8 @@ export function liteOfflineEstimate(state,now=Date.now()){
  return {from:saved,to:current,minutes,gold,xp,itemCount};
 }
 export function liteBuildScore(state,loadout,strategy='balanced',legacyAttack=12){
- const s=liteEquipmentStats({...state,liteLoadout:loadout});
+ const equippedState={...state,liteLoadout:loadout};
+ const s=liteEquipmentStats(equippedState),legend=liteLegendaryEffects(equippedState);
  const atk=(s.weaponAttack||Math.max(1,Number(legacyAttack)||12))+s.attack;
  const life=s.hp, armor=s.armor,crit=s.crit,dr=s.damageReduction,leech=s.lifeSteal;
  const weights=strategy==='survival'
@@ -32,9 +34,16 @@ export function liteBuildScore(state,loadout,strategy='balanced',legacyAttack=12
    :strategy==='speed'
     ?{atk:2,life:.05,armor:.7,crit:190,dr:35,leech:20,clockout:70,coffee:8,guardian:3}
     :{atk:1.3,life:.25,armor:2,crit:110,dr:105,leech:95,clockout:40,coffee:36,guardian:23};
- return atk*weights.atk+life*weights.life+armor*weights.armor+
-  crit*weights.crit+dr*weights.dr+leech*weights.leech+
+ const core=atk*weights.atk+life*weights.life+armor*weights.armor+
+  (crit+legend.crit)*weights.crit+(dr+legend.damageReduction)*weights.dr+leech*weights.leech+
   (s.clockout?weights.clockout:0)+(s.coffee?weights.coffee:0)+(s.guardian?weights.guardian:0);
+ // Class-linked uniques are valued for what they do in the player's chosen build.
+ const clockout=state.liteActiveBuild==='clockout',coffee=state.liteActiveBuild==='coffee';
+ const synergy=(clockout?(legend.clockoutMultiplier-1)*60:0)+
+   (coffee?(legend.coffeePoisonMultiplier-1)*55+legend.coffeeBonusHeal*1.5:0)+
+   legend.guardRegen*(strategy==='survival'?4:1.5)+
+   (legend.attackMultiplier-1)*atk*weights.atk;
+ return core+synergy;
 }
 export function liteAutoPlan(state,strategy='balanced',legacyAttack=12){
  const chosen=LITE_STRATEGIES.some(x=>x.id===strategy)?strategy:'balanced';
