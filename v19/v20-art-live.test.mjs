@@ -67,6 +67,8 @@ test('V20 painted backgrounds are actual game runtime files and never baked scre
  for(const [source,width,height] of [[town,960,560],[battle,720,620]]){
   assert.match(source,new RegExp('viewBox="0 0 '+width+' '+height+'"'));
   assert.match(source,/id="v20-illustration-pass"/);
+  assert.match(source,/id="v20-fantasy-window"/);
+  assert.match(source,/id="v20-castle-clip"/);
   assert.match(source,/v20-pigment/);
   assert.doesNotMatch(source,/<text[\s>]|<foreignObject[\s>]/);
  }
