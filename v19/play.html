@@ -201,6 +201,19 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 .lite-pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
 .lite-pages .panel-button{width:100%;min-width:0}
 .lite-pages button:disabled{opacity:.42}
+
+/* Lite idler: saved-session settlement and smart-gear settings. */
+.lite-offline-report{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:8px 12px;padding:12px;border:1px solid #edc588;border-radius:12px;background:radial-gradient(ellipse at top left,#895f6550,transparent 66%),linear-gradient(100deg,#45304f,#241a32);box-shadow:inset 0 0 23px #140b2570,0 2px 16px #b4823c2a}
+.lite-offline-report[hidden]{display:none}
+.lite-offline-report strong{display:block;color:#ffe3a6;font-family:serif;font-size:15px}
+.lite-offline-report p{margin:4px 0 0;font-size:11px;line-height:1.6;color:#edd7c2}
+.lite-offline-report button{min-width:87px;border:1px solid #f4cc93;border-radius:9px;background:linear-gradient(#99685f,#5a354f);color:#fff0d1;padding:8px 5px;font-size:11px;font-weight:800}
+.lite-auto{margin:12px 0 16px;padding:12px;border:1px solid #c3a073;border-radius:12px;background:radial-gradient(circle at 90% 0,#9b789428,transparent 60%),linear-gradient(#44314f,#251b33)}
+.lite-auto h3{margin:0 0 6px}.lite-auto p{font-size:12px;color:#dfc9d9;line-height:1.6;margin:6px 0 8px}
+.lite-auto .lite-pages{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:9px 0}
+.lite-strategy{border:1px solid #9c7a81;border-radius:8px;background:#30223f;color:#ebd4c0;padding:9px 2px;font-size:10px;font-weight:800}
+.lite-strategy.active{border-color:#f6cf88;color:#fff0c8;background:linear-gradient(#825968,#583851);box-shadow:inset 0 0 12px #e8b78133}
+
 @media(max-width:355px){.lite-armory-title{flex-direction:column;align-items:flex-start}.lite-slot{min-height:95px}.lite-item-heading{flex-direction:column}.lite-item-heading small{text-align:left;max-width:none}}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"></head><body>
 <main id="app">
@@ -253,6 +266,7 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 </section>
 </details></div></details>
 <div class="log" id="game-log" role="status">開始新的冒險！</div>
+<section id="lite-offline-report" class="lite-offline-report" aria-label="離線巡邏收穫" hidden><div><strong>🌙 離線巡邏結算</strong><p id="lite-offline-summary"></p></div><button id="lite-offline-dismiss" type="button">收下戰利品</button></section>
 <section class="controls" aria-label="戰鬥控制"><button id="attack" class="attack">⚔️ 手動攻擊</button><button id="auto">🤖 自動 ON</button><button id="heal">❤️ 治療 ×2</button></section>
 <section class="mini-actions" aria-label="冒險行動"><button id="speed">⏩ 速度 ×1</button><button id="claim">🎁 領取掉寶 (0)</button><button id="chest">📦 開寶箱 (0)</button><button id="weekend-chest">🎁 週末箱 (0)</button></section>
 <nav class="tabs" aria-label="遊戲功能"><button data-panel="modes"><span>📆</span>副本</button><button data-panel="skills"><span>✨</span>技能</button><button data-panel="hero"><span>🧑‍💼</span>角色</button><button data-panel="equipment"><span>🛡️</span>裝備</button><button data-panel="adventure"><span>🗺️</span>奇遇</button><button data-panel="collection"><span>📖</span>圖鑑</button><button data-panel="shop"><span>🏪</span>商店</button></nav>
@@ -271,4 +285,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=lite-armory-v19-29"></script></body></html>
+<script type="module" src="./app.mjs?v=lite-idle-v19-30"></script></body></html>
