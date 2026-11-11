@@ -86,33 +86,40 @@ def main():
         page.locator('#panel-close').click()
         assert '打卡暴擊' in page.locator('#lite-build-ribbon').inner_text()
 
-        # The outgoing page writes its in-memory state on pagehide. Use a
-        # document-start test hook so the simulated unlocked save is applied
-        # AFTER pagehide but BEFORE the new game reads localStorage.
-        page.add_init_script("""() => {
-          const key='salary-hero-v19-save-1';
-          const s=JSON.parse(localStorage.getItem(key)||'null');
-          if(s?.liteBuildProgress){
-            s.liteBuildProgress.clockout=5;
-            localStorage.setItem(key,JSON.stringify(s));
-          }
-        }""")
-        page.reload(wait_until='domcontentloaded')
-        page.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
-        assert state()['liteBuildProgress']['clockout']>=5,'simulated mastered save should survive pagehide'
-        page.locator('#lite-build-ribbon').click()
-        page.locator('button[data-action="liteChooseBranch"][data-value="execute"]').click()
-        assert state()['liteBuildBranch']['clockout']=='execute'
-        page.locator('button[data-action="liteChooseBuild"][data-value="coffee"]').click()
-        assert state()['liteActiveBuild']=='coffee'
-        page.locator('#panel-close').click()
-        assert '咖啡續命' in page.locator('#lite-build-ribbon').inner_text()
+        # Cross-reload progress belongs to this original character.
+        assert state()['liteActiveBuild']=='clockout'
+        assert not errors,errors
+        context.close()
+
+        # Use a separately seeded phone profile for an already-mastered player:
+        # no pagehide handler can overwrite the simulation.
+        mastery_seed={'version':19,'playerName':'專精驗收勇者','auto':False,
+          'liteActiveBuild':'clockout','liteBuildProgress':{'clockout':5,'coffee':0},
+          'liteBuildBranch':{'clockout':'rush','coffee':'heal'}}
+        mastery_context=browser.new_context(viewport={'width':390,'height':844},
+          device_scale_factor=2,is_mobile=True,has_touch=True,
+          storage_state={'cookies':[],'origins':[{'origin':BASE,
+            'localStorage':[{'name':KEY,'value':json.dumps(mastery_seed,ensure_ascii=False)}]}]})
+        mastered=mastery_context.new_page()
+        mastered.on('pageerror',lambda e:errors.append(str(e)))
+        mastered.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
+        mastered.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
+        progress=mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
+        assert progress['liteBuildProgress']['clockout']==5
+        mastered.locator('#lite-build-ribbon').click()
+        assert not mastered.locator('button[data-action="liteChooseBranch"][data-value="execute"]').is_disabled()
+        mastered.locator('button[data-action="liteChooseBranch"][data-value="execute"]').click()
+        assert mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)['liteBuildBranch']['clockout']=='execute'
+        mastered.locator('button[data-action="liteChooseBuild"][data-value="coffee"]').click()
+        assert mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)['liteActiveBuild']=='coffee'
+        mastered.locator('#panel-close').click()
+        assert '咖啡續命' in mastered.locator('#lite-build-ribbon').inner_text()
         for art in ['lite-clockout-echo.svg','lite-coffee-echo.svg']:
-            response=page.request.get(BASE+'/art/v19/runtime/weapons/'+art)
+            response=mastered.request.get(BASE+'/art/v19/runtime/weapons/'+art)
             assert response.status==200,art
             assert b'<svg' in response.body()
         assert not errors,errors
-        context.close()
+        mastery_context.close()
 
         # A second isolated phone resumes after two hours offline.
         offline_seed={'version':19,'playerName':'離線驗收勇者','auto':True,
