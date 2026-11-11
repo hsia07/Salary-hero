@@ -126,7 +126,7 @@ html{overflow-x:hidden}
  font-weight:800;font-size:11px;box-shadow:0 4px 9px #13091c9e;max-width:30%;
 }
 .town-name{
- position:absolute;left:4%;top:6px;z-index:4;max-width:53%;color:#fbe3b5;
+ position:absolute;left:4%;top:6px;z-index:4;pointer-events:none;max-width:53%;color:#fbe3b5;
  font-family:Georgia,serif;font-size:12px;font-weight:800;text-shadow:0 2px 4px #110c20;
  background:#2b1b35bd;border:1px solid #b18a6e;padding:5px 7px;border-radius:8px;
 }
