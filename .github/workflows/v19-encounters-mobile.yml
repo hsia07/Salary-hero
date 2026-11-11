@@ -14,6 +14,9 @@ on:
       - 'v19/lite-skills.mjs'
       - 'v19/lite-presets.mjs'
       - 'v19/lite-legendaries.mjs'
+      - 'v19/lite-tactics.mjs'
+      - 'v19/lite-tactics.test.mjs'
+      - 'v19/lite-armor-poses.mjs'
       - 'art/v19/runtime/hero/lite-*.svg'
       - 'v19/lite-builds.test.mjs'
       - 'art/v19/runtime/weapons/lite-*.svg'
@@ -65,4 +68,5 @@ jobs:
             art/v19/runtime/qa/lite-armory-mobile.png
             art/v19/runtime/qa/lite-build-clockout-mobile.png
             art/v19/runtime/qa/lite-equipped-armor-mobile.png
+            art/v19/runtime/qa/lite-equipped-armor-attack-mobile.png
           if-no-files-found: warn
