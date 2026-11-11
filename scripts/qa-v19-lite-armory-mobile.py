@@ -134,7 +134,7 @@ def main():
         mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose?.startsWith("attack-")',timeout=7000)
         mastered.locator('#world').screenshot(path=str(QA/'lite-equipped-armor-attack-mobile.png'),animations='disabled')
         mastered.wait_for_function('() => document.querySelector("#world")?.dataset.liteArmorPose==="idle-0"',timeout=7000)
-        mastered.locator('button[data-panel="skills"]').click()
+        mastered.locator('#lite-tactical-status').click()
         assert '技能使用六次' in mastered.locator('#panel-content').inner_text()
         mastered.locator('button[data-action="liteChooseSkillPath"][data-skill="burst"][data-value="heavy"]').click()
         saved_skill=mastered.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
