@@ -8,6 +8,7 @@ import {LITE_BUILDS,liteBuildById,liteBuildProgress,liteBuildBranch,liteMasteryR
 import {LITE_SKILL_PATHS,liteSkillUses,liteSkillPaths,liteSkillById,liteSkillSelection,liteSkillCastBonus,liteSkillGrantUse,LITE_SKILL_UNLOCK_USES} from './lite-skills.mjs';
 import {liteLegendaryEffects} from './lite-legendaries.mjs';
 import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyPreset} from './lite-presets.mjs';
+import {liteTacticalHit} from './lite-tactics.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -154,7 +155,7 @@ export function initial(){
  return {version:19,level:1,xp:0,wave:1,cleared:0,gold:0,gems:0,heroHp:110,maxHp:110,baseMaxHp:110,
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
-   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,liteActiveBuild:'none',liteBuildProgress:{clockout:0,coffee:0},liteBuildBranch:{clockout:'rush',coffee:'heal'},liteToxinStacks:0,liteToxinKey:'',liteSkillUses:{burst:0,guard:0,drain:0},liteSkillPaths:{burst:null,guard:null,drain:null},litePresets:[null,null],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
+   activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,liteActiveBuild:'none',liteBuildProgress:{clockout:0,coffee:0},liteBuildBranch:{clockout:'rush',coffee:'heal'},liteToxinStacks:0,liteToxinKey:'',liteMarks:0,liteSkillUses:{burst:0,guard:0,drain:0},liteSkillPaths:{burst:null,guard:null,drain:null},litePresets:[null,null],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
 }
 export function normalize(raw,now=Date.now()){
@@ -201,6 +202,7 @@ export function normalize(raw,now=Date.now()){
  n.liteActiveBuild=liteBuildById(raw.liteActiveBuild)?.id||'none';
  n.liteBuildProgress=liteBuildProgress(raw.liteBuildProgress);
  n.liteBuildBranch=liteBuildBranch(raw.liteBuildBranch);
+ n.liteMarks=n.liteActiveBuild==='clockout'?Math.max(0,Math.min(3,Math.floor(Number(raw.liteMarks)||0))):0;
  n.liteSkillUses=liteSkillUses(raw.liteSkillUses);
  n.liteSkillPaths=liteSkillPaths(raw.liteSkillPaths);
  n.litePresets=liteNormalizePresets(raw.litePresets,n.liteInventory);
@@ -417,7 +419,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(a.id===s.activeMode)break;
    s.modeWaves[s.activeMode]=s.wave;
    s.activeMode=a.id;s.wave=s.modeWaves[a.id];
-   s.liteToxinKey=a.id+':'+s.wave;s.liteToxinStacks=0;
+   s.liteToxinKey=a.id+':'+s.wave;s.liteToxinStacks=0;s.liteMarks=0;
    s.enemy=loopEnemyFor(s.wave,a.id,now);
    s.heroHp=s.maxHp;
    notice(s,'🗺️ 切換至 '+GAME_MODES.find(m=>m.id===a.id).name+'，進度獨立保存。');
@@ -469,7 +471,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  case 'liteChooseBuild':{
    const build=liteBuildById(a.id);if(!build||s.trainingIsolated)break;
    if(s.liteActiveBuild===build.id){notice(s,'目前已使用 '+build.name+' 流派。');break;}
-   s.liteActiveBuild=build.id;s.liteCombo=0;s.liteToxinStacks=0;
+   s.liteActiveBuild=build.id;s.liteCombo=0;s.liteToxinStacks=0;s.liteMarks=0;
    s.liteToxinKey=s.activeMode+':'+s.wave;
    s.last={type:'liteBuild',id:build.id};
    notice(s,'🏵️ 已切換至 '+build.name+'！各流派的熟練度會獨立永久保存。');break;
@@ -594,17 +596,25 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    let damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
    s.liteCombo++;
    const specialistHit=liteBuildHit(s,damage,s.enemy,s.liteCombo);
+   const tactical=liteTacticalHit(s,{
+     skill:skill?.id||null,crit,buildProc:specialistHit.proc,
+     damage,enemyTier:s.enemy.tier
+   });
    if(liteSpecialist.id==='clockout')specialistHit.extra=Math.ceil(specialistHit.extra*legend.clockoutMultiplier);
    if(liteSpecialist.id==='coffee'){
      specialistHit.extra=Math.ceil(specialistHit.extra*legend.coffeePoisonMultiplier);
      specialistHit.poison=specialistHit.extra;
      if(specialistHit.heal)specialistHit.heal+=legend.coffeeBonusHeal;
    }
+   s.liteMarks=tactical.marks;
    if(liteSpecialist.id==='coffee'){
      s.liteToxinKey=s.activeMode+':'+s.wave;
-     s.liteToxinStacks=specialistHit.stacks;
+     s.liteToxinStacks=tactical.stacks;
    }else s.liteToxinStacks=0;
-   damage+=specialistHit.extra;
+   damage+=specialistHit.extra+tactical.extra;
+   if(tactical.heal)s.heroHp=Math.min(s.maxHp,s.heroHp+tactical.heal);
+   if(tactical.spent)notice(s,'⚡ 超時結算！消耗 '+tactical.spent+' 打卡印記，額外斬擊 '+tactical.extra+'！');
+   if(tactical.extracted)notice(s,'☕ 咖啡萃取！消耗 '+tactical.extracted+' 毒素，額外傷害 '+tactical.extra+'、回復 '+tactical.heal+'！');
    if(specialistHit.heal)s.heroHp=Math.min(s.maxHp,s.heroHp+specialistHit.heal);
    if(specialistHit.proc){
      notice(s,liteSpecialist.id==='coffee'?'☕ 續杯本能：恢復 '+specialistHit.heal+' HP。':'⚡ 打卡專精：追加 '+specialistHit.extra+' 傷害！');
@@ -629,6 +639,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    const lifeSteal=Math.floor(Math.min(damage,enemyHpBefore)*Math.min(.35,liteStats.lifeSteal+liteSpecialist.lifeSteal));
    if(lifeSteal)s.heroHp=Math.min(s.maxHp,s.heroHp+lifeSteal);
    s.last={type:'hit',damage,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
+     tacticalExtra:tactical.extra,tacticalHeal:tactical.heal,tacticalSpent:tactical.spent,tacticalExtracted:tactical.extracted,tacticalStun:tactical.skipRetaliation,
      liteBuild:liteSpecialist.id,buildProc:specialistHit.proc,buildDamage:specialistHit.extra,
      poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal};
    notice(s,(wednesdayRage?'🫠 厭世崩潰・暴擊率上升！ ':'')+(crit?'⚡ 暴擊！':'⚔️ 攻擊！')+'對 '+s.enemy.name+' 造成 '+damage+' 傷害');
@@ -695,14 +706,15 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
        if(dungeon)markWeeklyDungeonClear(s,now);
        notice(s,'🏅 今日副本四關結算：生命回滿，寶石 +1。');
      }
-     s.liteToxinStacks=0;s.liteToxinKey=s.activeMode+':'+s.wave;
+     s.liteToxinStacks=0;s.liteMarks=0;s.liteToxinKey=s.activeMode+':'+s.wave;
      s.enemy=loopEnemyFor(s.wave,s.activeMode,now);s.weekendChaosEvent=null;
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
      const fridayNote=maybeFridayBossEscaped(s,rng,now);
      const weekendEvent=maybeWeekendChaos(s,rng,now);
      s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave,fridayNote,weekendEvent,liteDrop:liteDrop?.instanceId||null,
        liteBuild:liteSpecialist.id,buildProc:specialistHit.proc,buildDamage:specialistHit.extra,
-       poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal,mastery};
+       poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal,mastery,
+       tacticalExtra:tactical.extra,tacticalHeal:tactical.heal,tacticalSpent:tactical.spent,tacticalExtracted:tactical.extracted,tacticalStun:tactical.skipRetaliation};
      
    }else{
      // Enemy turns survive save/normalize, so special moves trigger consistently.
@@ -723,7 +735,8 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      const hpBeforeRetaliation=s.heroHp;
      const daily=s.activeMode==='dungeon'&&!s.trainingIsolated?dailyDungeonFor(now):null;
      const slackChance=weekendChaos?.id==='confetti'?.67:daily?(daily.weekday===5?(s.enemy.tier==='elite'?.65:s.enemy.tier==='boss'?.22:daily.slackChance):daily.slackChance):0;
-     const slacking=slackChance>0&&Number(rng())<slackChance;
+     const slacking=tactical.skipRetaliation||(slackChance>0&&Number(rng())<slackChance);
+     if(tactical.skipRetaliation)notice(s,'☕ 咖啡毒素萃取讓敵人短暫脫力，本回合無法反擊！');
      if(currentDungeon?.weekday===2&&Object.values(s.skillCooldowns).some(cd=>cd>0)&&Number(rng())<.20){
        const pending=GAME_SKILLS.filter(k=>s.skillCooldowns[k.id]>0).sort((x,y)=>s.skillCooldowns[y.id]-s.skillCooldowns[x.id])[0];
        s.skillCooldowns[pending.id]=Math.min(pending.cooldown+1,s.skillCooldowns[pending.id]+1);
