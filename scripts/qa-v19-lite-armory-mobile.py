@@ -3,6 +3,7 @@
 Uses throwaway browser storage; never touches the player's production save.
 """
 import json
+import time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -73,8 +74,54 @@ def main():
         assert 'NT$' in page.locator('#today').inner_text()
         assert not errors,errors
         context.close()
+
+        # A second isolated phone resumes after two hours offline.
+        offline_seed={'version':19,'playerName':'離線驗收勇者','auto':True,
+          'liteLastSeenAt':int(time.time()*1000)-120*60000}
+        offline_context=browser.new_context(viewport={'width':390,'height':844},
+          device_scale_factor=2,is_mobile=True,has_touch=True,
+          storage_state={'cookies':[],'origins':[{'origin':BASE,
+            'localStorage':[{'name':KEY,'value':json.dumps(offline_seed,ensure_ascii=False)}]}]})
+        offline=offline_context.new_page()
+        offline.on('pageerror',lambda e:errors.append(str(e)))
+        offline.goto(BASE+'/v19/play.html',wait_until='domcontentloaded')
+        offline.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
+        report=offline.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
+        assert report['liteOfflineReport'] is not None,'offline payout must be persisted'
+        assert report['liteOfflineReport']['minutes']>=120
+        assert report['liteOfflineReport']['gold']>=240
+        assert report['liteOfflineReport']['items']==2
+        assert offline.locator('#lite-offline-report').is_visible()
+        if 'ON' in offline.locator('#auto').inner_text():
+            offline.locator('#auto').click()
+        offline.locator('#lite-offline-dismiss').click()
+        assert offline.locator('#lite-offline-report').is_hidden()
+        offline.locator('button[data-panel="equipment"]').click()
+        offline.locator('button[data-action="liteSetAuto"]').click()
+        offline.locator('button[data-action="liteSetStrategy"][data-value="survival"]').click()
+        offline.locator('button[data-action="liteAutoOptimize"]').click()
+        configured=offline.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
+        assert configured['liteAutoEquip'] is True
+        assert configured['liteAutoStrategy']=='survival'
+        assert configured['liteOfflineReport'] is None
+        assert 'NT
+
+if __name__=='__main__':
+    main()
+ in offline.locator('#today').inner_text()
+        offline.locator('#panel-close').click()
+        offline.reload(wait_until='domcontentloaded')
+        offline.wait_for_function('() => document.querySelector("#attack")?.disabled===false',timeout=40000)
+        reloaded=offline.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',KEY)
+        assert reloaded['liteOfflineReport'] is None
+        assert len(reloaded['liteInventory'])==len(configured['liteInventory'])
+        assert reloaded['gold']==configured['gold'],'offline payout must never duplicate on reload'
+        assert reloaded['liteAutoEquip'] is True
+        assert reloaded['liteAutoStrategy']=='survival'
+        assert not errors,errors
+        offline_context.close()
         browser.close()
-    print('PASS: mobile four slots, 2-piece set, 25-item paging, lock, safe salvage, persisted weapon, salary and no JS errors.')
+    print('PASS: mobile gear, lock/salvage, paging, two-hour offline payout exactly once, dismiss, trustee strategies and salary display.')
 
 if __name__=='__main__':
     main()
