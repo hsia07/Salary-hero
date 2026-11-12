@@ -198,14 +198,16 @@ const tieshiAwakening={biographyCleared:false,energy:0,lastCast:-Infinity,active
 function tieshiBattleEvent(type){document.dispatchEvent(new CustomEvent(type,{detail:{at:v4Time,wave:clock.wave}}))}
 function tieshiGainEnergy(points){tieshiAwakening.energy=Math.min(100,tieshiAwakening.energy+points)}
 function tieshiUltimate(){
- if(!tieshiAwakening.biographyCleared||clock.done||clock.paused||allies[0]<=0||v4Has(0,'stun')||tieshiAwakening.energy<100||v4Time-tieshiAwakening.lastCast<20000)return false;
- tieshiAwakening.energy=0;tieshiAwakening.lastCast=v4Time;tieshiAwakening.activeUntil=v4Time+1800;
+ if(clock.done||clock.paused||allies[0]<=0||v4Has(0,'stun')||tieshiAwakening.energy<100||v4Time-tieshiAwakening.lastCast<20000)return false;
+ const awakened=tieshiAwakening.biographyCleared;
+ tieshiAwakening.energy=0;tieshiAwakening.lastCast=v4Time;
+ tieshiAwakening.activeUntil=awakened?v4Time+1800:0;
  const protectedAllies=[];
- for(let i=0;i<7;i++)if(allies[i]>0){v59ApplyShield(i,.08,'鐵時・最後一道門',6000);protectedAllies.push(i)}
- v60Fx(team[0],'GuardCast',['guard-watch-shield.svg','guard-escort-wings.svg'],1800);
- tieshiBattleEvent('tieshi:awakened-ultimate:start');
- v60Record({type:'tieshi-awakened-ultimate',caster:0,targets:protectedAllies});
- label('打卡守衛・鐵時｜最後一道門！');return true;
+ for(let i=0;i<7;i++)if(allies[i]>0){v59ApplyShield(i,awakened?.08:.05,awakened?'鐵時・最後一道門':'鐵時・終夜守衛',awakened?6000:4000);protectedAllies.push(i)}
+ v60Fx(team[0],'GuardCast',['guard-watch-shield.svg','guard-escort-wings.svg'],awakened?1800:850);
+ if(awakened)tieshiBattleEvent('tieshi:awakened-ultimate:start');
+ v60Record({type:awakened?'tieshi-awakened-ultimate':'tieshi-base-ultimate',caster:0,targets:protectedAllies});
+ label(awakened?'打卡守衛・鐵時｜09:00・最後一道門！':'打卡守衛・鐵時｜08:59・終夜守衛！');return true;
 }
 
 const v60Busy=new Set(),v60Events=[];
