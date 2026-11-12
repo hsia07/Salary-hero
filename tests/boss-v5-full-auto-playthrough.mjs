@@ -23,9 +23,9 @@ try{
  step='natural-auto-advance';
  const start=Date.now(),limit=90000;let last=0;
  while(Date.now()-start<limit){
-  const v=await page.evaluate(()=>({wave:window.__salaryBossV5?.wave||0,kind:window.__salaryBossV5?.kind,done:window.__salaryBossV5?.done,party:window.__salaryBossV5?.partyHP,win:document.getElementById('v5Complete')?.classList.contains('show')}));
+  const v=await page.evaluate(()=>({wave:window.__salaryBossV5?.wave||0,kind:window.__salaryBossV5?.kind,done:window.__salaryBossV5?.done,party:window.__salaryBossV5?.partyHP,win:document.getElementById('v5Complete')?.classList.contains('show'),bossHP:window.__salaryBossV5?.bossHP}));
   if(v.wave!==last){waves.push({wave:v.wave,kind:v.kind,alive:v.party.filter(x=>x>0).length});last=v.wave}
-  if(v.done){console.log('FINAL_DUNGEON_RESULT='+JSON.stringify({waves,win:v.win,partyHP:v.party,elapsed:(Date.now()-start)/1000}));assert.equal(v.win,true,'full automatic battle should eventually defeat boss, not wipe out');break}
+  if(v.done){console.log('FINAL_DUNGEON_RESULT='+JSON.stringify({waves,win:v.win,partyHP:v.party,elapsed:(Date.now()-start)/1000,bossHP:v.bossHP,skills:await page.evaluate(()=>__salaryBossV5.activeSkills.map(x=>x.type))}));assert.equal(v.win,true,'full automatic battle should eventually defeat boss, not wipe out');break}
   await page.waitForTimeout(650);
  }
  assert.deepEqual(waves.map(w=>w.wave),[1,2,3,4],'each wave should auto-clear without dev skipping');
