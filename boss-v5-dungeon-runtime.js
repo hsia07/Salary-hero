@@ -882,6 +882,27 @@ window.__salaryBossV5={
  get supportEvents(){return [...v59Events]},
  get shields(){return v59Shields.map(s=>({hp:s.hp,source:s.source,expires:s.expires}))},
  get heroes(){return v59AI?.ALLY_ROLES||[]},
+
+ devSetHp:(i,value)=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||!Number.isInteger(i)||i<0||i>=7)return false;
+  allies[i]=Math.max(1,Math.min(v59MaxHp[i],Number(value)||1));
+  team[i].querySelector('.v2Health').style.width=(allies[i]/v59MaxHp[i]*100)+'%';
+  return true;
+ },
+ devCastSupport:i=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||clock.done)return false;
+  return v59TrySupport(i);
+ },
+ devWaveRescue:()=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||clock.done)return false;
+  v59WaveRescue();return true;
+ },
+ devHit:(i,damage)=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||clock.done)return false;
+  flash(i,damage);return true;
+ },
+ get health(){return [...allies]},
+
  get activeHeroAttacks(){return v55Actions.size},
  devDefeatElite:()=>{
   // An isolated art QA hook, available only in developer preview.
