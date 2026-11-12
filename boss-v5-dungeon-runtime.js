@@ -314,7 +314,7 @@ function v5CreateMonster(data,index,total){
  const actor={...data,hp:data.maxHp,maxHp:data.maxHp,alive:true,anim:'idle',animStarted:v4Time,animUntil:0,frameIndex:0,elite:data.kind==='elite'&&index===0,abilityCount:0};
  const e=document.createElement('div');e.className='v5Enemy'+(actor.elite?' elite':'');
  const positions=total===4?[[13,42],[38,54],[63,42],[87,54]]:total===3?[[17,45],[50,53],[83,45]]:[[31,50],[69,50]];
- const p=positions[index]||[50,50];e.style.left=p[0]+'%';e.style.top=p[1]+'%';
+ const p=positions[index]||[50,50];e.style.left=(actor.elite?24:p[0])+'%';e.style.top=p[1]+'%';
  e.innerHTML='<div class="v5Shadow"></div><div class="v5Visual"></div><div class="v5Name"></div><div class="v5Bar"><i></i></div>';
  e.querySelector('.v5Name').textContent=data.name;e.setAttribute('data-species',data.species);
  v5Field.append(e);actor.node=e;v5SetPose(actor,'idle',Infinity);return actor;
@@ -347,11 +347,11 @@ function v5Header(){
  root.classList.toggle('v5Mobs',!isBoss);root.classList.toggle('v5Boss',Boolean(isBoss));
  zone.style.visibility=isBoss?'visible':'hidden';
  if(isBoss){rig.hidden=false;v5Hud.hidden=true;v5Global.style.visibility='visible';}
- else {rig.hidden=true;v5Hud.hidden=false;v5Global.style.visibility='visible';}
+ else {rig.hidden=true;v5Hud.hidden=false;v5Global.style.visibility='hidden';}
  $('wave').textContent='第 '+clock.wave+' / 4 波';
  if(!isBoss){
   $('v5WaveTitle').textContent=encounter.name;
-  $('v5EnemySummary').textContent=encounter.kind==='elite'?'精英警報｜催件主管登場':'敵人 '+encounter.enemies.filter(e=>e.hp>0).length+' / '+encounter.enemies.length+' 隻';
+  $('v5EnemySummary').textContent=encounter.kind==='elite'?'精英警報・HP ×1.65 / 攻擊 ×1.4':'敵人 '+encounter.enemies.filter(e=>e.hp>0).length+' / '+encounter.enemies.length+'・HP ×1.65 / 攻擊 ×1.4';
  }else{
   v4Ribbon.textContent='最終魔王・加班狂課長｜Boss 怒氣與七光束現已啟用';
  }
@@ -407,24 +407,50 @@ function v52StartTelegraph(actor,targets,kind){
    v52SpawnArt(actor.node,'meeting-array.svg','v52CasterGlyph',1150);
  }
  if(kind==='paper'){
-  v52SpawnArt(actor.node,'paper-projectile.svg','v52PaperHalo',600);
+  for(let p=0;p<3;p++)v52SpawnArt(actor.node,'paper-projectile.svg','v52PaperHalo v52PaperHalo'+p,600);
  }
 }
 function v52FinishTelegraph(actor){actor?.node?.classList.remove('v52Casting')}
+/**
+ * V5.3 battle-clock projectile movement. Hit location is the target's live
+ * center, and projectile time follows pause + speed instead of the wall clock.
+ */
+function v53AnimateFlight(img,source,targetIndex,duration,delay,epoch){
+ let elapsed=0,last=0;
+ const loop=now=>{
+  if(epoch!==v5Epoch||clock.done||!img.isConnected){img.remove();return}
+  if(!last)last=now;
+  const dt=Math.max(0,Math.min(55,now-last));
+  last=now;
+  if(!clock.paused)elapsed+=dt*clock.pace;
+  const t=Math.max(0,Math.min(1,(elapsed-delay)/duration));
+  const ease=t*t*(3-2*t);
+  const dest=center(team[targetIndex]);
+  img.style.left=(source.x+(dest.x-source.x)*ease)+'px';
+  img.style.top=(source.y+(dest.y-source.y)*ease-Math.sin(t*Math.PI)*18)+'px';
+  img.style.opacity=elapsed<delay?'0':String(Math.min(1,Math.max(0,t*5))*(t>=1?.85:1));
+  img.style.transform='translate(-50%,-50%) rotate('+Math.round(-20+235*ease)+'deg) scale('+(0.55+0.35*ease)+')';
+  if(t>=1){img.remove();return;}
+  requestAnimationFrame(loop);
+ };
+ requestAnimationFrame(loop);
+}
 function v52FlyPaper(actor,index,delay=0){
- const from=center(actor.node),to=center(team[index]);
+ if(!actor?.node||!team[index]||allies[index]<=0)return;
+ const from=center(actor.node),epoch=v5Epoch;
  const img=document.createElement('img');
  img.className='v52FlyingDocument';img.src=v52Art+'paper-projectile.svg';img.alt='';
  img.style.left=from.x+'px';img.style.top=from.y+'px';plane.append(img);
  v52Effects.push({type:'flying-document',target:index,at:v4Time});
- const dx=to.x-from.x,dy=to.y-from.y;
- const motion=img.animate([
-  {opacity:0,transform:'translate(-50%,-50%) rotate(-20deg) scale(.15)'},
-  {opacity:1,transform:'translate('+Math.round(dx*.5)+'px,'+Math.round(dy*.5-35)+'px) rotate(220deg) scale(.29)',offset:.58},
-  {opacity:1,transform:'translate('+Math.round(dx)+'px,'+Math.round(dy)+'px) rotate(365deg) scale(.45)'}
- ],{duration:530/clock.pace,delay:delay/clock.pace,easing:'cubic-bezier(.18,.55,.55,1)',fill:'forwards'});
- motion.onfinish=()=>img.remove();
- setTimeout(()=>img.remove(),1400/clock.pace);
+ v53AnimateFlight(img,{x:from.x+25,y:from.y-24},index,480,delay,epoch);
+}
+function v53FlySeal(actor,index){
+ if(!actor?.node||!team[index]||allies[index]<=0)return;
+ const from=center(actor.node),img=document.createElement('img');
+ img.className='v52FlyingSeal';img.src=v52Art+'seal-sweep.svg';img.alt='';
+ img.style.left=from.x+'px';img.style.top=from.y+'px';plane.append(img);
+ v52Effects.push({type:'seal-travel',target:index,at:v4Time});
+ v53AnimateFlight(img,{x:from.x+35,y:from.y-15},index,260,0,v5Epoch);
 }
 function v5StampContact(index,meeting=false){
  const node=team[index];if(!node||allies[index]<=0)return;
@@ -472,22 +498,30 @@ async function v5MobStep(){
    if(!await v5Sleep(isElite?560:460,epoch))return;
    if(!actor.alive||encounter?.kind==='boss'||clock.done||epoch!==v5Epoch)return;
    if(kind==='stamp'){
-     const slash=v52SpawnArt(actor.node,'seal-sweep.svg','v52Slash',700);
+     const slash=v52SpawnArt(actor.node,'seal-sweep.svg','v52Slash',550);
      if(slash)v52Effects.push({type:'stamp-release',at:v4Time});
+     v53FlySeal(actor,main);
+     if(!await v5Sleep(280,epoch))return;
+     if(!actor.alive||clock.done||epoch!==v5Epoch)return;
      v5StampContact(main);
      flash(main,actor.atk);
      shake(false);
    }else if(kind==='paper'){
      // Separate flight to three unique targets; each hit occurs after its own flight.
-     for(let k=0;k<targets.length;k++)v52FlyPaper(actor,targets[k],k*90);
-     if(!await v5Sleep(550,epoch))return;
+     for(let k=0;k<targets.length;k++)v52FlyPaper(actor,targets[k],k*105);
+     if(!await v5Sleep(500,epoch))return;
      if(!actor.alive||clock.done||epoch!==v5Epoch)return;
      for(const [k,index] of targets.entries()){
-       if(allies[index]<=0)continue;
-       v5StampContact(index);
-       flash(index,actor.atk*.47);
-       // D32 "Monday startup": slow, capped by shared effects engine.
-       if(k===0||k===2)v4AddStatus(index,'slow',2400);
+       if(allies[index]>0){
+         v5StampContact(index);
+         flash(index,actor.atk*.47);
+         // D32 "Monday startup": apply to the exact teammate on contact.
+         if(k===0||k===2)v4AddStatus(index,'slow',2400);
+       }
+       if(k<targets.length-1){
+        if(!await v5Sleep(105,epoch))return;
+        if(!actor.alive||clock.done||epoch!==v5Epoch)return;
+       }
      }
      shake(false);
    }else if(kind==='meeting'){
