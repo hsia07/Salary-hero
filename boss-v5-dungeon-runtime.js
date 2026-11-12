@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V4 七光束＋過勞昏迷／週一病／薪延｜Lv.85 數值僅供驗收';
+document.querySelector('.footer .hint').textContent='V5.2 四波副本｜高清精英三招／七光束魔王｜Lv.85 測試數值';
 const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
 const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
 const clock={energy:0,hp:100,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false};
@@ -36,6 +36,12 @@ function v4UpdateBadges(){
    if(v4Has(i,'stun')&&allies[i]>0){
      if(!stunArt){stunArt=document.createElement('div');stunArt.className='v5StunArt';u.append(stunArt)}
    }else if(stunArt)stunArt.remove();
+   for(const [id,cls] of [['slow','v5SlowArt'],['paycut','v5PaycutArt']]){
+     let art=u.querySelector('.'+cls);
+     if(v4Has(i,id)&&allies[i]>0){
+       if(!art){art=document.createElement('div');art.className=cls;u.append(art)}
+     }else if(art)art.remove();
+   }
    u.classList.toggle('v4Slowed',v4Has(i,'slow'));
  });
 }
