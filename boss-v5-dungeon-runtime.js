@@ -1014,6 +1014,8 @@ window.__salaryBossV5={
  get shields(){return v59Shields.map(s=>({hp:s.hp,source:s.source,expires:s.expires}))},
  get heroes(){return v59AI?.ALLY_ROLES||[]},
  get activeSkills(){return [...v60Events]},
+ get bossHP(){return clock.hp},
+ get skillTime(){return v4Time},
  get guardState(){return {...v60Guard}},
  get skillCooldowns(){return {...v60Cooldown}},
  get guardActive(){return v60Guard.expires>v4Time&&allies[0]>0},
@@ -1089,7 +1091,7 @@ if(v4Has(i,'slow')&&Math.floor((clock.allyTurn-1)/7)%2===1){
 }
 unit.classList.remove('attack');void unit.offsetWidth;unit.classList.add('attack');
 setTimeout(()=>unit.classList.remove('attack'),500/clock.pace);
-const damage=Math.max(4,Math.round(7*v59AI.ALLY_ROLES[i].attack/128)); // Preserve narrow Boss-win balance while applying each role's attack stat.
+const damage=Math.max(4,Math.round(8.5*v59AI.ALLY_ROLES[i].attack/128)); // V6: class skills use their own turns; boss DPS adjusted moderately, not a free global heal.
 setHp(clock.hp-damage);
 let p=pointBoss(),n=piece('span','v2Dmg hero',p.x,p.y);
 n.textContent='-'+(damage*11900).toLocaleString();
