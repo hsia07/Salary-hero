@@ -8,7 +8,7 @@ const mimes={'.html':'text/html; charset=utf-8','.mjs':'text/javascript; charset
 const server=createServer((req,res)=>{try{
  const rel=decodeURIComponent(new URL(req.url,'http://localhost').pathname),file=resolve(cwd,'.'+rel);
  if(!file.startsWith(cwd+'/')){res.writeHead(403);return res.end('Forbidden')}
- res.writeHead(200,{'Content-Type':mimes[extname(file)]||'application/octet-stream'});res.end(readFileSync(file));
+ const bytes=readFileSync(file);res.writeHead(200,{'Content-Type':mimes[extname(file)]||'application/octet-stream'});res.end(bytes);
  }catch(e){res.writeHead(404);res.end(e.message)}});
 await new Promise(ok=>server.listen(8790,'127.0.0.1',ok));
 let browser,page;const errors=[],waves=[];let step='start';
