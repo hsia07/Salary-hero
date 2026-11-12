@@ -41,6 +41,18 @@ try{
  assert.deepEqual(Object.values(info.assets).map(x=>x.frames),[4,5,3,4]);
  for(const d of Object.values(info.assets))assert.equal(d.width,d.frames*256,'real HD WebP spritesheets have equal 256px cells');
  assert.ok(info.stars>0&&info.stamp>0,'both impact overlays are actual loaded art');
+ stage='actual-hero-contact';
+ // An illustrated sprite or its ranged projectile must reach the enemy
+ // before attack damage applies; no more idle heroes dealing phantom hits.
+ await page.waitForFunction(
+   ()=>window.__salaryBossV5?.heroContacts?.some(h=>h.wave===3),
+   null,{timeout:14000}
+ );
+ const contact=await page.evaluate(()=>__salaryBossV5.heroContacts.filter(h=>h.wave===3));
+ assert.ok(contact.length>=1,'a real timed attack must land on the elite wave');
+ assert.ok(contact.every(c=>['melee','ranged'].includes(c.role)),'each hit must record its real contact type');
+ assert.ok(contact.every(c=>c.damage>0&&c.enemy),'contact hits require target and positive damage');
+
  mkdirSync('artifacts',{recursive:true});
  await page.screenshot({path:join('artifacts','boss-v5-red-stamp-elite-idle.png')});
  stage='paper-attack';
