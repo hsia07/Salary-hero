@@ -40,3 +40,10 @@ test('guard prioritizes lowest effective HP percentage when max HP differs',()=>
  assert.equal(chooseGuardTarget([100,40,90],[0,20,0],0,[150,100,200]),2);
  assert.equal(chooseGuardTarget([100,0,0],[0,0,0],0,[150,100,200]),-1);
 });
+
+test('guard skill threshold is a ratio and remains compatible with varied HP pools',()=>{
+ const hp=[100,90,65],maxHp=[150,200,100];
+ const target=chooseGuardTarget(hp,[0,0,0],0,maxHp);
+ assert.equal(target,1);
+ assert.ok(hp[target]/maxHp[target]<ACTIVE_SKILLS.guard.triggerBelow);
+});

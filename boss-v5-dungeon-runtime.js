@@ -219,9 +219,9 @@ function v60Reset(full=true){
 }
 function v60UseGuard(){
  if(clock.done||allies[0]<=35||v4Has(0,'stun')||v4Time-v60Cooldown.guard<v60AI.ACTIVE_SKILLS.guard.cooldownMs)return false;
- const candidate=v60AI.chooseGuardTarget(allies,v59Shields.map(x=>x.hp),0);
+ const candidate=v60AI.chooseGuardTarget(allies,v59Shields.map(x=>x.hp),0,v59MaxHp);
  const cfg=v60AI.ACTIVE_SKILLS.guard;
- if(candidate<0||allies[candidate]>=cfg.triggerBelow*100&&clock.energy<75)return false;
+ if(candidate<0||allies[candidate]/v59MaxHp[candidate]>=cfg.triggerBelow&&clock.energy<75)return false;
  v60Cooldown.guard=v4Time;
  v60Guard.target=candidate;v60Guard.expires=v4Time+cfg.durationMs;
  v60Fx(team[0],'GuardCast',['guard-watch-shield.svg','guard-escort-wings.svg'],650);
