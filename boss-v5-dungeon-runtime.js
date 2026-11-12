@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V5.8 四波副本｜七人隊形 3+4／無重疊｜Lv.85 測試數值';
+document.querySelector('.footer .hint').textContent='V5.9 四波副本｜職業分流選敵／醫官補血／全隊護盾｜Lv.85 測試值';
 // V5.8: actual seven visible units — 3 backline + 4 frontline, no duplicate center column.
 const positions=[[12.5,75],[37.5,75],[87.5,75],[17.5,26],[50,26],[82.5,26],[62.5,75]];
 const allies=Array(7).fill(100);
@@ -67,6 +67,7 @@ setInterval(()=>{
  const now=performance.now(),elapsed=Math.min(180,Math.max(0,now-v4Wall));v4Wall=now;
  if(!clock.paused&&!clock.done)v4Time+=elapsed*clock.pace;
  v4UpdateBadges();
+ v59UpdateShields();
 },100);
 window.__salaryBossV4={get phase(){return v3Fx.className},get beamCount(){return v4BeamCount},get ultimaHits(){return [...v4UltHits]},get health(){return [...allies]},get statuses(){return v4Status.map((m,i)=>[...m].filter(([k])=>v4Has(i,k)).map(([k])=>k))},get wave(){return clock.wave},trigger:()=>{if(clock.busy||clock.done)return false;setEnergy(100);bossStep();return true;}};
 let bossTimer,allyTimer;
@@ -78,7 +79,144 @@ function setEnergy(v){clock.energy=Math.max(0,Math.min(100,v));$('energyFill').s
 function setHp(v){clock.hp=Math.max(0,v);const pct=100*clock.hp/(clock.maxHp||100);hpFill.style.width=pct+'%';hpText.textContent=Math.round(pct)+'%';if(!clock.rage&&clock.wave===4&&pct<=60){clock.rage=true;root.classList.add('v2Rage');warning.textContent='狂暴化｜加班永無止境';warning.classList.add('active');setTimeout(()=>warning.classList.remove('active'),850);setEnergy(clock.energy+20)}}
 function label(t,on=false){warning.textContent=t;warning.classList.toggle('active',on);status.textContent=t}
 function ring(i,ult){const p=center(team[i]);let e=piece('div','v2Ring'+(ult?' ult':''),p.x,p.y);setTimeout(()=>e.remove(),1100/clock.pace)}
-function flash(i,amt,heavy=false){if(allies[i]<=0)return;amt=clock.wave===4?Math.round(amt*1.4*10)/10:amt;let unit=team[i],p=center(unit);piece('img','v2Slash',p.x,p.y-10,ART.parts.slash_fx);let n=piece('span','v2Dmg',p.x,p.y-20);n.textContent='-'+(amt*630).toLocaleString();allies[i]=Math.max(0,allies[i]-amt);unit.querySelector('.v2Health').style.width=allies[i]+'%';unit.classList.remove('v2Hit');void unit.offsetWidth;unit.classList.add('v2Hit');setTimeout(()=>unit.classList.remove('v2Hit'),580/clock.pace);if(!allies[i])unit.classList.add('v2Down')}
+
+/* V5.9 party skill controller: healer, engineer, and wave-win rescue.
+   HP is currently normalized to 100 per character in this V5 sandbox.
+   All formulas use target's own maxHP to support future RPG stat scale. */
+let v59AI=null;
+const v59MaxHp=Array(7).fill(100);
+const v59Shields=Array.from({length:7},()=>({hp:0,expires:0,source:''}));
+const v59Cooldown={heal:-Infinity,shield:-Infinity};
+const v59Events=[],v59TargetEvents=[];
+const v59Art='./art/s1/support-vfx/';
+function v59Log(e){v59Events.push({...e,at:v4Time,wave:clock.wave});if(v59Events.length>100)v59Events.shift()}
+team.forEach((u,i)=>{
+ const meter=document.createElement('i');meter.className='v59ShieldMeter';
+ u.querySelector('.hp').append(meter);
+ u.dataset.role=['guardian','fighter','assassin','healer','mage','protector','commander'][i];
+});
+function v59AddLayer(unit,className,parts,duration){
+ const wrap=document.createElement('div');wrap.className='v59Spell '+className;
+ for(const part of parts){
+  const img=document.createElement('img');img.alt='';img.className='v59SpellPart '+part.cls;
+  img.src=v59Art+part.src;wrap.append(img);
+ }
+ unit.append(wrap);
+ if(duration)setTimeout(()=>wrap.remove(),Math.max(500,duration)/Math.max(.2,clock.pace));
+ return wrap;
+}
+function v59ShieldVisual(i){
+ const u=team[i],data=v59Shields[i];
+ const active=data.hp>0&&data.expires>v4Time&&allies[i]>0;
+ const prev=u.querySelector('.v59ShieldPermanent');
+ if(active&&!prev){
+  v59AddLayer(u,'v59ShieldPermanent',[{src:'shield-glass.svg',cls:'v59Glass'},{src:'shield-runes.svg',cls:'v59Runes'}],0);
+ }else if(!active&&prev){prev.remove()}
+ const meter=u.querySelector('.v59ShieldMeter');
+ if(meter)meter.style.width=active?Math.min(100,data.hp/v59MaxHp[i]*100)+'%':'0%';
+}
+function v59UpdateShields(){
+ for(let i=0;i<7;i++){
+  const d=v59Shields[i];
+  if(d.hp>0&&(d.expires<=v4Time||allies[i]<=0)){d.hp=0;d.source='';}
+  v59ShieldVisual(i);
+ }
+}
+function v59ApplyShield(i,ratio,source,duration){
+ if(allies[i]<=0)return 0;
+ const before=v59Shields[i].hp;
+ const add=v59AI.shieldForTarget(v59MaxHp[i],ratio);
+ v59Shields[i].hp=v59AI.capShield(before,add,v59MaxHp[i]);
+ v59Shields[i].expires=Math.max(v59Shields[i].expires,v4Time+duration);
+ v59Shields[i].source=source;
+ v59ShieldVisual(i);
+ const gained=+(v59Shields[i].hp-before).toFixed(2);
+ if(gained>0)v59Log({type:'shield',source,target:i,value:gained});
+ return gained;
+}
+function v59Healing(i,ratio=.095){
+ if(allies[i]<=0)return 0;
+ const max=v59MaxHp[i],value=v59AI.healForTarget(max,ratio)*(v4Has(i,'paycut')?.5:1);
+ const granted=Math.min(max-allies[i],value);
+ if(granted<=0)return 0;
+ allies[i]=Math.min(max,allies[i]+value);
+ team[i].querySelector('.v2Health').style.width=(allies[i]/max*100)+'%';
+ v59AddLayer(team[i],'v59Healing',[{src:'heal-cup.svg',cls:'v59Cup'},{src:'heal-petals.svg',cls:'v59Petals'}],920);
+ const p=center(team[i]),n=piece('span','v2Dmg hero',p.x,p.y-24);
+ n.textContent='+'+granted.toFixed(1)+' HP';
+ v59Log({type:'heal',source:'咖啡醫官',target:i,value:+granted.toFixed(2)});
+ return granted;
+}
+function v59TrySupport(i){
+ if(!v59AI||allies[i]<=0||clock.paused||clock.done||v4Has(i,'stun'))return false;
+ if(i===3&&v4Time-v59Cooldown.heal>=v59AI.SUPPORT_RULES.healer.cooldownMs){
+  const shields=v59Shields.map(s=>s.hp);
+  const target=v59AI.pickCriticalAlly(allies,v59MaxHp,shields);
+  if(target>=0&&allies[target]/v59MaxHp[target]<=v59AI.SUPPORT_RULES.healer.triggerBelow){
+   v59Cooldown.heal=v4Time;
+   v59AddLayer(team[i],'v59CastingHeal',[{src:'heal-petals.svg',cls:'v59Petals'}],580);
+   v59Healing(target);
+   return true;
+  }
+ }
+ if(i===5&&v4Time-v59Cooldown.shield>=v59AI.SUPPORT_RULES.protector.cooldownMs){
+  const endangered=allies.filter((hp,j)=>hp>0&&hp/v59MaxHp[j]<v59AI.SUPPORT_RULES.protector.triggerLowHp).length;
+  const urgent=clock.wave===4&&clock.energy>=65;
+  if(endangered>=2||urgent){
+   v59Cooldown.shield=v4Time;
+   v59AddLayer(team[i],'v59CastingShield',[{src:'shield-runes.svg',cls:'v59Runes'}],820);
+   const amount=[];
+   for(let j=0;j<7;j++)if(allies[j]>0)amount.push(v59ApplyShield(j,v59AI.SUPPORT_RULES.protector.shieldPercentOfTargetMaxHp,'機械工程師・全隊護盾',v59AI.SUPPORT_RULES.protector.durationMs));
+   v59Log({type:'team-shield-cast',source:'機械工程師',targets:amount.length});
+   return true;
+  }
+ }
+ return false;
+}
+function v59WaveRescue(){
+ if(!v59AI)return;
+ const target=v59AI.pickCriticalAlly(allies,v59MaxHp,v59Shields.map(s=>s.hp));
+ if(target<0)return;
+ const gained=v59ApplyShield(target,v59AI.SUPPORT_RULES.waveRescue.shieldPercentOfTargetMaxHp,'薪奴・勝利護盾',v59AI.SUPPORT_RULES.waveRescue.durationMs);
+ if(gained>0){v59Log({type:'wave-rescue',target,value:gained});v59AddLayer(team[target],'v59RescueGlow',[{src:'shield-impact.svg',cls:'v59Burst'}],800)}
+}
+function v59Reset(){
+ for(const d of v59Shields){d.hp=0;d.expires=0;d.source=''}
+ v59Cooldown.heal=-Infinity;v59Cooldown.shield=-Infinity;
+ v59Events.length=0;v59TargetEvents.length=0;
+ team.forEach(u=>u.querySelectorAll('.v59Spell').forEach(e=>e.remove()));
+ v59UpdateShields();
+}
+
+function flash(i,amt,heavy=false){
+ if(allies[i]<=0)return;
+ amt=clock.wave===4?Math.round(amt*1.4*10)/10:amt;
+ let unit=team[i],p=center(unit);
+ const shield=v59Shields[i];
+ const active=shield.hp>0&&shield.expires>v4Time;
+ let absorbed=0;
+ if(active){
+   const result=v59AI.absorbHit(allies[i],shield.hp,amt);
+   absorbed=result.absorbed;shield.hp=result.shield;
+   allies[i]=result.health;
+   if(absorbed>0){
+     const img=v59AddLayer(unit,'v59ShieldImpact',[{src:'shield-impact.svg',cls:'v59Burst'}],550);
+     if(shield.hp<=0)v59Log({type:'shield-break',target:i,absorbed});
+     v59Log({type:'absorb',target:i,value:absorbed});
+   }
+ }else allies[i]=Math.max(0,allies[i]-amt);
+ const actual=Math.max(0,amt-absorbed);
+ if(actual>0)piece('img','v2Slash',p.x,p.y-10,ART.parts.slash_fx);
+ const n=piece('span','v2Dmg',p.x,p.y-20);
+ n.textContent=(absorbed>0?'盾 '+absorbed.toFixed(1)+' / ':'')+'-'+(actual*630).toLocaleString();
+ unit.querySelector('.v2Health').style.width=allies[i]/v59MaxHp[i]*100+'%';
+ v59ShieldVisual(i);
+ if(actual>0){
+  unit.classList.remove('v2Hit');void unit.offsetWidth;unit.classList.add('v2Hit');
+  setTimeout(()=>unit.classList.remove('v2Hit'),580/clock.pace);
+ }
+ if(!allies[i])unit.classList.add('v2Down');
+}
 function shake(big=false){root.classList.remove('v2Shake','v2UltShake');void root.offsetWidth;root.classList.add(big?'v2UltShake':'v2Shake');setTimeout(()=>root.classList.remove('v2Shake','v2UltShake'),big?700:360)}
 function effectTravel(i){let from=pointBoss(),to=center(team[i]);let dx=to.x-from.x,dy=to.y-from.y;let path=piece('div','v2Trail',from.x,from.y);path.style.width=Math.hypot(dx,dy)+'px';path.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';let p=piece('img','v2Paper',from.x,from.y,ART.parts.paper_stack);p.animate([{transform:'translate(-50%,-50%) scale(.12) rotate(-15deg)'},{transform:'translate('+(dx-40)+'px,'+(dy-40)+'px) scale(.38) rotate(290deg)'}],{duration:540/clock.pace,easing:'ease-in',fill:'forwards'})}
 function available(list){return list.filter(i=>allies[i]>0)}
@@ -633,7 +771,7 @@ function v55BeginHeroAttack(index,target,damage){
   projectile?.remove();
   v55Actions.delete(index);
  }
- const action={cleanup};v55Actions.set(index,action);
+ const action={cleanup,targetId:target.id};v55Actions.set(index,action);
  function frame(now){
   if(closed)return;
   if(epoch!==v5Epoch||clock.done||!attacker.isConnected||clock.wave===4){cleanup();return}
@@ -691,17 +829,21 @@ function v5PartyVsMobs(){
  if(v4Has(i,'slow')&&Math.floor(clock.allyTurn/7)%2===1)return;
  const targets=encounter.enemies.filter(e=>e.alive);
  if(!targets.length)return;
- const target=targets.find(e=>e.elite)||targets.slice().sort((a,b)=>a.hp-b.hp)[0];
- const damage=21+(i%3)*3;
+ if(v59TrySupport(i))return;
+ // Every class has independent target preferences; missiles in flight reserve
+ // a portion of the enemy's attention to avoid unrealistic universal focus.
+ const reservations={};
+ for(const task of v55Actions.values())if(task.targetId)reservations[task.targetId]=(reservations[task.targetId]||0)+1;
+ const heroP=center(team[i]),battleRect=root.getBoundingClientRect();
+ const normalized=(p)=>({x:(p.x-battleRect.left)/battleRect.width*100,y:(p.y-battleRect.top)/battleRect.height*100});
+ const choices=targets.map(e=>{const p=normalized(center(e.node));return {id:e.id,species:e.species,elite:e.elite,alive:e.alive,hp:e.hp,maxHp:e.maxHp,...p}});
+ const choice=v59AI.pickTarget(i,choices,{heroPosition:normalized(heroP),reservations});
+ const target=targets.find(e=>e.id===choice?.id)||targets[0];
+ const hero=v59AI.ALLY_ROLES[i];
+ const damage=Math.max(5,Math.round(21*hero.attack/128));
+ v59TargetEvents.push({actor:i,role:hero.role,target:target.id,species:target.species,wave:clock.wave});
+ if(v59TargetEvents.length>80)v59TargetEvents.shift();
  v55BeginHeroAttack(i,target,damage);
- if(clock.allyTurn%7===0){
-  allies.forEach((v,j)=>{
-   if(v>0){
-    allies[j]=Math.min(100,v+(v4Has(j,'paycut')?1.5:3));
-    team[j].querySelector('.v2Health').style.width=allies[j]+'%';
-   }
-  });
- }
 }
 function v5ClearWave(){
  if(!encounter||encounter.clearing||clock.done)return;
@@ -714,6 +856,7 @@ function v5ClearWave(){
     allies[i]=Math.min(100,hp+10);
     team[i].querySelector('.v2Health').style.width=allies[i]+'%';
   }});
+  v59WaveRescue();
   v5AdvanceToWave(was+1);
  });
 }
@@ -735,6 +878,10 @@ window.__salaryBossV5={
  get eliteSkills(){return [...v5EliteSkills]},
  get eliteEffects(){return [...v52Effects]},
  get heroContacts(){return [...v55Contacts]},
+ get tacticalTargets(){return [...v59TargetEvents]},
+ get supportEvents(){return [...v59Events]},
+ get shields(){return v59Shields.map(s=>({hp:s.hp,source:s.source,expires:s.expires}))},
+ get heroes(){return v59AI?.ALLY_ROLES||[]},
  get activeHeroAttacks(){return v55Actions.size},
  devDefeatElite:()=>{
   // An isolated art QA hook, available only in developer preview.
@@ -768,6 +915,7 @@ function partyStep(){if(clock.wave<4)return v5PartyVsMobs();if(clock.paused||clo
 clock.allyTurn=(clock.allyTurn||0)+1;
 const i=(clock.allyTurn-1)%7,unit=team[i];
 if(allies[i]<=0)return;
+if(v59TrySupport(i))return;
 if(v4Has(i,'stun')){v4Ribbon.textContent='💤 過勞昏迷：第 '+(i+1)+' 位同事無法行動';return;}
 if(v4Has(i,'slow')&&Math.floor((clock.allyTurn-1)/7)%2===1){
   v4Ribbon.textContent='🐌 週一開機失敗：第 '+(i+1)+' 位同事出手延遲';return;
@@ -778,17 +926,9 @@ const damage=7+((clock.allyTurn%3)===0?1:0);
 setHp(clock.hp-damage);
 let p=pointBoss(),n=piece('span','v2Dmg hero',p.x,p.y);
 n.textContent='-'+(damage*11900).toLocaleString();
-if(clock.allyTurn%7===0){
-  allies.forEach((v,j)=>{
-    if(v>0){
-      const heal=v4Has(j,'paycut')?6:12;
-      allies[j]=Math.min(100,v+heal);
-      team[j].querySelector('.v2Health').style.width=allies[j]+'%';
-    }
-  });
-}
+// No phantom team regeneration: only real support skills restore health.
 if(clock.hp<=0)v5Victory();}
-function restart(){v55ClearActions();++v3Token;++v5Epoch;v3Clean();v4ClearStatuses();clearInterval(bossTimer);clearInterval(allyTimer);Object.assign(clock,{energy:0,hp:165,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false});allies.fill(100);team.forEach(u=>{u.classList.remove('v2Down','v2Hit');u.querySelector('.v2Health').style.width='100%'});v5Complete.classList.remove('show');v5HideBanner();root.classList.remove('paused','v2Ult','v2Rage');frame.hidden=true;rig.hidden=false;plane.replaceChildren();label('地獄星期一｜四波副本・真正小怪先出場');v4Ribbon.textContent='Lv.85 測試隊伍｜小怪→精英→魔王';setHp(165);setEnergy(0);$('speed').textContent='倍速 ×1';$('pace').textContent='×1';$('pause').textContent='暫停';v5AdvanceToWave(1);run()}
+function restart(){v55ClearActions();v59Reset();++v3Token;++v5Epoch;v3Clean();v4ClearStatuses();clearInterval(bossTimer);clearInterval(allyTimer);Object.assign(clock,{energy:0,hp:165,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false});allies.fill(100);team.forEach(u=>{u.classList.remove('v2Down','v2Hit');u.querySelector('.v2Health').style.width='100%'});v5Complete.classList.remove('show');v5HideBanner();root.classList.remove('paused','v2Ult','v2Rage');frame.hidden=true;rig.hidden=false;plane.replaceChildren();label('地獄星期一｜四波副本・真正小怪先出場');v4Ribbon.textContent='Lv.85 測試隊伍｜小怪→精英→魔王';setHp(165);setEnergy(0);$('speed').textContent='倍速 ×1';$('pace').textContent='×1';$('pause').textContent='暫停';v5AdvanceToWave(1);run()}
 function run(){clearInterval(bossTimer);clearInterval(allyTimer);bossTimer=setInterval(bossStep,2600/clock.pace);allyTimer=setInterval(partyStep,1100/clock.pace)}
 for(let id of ['speed','pause','restart']){let old=$(id),newNode=old.cloneNode(true);old.replaceWith(newNode)}
 $('speed').onclick=()=>{clock.pace=clock.pace===1?2:clock.pace===2?3:1;$('speed').textContent='倍速 ×'+clock.pace;$('pace').textContent='×'+clock.pace;run()};
@@ -797,8 +937,8 @@ $('restart').onclick=restart;// V4 test hook is exposed only on the development 
 const v3Demo=document.createElement('button');v3Demo.id='v3DevUlt';v3Demo.textContent='開發驗收｜立即展示大招';root.append(v3Demo);
 if(new URLSearchParams(location.search).get('dev')==='1')document.body.classList.add('v3-dev');
 v3Demo.onclick=()=>{if(clock.wave!==4||clock.busy||clock.done||clock.inUltimate)return;setEnergy(100);bossStep()};
-import('./v19/s1-hell-monday-dungeon.mjs')
- .then(m=>{mondaySpec=m.HELL_MONDAY;mondaySpawn=m.spawnMondayWave;restart();const q=new URLSearchParams(location.search);const w=Number(q.get('wave'));if(q.get('dev')==='1'&&Number.isInteger(w)&&w>1&&w<=4)v5AdvanceToWave(w,true);})
+Promise.all([import('./v19/s1-hell-monday-dungeon.mjs'),import('./v19/s1-party-ai.mjs')])
+ .then(([m,ai])=>{mondaySpec=m.HELL_MONDAY;mondaySpawn=m.spawnMondayWave;v59AI=ai;restart();const q=new URLSearchParams(location.search);const w=Number(q.get('wave'));if(q.get('dev')==='1'&&Number.isInteger(w)&&w>1&&w<=4)v5AdvanceToWave(w,true);})
  .catch(e=>{console.error('Monday wave loading failed',e);v5SetBanner('副本載入失敗',e.message);});
 
 })();
