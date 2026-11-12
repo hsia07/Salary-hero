@@ -406,11 +406,11 @@ async function v5MobStep(){
  if(clock.paused||clock.busy||clock.done||encounter?.clearing||encounter?.kind==='boss')return;
  const living=encounter.enemies.filter(e=>e.alive);if(!living.length)return;
  clock.busy=true;const epoch=v5Epoch;
- const actor=living[v5EnemyTurn++%living.length];clock.turn++;if(actor.elite)actor.abilityCount++;
+ const supervisor=living.find(e=>e.elite);const actor=supervisor&&v5EnemyTurn%2===0?supervisor:living[(v5EnemyTurn+1)%living.length];v5EnemyTurn++;clock.turn++;if(actor.elite)actor.abilityCount++;
  const candidates=available([0,1,2,3,4,5,6]);if(!candidates.length){v5Defeat();clock.busy=false;return}
  const target=candidates[(clock.turn+v5EnemyTurn*2)%candidates.length];
  const eliteMeeting=actor.species==='red-stamp-manager'&&actor.abilityCount%3===2;
- const eliteSeal=actor.species==='red-stamp-manager'&&actor.abilityCount%4===0;
+ const eliteSeal=actor.species==='red-stamp-manager'&&actor.abilityCount%3===0;
  const eliteSkill=eliteMeeting?'無限會議・全員留下！':eliteSeal?'紅章駁回・重做！':'主管蓋章・立刻交件';
  if(actor.elite)v5EliteSkills.push(eliteSkill);
  label(actor.name+'｜'+(actor.elite?eliteSkill:'怪物襲擊'));
