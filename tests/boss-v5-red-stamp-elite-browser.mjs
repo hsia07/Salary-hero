@@ -105,6 +105,7 @@ try{
  const melee=await page.evaluate(()=>__salaryBossV5.heroContacts.filter(h=>h.wave===3&&h.enemy==='red-stamp-manager'&&h.role==='melee'));
  assert.ok(melee.length>0,'melee teammates must physically touch the supervisor');
  assert.ok(melee.every(h=>h.gap>=h.minimumSafeGap-12),'no melee unit may teleport into the elite face/nameplate');
+ assert.ok(melee.every(h=>!h.labelOverlap&&!h.barOverlap),'melee hero body may not cover an enemy nameplate or HP bar');
  stage='death-cleanup';
  await page.evaluate(()=>__salaryBossV5.skipTo(3));
  await page.waitForSelector('.v5Enemy.elite[data-species="red-stamp-manager"]',{state:'attached',timeout:7000});
