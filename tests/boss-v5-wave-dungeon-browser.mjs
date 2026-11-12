@@ -25,6 +25,43 @@ try{
  assert.equal(w1.wave,1);assert.equal(w1.kind,'mob');assert.equal(w1.boss,false);
  assert.equal(w1.count,3);assert.equal(w1.heroCount,7);
  assert.equal(w1.global.enemyHp,1.65);assert.equal(w1.global.enemyAttack,1.4);
+
+ stage='seven-visible-slots';
+ async function checkPortraitTeamLayout(width,height){
+  await page.setViewportSize({width,height});
+  const layout=await page.evaluate(()=>{
+   const zone=document.querySelector('.team-zone').getBoundingClientRect();
+   const units=[...document.querySelectorAll('.team-zone .unit')];
+   const rects=units.map((u,i)=>{
+    const keep=u.style.translate;u.style.translate='0px 0px';
+    const r=u.getBoundingClientRect();u.style.translate=keep;
+    return {index:i,slot:u.dataset.squadSlot,row:u.dataset.squadRow,name:u.querySelector('small')?.textContent||'',
+      left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};
+   });
+   return {zone:{left:zone.left,right:zone.right,top:zone.top,bottom:zone.bottom},rects};
+  });
+  const {rects,zone}=layout;
+  assert.equal(rects.length,7,'all seven actual teammates must occupy the screen');
+  assert.deepEqual(rects.map(r=>r.slot),['1','2','3','4','5','6','7']);
+  assert.equal(rects.filter(r=>r.row==='front').length,4,'front row must have four members');
+  assert.equal(rects.filter(r=>r.row==='rear').length,3,'rear row must have three members');
+  assert.equal(new Set(rects.map(r=>r.name)).size,7,'all teammate labels must be distinct');
+  for(const r of rects){
+   assert.ok(r.left>=zone.left-2&&r.right<=zone.right+2,'unit '+(r.index+1)+' horizontally within party bounds at '+width+'x'+height);
+   assert.ok(r.top>=zone.top-2&&r.bottom<=zone.bottom+2,'unit '+(r.index+1)+' vertically within party bounds at '+width+'x'+height);
+  }
+  for(let i=0;i<rects.length;i++)for(let j=i+1;j<rects.length;j++){
+    const a=rects[i],b=rects[j];
+    const overlapW=Math.min(a.right,b.right)-Math.max(a.left,b.left);
+    const overlapH=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
+    assert.ok(overlapW<=2||overlapH<=2,'teammates '+(i+1)+'/'+(j+1)+' overlap at '+width+'x'+height);
+  }
+  return layout;
+ }
+ const normalLayout=await checkPortraitTeamLayout(390,844);
+ const smallLayout=await checkPortraitTeamLayout(320,690);
+ await page.setViewportSize({width:390,height:844});
+
  const art=await page.evaluate(async()=>{
   const im=new Image();im.src='./art/v19/runtime/monsters/paper-gremlin/idle.png';await im.decode();
   return {w:im.naturalWidth,h:im.naturalHeight};
