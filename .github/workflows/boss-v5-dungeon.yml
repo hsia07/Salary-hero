@@ -1,0 +1,45 @@
+name: Salary Hero Monday Dungeon V5 Acceptance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "boss-v5-play.html"
+      - "boss-v5-dungeon-runtime.js"
+      - "boss-v5-dungeon.css"
+      - "v19/s1-hell-monday-dungeon.mjs"
+      - "tests/s1-hell-monday-dungeon.test.mjs"
+      - "tests/boss-v5-wave-dungeon-browser.mjs"
+      - ".github/workflows/boss-v5-dungeon.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  four-wave-mobile-dungeon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install lightweight browser driver
+        run: npm install --no-save --ignore-scripts playwright-core@1.56.1
+      - name: Verify combat code and config
+        run: |
+          node --check boss-v5-dungeon-runtime.js
+          node --check tests/boss-v5-wave-dungeon-browser.mjs
+          node --test tests/s1-hell-monday-dungeon.test.mjs
+          test -s art/v19/runtime/monsters/paper-gremlin/attack.png
+          test -s art/v19/runtime/monsters/chair-golem/attack.webp
+      - name: Verify four waves, real sprite assets and final Boss in mobile browser
+        run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-wave-dungeon-browser.mjs
+      - name: Upload rendered screenshots and failure logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boss-v5-four-wave-mobile-review
+          path: artifacts/
+          if-no-files-found: ignore
