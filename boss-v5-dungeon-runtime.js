@@ -194,6 +194,20 @@ function v59Reset(){
 let v60AI=null;
 const v60Cooldown={guard:-Infinity,mage:-Infinity,assassin:-Infinity,cleanse:-Infinity};
 const v60Guard={target:-1,expires:0,guardIndex:0};
+const tieshiAwakening={biographyCleared:false,energy:0,lastCast:-Infinity,activeUntil:0};
+function tieshiBattleEvent(type){document.dispatchEvent(new CustomEvent(type,{detail:{at:v4Time,wave:clock.wave}}))}
+function tieshiGainEnergy(points){tieshiAwakening.energy=Math.min(100,tieshiAwakening.energy+points)}
+function tieshiUltimate(){
+ if(!tieshiAwakening.biographyCleared||clock.done||clock.paused||allies[0]<=0||v4Has(0,'stun')||tieshiAwakening.energy<100||v4Time-tieshiAwakening.lastCast<20000)return false;
+ tieshiAwakening.energy=0;tieshiAwakening.lastCast=v4Time;tieshiAwakening.activeUntil=v4Time+1800;
+ const protectedAllies=[];
+ for(let i=0;i<7;i++)if(allies[i]>0){v59ApplyShield(i,.08,'鐵時・最後一道門',6000);protectedAllies.push(i)}
+ v60Fx(team[0],'GuardCast',['guard-watch-shield.svg','guard-escort-wings.svg'],1800);
+ tieshiBattleEvent('tieshi:awakened-ultimate:start');
+ v60Record({type:'tieshi-awakened-ultimate',caster:0,targets:protectedAllies});
+ label('打卡守衛・鐵時｜最後一道門！');return true;
+}
+
 const v60Busy=new Set(),v60Events=[];
 const v60Art='./art/s1/active-vfx/';
 function v60Record(event){v60Events.push({...event,at:v4Time,wave:clock.wave});if(v60Events.length>120)v60Events.shift();}
@@ -209,6 +223,9 @@ function v60Fx(element,kind,parts,duration){
  return wrap;
 }
 function v60Reset(full=true){
+ if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}
+ if(full){tieshiAwakening.energy=0;tieshiAwakening.lastCast=-Infinity}
+
  v60Guard.target=-1;v60Guard.expires=0;v60Busy.clear();
  team.forEach(u=>u.querySelectorAll('.v60Vfx').forEach(n=>n.remove()));
  v5Field.querySelectorAll('.v60Vfx').forEach(n=>n.remove());
@@ -227,6 +244,7 @@ function v60UseGuard(){
  v60Fx(team[0],'GuardCast',['guard-watch-shield.svg','guard-escort-wings.svg'],650);
  v60Fx(team[candidate],'GuardLink',['guard-watch-shield.svg','guard-escort-wings.svg'],cfg.durationMs);
  v60Record({type:'guard-cast',caster:0,target:candidate,ratio:cfg.redirectRatio,duration:cfg.durationMs});
+ tieshiGainEnergy(30);
  label('打卡守衛｜打卡護衛！');
  return true;
 }
@@ -298,6 +316,7 @@ function v60UseAssassin(){
  return true;
 }
 function v60TrySkill(i){
+ if(i===0&&tieshiUltimate())return true;
  if(!v60AI||clock.done||clock.paused||allies[i]<=0||v4Has(i,'stun'))return false;
  if(i===0)return v60UseGuard();
  if(i===2)return v60UseAssassin();
@@ -310,6 +329,7 @@ function v60Intercept(i,baseDamage){
  const split=v60AI.splitIntercept(baseDamage,v60AI.ACTIVE_SKILLS.guard.redirectRatio);
  v60Fx(team[0],'GuardImpact',['guard-watch-shield.svg','guard-escort-wings.svg'],520);
  v60Record({type:'guard-intercept',target:i,guard:0,redirected:split.guard});
+ tieshiGainEnergy(15);
  // Guard takes own share against own DEF/shield. Prevent recursive protection.
  flash(0,split.guard,false,true);
  return split.target;
@@ -1017,6 +1037,10 @@ window.__salaryBossV5={
  get bossHP(){return clock.hp},
  get skillTime(){return v4Time},
  get guardState(){return {...v60Guard}},
+ get tieshiAwakening(){return {...tieshiAwakening}},
+ devTieshiBiography:(cleared)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.biographyCleared=Boolean(cleared);if(!cleared&&tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}return true},
+ devTieshiEnergy:(energy)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.energy=Math.max(0,Math.min(100,Number(energy)||0));return true},
+ devTieshiCast:()=>new URLSearchParams(location.search).get('dev')==='1'&&tieshiUltimate(),
  get skillCooldowns(){return {...v60Cooldown}},
  get guardActive(){return v60Guard.expires>v4Time&&allies[0]>0},
  devCastClassSkill:(i)=>{
@@ -1079,7 +1103,9 @@ window.__salaryBossV5={
 };
 v5AnimationTimer=setInterval(v5AnimateMobs,120);
 async function bossStep(){if(clock.wave<4)return v5MobStep();if(clock.paused||clock.busy||clock.done)return;clock.busy=true;try{clock.turn++;if(clock.energy>=100)await ultimate();else if(clock.turn%4===0)await bombard();else await normal();if(clock.energy>=100&&!clock.paused&&!clock.done)await ultimate()}finally{clock.busy=false}}
-function partyStep(){if(clock.wave<4)return v5PartyVsMobs();if(clock.paused||clock.done||clock.inUltimate)return;const living=available([0,1,2,3,4,5,6]);if(!living.length){clock.done=true;label('隊伍全滅｜請重新挑戰');return}// Every teammate acts in an independent round robin; debuffs can now stop a *real* action.
+function partyStep(){
+ if(tieshiAwakening.activeUntil>0&&v4Time>=tieshiAwakening.activeUntil){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}
+if(clock.wave<4)return v5PartyVsMobs();if(clock.paused||clock.done||clock.inUltimate)return;const living=available([0,1,2,3,4,5,6]);if(!living.length){clock.done=true;label('隊伍全滅｜請重新挑戰');return}// Every teammate acts in an independent round robin; debuffs can now stop a *real* action.
 clock.allyTurn=(clock.allyTurn||0)+1;
 const i=(clock.allyTurn-1)%7,unit=team[i];
 if(allies[i]<=0)return;

@@ -7,16 +7,18 @@ if(!document.getElementById(STYLE_ID)){
  document.head.append(style);
 }
 const params=new URLSearchParams(location.search);
-let biographyCleared=false,active=false,activeUntil=0,lastAttack=false;
+let biographyCleared=false,active=false;
 let guardian=null,digits=null,dev=null,note=null;
 function ensure(){
  const current=document.querySelector('.team-zone .unit[data-role="guardian"]')||document.querySelector('.team-zone .unit');
  if(!current)return false;
  if(current!==guardian){guardian=current;digits=document.createElement('span');digits.id='tieshi-clock';digits.setAttribute('aria-label','鐵時的終夜打卡盾時間');guardian.append(digits)}
- if(params.get('dev')==='1'&&!dev){dev=document.createElement('button');dev.id='tieshi-battle-dev';dev.type='button';dev.textContent='傳記：未通關';note=document.createElement('div');note.id='tieshi-battle-note';note.textContent='開發測試：切換傳記通關狀態';document.body.append(dev,note);dev.onclick=()=>{biographyCleared=!biographyCleared;dev.textContent='傳記：'+(biographyCleared?'已通關':'未通關');if(!biographyCleared){active=false;activeUntil=0}render()}}
+ if(params.get('dev')==='1'&&!dev){dev=document.createElement('button');dev.id='tieshi-battle-dev';dev.type='button';dev.textContent='傳記：未通關';note=document.createElement('div');note.id='tieshi-battle-note';note.textContent='開發測試：切換傳記通關狀態';document.body.append(dev,note);dev.onclick=()=>{biographyCleared=!biographyCleared;dev.textContent='傳記：'+(biographyCleared?'已通關':'未通關');window.__salaryBossV5?.devTieshiBiography(biographyCleared);if(biographyCleared)window.__salaryBossV5?.devTieshiEnergy(100);else active=false;render()};const cast=document.createElement('button');cast.id='tieshi-cast-dev';cast.type='button';cast.textContent='鐵時覺醒';cast.style.cssText='position:fixed;bottom:90px;right:12px;z-index:9999;background:#68491d;color:#fff;border:1px solid #edb950;border-radius:8px;padding:8px;font-size:11px';cast.onclick=()=>{window.__salaryBossV5?.devTieshiEnergy(100);window.__salaryBossV5?.devTieshiCast()};document.body.append(cast)}
  return true;
 }
 function render(){if(!digits)return;const time=tieshiClockTime({biographyCleared,awakenedUltimateActive:active});digits.textContent=time;digits.classList.toggle('awakened',time==='09:00');if(note)note.textContent=active?'09:00 覺醒演出（測試）':'盾牌時鐘 '+time+'｜守衛攻擊觸發演出';}
-function tick(){if(!ensure())return;const attacking=guardian.classList.contains('attack');if(attacking&&!lastAttack&&biographyCleared){active=true;activeUntil=performance.now()+700}lastAttack=attacking;if(active&&performance.now()>=activeUntil)active=false;render()}
+function tick(){if(!ensure())return;const state=window.__salaryBossV5?.tieshiAwakening;if(state){biographyCleared=state.biographyCleared;active=state.activeUntil>0&&state.activeUntil>window.__salaryBossV5.skillTime}render()}
+document.addEventListener('tieshi:awakened-ultimate:start',()=>{active=true;render()});
+document.addEventListener('tieshi:awakened-ultimate:end',()=>{active=false;render()});
 const ticker=setInterval(tick,80);
 window.__tieshiBattleClockDev={get state(){return{biographyCleared,active,time:tieshiClockTime({biographyCleared,awakenedUltimateActive:active})}},setBiographyCleared(value){biographyCleared=Boolean(value);if(!biographyCleared)active=false;render()},stop(){clearInterval(ticker);dev?.remove();note?.remove();digits?.remove()}};
