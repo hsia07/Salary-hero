@@ -45,7 +45,13 @@ try{
  await page.screenshot({path:join('artifacts','boss-v5-red-stamp-elite-idle.png')});
  stage='paper-attack';
  await page.waitForFunction((kind)=>window.__salaryBossV5?.demoEliteSkill(kind),'paper',{timeout:9000});
+ await page.waitForSelector('.v52PaperHalo',{state:'attached',timeout:6500});
+ const halo=await page.evaluate(()=>({width:parseFloat(getComputedStyle(document.querySelector('.v52PaperHalo')).width),waveExtra:getComputedStyle(document.getElementById('v5GlobalTag')).display}));
+ assert.ok(halo.width<=60,'the paper casting telegraph must not cover the elite actor');
+ assert.equal(halo.waveExtra,'none','Monday modifiers are incorporated into the wave badge without a third overlapping row');
  await page.waitForSelector('.v52FlyingDocument',{state:'attached',timeout:8000});
+ const width=await page.evaluate(()=>parseFloat(getComputedStyle(document.querySelector('.v52FlyingDocument')).width));
+ assert.ok(width<=52,'flying reports must be compact mobile projectiles');
  await page.screenshot({path:join('artifacts','boss-v5-red-stamp-elite-paper-attack.png')});
  await page.waitForFunction(()=>__salaryBossV5.eliteEffects.some(e=>e.type==='flying-document'),null,{timeout:7000});
  await page.waitForTimeout(1200);
@@ -63,7 +69,10 @@ try{
  await page.waitForTimeout(1300);
  stage='stamp';
  await page.waitForFunction((kind)=>window.__salaryBossV5?.demoEliteSkill(kind),'stamp',{timeout:9000});
+ await page.waitForSelector('.v52FlyingSeal',{state:'attached',timeout:6000});
  await page.waitForSelector('.v5StampContact',{state:'attached',timeout:6000});
+ const fxLog=await page.evaluate(()=>__salaryBossV5.eliteEffects);
+ assert.ok(fxLog.some(e=>e.type==='seal-travel'),'seal must travel from the elite to a teammate before HP damage');
  await page.screenshot({path:join('artifacts','boss-v5-red-stamp-elite-stamp.png')});
  const recorded=await page.evaluate(()=>__salaryBossV5.eliteSkills);
  assert.ok(recorded.some(s=>s.includes('主管蓋章')),'stamp attack logged');
