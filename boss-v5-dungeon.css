@@ -69,3 +69,20 @@ body.v3-dev #v5DevSkip{display:block}
 @keyframes v52Caster{0%{opacity:0;transform:rotate(-64deg) scale(.3)}38%{opacity:1;transform:rotate(8deg) scale(1)}73%{opacity:1;transform:rotate(30deg) scale(1.06)}100%{opacity:0;transform:rotate(60deg) scale(1.1)}}
 @keyframes v52PaperHalo{0%{opacity:0;transform:translateY(10px) rotate(-22deg) scale(.4)}28%{opacity:1;transform:translateY(-12px) rotate(18deg) scale(.9)}76%{opacity:1;transform:translateY(-20px) rotate(48deg) scale(1.07)}100%{opacity:0;transform:translateY(-38px) rotate(95deg) scale(1.2)}}
 @media(max-height:720px){.v52FlyingDocument{width:55px;height:62px}}
+
+/* V5.2 mobile hierarchy: wave labels should never obscure the approved scene or figures. */
+.game.v5Mobs #v4StatusRibbon,.game.v5Mobs #v3Countdown{display:none!important}
+.game.v5Mobs #v5WaveHud{top:calc(62px + env(safe-area-inset-top,0px));left:4%;right:4%;gap:3px}
+.game.v5Mobs #v5WaveTitle{font-size:clamp(14px,3.7vw,16px);background:#260f25ba;border:1px solid #a86979;border-radius:12px;padding:4px 13px;box-shadow:0 4px 13px #0b0617a3}
+.game.v5Mobs #v5EnemySummary{font-size:10px;padding:2px 9px;background:#260f25bd}
+.game.v5Mobs #v5GlobalTag{top:calc(121px + env(safe-area-inset-top,0px));left:8%;width:84%;max-width:none;padding:3px 5px;background:#200d27b3;border-radius:9px;font-size:10px;z-index:18}
+.game.v5Mobs #v5EnemyField{top:24%;height:28%}
+.game.v5Mobs .team-zone{top:52%;bottom:20%}
+.game.v5Mobs .v5Enemy.elite{z-index:9}
+.game.v5Mobs .v5Enemy[data-species="red-stamp-manager"]{left:50%;top:42%!important}
+.game.v5Boss #v5GlobalTag{top:calc(143px + env(safe-area-inset-top,0px));font-size:10px;color:#e2c39c;opacity:.82}
+@media(max-height:690px){
+ .game.v5Mobs #v5WaveHud{top:calc(53px + env(safe-area-inset-top,0px))}
+ .game.v5Mobs #v5GlobalTag{top:calc(109px + env(safe-area-inset-top,0px))}
+ .game.v5Mobs #v5EnemyField{top:23%;height:28%}
+}
