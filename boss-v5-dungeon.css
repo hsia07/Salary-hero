@@ -1,0 +1,37 @@
+/* Monday Dungeon V5 — actual independent authored sprite-sheet actors.
+   Non-boss enemy art comes from accepted V19 runtime species frames. */
+#v5WaveHud{position:absolute;z-index:38;top:calc(112px + env(safe-area-inset-top,0px));left:5%;right:5%;pointer-events:none;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+#v5WaveHud[hidden]{display:none}
+#v5WaveTitle{font-size:clamp(13px,3.5vw,17px);font-weight:950;color:#ffe5b8;letter-spacing:1px;text-shadow:0 2px 4px #341023,0 0 12px #a9325f}
+#v5EnemySummary{font-size:11px;font-weight:800;color:#fbd3c9;background:#290d31b6;border:1px solid #6c4965;border-radius:14px;padding:4px 10px}
+#v5GlobalTag{position:absolute;z-index:37;left:5%;top:calc(172px + env(safe-area-inset-top,0px));max-width:90%;text-align:center;font-size:10px;color:#efcda8;text-shadow:0 2px 4px #1e091d}
+#v5EnemyField{position:absolute;z-index:18;top:23%;left:2%;width:96%;height:30%;pointer-events:none;overflow:visible}
+#v5EnemyField[hidden]{display:none!important}
+.v5Enemy{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:105px;height:145px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;isolation:isolate;filter:drop-shadow(0 7px 9px #0b081799)}
+.v5Enemy.elite{width:152px;height:183px;z-index:5}
+.v5Enemy .v5Visual{width:min(100%,124px);height:108px;flex:0 0 108px;background-image:var(--sheet);background-position:0% 0%;background-size:var(--columns) 100%;background-repeat:no-repeat;image-rendering:auto}
+.v5Enemy.elite .v5Visual{width:148px;height:135px;flex-basis:135px}
+.v5Enemy .v5Name{position:relative;z-index:3;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;color:#fff1cb;text-shadow:0 2px 4px #120a12,0 0 9px #180e23;font-weight:900;font-size:clamp(9px,2.3vw,12px)}
+.v5Enemy.elite .v5Name{color:#ffe5a8;font-size:12px}
+.v5Enemy .v5Bar{width:82%;height:7px;background:#360d2a;border:1px solid #ffd09c;border-radius:12px;overflow:hidden;flex:none;margin-top:2px;box-shadow:0 0 10px #230f1cc9}
+.v5Enemy .v5Bar>i{display:block;background:linear-gradient(90deg,#f17554,#e6344e);height:100%;width:100%;transition:width .23s}
+.v5Enemy.elite .v5Bar{height:9px}
+.v5Enemy .v5Shadow{position:absolute;z-index:-1;left:19%;right:19%;bottom:23%;height:14px;background:#180b21a8;filter:blur(7px);border-radius:50%}
+.v5Enemy.hurt .v5Visual{filter:brightness(1.5) sepia(.3) saturate(2)}
+.v5Enemy.down{opacity:.55}
+#v5Transition{position:absolute;inset:0;z-index:63;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:radial-gradient(ellipse,#2c102cad,#0b0718c4);pointer-events:none;opacity:0;visibility:hidden;transition:opacity .3s}
+#v5Transition.show{opacity:1;visibility:visible}
+#v5Transition strong{color:#ffe2a0;font-size:clamp(21px,7vw,31px);text-shadow:0 2px 2px #402135,0 0 25px #f92d6a}
+#v5Transition small{color:#fce0d3;font-size:13px;font-weight:800;text-shadow:0 2px 4px #24101c}
+#v5Complete{position:absolute;z-index:61;top:18%;left:8%;right:8%;display:none;background:#201323db;border:1px solid #efbc92;border-radius:12px;box-shadow:0 0 40px #b23962a0;padding:16px;text-align:center}
+#v5Complete.show{display:block}
+#v5Complete h2{margin:0;color:#ffdf9b;font-size:22px}
+#v5Complete p{font-size:12px;line-height:1.6;color:#f4d6c6;margin:9px 0 0}
+#v5DevSkip{position:absolute;bottom:calc(152px + env(safe-area-inset-bottom,0px));right:8px;z-index:64;border-radius:9px;background:#703b53df;color:#ffe9be;padding:6px 10px;border:1px solid #e9bc8f;font-size:11px;font-weight:800;display:none}
+body.v3-dev #v5DevSkip{display:block}
+.game.v5Mobs .boss-zone,.game.v5Mobs #bossZone{visibility:hidden!important;pointer-events:none}
+.game.v5Mobs .hud{visibility:hidden!important}
+.game.v5Mobs #v3Stage{opacity:0}
+.game.v5Mobs #v3DevUlt{display:none!important}
+.game.v5Boss #v5EnemyField{display:none!important}
+@media(max-height:720px){#v5EnemyField{top:21%;height:32%}#v5WaveHud{top:calc(101px + env(safe-area-inset-top,0px))}#v5GlobalTag{top:calc(153px + env(safe-area-inset-top,0px))}.v5Enemy{height:120px;width:90px}.v5Enemy .v5Visual{height:93px;flex-basis:93px}.v5Enemy.elite{height:150px;width:127px}.v5Enemy.elite .v5Visual{width:125px;height:114px;flex-basis:114px}}
