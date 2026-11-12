@@ -179,3 +179,25 @@ body.v3-dev #v5DevSkip{display:block}
   100%{opacity:0;transform:translate(-50%,-50%) scale(1.34) rotate(16deg)}
 }
 @media(max-height:690px){.v55HeroProjectile{width:43px;height:43px}.v55HitSpark{max-width:60px;max-height:60px}}
+
+/* V5.6 — keep the enemy art, name and HP clean while melee allies approach. */
+.game.v5Mobs .team-zone .unit.v56Lunging{
+ filter:drop-shadow(0 0 5px #ffc69a85);
+}
+.game.v5Mobs .v5Enemy.v56Dead .v5Bar{
+ opacity:0!important;
+ transition:opacity .14s ease-out;
+}
+.game.v5Mobs .v5Enemy.v56Dead{
+ pointer-events:none!important;
+}
+.game.v5Mobs .v5Enemy.v56Gone{
+ opacity:0!important;
+ transform:translate(-50%,-50%) translateY(13px) scale(.89);
+ filter:drop-shadow(0 0 8px #5c2b4c25)!important;
+ transition:opacity .38s ease-out, transform .38s ease-out, filter .38s ease-out;
+}
+.game.v5Mobs .v5Enemy.v56Gone .v5Name,
+.game.v5Mobs .v5Enemy.v56Gone .v5Bar{
+ opacity:0!important;
+}
