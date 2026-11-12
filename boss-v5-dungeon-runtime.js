@@ -573,7 +573,11 @@ function v55Impact(target,actorIndex,damage,role){
  img.style.height=(target.elite?75:56)+'px';
  let n=piece('span','v2Dmg hero',at.x,at.y-14);
  n.textContent='-'+Math.round(damage*470).toLocaleString();
- v55Contacts.push({actor:actorIndex,enemy:target.species,role,damage,at:v4Time,wave:clock.wave});
+ const actorRect=team[actorIndex].getBoundingClientRect(),enemyRect=target.node.getBoundingClientRect();
+ const attackerPosition=center(team[actorIndex]);
+ const gap=Math.hypot(attackerPosition.x-at.x,attackerPosition.y-at.y);
+ const minimumSafeGap=enemyRect.width*.39+actorRect.width*.28;
+ v55Contacts.push({actor:actorIndex,enemy:target.species,role,damage,at:v4Time,wave:clock.wave,gap,minimumSafeGap});
  if(v55Contacts.length>80)v55Contacts.shift();
  v5Health(target,damage);
 }
@@ -709,6 +713,14 @@ window.__salaryBossV5={
  get eliteEffects(){return [...v52Effects]},
  get heroContacts(){return [...v55Contacts]},
  get activeHeroAttacks(){return v55Actions.size},
+ devDefeatElite:()=>{
+  // An isolated art QA hook, available only in developer preview.
+  if(new URLSearchParams(location.search).get('dev')!=='1'||clock.wave!==3||clock.done)return false;
+  const elite=encounter?.enemies.find(e=>e.elite&&e.alive);
+  if(!elite)return false;
+  v5Health(elite,elite.hp);
+  return true;
+ },
  demoEliteSkill:(kind)=>{
   if(new URLSearchParams(location.search).get('dev')!=='1'||clock.wave!==3||clock.busy||clock.done)return false;
   const actor=encounter?.enemies.find(e=>e.elite&&e.alive);
