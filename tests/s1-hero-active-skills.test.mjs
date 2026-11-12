@@ -32,3 +32,11 @@ test('redirect splits damage without amplification; defense gives moderate diffe
  assert.ok(damageDefenseModifier(155)>=.75&&damageDefenseModifier(74)<=1.16);
  assert.equal(scaledDamage(20,128),20);
 });
+
+test('guard prioritizes lowest effective HP percentage when max HP differs',()=>{
+ // Ally 2 has more absolute HP but is in greater danger (40% vs 60%).
+ assert.equal(chooseGuardTarget([100,60,80],[0,0,0],0,[150,100,200]),2);
+ // Existing shield can change which ally needs guarding most.
+ assert.equal(chooseGuardTarget([100,40,90],[0,20,0],0,[150,100,200]),2);
+ assert.equal(chooseGuardTarget([100,0,0],[0,0,0],0,[150,100,200]),-1);
+});

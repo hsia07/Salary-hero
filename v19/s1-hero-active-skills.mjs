@@ -10,12 +10,16 @@ export const ACTIVE_SKILLS=Object.freeze({
  cleanse:{id:'coffee-cleanse',name:'下班醒腦咖啡',cooldownMs:13700,castMs:330,removes:1}
 });
 export const DEBUFF_PRIORITY=Object.freeze(['stun','paycut','slow']);
-export function chooseGuardTarget(health,shields=[],guardIndex=0){
- let choice=-1,ratio=Infinity;
+export function chooseGuardTarget(health,shields=[],guardIndex=0,maxHp=[]){
+ let choice=-1,lowest=Infinity;
  for(let i=0;i<health.length;i++){
-  if(i===guardIndex||health[i]<=0)continue;
-  const effective=health[i]+Math.min(shields[i]??0,10);
-  if(effective<ratio){choice=i;ratio=effective}
+  if(i===guardIndex||!Number.isFinite(health[i])||health[i]<=0)continue;
+  // Compare effective health fractions, not raw HP. The fourth argument is
+  // optional so V6's 100-HP sandbox and existing callers remain compatible.
+  const maximum=Number.isFinite(maxHp[i])&&maxHp[i]>0?maxHp[i]:100;
+  const shield=Number.isFinite(shields[i])?Math.max(0,shields[i]):0;
+  const effective=(health[i]+Math.min(shield,maximum*.1))/maximum;
+  if(effective<lowest){choice=i;lowest=effective}
  }
  return choice;
 }
