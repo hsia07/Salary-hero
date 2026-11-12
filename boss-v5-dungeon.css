@@ -201,3 +201,35 @@ body.v3-dev #v5DevSkip{display:block}
 .game.v5Mobs .v5Enemy.v56Gone .v5Bar{
  opacity:0!important;
 }
+
+/* V5.8 portrait squad layout: truly seven independent slots (rear 3 / front 4). */
+.game.v5Mobs .team-zone .unit[data-squad-row="front"],
+.game.v5Boss .team-zone .unit[data-squad-row="front"]{
+  width:22%!important;
+  z-index:24;
+}
+.game.v5Mobs .team-zone .unit[data-squad-row="rear"],
+.game.v5Boss .team-zone .unit[data-squad-row="rear"]{
+  width:28%!important;
+  z-index:23;
+}
+.game .team-zone .unit[data-squad-row="front"] small{
+  font-size:clamp(8px,2.05vw,10px);
+  max-width:98%;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  text-align:center;
+}
+.game .team-zone .unit .v4StatusBadge{
+  max-width:106%;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:clamp(8px,2vw,10px);
+  box-sizing:border-box;
+}
+@media(max-width:350px){
+ .game .team-zone .unit[data-squad-row="front"] small{font-size:8px}
+ .game .team-zone .unit .v4StatusBadge{font-size:8px;padding:1px 3px}
+}
