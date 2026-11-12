@@ -94,3 +94,19 @@ body.v3-dev #v5DevSkip{display:block}
 .team-zone .unit .v5PaycutArt{width:73%;height:56%;right:-14%;top:-35%;background-image:url('./art/v19/runtime/monsters/red-stamp-manager/payroll-delay.svg');filter:drop-shadow(0 0 6px #e76a94);animation:v52PayrollFloat 1.16s ease-in-out infinite alternate}
 @keyframes v52SlowOrbit{0%{transform:translate(-50%,2px) rotate(-6deg);opacity:.82}100%{transform:translate(-50%,-5px) rotate(8deg);opacity:1}}
 @keyframes v52PayrollFloat{0%{transform:translateY(2px) rotate(-11deg)}100%{transform:translateY(-7px) rotate(8deg)}}
+
+/* V5.3 — corrections verified against 2026-11-12 portrait phone recording */
+.game.v5Mobs #v5GlobalTag{display:none!important}
+.game.v5Mobs #v5WaveHud{top:calc(60px + env(safe-area-inset-top,0px));gap:3px}
+.game.v5Mobs #v5EnemySummary{padding:3px 11px;font-size:10px;max-width:89%;line-height:1.25;color:#ffe4b5}
+.v52PaperHalo{width:54px!important;height:64px!important;min-width:0!important;max-width:54px!important;left:55%!important;top:11%!important;z-index:25;filter:drop-shadow(0 0 5px #f64c7c);transform-origin:50% 50%}
+.v52PaperHalo0{left:22%!important;top:7%!important;animation-delay:0s}
+.v52PaperHalo1{left:62%!important;top:14%!important;animation-delay:.08s}
+.v52PaperHalo2{left:74%!important;top:37%!important;animation-delay:.16s}
+.v52FlyingDocument{width:46px!important;height:54px!important;min-width:0!important;max-width:46px!important;max-height:54px!important;z-index:26;object-fit:contain;filter:drop-shadow(0 0 5px #e74669)}
+.v52FlyingSeal{position:absolute;z-index:30;width:102px;height:94px;max-width:102px;max-height:94px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 0 9px #f75c7d)}
+.v52Slash{width:135%!important;height:115%!important;left:-15%!important;top:-19%!important;filter:drop-shadow(0 0 8px #ff739b);z-index:27}
+.v52CasterGlyph{width:120%;height:82%;left:-10%;top:11%}
+.v52Circle{width:155%;height:128%;left:-27%;top:-30%}
+.game.v5Mobs .v5Enemy[data-species="red-stamp-manager"]{top:43%!important}
+@media(max-height:690px){.v52FlyingDocument{width:40px!important;height:48px!important}.v52PaperHalo{width:46px!important;height:56px!important}}
