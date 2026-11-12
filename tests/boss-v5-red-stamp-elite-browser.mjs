@@ -19,7 +19,7 @@ try{
  page.on('pageerror',e=>errors.push(e.message));
  stage='load';
  await page.goto('http://127.0.0.1:8795/boss-v5-play.html?dev=1',{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>window.__salaryBossV5?.wave===1,null,{timeout:25000});
+ await page.waitForFunction(()=>window.__salaryBossV5?.wave===1&&window.__salaryBossV5?.kind==='mob',null,{timeout:25000});
  stage='stage3';
  await page.evaluate(()=>__salaryBossV5.skipTo(3));
  await page.waitForFunction(()=>__salaryBossV5.kind==='elite'&&document.querySelector('.v5Enemy.elite[data-species="red-stamp-manager"]'),null,{timeout:12000});
