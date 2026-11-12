@@ -329,26 +329,18 @@ function v60TrySkill(i){
  return false;
 }
 function v60Intercept(i,baseDamage){
- if(tieshiAwakening.protectUntil>v4Time)return baseDamage; // Ultimate intercept supersedes guard link; never stack two redirects.
- if(!v60AI||i===v60Guard.guardIndex||i!==v60Guard.target||v60Guard.expires<=v4Time||allies[0]<=0)return baseDamage;
- const split=v60AI.splitIntercept(baseDamage,v60AI.ACTIVE_SKILLS.guard.redirectRatio);
- v60Fx(team[0],'GuardImpact',['guard-watch-shield.svg','guard-escort-wings.svg'],520);
- v60Record({type:'guard-intercept',target:i,guard:0,redirected:split.guard});
- tieshiGainEnergy(15);
- // Guard takes own share against own DEF/shield. Prevent recursive protection.
- flash(0,split.guard,false,true);
- return split.target;
+ if(!v60AI||i===0||allies[0]<=0)return baseDamage;
+ const split=window.__tieshiRules?.tieshiIntercept({damage:baseDamage,target:i,guardianAlive:allies[0]>0,awakened:tieshiAwakening.protectUntil>v4Time,guardLinkActive:v60Guard.expires>v4Time,guardLinkTarget:v60Guard.target,guardLinkRatio:v60AI.ACTIVE_SKILLS.guard.redirectRatio});
+ if(!split||split.guardianDamage<=0)return baseDamage;
+ v60Fx(team[0],'GuardImpact',['guard-watch-shield.svg','guard-escort-wings.svg'],split.kind==='awakened'?380:520);
+ v60Record({type:split.kind==='awakened'?'tieshi-ultimate-intercept':'guard-intercept',target:i,guard:0,redirected:split.guardianDamage});
+ if(split.kind==='guard-link')tieshiGainEnergy(15);
+ flash(0,split.guardianDamage,false,true);
+ return split.targetDamage;
 }
 
 function flash(i,amt,heavy=false,protectedPortion=false){
  if(allies[i]<=0)return;
- if(!protectedPortion&&i!==0&&allies[0]>0&&tieshiAwakening.protectUntil>v4Time){
-  const redirected=Math.round(amt*.30*100)/100;
-  amt=Math.max(0,amt-redirected);
-  v60Record({type:'tieshi-ultimate-intercept',guard:0,target:i,redirected});
-  v60Fx(team[0],'GuardImpact',['guard-watch-shield.svg','guard-escort-wings.svg'],380);
-  flash(0,redirected,false,true);
- }
  if(!protectedPortion)amt=v60Intercept(i,amt);
  amt=clock.wave===4?Math.round(amt*1.4*10)/10:amt;
  if(v60AI)amt=Math.round(amt*v60AI.damageDefenseModifier(v59AI.ALLY_ROLES[i].defense)*100)/100;

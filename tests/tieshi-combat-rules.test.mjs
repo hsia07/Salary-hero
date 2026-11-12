@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {tieshiIntercept,tieshiSkill} from '../v19/tieshi-combat-rules.mjs';
+test('story lock preserves basic skill',()=>{assert.equal(tieshiSkill().id,'night-watch');assert.equal(tieshiSkill({biographyCleared:true}).id,'last-door')});
+test('awakened redirects 30 percent exactly once even with guard link',()=>{assert.deepEqual(tieshiIntercept({damage:100,target:3,awakened:true,guardLinkActive:true,guardLinkTarget:3,guardLinkRatio:.5}),{targetDamage:70,guardianDamage:30,kind:'awakened'})});
+test('guard link applies only to its protected target',()=>{assert.deepEqual(tieshiIntercept({damage:100,target:2,guardLinkActive:true,guardLinkTarget:2,guardLinkRatio:.4}),{targetDamage:60,guardianDamage:40,kind:'guard-link'});assert.equal(tieshiIntercept({damage:100,target:3,guardLinkActive:true,guardLinkTarget:2,guardLinkRatio:.4}).kind,'none')});
+test('dead guardian, self hit, and zero damage never redirect',()=>{for(const x of [{guardianAlive:false,target:2},{target:0},{target:2,damage:0}])assert.equal(tieshiIntercept({damage:100,awakened:true,...x}).guardianDamage,0)});
+test('fractional damage is conserved',()=>{for(const d of [0.1,1,6.75,100.33]){const x=tieshiIntercept({damage:d,target:2,awakened:true});assert.ok(Math.abs(x.targetDamage+x.guardianDamage-d)<1e-9)}});
