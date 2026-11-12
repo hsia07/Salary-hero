@@ -14,6 +14,10 @@ on:
       - "tests/boss-v59-party-ai-support-browser.mjs"
       - "tests/s1-party-ai.test.mjs"
       - "v19/s1-party-ai.mjs"
+      - "v19/s1-hero-active-skills.mjs"
+      - "tests/s1-hero-active-skills.test.mjs"
+      - "tests/boss-v60-hero-active-skills-browser.mjs"
+      - "art/s1/active-vfx/**"
       - "art/s1/support-vfx/**"
       - "art/v19/runtime/monsters/red-stamp-manager/**"
       - "tests/boss-v5-full-auto-playthrough.mjs"
@@ -41,6 +45,8 @@ jobs:
           node --check tests/boss-v5-red-stamp-elite-browser.mjs
           node --check tests/boss-v59-party-ai-support-browser.mjs
           node --test tests/s1-party-ai.test.mjs
+          node --test tests/s1-hero-active-skills.test.mjs
+          node --check tests/boss-v60-hero-active-skills-browser.mjs
           node --check tests/boss-v5-full-auto-playthrough.mjs
           node --test tests/s1-hell-monday-dungeon.test.mjs
           test -s art/v19/runtime/monsters/paper-gremlin/attack.png
@@ -51,6 +57,8 @@ jobs:
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-red-stamp-elite-browser.mjs
       - name: Verify targeted healing, party shields and individual illustrated layers
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v59-party-ai-support-browser.mjs
+      - name: Validate four actual class skills and eight independent illustrations in mobile combat
+        run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v60-hero-active-skills-browser.mjs
       - name: Confirm full auto-clear from first mob to final boss
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-full-auto-playthrough.mjs
       - name: Upload rendered screenshots and failure logs
