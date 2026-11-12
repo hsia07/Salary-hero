@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" role="img" aria-label="文書牛魔之終極加班砲・獨立透明武器美術">
+<defs>
+<radialGradient id="core" cx=".5" cy=".5" r=".64"><stop stop-color="#fffef2"/><stop offset=".13" stop-color="#fffcc7"/><stop offset=".34" stop-color="#ffbe65"/><stop offset=".57" stop-color="#ff426f"/><stop offset=".86" stop-color="#57104f"/><stop offset="1" stop-color="#1b0c24"/></radialGradient>
+<linearGradient id="metal" x1=".1" y1=".05" x2=".9" y2="1"><stop stop-color="#e2c99a"/><stop offset=".2" stop-color="#a47657"/><stop offset=".46" stop-color="#35203f"/><stop offset=".66" stop-color="#7e567a"/><stop offset="1" stop-color="#140e23"/></linearGradient>
+<linearGradient id="shell" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9c789e"/><stop offset=".24" stop-color="#322036"/><stop offset=".65" stop-color="#170e27"/><stop offset="1" stop-color="#784865"/></linearGradient>
+<linearGradient id="ember" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4b6"/><stop offset=".35" stop-color="#fc7065"/><stop offset="1" stop-color="#6f1759"/></linearGradient>
+<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter>
+<filter id="small" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3"/></filter>
+</defs>
+<!-- Rear cannon chassis: sculpted dark forging and torn paper armor -->
+<path d="M90 301 145 190 280 181 359 112 548 107 635 188 749 174 816 288 775 400 681 464 590 504 283 502 189 451 101 394Z" fill="#130e1e" stroke="#4a2c53" stroke-width="16"/>
+<path d="M98 317 170 203 288 206 352 141 554 137 625 217 744 205 793 296 750 390 649 449 576 468 303 473 201 420 130 375Z" fill="url(#shell)" stroke="#be916d" stroke-width="9"/>
+<!-- Left and right reinforced carriage plates -->
+<path d="M168 196 269 207 341 277 306 389 204 434 130 371 115 287Z" fill="url(#metal)" stroke="#180e25" stroke-width="12"/>
+<path d="M731 190 631 205 567 280 591 391 701 429 767 366 787 274Z" fill="url(#metal)" stroke="#180e25" stroke-width="12"/>
+<path d="M168 237 245 241 275 291 248 357 174 391 155 342 147 282Z" fill="#2a1935" stroke="#f6ab76" stroke-width="6"/>
+<path d="M731 237 654 241 625 291 653 357 727 391 745 342 754 282Z" fill="#2a1935" stroke="#f6ab76" stroke-width="6"/>
+<!-- Ox-horn braces with gold inlays, document shreds -->
+<path d="M290 210C188 124 164 62 197 24c-7 92 49 124 130 144l39 48Z" fill="url(#metal)" stroke="#f3ba85" stroke-width="9"/>
+<path d="M615 210C713 129 744 60 704 24c7 92-49 124-128 144l-43 48Z" fill="url(#metal)" stroke="#f3ba85" stroke-width="9"/>
+<path d="M219 88 241 113M243 124l23 15M680 90l-18 22M652 129l-21 14" fill="none" stroke="#ffcf80" stroke-width="7" stroke-linecap="round"/>
+<path d="M220 188 157 151 119 161 134 128 99 103 172 107 242 158Z" fill="#d9a69a" stroke="#46213a" stroke-width="6"/>
+<path d="M685 185 747 151 782 160 766 127 803 103 733 106 665 157Z" fill="#d9a69a" stroke="#46213a" stroke-width="6"/>
+<!-- Forged concentric mouth rails -->
+<ellipse cx="449" cy="318" rx="205" ry="194" fill="#110a22" stroke="#a8847a" stroke-width="22"/>
+<ellipse cx="449" cy="318" rx="183" ry="176" fill="#1d112a" stroke="#eead7e" stroke-width="9"/>
+<ellipse cx="449" cy="318" rx="161" ry="153" fill="#311533" stroke="#a04c6a" stroke-width="14"/>
+<ellipse cx="449" cy="318" rx="139" ry="133" fill="url(#core)" stroke="#f8bc8e" stroke-width="12"/>
+<ellipse cx="449" cy="318" rx="112" ry="108" fill="#ff5a67" opacity=".58" filter="url(#glow)"/>
+<ellipse cx="449" cy="318" rx="88" ry="85" fill="url(#core)" stroke="#ffe09b" stroke-width="9"/>
+<ellipse cx="449" cy="318" rx="54" ry="53" fill="#fffddc" opacity=".9" filter="url(#small)"/>
+<!-- Mechanical prongs -->
+<g fill="url(#metal)" stroke="#1b101d" stroke-width="8">
+<path d="M386 119 451 83 511 115 494 184 413 182Z"/>
+<path d="M386 512 451 552 511 513 494 449 413 448Z"/>
+<path d="M248 255 197 312 242 386 303 361 302 281Z"/>
+<path d="M648 255 700 314 655 387 597 361 595 281Z"/>
+</g>
+<!-- Golden rune plates -->
+<g fill="#f4c68c" stroke="#342032" stroke-width="5"><path d="M423 126l27-29 28 29-28 28Z"/><path d="M423 506l27 29 28-29-28-26Z"/><path d="M231 309l23-24 24 27-23 27Z"/><path d="M669 309l-23-24-24 27 23 27Z"/></g>
+<g fill="none" stroke="#ffc38b" stroke-width="5" stroke-linecap="round">
+<path d="M447 165v28m0-14-11 9m11-9 11 9"/>
+<path d="M447 471v-28m0 14-11-9m11 9 11-9"/>
+<path d="M315 318h-22m10-10 12 10-12 10"/>
+<path d="M581 318h22m-10-10-12 10 12 10"/>
+</g>
+<!-- Rivets and inset warning slits -->
+<g fill="#ffe7ac"><circle cx="176" cy="279" r="7"/><circle cx="195" cy="384" r="7"/><circle cx="731" cy="279" r="7"/><circle cx="712" cy="384" r="7"/><circle cx="349" cy="184" r="6"/><circle cx="548" cy="184" r="6"/><circle cx="349" cy="450" r="6"/><circle cx="548" cy="450" r="6"/></g>
+<path d="M179 314h74m413 0h73" stroke="#ff466c" stroke-width="13" stroke-linecap="round"/>
+<!-- Paper shards used as demonic cooling fins -->
+<path d="m152 473 30-48 43 12 52-8-46 59-40 19Z" fill="#dbbec0" stroke="#49334c" stroke-width="7"/>
+<path d="m747 469-31-43-45 13-48-11 44 59 41 18Z" fill="#e7cad2" stroke="#49334c" stroke-width="7"/>
+<!-- Wires and floating talismans -->
+<path d="M184 422c-45 63 10 90 48 117M718 424c45 63-10 90-48 117" fill="none" stroke="#dcb18b" stroke-width="11" stroke-linecap="round"/>
+<path d="m240 550 22 23-30 27-22-28Zm425 0-22 23 30 27 22-28Z" fill="#4b244a" stroke="#f8b77b" stroke-width="6"/>
+</svg>
