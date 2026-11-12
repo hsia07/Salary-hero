@@ -63,8 +63,8 @@ function flash(i,amt,heavy=false){if(allies[i]<=0)return;amt=clock.wave===4?Math
 function shake(big=false){root.classList.remove('v2Shake','v2UltShake');void root.offsetWidth;root.classList.add(big?'v2UltShake':'v2Shake');setTimeout(()=>root.classList.remove('v2Shake','v2UltShake'),big?700:360)}
 function effectTravel(i){let from=pointBoss(),to=center(team[i]);let dx=to.x-from.x,dy=to.y-from.y;let path=piece('div','v2Trail',from.x,from.y);path.style.width=Math.hypot(dx,dy)+'px';path.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';let p=piece('img','v2Paper',from.x,from.y,ART.parts.paper_stack);p.animate([{transform:'translate(-50%,-50%) scale(.12) rotate(-15deg)'},{transform:'translate('+(dx-40)+'px,'+(dy-40)+'px) scale(.38) rotate(290deg)'}],{duration:540/clock.pace,easing:'ease-in',fill:'forwards'})}
 function available(list){return list.filter(i=>allies[i]>0)}
-async function normal(){let variant=clock.turn%5;let target=variant===2?available([0,1,2]):available([0,1,2,3,4,5,6]).slice(0,1);if(!target.length)return;label(variant===2?'橫掃公文爪':variant===4?'牛角突頂':'巨爪拍擊');target.forEach(i=>ring(i,false));sequence('attack',110);await pause(310);if(clock.paused||clock.done)return;target.forEach(effectTravel);await pause(560);if(clock.paused||clock.done)return;target.forEach(i=>{flash(i,variant===4?16:variant===2?9:12);if(variant===4)v4AddStatus(i,'stun',1000);});shake(variant===4);setEnergy(clock.energy+26+(clock.rage?9:0))}
-async function bombard(){label('文件轟炸｜全員警戒');const target=available([0,1,2,3,4,5,6]);target.forEach(i=>{ring(i,false);effectTravel(i)});sequence('attack',100);await pause(700);if(clock.paused||clock.done)return;target.forEach((i,k)=>setTimeout(()=>{flash(i,5);if(i%3===1)v4AddStatus(i,'slow',2600)},k*58/clock.pace));shake();setEnergy(clock.energy+21+(clock.rage?9:0))}
+async function normal(){let variant=clock.turn%5;let frontline=available([0,1,2]);let choices=frontline.length?frontline:available([0,1,2,3,4,5,6]);let target=variant===2?choices.slice():choices.length?[choices[(clock.turn-1)%choices.length]]:[];if(!target.length)return;label(variant===2?'橫掃公文爪':variant===4?'牛角突頂':'巨爪拍擊');target.forEach(i=>ring(i,false));sequence('attack',110);await pause(310);if(clock.paused||clock.done)return;target.forEach(effectTravel);await pause(560);if(clock.paused||clock.done)return;target.forEach(i=>{flash(i,variant===4?9:variant===2?6:8);if(variant===4)v4AddStatus(i,'stun',1000);});shake(variant===4);setEnergy(clock.energy+26+(clock.rage?9:0))}
+async function bombard(){label('文件轟炸｜全員警戒');const target=available([0,1,2,3,4,5,6]);target.forEach(i=>{ring(i,false);effectTravel(i)});sequence('attack',100);await pause(700);if(clock.paused||clock.done)return;target.forEach((i,k)=>setTimeout(()=>{flash(i,2.5);if(i%3===1)v4AddStatus(i,'slow',2600)},k*58/clock.pace));shake();setEnergy(clock.energy+21+(clock.rage?9:0))}
 
 // V3 cinematic: a separate authored cannon asset and a deterministic canvas effect layer.
 // Canvas draws energy only; the Boss and seven allies remain independent sprites.
@@ -232,11 +232,11 @@ async function ultimate(){
       targets.forEach((i,k)=>{
         if(hitSlots.has(i)||elapsed<560+k*80||myToken!==v3Token)return;
         hitSlots.add(i);v4UltHits.push(i);
-        flash(i,clock.rage?28:23,true);
+        flash(i,clock.rage?18:14,true);
         // Office comedy statuses have real gameplay effects (see partyStep below).
-        if(i<=2)v4AddStatus(i,'stun',2200);
-        else if(i<=5)v4AddStatus(i,'slow',4400);
-        else v4AddStatus(i,'paycut',5200);
+        if(i<=2)v4AddStatus(i,'stun',1000);
+        else if(i<=5)v4AddStatus(i,'slow',3000);
+        else v4AddStatus(i,'paycut',3500);
         if(k===0){
           root.classList.remove('v3CannonImpact');void root.offsetWidth;
           root.classList.add('v3CannonImpact');
@@ -250,7 +250,7 @@ async function ultimate(){
     if(!await v3Play('aftermath',1600,targets,(elapsed)=>{
       if(elapsed>=650&&!burn&&myToken===v3Token){
         burn=true;
-        targets.filter(i=>allies[i]>0).forEach(i=>flash(i,clock.rage?5:3,false));
+        targets.filter(i=>allies[i]>0).forEach(i=>flash(i,clock.rage?1.5:1,false));
       }
     }))return;
     setEnergy(0);
