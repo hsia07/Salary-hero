@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V5.5 四波副本｜近戰接觸／遠程彈道同步傷害｜Lv.85 測試數值';
+document.querySelector('.footer .hint').textContent='V5.6 四波副本｜近戰距離／死亡清場／命中同步｜Lv.85 測試數值';
 const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
 const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
 const clock={energy:0,hp:100,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false};
@@ -311,7 +311,7 @@ function v5SetBanner(title,sub){
 }
 function v5HideBanner(){v5Transition.classList.remove('show')}
 function v5CreateMonster(data,index,total){
- const actor={...data,hp:data.maxHp,maxHp:data.maxHp,alive:true,anim:'idle',animStarted:v4Time,animUntil:0,frameIndex:0,elite:data.kind==='elite'&&index===0,abilityCount:0};
+ const actor={...data,hp:data.maxHp,maxHp:data.maxHp,alive:true,anim:'idle',animStarted:v4Time,animUntil:0,frameIndex:0,elite:data.kind==='elite'&&index===0,abilityCount:0,defeatedAt:null};
  const e=document.createElement('div');e.className='v5Enemy'+(actor.elite?' elite':'');
  const positions=total===4?[[13,42],[38,54],[63,42],[87,54]]:total===3?[[17,45],[50,53],[83,45]]:[[31,50],[69,50]];
  const p=positions[index]||[50,50];e.style.left=(actor.elite?24:p[0])+'%';e.style.top=p[1]+'%';
@@ -334,7 +334,12 @@ function v5AnimateMobs(){
  if(!encounter||encounter.kind==='boss'||clock.paused||clock.done)return;
  encounter.enemies.forEach(e=>{
   if(v4Time>=e.animUntil&&e.alive&&e.anim!=='idle')v5SetPose(e,'idle',Infinity);
-  if(!e.node)return;
+  if(!e.node||!e.node.isConnected)return;
+  if(!e.alive&&e.defeatedAt!==null){
+   const deadFor=v4Time-e.defeatedAt;
+   if(deadFor>=940)e.node.classList.add('v56Gone');
+   if(deadFor>=1410){e.node.remove();return;}
+  }
   const n=v5Frames[e.anim],advance=Math.floor(Math.max(0,v4Time-e.animStarted)/(e.anim==='attack'?160:e.anim==='defeat'?235:125));
   const frame=e.anim==='idle'?advance%n:Math.min(n-1,advance);
   if(frame===e.frameIndex)return;
@@ -385,7 +390,11 @@ function v5Health(actor,damage){
  const percent=Math.max(0,100*actor.hp/actor.maxHp);
  actor.node.querySelector('.v5Bar i').style.width=percent+'%';
  if(actor.hp>0){v5SetPose(actor,'hurt',400);}
- else{actor.alive=false;v5SetPose(actor,'defeat',950);}
+ else{
+  actor.alive=false;actor.defeatedAt=v4Time;
+  actor.node.classList.add('v56Dead');
+  v5SetPose(actor,'defeat',950);
+}
  v5Header();
  if(encounter.enemies.every(e=>!e.alive)&&!encounter.clearing)v5ClearWave();
 }
@@ -577,6 +586,11 @@ function v55BeginHeroAttack(index,target,damage){
  const start=center(attacker);
  const end=center(target.node);
  const dx=end.x-start.x,dy=end.y-start.y;
+ const enemyWidth=target.node.getBoundingClientRect().width;
+ const allyWidth=attacker.getBoundingClientRect().width;
+ const stopDistance=Math.max(63,enemyWidth*.47+allyWidth*.37);
+ const initialDistance=Math.hypot(dx,dy);
+ const reachDistance=Math.max(0,initialDistance-stopDistance);
  const projectile=ranged?document.createElement('img'):null;
  if(projectile){
   projectile.className='v55HeroProjectile';projectile.alt='';projectile.src=v55SlashArt;
@@ -585,12 +599,12 @@ function v55BeginHeroAttack(index,target,damage){
  attacker.classList.remove('attack');void attacker.offsetWidth;attacker.classList.add('attack');
  const originalTranslate=attacker.style.translate,originalZ=attacker.style.zIndex;
  let elapsed=0,last=0,hit=false,closed=false;
- const duration=ranged?510:615,impactFraction=ranged?.87:.62;
+ const duration=ranged?510:720,impactFraction=ranged?.87:.61;
  function cleanup(){
   if(closed)return;closed=true;
   attacker.style.translate=originalTranslate;
   attacker.style.zIndex=originalZ;
-  attacker.classList.remove('attack');
+  attacker.classList.remove('attack','v56Lunging');
   projectile?.remove();
   v55Actions.delete(index);
  }
@@ -616,13 +630,22 @@ function v55BeginHeroAttack(index,target,damage){
       projectile.style.transform='translate(-50%,-50%) rotate('+Math.round(18+eased*270)+'deg) scale('+(0.56+0.12*travel)+')';
     }
   }else{
+    // Wind-up → approach only to weapon range → brief attack contact → recoil.
+    // Stop at the edge of the monster hitbox, never on top of its face/name.
     let dash;
-    if(t<.52){let u=t/.52;dash=u*u*(3-2*u)}
+    if(t<.14)dash=0;
+    else if(t<.53){const u=(t-.14)/.39;dash=u*u*(3-2*u);}
     else if(t<.69)dash=1;
-    else{let u=(t-.69)/.31;dash=1-u*u*(3-2*u)}
-    const reach=.83*dash;
-    attacker.style.translate=(Math.round((position.x-start.x)*reach))+'px '+(Math.round((position.y-start.y)*reach))+'px';
-    attacker.style.zIndex='43';
+    else{const u=(t-.69)/.31;dash=1-u*u*(3-2*u);}
+    const curDistance=Math.hypot(position.x-start.x,position.y-start.y);
+    const reach=Math.max(0,Math.min(reachDistance,curDistance-stopDistance))*dash;
+    const unitX=curDistance>0?(position.x-start.x)/curDistance:0;
+    const unitY=curDistance>0?(position.y-start.y)/curDistance:0;
+    attacker.style.translate=Math.round(unitX*reach)+'px '+Math.round(unitY*reach)+'px';
+    // Allies and enemies remain readable; attack FX is placed at true contact.
+    attacker.style.zIndex='22';
+    attacker.classList.toggle('v56Lunging',t>=.14&&t<.69);
+
   }
   if(!hit&&t>=impactFraction){
     hit=true;
