@@ -1,5 +1,3 @@
-import * as tieshiRules from './tieshi-combat-rules.mjs';
-window.__tieshiRules=tieshiRules;
 import { tieshiClockTime } from './tieshi-clock.mjs';
 /** V6.2 battle-facing visual proof of concept. No character art is replaced. */
 const STYLE_ID='tieshi-battle-clock-style';
