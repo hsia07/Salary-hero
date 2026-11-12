@@ -943,7 +943,7 @@ if(v4Has(i,'slow')&&Math.floor((clock.allyTurn-1)/7)%2===1){
 }
 unit.classList.remove('attack');void unit.offsetWidth;unit.classList.add('attack');
 setTimeout(()=>unit.classList.remove('attack'),500/clock.pace);
-const damage=Math.max(6,Math.round(12*v59AI.ALLY_ROLES[i].attack/128)); // Each class now has a real role-based boss damage coefficient.
+const damage=Math.max(4,Math.round(7*v59AI.ALLY_ROLES[i].attack/128)); // Preserve narrow Boss-win balance while applying each role's attack stat.
 setHp(clock.hp-damage);
 let p=pointBoss(),n=piece('span','v2Dmg hero',p.x,p.y);
 n.textContent='-'+(damage*11900).toLocaleString();
