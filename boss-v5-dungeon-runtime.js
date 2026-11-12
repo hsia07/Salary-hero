@@ -329,6 +329,7 @@ function v60TrySkill(i){
  return false;
 }
 function v60Intercept(i,baseDamage){
+ if(tieshiAwakening.protectUntil>v4Time)return baseDamage; // Ultimate intercept supersedes guard link; never stack two redirects.
  if(!v60AI||i===v60Guard.guardIndex||i!==v60Guard.target||v60Guard.expires<=v4Time||allies[0]<=0)return baseDamage;
  const split=v60AI.splitIntercept(baseDamage,v60AI.ACTIVE_SKILLS.guard.redirectRatio);
  v60Fx(team[0],'GuardImpact',['guard-watch-shield.svg','guard-escort-wings.svg'],520);
@@ -365,6 +366,7 @@ function flash(i,amt,heavy=false,protectedPortion=false){
      v59Log({type:'absorb',target:i,value:absorbed});
    }
  }else allies[i]=Math.max(0,allies[i]-amt);
+ if(i===0&&allies[0]<=0&&tieshiAwakening.protectUntil>0){tieshiAwakening.protectUntil=0;v60Record({type:'tieshi-protection-ended',reason:'guard-defeated'})}
  const actual=Math.max(0,amt-absorbed);
  if(actual>0)piece('img','v2Slash',p.x,p.y-10,ART.parts.slash_fx);
  const n=piece('span','v2Dmg',p.x,p.y-20);
@@ -1023,12 +1025,14 @@ function v5ClearWave(){
  });
 }
 function v5Victory(){
+ v60Reset(false);
  clock.done=true;clearInterval(bossTimer);clearInterval(allyTimer);
  v5Complete.classList.add('show');v5HideBanner();
  $('wave').textContent='全副本通關';
  label('地獄星期一｜副本挑戰成功');
 }
 function v5Defeat(){
+ v60Reset(false);
  clock.done=true;clearInterval(bossTimer);clearInterval(allyTimer);
  v5SetBanner('隊伍全滅','按「重來」可從第一波再挑戰');
  label('地獄星期一｜挑戰失敗');
