@@ -275,7 +275,7 @@ const v5VisualSpecs={
  'keyboard-piranha':{ext:'webp',cell:512},
  'chair-golem':{ext:'webp',cell:384},
  'meeting-ghost':{ext:'webp',cell:384},
- 'red-stamp-manager':{ext:'svg',cell:320}
+ 'red-stamp-manager':{ext:'webp',cell:256}
 };
 const v5Frames={idle:4,attack:5,hurt:3,defeat:4};
 const v5Field=document.createElement('div');v5Field.id='v5EnemyField';root.append(v5Field);
@@ -316,7 +316,7 @@ function v5CreateMonster(data,index,total){
 function v5SetPose(actor,state,duration){
  if(!actor?.node)return;
  const meta=v5VisualSpecs[actor.species];if(!meta)return;
- actor.anim=state;actor.animStarted=v4Time;actor.animUntil=Number.isFinite(duration)?v4Time+duration:Infinity;
+ actor.anim=state;actor.animStarted=v4Time;actor.frameIndex=-1;actor.animUntil=Number.isFinite(duration)?v4Time+duration:Infinity;
  const visual=actor.node.querySelector('.v5Visual');
  const src='./art/v19/runtime/monsters/'+actor.species+'/'+state+'.'+meta.ext;
  visual.style.setProperty('--sheet','url("'+src+'")');visual.style.setProperty('--columns',v5Frames[state]*100+'%');
@@ -329,7 +329,8 @@ function v5AnimateMobs(){
  encounter.enemies.forEach(e=>{
   if(v4Time>=e.animUntil&&e.alive&&e.anim!=='idle')v5SetPose(e,'idle',Infinity);
   if(!e.node)return;
-  const n=v5Frames[e.anim],frame=Math.floor(Math.max(0,v4Time-e.animStarted)/125)%n;
+  const n=v5Frames[e.anim],advance=Math.floor(Math.max(0,v4Time-e.animStarted)/(e.anim==='attack'?160:e.anim==='defeat'?235:125));
+  const frame=e.anim==='idle'?advance%n:Math.min(n-1,advance);
   if(frame===e.frameIndex)return;
   e.frameIndex=frame;e.node.querySelector('.v5Visual').style.backgroundPosition=(n===1?0:frame/(n-1)*100)+'% 0%';
  });
