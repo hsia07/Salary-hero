@@ -233,3 +233,39 @@ body.v3-dev #v5DevSkip{display:block}
  .game .team-zone .unit[data-squad-row="front"] small{font-size:8px}
  .game .team-zone .unit .v4StatusBadge{font-size:8px;padding:1px 3px}
 }
+
+/* V5.9 — enlarge the art within the 7 independent slots without growing their
+ * collision boxes or breaking the single-screen 3+4 mobile formation. */
+.game.v5Mobs .team-zone{top:52%;bottom:18%}
+.game.v5Boss .team-zone{top:53%;bottom:19%}
+.game .team-zone .unit>img{height:84%!important;width:100%!important;object-fit:contain;transform-origin:50% 85%}
+.game .team-zone .unit[data-squad-row="front"]>img{height:87%!important}
+.game .team-zone .unit[data-squad-row="rear"]>img{height:84%!important}
+/* Standalone illustrated healing spell is made of separate transparent parts. */
+.game .team-zone .unit .v59Spell{position:absolute;z-index:14;left:50%;top:24%;width:125%;height:123%;transform:translate(-50%,-50%);pointer-events:none;overflow:visible}
+.game .team-zone .unit .v59SpellPart{position:absolute;display:block;object-fit:contain;width:100%;height:100%;left:0;top:0;max-width:none;max-height:none;filter:drop-shadow(0 0 5px #a9ffce)}
+.game .team-zone .unit .v59Healing{animation:v59HealingLift 1.0s ease-out both}
+.game .team-zone .unit .v59Healing .v59Cup{width:68%;height:76%;left:17%;top:10%;animation:v59CupFloat .92s ease-in-out both}
+.game .team-zone .unit .v59Healing .v59Petals{animation:v59PetalRotate .95s linear both}
+.game .team-zone .unit .v59CastingHeal{opacity:.72;animation:v59HealingLift .62s ease-out both}
+.game .team-zone .unit .v59ShieldPermanent{z-index:11;top:39%;height:128%;width:143%;opacity:.84;animation:v59BubbleEnter .28s ease-out both}
+.game .team-zone .unit .v59ShieldPermanent .v59Glass{filter:drop-shadow(0 0 7px #7effec);animation:v59ShieldBreathe 2.0s ease-in-out infinite}
+.game .team-zone .unit .v59ShieldPermanent .v59Runes{animation:v59ShieldRuneDrift 3.5s ease-in-out infinite}
+.game .team-zone .unit .v59CastingShield{opacity:.74;animation:v59ShieldCast .8s ease-out both}
+.game .team-zone .unit .v59ShieldImpact{z-index:19;top:20%;animation:v59HealingLift .52s ease-out both}
+.game .team-zone .unit .v59RescueGlow{z-index:17;top:23%;animation:v59BubbleEnter .65s ease-out both}
+.game .team-zone .unit .hp{position:relative;overflow:visible}
+.game .team-zone .unit .v59ShieldMeter{position:absolute;display:block;height:3px;left:0;top:-4px;width:0%;border-radius:9px;background:linear-gradient(90deg,#61eaf7,#e7fff4);box-shadow:0 0 4px #71baff;transition:width .12s ease;pointer-events:none}
+@keyframes v59HealingLift{0%{opacity:0;translate:0 14px;scale:.65}28%{opacity:1;translate:0 -8px;scale:1}77%{opacity:.85;translate:0 -12px;scale:1.06}100%{opacity:0;translate:0 -21px;scale:1.10}}
+@keyframes v59CupFloat{0%{opacity:0;transform:translateY(9px) rotate(-9deg)}35%{opacity:1;transform:translateY(-9px) rotate(5deg)}100%{opacity:0;transform:translateY(-20px) rotate(-7deg)}}
+@keyframes v59PetalRotate{0%{transform:rotate(-23deg) scale(.5);opacity:.2}40%{transform:rotate(22deg) scale(1);opacity:1}100%{transform:rotate(120deg) scale(1.2);opacity:0}}
+@keyframes v59BubbleEnter{0%{opacity:0;scale:.4}78%{opacity:1;scale:1.08}100%{opacity:.86;scale:1}}
+@keyframes v59ShieldBreathe{0%,100%{opacity:.67;scale:.98}50%{opacity:.95;scale:1.025}}
+@keyframes v59ShieldRuneDrift{0%,100%{transform:translateY(0) rotate(-5deg);opacity:.55}50%{transform:translateY(-3px) rotate(6deg);opacity:1}}
+@keyframes v59ShieldCast{0%{opacity:0;scale:.2}35%{opacity:1;scale:1.18}100%{opacity:0;scale:1.4}}
+@media(max-height:700px){
+ .game.v5Mobs .team-zone{top:51%;bottom:19%}
+ .game.v5Boss .team-zone{top:52%;bottom:19%}
+ .game .team-zone .unit>img{height:82%!important}
+ .game .team-zone .unit[data-squad-row="front"]>img{height:85%!important}
+}
