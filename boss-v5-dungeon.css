@@ -86,3 +86,11 @@ body.v3-dev #v5DevSkip{display:block}
  .game.v5Mobs #v5GlobalTag{top:calc(109px + env(safe-area-inset-top,0px))}
  .game.v5Mobs #v5EnemyField{top:23%;height:28%}
 }
+
+/* Status illustrations attach to the moving ally, not to HUD or the background. */
+.team-zone .unit .v5SlowArt,
+.team-zone .unit .v5PaycutArt{position:absolute;pointer-events:none;z-index:17;background-repeat:no-repeat;background-position:center;background-size:contain}
+.team-zone .unit .v5SlowArt{width:112%;height:50%;left:50%;bottom:-5%;background-image:url('./art/v19/runtime/monsters/red-stamp-manager/slow-hourglass.svg');filter:drop-shadow(0 0 7px #73c4ff);animation:v52SlowOrbit .92s ease-in-out infinite alternate}
+.team-zone .unit .v5PaycutArt{width:73%;height:56%;right:-14%;top:-35%;background-image:url('./art/v19/runtime/monsters/red-stamp-manager/payroll-delay.svg');filter:drop-shadow(0 0 6px #e76a94);animation:v52PayrollFloat 1.16s ease-in-out infinite alternate}
+@keyframes v52SlowOrbit{0%{transform:translate(-50%,2px) rotate(-6deg);opacity:.82}100%{transform:translate(-50%,-5px) rotate(8deg);opacity:1}}
+@keyframes v52PayrollFloat{0%{transform:translateY(2px) rotate(-11deg)}100%{transform:translateY(-7px) rotate(8deg)}}
