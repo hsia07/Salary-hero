@@ -1016,6 +1016,17 @@ window.__salaryBossV5={
  get activeSkills(){return [...v60Events]},
  get guardState(){return {...v60Guard}},
  get skillCooldowns(){return {...v60Cooldown}},
+ get guardActive(){return v60Guard.expires>v4Time&&allies[0]>0},
+ devCastClassSkill:(i)=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||!Number.isInteger(i)||i<0||i>6)return false;
+  return v60TrySkill(i);
+ },
+ devAddDebuff:(i,id,ms=4000)=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||!Number.isInteger(i)||i<0||i>6)return false;
+  v4AddStatus(i,id,ms);return v4Has(i,id);
+ },
+ get debuffs(){return v4Status.map((m,i)=>[...m.keys()].filter(k=>v4Has(i,k)))},
+
 
  devSetHp:(i,value)=>{
   if(new URLSearchParams(location.search).get('dev')!=='1'||!Number.isInteger(i)||i<0||i>=7)return false;
