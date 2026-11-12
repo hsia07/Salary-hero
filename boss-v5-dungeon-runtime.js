@@ -537,7 +537,7 @@ const v3Demo=document.createElement('button');v3Demo.id='v3DevUlt';v3Demo.textCo
 if(new URLSearchParams(location.search).get('dev')==='1')document.body.classList.add('v3-dev');
 v3Demo.onclick=()=>{if(clock.wave!==4||clock.busy||clock.done||clock.inUltimate)return;setEnergy(100);bossStep()};
 import('./v19/s1-hell-monday-dungeon.mjs')
- .then(m=>{mondaySpec=m.HELL_MONDAY;mondaySpawn=m.spawnMondayWave;restart();})
+ .then(m=>{mondaySpec=m.HELL_MONDAY;mondaySpawn=m.spawnMondayWave;restart();const q=new URLSearchParams(location.search);const w=Number(q.get('wave'));if(q.get('dev')==='1'&&Number.isInteger(w)&&w>1&&w<=4)v5AdvanceToWave(w,true);})
  .catch(e=>{console.error('Monday wave loading failed',e);v5SetBanner('副本載入失敗',e.message);});
 
 })();
