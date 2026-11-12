@@ -12,7 +12,7 @@ export const HELL_MONDAY=Object.freeze({
   {id:'overtime-queue',name:'第二波・工作量暴增',kind:'mixed',
     enemies:[['coffee-mimic','失控咖啡怪',48,4],['paper-gremlin','文件小鬼',42,4],['keyboard-piranha','鍵盤食人魚',56,5],['deadline-clock','截止日鐘',54,5]]},
   {id:'supervisor',name:'第三波・主管來催件',kind:'elite',
-    enemies:[['chair-golem','催件主管・打卡機兵',115,7],['meeting-ghost','無限會議幽靈',50,5],['paper-gremlin','碎紙傳令兵',42,4]]},
+    enemies:[['red-stamp-manager','催件主管・赤印判官',115,7],['meeting-ghost','無限會議幽靈',50,5],['paper-gremlin','碎紙傳令兵',42,4]]},
   {id:'boss',name:'第四波・地獄加班決戰',kind:'boss',
     enemies:[['deadline-overlord','加班狂課長・文書牛魔',100,12]]}
  ]),
