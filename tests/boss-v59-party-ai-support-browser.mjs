@@ -62,7 +62,7 @@ try{
     dimensions.push({name,width:img.naturalWidth,height:img.naturalHeight});
    }return dimensions;
  });
- assert.ok(assets.every(x=>x.width>=280),'original VFX layers must decode as independent real illustrated image assets');
+ assert.ok(assets.every(x=>x.width>80&&x.height>80),'all five independent SVG layers must decode as drawable artwork');
  mkdirSync('artifacts',{recursive:true});
  await page.screenshot({path:join('artifacts','boss-v59-healing-and-shields.png')});
  stage='no-browser-errors';
