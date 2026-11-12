@@ -890,7 +890,26 @@ function renderCombatBars(now){
  $('#hero-hp-fill').style.width=(view.heroHp/view.maxHero*100)+'%';
  $('#enemy-hp-fill').style.width=(view.enemyHp/view.maxEnemy*100)+'%';
 }
+function renderSquadStage(){
+ const stage=$('#s1-squad-stage');
+ if(!stage)return;
+ const slots=state.colleagueFormation?.slots||[];
+ const actions=state.last?.colleagueActions||[];
+ const recent=fx&&performance.now()-fx.start<850&&['hit','victory'].includes(fx.result?.type);
+ const roles={sentinel:'🛡',fighter:'⚔',assassin:'✦',mage:'❄',medic:'✚',engineer:'⚙'};
+ stage.hidden=!slots.some(Boolean);
+ stage.innerHTML=slots.map((member,i)=>{
+  if(!member)return '';
+  const job=SQUAD_JOBS.find(x=>x.id===member.job);
+  if(!job)return '';
+  const action=recent?actions.find(x=>x.id===member.id):null;
+  const kind=action?(action.heal?'heal':action.shield?'shield':'damage'):'';
+  const detail=action?(action.heal?' +'+action.heal+'HP':action.shield?' 擋'+action.shield:' -'+action.damage):' Lv.'+member.level;
+  return '<div class="s1-squad-unit" data-action-kind="'+kind+'" title="'+escapeHTML(job.name)+'"><i>'+roles[job.id]+'</i><span>'+escapeHTML(job.name)+detail+'</span></div>';
+ }).join('');
+}
 function render(){
+ renderSquadStage();
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  const enemyTier=state.enemy.tier||'normal';
