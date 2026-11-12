@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V6.0 四波副本｜護衛分攤／法師範圍／刺客背刺／醫官解控｜Lv.85 測試值';
+document.querySelector('.footer .hint').textContent='V6.1 四波副本｜手機鏡頭與特效比例修正｜Lv.85 測試值';
 // V5.8: actual seven visible units — 3 backline + 4 frontline, no duplicate center column.
 const positions=[[12.5,75],[37.5,75],[87.5,75],[17.5,26],[50,26],[82.5,26],[62.5,75]];
 const allies=Array(7).fill(100);
@@ -565,7 +565,7 @@ const v5Hud=document.createElement('div');v5Hud.id='v5WaveHud';v5Hud.innerHTML='
 const v5Global=document.createElement('div');v5Global.id='v5GlobalTag';v5Global.textContent='地獄星期一・全副本 HP ×1.65 / ATK ×1.4';root.append(v5Global);
 const v5Transition=document.createElement('div');v5Transition.id='v5Transition';v5Transition.innerHTML='<strong></strong><small></small>';root.append(v5Transition);
 const v5Complete=document.createElement('div');v5Complete.id='v5Complete';v5Complete.innerHTML='<h2>地獄星期一・通關！</h2><p>四波副本完成｜EXP ×2（規則），稀有掉率提升（數值待平衡）<br>本版為戰鬥與波次驗收，尚未接入正式掉寶結算。</p>';root.append(v5Complete);
-const v5Skip=document.createElement('button');v5Skip.id='v5DevSkip';v5Skip.textContent='開發驗收｜下一波';root.append(v5Skip);
+const v5Skip=document.createElement('button');v5Skip.id='v5DevSkip';v5Skip.textContent='»';v5Skip.title='開發驗收｜下一波';v5Skip.setAttribute('aria-label','開發驗收：直接切到下一波');root.append(v5Skip);
 v5Skip.onclick=()=>{if(clock.done||!mondaySpec||clock.wave>=4)return;const next=clock.wave+1;v5AdvanceToWave(next,true)};
 function v5Sleep(duration,epoch){
  let elapsed=0,last=0;
@@ -1103,7 +1103,7 @@ for(let id of ['speed','pause','restart']){let old=$(id),newNode=old.cloneNode(t
 $('speed').onclick=()=>{clock.pace=clock.pace===1?2:clock.pace===2?3:1;$('speed').textContent='倍速 ×'+clock.pace;$('pace').textContent='×'+clock.pace;run()};
 $('pause').onclick=()=>{clock.paused=!clock.paused;root.classList.toggle('paused',clock.paused);$('pause').textContent=clock.paused?'繼續':'暫停'};
 $('restart').onclick=restart;// V4 test hook is exposed only on the development URL.
-const v3Demo=document.createElement('button');v3Demo.id='v3DevUlt';v3Demo.textContent='開發驗收｜立即展示大招';root.append(v3Demo);
+const v3Demo=document.createElement('button');v3Demo.id='v3DevUlt';v3Demo.textContent='⚡';v3Demo.title='開發驗收｜立即展示大招';v3Demo.setAttribute('aria-label','開發驗收：立即展示七道光束大招');root.append(v3Demo);
 if(new URLSearchParams(location.search).get('dev')==='1')document.body.classList.add('v3-dev');
 v3Demo.onclick=()=>{if(clock.wave!==4||clock.busy||clock.done||clock.inUltimate)return;setEnergy(100);bossStep()};
 Promise.all([import('./v19/s1-hell-monday-dungeon.mjs'),import('./v19/s1-party-ai.mjs'),import('./v19/s1-hero-active-skills.mjs')])
