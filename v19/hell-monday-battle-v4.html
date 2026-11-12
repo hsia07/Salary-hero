@@ -1,0 +1,42 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>薪水勇者｜動態戰場 V4</title><style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100b19;color:#f8e7ce;font-family:system-ui,-apple-system,sans-serif}
+main{height:100dvh;max-width:490px;margin:auto;display:flex;flex-direction:column;overflow:hidden;background:#180d1c}
+.top{height:49px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:linear-gradient(90deg,#3c1723,#1c1021);border-bottom:2px solid #a36b58}
+.top strong{font-size:16px;color:#ffdfb4}.top span{font-size:11px;color:#edbca2}
+.bossbar{flex:none;padding:8px 12px 9px;background:#20101edb;border-bottom:1px solid #9a5747;z-index:3}
+.bossbar>div:first-child{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.track{height:11px;border-radius:12px;background:#10080e;border:2px solid #e3a16b;overflow:hidden}
+#boss-hp{display:block;width:100%;height:100%;background:linear-gradient(90deg,#be2d40,#ff775b);transition:width .3s}
+#battle-stage{flex:1;min-height:0;position:relative;overflow:hidden}
+.battle-world,.world-background,.world-atmosphere,.world-floor,.world-actors,.world-flash{position:absolute;inset:0}
+.world-background{background-size:cover;background-position:center}
+.world-atmosphere{background:radial-gradient(ellipse at 50% 18%,#f64c3150,transparent 58%);animation:breathe 4s ease-in-out infinite;pointer-events:none}
+.world-floor{top:58%;background:radial-gradient(ellipse at 50% 67%,#a03d485e,transparent 64%),linear-gradient(transparent,#130817bd);border-top:1px solid #dc7d5444;transform:perspective(500px) rotateX(7deg);pointer-events:none}
+.world-actors{z-index:2}.world-boss{position:absolute;left:50%;top:13%;width:46%;height:31%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;filter:drop-shadow(0 12px 10px #120611)}
+.world-boss img{max-width:100%;max-height:83%;object-fit:contain;animation:breathe 2.4s ease-in-out infinite}.world-boss span{font-size:11px;border-radius:12px;background:#260e18d9;border:1px solid #c78160;padding:3px 9px}
+.world-boss.hit img{filter:brightness(1.6) sepia(1) saturate(7) hue-rotate(-30deg);transform:translateX(8px)}
+.world-unit{position:absolute;transform:translate(-50%,-50%);width:29%;height:16%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;transition:left .2s,top .2s}
+.world-body{height:80%;width:100%;display:flex;justify-content:center;align-items:center;filter:drop-shadow(0 6px 3px #000a)}
+.world-body img{height:100%;max-width:100%;object-fit:contain}
+.world-body.no-art{height:70%;width:65%;border:1px solid #bb896b;border-radius:45% 45% 16% 16%;background:radial-gradient(ellipse at 50% 20%,#694355,#211322 78%);font-size:10px;text-align:center;color:#d9b7a8;padding:13px 4px;box-shadow:0 7px 8px #09050c}
+.world-unit small{font-size:10px;white-space:nowrap;background:#180c17dd;padding:2px 6px;border-radius:5px;text-shadow:0 2px 3px #000}
+.world-unit.hero{height:19%;width:33%}
+.world-unit.charging{animation:charge .75s ease-in-out;z-index:90!important}
+@keyframes charge{0%,100%{transform:translate(-50%,-50%)}45%{transform:translate(-20%,-150%) scale(1.35)}}
+@keyframes breathe{50%{transform:translateY(-5px)}}
+.world-flash{z-index:5;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 30%,#ffe0a18c,transparent 30%)}
+.world-flash.pulse{animation:flash .45s ease-out}
+@keyframes flash{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+.world-banner{position:absolute;z-index:6;top:2%;left:12%;right:12%;text-align:center;font-size:13px;font-weight:800;color:#ffe1a6;text-shadow:0 2px 5px #000}
+#damage-text{position:absolute;z-index:8;top:30%;left:50%;transform:translateX(-50%);font-size:28px;font-weight:900;color:#ffdf8e;text-shadow:2px 2px #a22c38;opacity:0;pointer-events:none}
+#damage-text.show{animation:damage .7s ease-out}
+@keyframes damage{0%{opacity:0;transform:translate(-50%,10px) scale(.5)}30%{opacity:1;transform:translate(-50%,-20px) scale(1.2)}100%{opacity:0;transform:translate(-50%,-55px)}}
+.command{flex:none;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(#37202b,#1a101e);border-top:2px solid #c5845e}
+#team-status{font-size:10px;color:#e8bba0;margin-bottom:8px;text-align:center}
+.controls{display:grid;grid-template-columns:1fr 1fr 1.5fr 1fr;gap:7px}
+button{min-height:48px;border-radius:10px;border:1px solid #c68c6a;background:linear-gradient(#62404a,#392536);color:#ffe4c5;font-size:13px;font-weight:800}
+#attack{background:linear-gradient(#f2a355,#a94340);border-color:#ffe0a6;color:white;box-shadow:0 0 16px #e26e4477}
+#auto[aria-pressed=true]{background:linear-gradient(#b5773e,#70402e)}
+.note{font-size:9px;text-align:center;color:#bba9ad;margin:8px 0 0}
+@media(max-height:690px){.top{height:40px}.bossbar{padding:5px 12px}.command{padding-top:6px}.controls button{min-height:42px}}
+</style></head><body><main><header class="top"><strong>地獄星期一 · 戰場 V4</strong><span>動態編隊測試</span></header><section class="bossbar"><div><b>BOSS · 截止日魔鐘</b><span>HP <span id="hp-value">100%</span></span></div><div class="track"><i id="boss-hp"></i></div></section><section id="battle-stage"><div id="damage-text"></div></section><footer class="command"><div id="team-status"></div><div class="controls"><button id="swap">調整陣型</button><button id="roster">切換隊伍</button><button id="attack">⚔ 突擊</button><button id="auto" aria-pressed="false">AUTO</button></div><p class="note">獨立素材動態生成｜未完成角色顯示剪影｜不更動正式存檔</p></footer></main><script type="module" src="./s1-portrait-battle-preview.mjs"></script></body></html>
