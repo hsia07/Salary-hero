@@ -52,6 +52,13 @@ try{
  stage='meeting';
  await page.waitForFunction((kind)=>window.__salaryBossV5?.demoEliteSkill(kind),'meeting',{timeout:9000});
  await page.waitForSelector('.v52Circle',{state:'attached',timeout:6000});
+ await page.waitForSelector('.v5SlowArt',{state:'attached',timeout:6000});
+ await page.waitForSelector('.v5PaycutArt',{state:'attached',timeout:6000});
+ const statusArt=await page.evaluate(()=>({
+   slow:document.querySelectorAll('.team-zone .unit .v5SlowArt').length,
+   payroll:document.querySelectorAll('.team-zone .unit .v5PaycutArt').length
+ }));
+ assert.ok(statusArt.slow>=1&&statusArt.payroll>=1,'real attached and persistent debuff illustrations must appear on affected allies');
  await page.screenshot({path:join('artifacts','boss-v5-red-stamp-elite-meeting.png')});
  await page.waitForTimeout(1300);
  stage='stamp';
