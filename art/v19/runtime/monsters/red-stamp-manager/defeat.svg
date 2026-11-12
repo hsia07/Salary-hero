@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320"><defs>
+<linearGradient id="coat" x1=".2" y1=".05" x2=".95" y2=".94"><stop stop-color="#97788c"/><stop offset=".15" stop-color="#3b243f"/><stop offset=".52" stop-color="#1b162b"/><stop offset="1" stop-color="#543348"/></linearGradient>
+<linearGradient id="coatLit" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#a05c78"/><stop offset=".34" stop-color="#5e344e"/><stop offset=".6" stop-color="#261b32"/><stop offset="1" stop-color="#190d21"/></linearGradient>
+<linearGradient id="face" x1=".3" y1="0" x2=".8" y2="1"><stop stop-color="#ffd5af"/><stop offset=".45" stop-color="#d79e99"/><stop offset=".9" stop-color="#8e5977"/></linearGradient>
+<linearGradient id="hair" x1=".2" y1="0" x2=".85" y2=".98"><stop stop-color="#b46f79"/><stop offset=".17" stop-color="#382035"/><stop offset=".65" stop-color="#130f22"/><stop offset="1" stop-color="#5f243d"/></linearGradient>
+<linearGradient id="stamp" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#ffe2a2"/><stop offset=".25" stop-color="#db835e"/><stop offset=".6" stop-color="#732b4a"/><stop offset="1" stop-color="#320f30"/></linearGradient>
+<linearGradient id="blood" x1=".1" y1="0" x2=".9" y2="1"><stop stop-color="#ffdc9a"/><stop offset=".3" stop-color="#fa586a"/><stop offset=".7" stop-color="#c21954"/><stop offset="1" stop-color="#621638"/></linearGradient>
+<radialGradient id="aura"><stop stop-color="#ff787465"/><stop offset=".55" stop-color="#fc34653b"/><stop offset="1" stop-color="#4a134b00"/></radialGradient>
+<radialGradient id="iris"><stop stop-color="#fff7ae"/><stop offset=".22" stop-color="#fc5378"/><stop offset=".8" stop-color="#bc164e"/><stop offset="1" stop-color="#4d0b30"/></radialGradient>
+<filter id="shine" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs><g transform="translate(0 0)">
+<ellipse cx="162" cy="278" rx="76" ry="13" fill="#120916" opacity=".65"/>
+<ellipse cx="165" cy="183" rx="122" ry="108" fill="url(#aura)" opacity="0.32"/>
+
+<g transform="translate(0 4)">
+<!-- Black tailored coat silhouette, cloth folds, shoulder plates and two actual boots -->
+<path d="M111 229 97 263l-5 15q26 14 49-2l7-37M173 231l22 39q12 15 35 4l-11-24-11-29" fill="url(#coat)" stroke="#1a1225" stroke-width="7"/>
+<path d="M89 270q25 11 51-1l2 12q-29 18-55 3Zm121-4q29 4 43 15l-4 11q-31 0-43-11Z" fill="#2c2030" stroke="#1a1421" stroke-width="5"/>
+<path d="M105 152Q81 163 79 198L93 261Q143 286 206 261l23-63Q224 157 198 146l-44-23Z" fill="url(#coat)" stroke="#160c21" stroke-width="8"/>
+<path d="M93 181q-16 44 0 74l24-13-4-65Z" fill="#58314b" opacity=".55"/>
+<path d="M212 174q14 56-2 80l-25-8 13-72Z" fill="#8f5167" opacity=".48"/>
+<path d="M126 152 151 225l-41 29 22-100Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M187 147 158 222l42 33-15-104Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M131 147l25 41 31-41-25-17Z" fill="#fff4d9" stroke="#5b3549" stroke-width="3"/>
+<path d="M150 169 160 188l-8 39 17 24 12-25-15-36 7-19-11-9Z" fill="#9c1f45" stroke="#ec9d91" stroke-width="2"/>
+<path d="M147 207l15 15 10-20" stroke="#ffb189" stroke-width="3" opacity=".65" fill="none"/>
+<path d="M113 198h24m44 0h24m-79 17h15m44 0h13" stroke="#9a7484" stroke-width="2" opacity=".65"/>
+<path d="M113 232 100 268m118-34 8 31" stroke="#130e1d" stroke-width="4"/>
+<!-- shoulder insignia and security red ribbon -->
+<path d="M109 160 87 174l23 15 19-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M197 159 221 175l-23 14-18-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M102 182l-12-14 8-4 14 14Z" fill="#e9b681" stroke="#3d2533" stroke-width="2"/>
+<!-- Left arm gripping rejected paperwork, individually redrawn hand positions -->
+<path d="M108 170Q87 185 69 212" fill="none" stroke="#1b1122" stroke-width="25" stroke-linecap="round"/>
+<path d="M108 170Q83 185 68 208" fill="none" stroke="url(#coatLit)" stroke-width="19" stroke-linecap="round"/>
+<ellipse cx="65" cy="216" rx="15" ry="16" fill="url(#face)" stroke="#341a2c" stroke-width="4"/>
+<path d="m31 199 36-16 27 31-39 21Z" fill="#f7e6d7" stroke="#6e3b59" stroke-width="4"/>
+<path d="m43 194 23-7m-20 16 23-7m-16 16 21-8" stroke="#c95864" stroke-width="3"/>
+<path d="m35 198 12-19 37 35" fill="none" stroke="#bd7590" stroke-width="2"/>
+<!-- Right stamp arm: phase-specific silhouette, hand and weapon in the same moving coordinate system -->
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="#1c1124" stroke-width="29" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="url(#coatLit)" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M199 168Q210 175 213 186" fill="none" stroke="#c48a8c" stroke-width="4"/>
+<ellipse cx="223" cy="229" rx="15" ry="14" fill="url(#face)" stroke="#4c2839" stroke-width="4"/>
+<g transform="translate(227 257) rotate(52)">
+<path d="M-3-31 Q-20-30-18-12 L-14 2 Q-4 10 12 3L15-11Q13-27-3-31Z" fill="url(#stamp)" stroke="#291329" stroke-width="5"/>
+<path d="M-4-26q-5 0-6 11" fill="none" stroke="#ffe2ae" stroke-width="3"/>
+<path d="M-34-2L31-5 37 20 -35 23Z" fill="#492139" stroke="#271325" stroke-width="6"/>
+<path d="M-36 18L39 16 43 37-34 42Z" fill="url(#blood)" stroke="#38142b" stroke-width="6"/>
+<path d="M-29 24L30 23" stroke="#ffca91" stroke-width="4"/>
+<path d="M-20 30h41" stroke="#fff2be" stroke-width="2" stroke-dasharray="3 5"/>
+</g>
+<!-- Proprietary face and fine-rim glasses -->
+<path d="M113 125Q103 109 109 88q7-38 48-43 45-5 61 39 12 38-4 65-24 30-66 26-30-7-35-50Z" fill="url(#face)" stroke="#2b182d" stroke-width="6"/>
+<path d="M112 110Q99 97 105 75q8-21 30-28l10-15 15 11 16-12 10 14q37-3 43 42l-16-9-4 23-17-17-27-5-22 13-28-7Z" fill="url(#hair)" stroke="#160d21" stroke-width="6"/>
+<path d="M115 80q22-34 50-29M160 55q27-9 43 16" stroke="#b26b81" stroke-width="4" opacity=".65"/>
+<path d="M118 111q15-12 28-2m27-5q14-10 25 0" stroke="#44162f" stroke-width="7" stroke-linecap="round"/>
+<path d="M115 111q16-4 33 2l-1 25q-20 8-32-6Zm53-1q18-7 34 0l-4 23q-17 8-30 0Z" fill="#311a30aa" stroke="#efc4ae" stroke-width="3"/>
+<path d="m147 119 20-1" stroke="#d2aabb" stroke-width="3"/>
+<path d="m123 121 20 12m0-12-20 12m50-12 20 12m0-12-20 12" stroke="#a94051" stroke-width="4"/>
+<path d="m155 134 8 7-10 2" stroke="#8f5570" stroke-width="2.5" fill="none"/>
+<path d="M145 150q14-11 30 4l-9 12q-12 4-21-16Z" fill="#421226" stroke="#8f3c49" stroke-width="3"/><path d="M149 150q12-4 19 1" fill="none" stroke="#fff1d7" stroke-width="4"/>
+<path d="M128 166q27 12 55-1" fill="none" stroke="#ffeece" stroke-width="2" opacity=".45"/>
+<!-- angry badge and red office pin -->
+<path d="M118 202l27 1 1 22-28-3Z" fill="#f9d59e" stroke="#673247" stroke-width="3"/><path d="M123 207h15m-15 6h13m-13 5h11" stroke="#9e4454" stroke-width="2"/>
+<circle cx="204" cy="196" r="6" fill="url(#blood)" stroke="#ffe5b7" stroke-width="2"/>
+</g>
+
+
+</g><g transform="translate(320 0)">
+<ellipse cx="162" cy="278" rx="76" ry="13" fill="#120916" opacity=".65"/>
+<ellipse cx="165" cy="183" rx="122" ry="108" fill="url(#aura)" opacity="0.32"/>
+
+<g transform="translate(0 19)">
+<!-- Black tailored coat silhouette, cloth folds, shoulder plates and two actual boots -->
+<path d="M111 229 97 263l-5 15q26 14 49-2l7-37M173 231l22 39q12 15 35 4l-11-24-11-29" fill="url(#coat)" stroke="#1a1225" stroke-width="7"/>
+<path d="M89 270q25 11 51-1l2 12q-29 18-55 3Zm121-4q29 4 43 15l-4 11q-31 0-43-11Z" fill="#2c2030" stroke="#1a1421" stroke-width="5"/>
+<path d="M105 152Q81 163 79 198L93 261Q143 286 206 261l23-63Q224 157 198 146l-44-23Z" fill="url(#coat)" stroke="#160c21" stroke-width="8"/>
+<path d="M93 181q-16 44 0 74l24-13-4-65Z" fill="#58314b" opacity=".55"/>
+<path d="M212 174q14 56-2 80l-25-8 13-72Z" fill="#8f5167" opacity=".48"/>
+<path d="M126 152 151 225l-41 29 22-100Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M187 147 158 222l42 33-15-104Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M131 147l25 41 31-41-25-17Z" fill="#fff4d9" stroke="#5b3549" stroke-width="3"/>
+<path d="M150 169 160 188l-8 39 17 24 12-25-15-36 7-19-11-9Z" fill="#9c1f45" stroke="#ec9d91" stroke-width="2"/>
+<path d="M147 207l15 15 10-20" stroke="#ffb189" stroke-width="3" opacity=".65" fill="none"/>
+<path d="M113 198h24m44 0h24m-79 17h15m44 0h13" stroke="#9a7484" stroke-width="2" opacity=".65"/>
+<path d="M113 232 100 268m118-34 8 31" stroke="#130e1d" stroke-width="4"/>
+<!-- shoulder insignia and security red ribbon -->
+<path d="M109 160 87 174l23 15 19-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M197 159 221 175l-23 14-18-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M102 182l-12-14 8-4 14 14Z" fill="#e9b681" stroke="#3d2533" stroke-width="2"/>
+<!-- Left arm gripping rejected paperwork, individually redrawn hand positions -->
+<path d="M108 170Q87 185 69 212" fill="none" stroke="#1b1122" stroke-width="25" stroke-linecap="round"/>
+<path d="M108 170Q83 185 68 208" fill="none" stroke="url(#coatLit)" stroke-width="19" stroke-linecap="round"/>
+<ellipse cx="65" cy="216" rx="15" ry="16" fill="url(#face)" stroke="#341a2c" stroke-width="4"/>
+<path d="m31 199 36-16 27 31-39 21Z" fill="#f7e6d7" stroke="#6e3b59" stroke-width="4"/>
+<path d="m43 194 23-7m-20 16 23-7m-16 16 21-8" stroke="#c95864" stroke-width="3"/>
+<path d="m35 198 12-19 37 35" fill="none" stroke="#bd7590" stroke-width="2"/>
+<!-- Right stamp arm: phase-specific silhouette, hand and weapon in the same moving coordinate system -->
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="#1c1124" stroke-width="29" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="url(#coatLit)" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M199 168Q210 175 213 186" fill="none" stroke="#c48a8c" stroke-width="4"/>
+<ellipse cx="223" cy="229" rx="15" ry="14" fill="url(#face)" stroke="#4c2839" stroke-width="4"/>
+<g transform="translate(227 257) rotate(52)">
+<path d="M-3-31 Q-20-30-18-12 L-14 2 Q-4 10 12 3L15-11Q13-27-3-31Z" fill="url(#stamp)" stroke="#291329" stroke-width="5"/>
+<path d="M-4-26q-5 0-6 11" fill="none" stroke="#ffe2ae" stroke-width="3"/>
+<path d="M-34-2L31-5 37 20 -35 23Z" fill="#492139" stroke="#271325" stroke-width="6"/>
+<path d="M-36 18L39 16 43 37-34 42Z" fill="url(#blood)" stroke="#38142b" stroke-width="6"/>
+<path d="M-29 24L30 23" stroke="#ffca91" stroke-width="4"/>
+<path d="M-20 30h41" stroke="#fff2be" stroke-width="2" stroke-dasharray="3 5"/>
+</g>
+<!-- Proprietary face and fine-rim glasses -->
+<path d="M113 125Q103 109 109 88q7-38 48-43 45-5 61 39 12 38-4 65-24 30-66 26-30-7-35-50Z" fill="url(#face)" stroke="#2b182d" stroke-width="6"/>
+<path d="M112 110Q99 97 105 75q8-21 30-28l10-15 15 11 16-12 10 14q37-3 43 42l-16-9-4 23-17-17-27-5-22 13-28-7Z" fill="url(#hair)" stroke="#160d21" stroke-width="6"/>
+<path d="M115 80q22-34 50-29M160 55q27-9 43 16" stroke="#b26b81" stroke-width="4" opacity=".65"/>
+<path d="M118 111q15-12 28-2m27-5q14-10 25 0" stroke="#44162f" stroke-width="7" stroke-linecap="round"/>
+<path d="M115 111q16-4 33 2l-1 25q-20 8-32-6Zm53-1q18-7 34 0l-4 23q-17 8-30 0Z" fill="#311a30aa" stroke="#efc4ae" stroke-width="3"/>
+<path d="m147 119 20-1" stroke="#d2aabb" stroke-width="3"/>
+<path d="m123 121 20 12m0-12-20 12m50-12 20 12m0-12-20 12" stroke="#a94051" stroke-width="4"/>
+<path d="m155 134 8 7-10 2" stroke="#8f5570" stroke-width="2.5" fill="none"/>
+<path d="M145 150q14-11 30 4l-9 12q-12 4-21-16Z" fill="#421226" stroke="#8f3c49" stroke-width="3"/><path d="M149 150q12-4 19 1" fill="none" stroke="#fff1d7" stroke-width="4"/>
+<path d="M128 166q27 12 55-1" fill="none" stroke="#ffeece" stroke-width="2" opacity=".45"/>
+<!-- angry badge and red office pin -->
+<path d="M118 202l27 1 1 22-28-3Z" fill="#f9d59e" stroke="#673247" stroke-width="3"/><path d="M123 207h15m-15 6h13m-13 5h11" stroke="#9e4454" stroke-width="2"/>
+<circle cx="204" cy="196" r="6" fill="url(#blood)" stroke="#ffe5b7" stroke-width="2"/>
+</g>
+
+
+</g><g transform="translate(640 0)">
+<ellipse cx="162" cy="278" rx="110" ry="13" fill="#120916" opacity=".65"/>
+<ellipse cx="165" cy="183" rx="122" ry="108" fill="url(#aura)" opacity="0.32"/>
+<g fill="#fce7da" stroke="#613852" stroke-width="2"><path d="m36 70 27-14 12 33-30 6Z"/><path d="m246 44 30 7-12 30-30-8Z"/><path d="m53 213 22-14 8 21-22 8Z"/></g>
+<g transform="translate(4 20) rotate(14 160 205)">
+<!-- Black tailored coat silhouette, cloth folds, shoulder plates and two actual boots -->
+<path d="M111 229 97 263l-5 15q26 14 49-2l7-37M173 231l22 39q12 15 35 4l-11-24-11-29" fill="url(#coat)" stroke="#1a1225" stroke-width="7"/>
+<path d="M89 270q25 11 51-1l2 12q-29 18-55 3Zm121-4q29 4 43 15l-4 11q-31 0-43-11Z" fill="#2c2030" stroke="#1a1421" stroke-width="5"/>
+<path d="M105 152Q81 163 79 198L93 261Q143 286 206 261l23-63Q224 157 198 146l-44-23Z" fill="url(#coat)" stroke="#160c21" stroke-width="8"/>
+<path d="M93 181q-16 44 0 74l24-13-4-65Z" fill="#58314b" opacity=".55"/>
+<path d="M212 174q14 56-2 80l-25-8 13-72Z" fill="#8f5167" opacity=".48"/>
+<path d="M126 152 151 225l-41 29 22-100Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M187 147 158 222l42 33-15-104Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M131 147l25 41 31-41-25-17Z" fill="#fff4d9" stroke="#5b3549" stroke-width="3"/>
+<path d="M150 169 160 188l-8 39 17 24 12-25-15-36 7-19-11-9Z" fill="#9c1f45" stroke="#ec9d91" stroke-width="2"/>
+<path d="M147 207l15 15 10-20" stroke="#ffb189" stroke-width="3" opacity=".65" fill="none"/>
+<path d="M113 198h24m44 0h24m-79 17h15m44 0h13" stroke="#9a7484" stroke-width="2" opacity=".65"/>
+<path d="M113 232 100 268m118-34 8 31" stroke="#130e1d" stroke-width="4"/>
+<!-- shoulder insignia and security red ribbon -->
+<path d="M109 160 87 174l23 15 19-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M197 159 221 175l-23 14-18-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M102 182l-12-14 8-4 14 14Z" fill="#e9b681" stroke="#3d2533" stroke-width="2"/>
+<!-- Left arm gripping rejected paperwork, individually redrawn hand positions -->
+<path d="M108 170Q87 185 69 212" fill="none" stroke="#1b1122" stroke-width="25" stroke-linecap="round"/>
+<path d="M108 170Q83 185 68 208" fill="none" stroke="url(#coatLit)" stroke-width="19" stroke-linecap="round"/>
+<ellipse cx="65" cy="216" rx="15" ry="16" fill="url(#face)" stroke="#341a2c" stroke-width="4"/>
+<path d="m31 199 36-16 27 31-39 21Z" fill="#f7e6d7" stroke="#6e3b59" stroke-width="4"/>
+<path d="m43 194 23-7m-20 16 23-7m-16 16 21-8" stroke="#c95864" stroke-width="3"/>
+<path d="m35 198 12-19 37 35" fill="none" stroke="#bd7590" stroke-width="2"/>
+<!-- Right stamp arm: phase-specific silhouette, hand and weapon in the same moving coordinate system -->
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="#1c1124" stroke-width="29" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="url(#coatLit)" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M199 168Q210 175 213 186" fill="none" stroke="#c48a8c" stroke-width="4"/>
+<ellipse cx="223" cy="229" rx="15" ry="14" fill="url(#face)" stroke="#4c2839" stroke-width="4"/>
+<g transform="translate(227 257) rotate(52)">
+<path d="M-3-31 Q-20-30-18-12 L-14 2 Q-4 10 12 3L15-11Q13-27-3-31Z" fill="url(#stamp)" stroke="#291329" stroke-width="5"/>
+<path d="M-4-26q-5 0-6 11" fill="none" stroke="#ffe2ae" stroke-width="3"/>
+<path d="M-34-2L31-5 37 20 -35 23Z" fill="#492139" stroke="#271325" stroke-width="6"/>
+<path d="M-36 18L39 16 43 37-34 42Z" fill="url(#blood)" stroke="#38142b" stroke-width="6"/>
+<path d="M-29 24L30 23" stroke="#ffca91" stroke-width="4"/>
+<path d="M-20 30h41" stroke="#fff2be" stroke-width="2" stroke-dasharray="3 5"/>
+</g>
+<!-- Proprietary face and fine-rim glasses -->
+<path d="M113 125Q103 109 109 88q7-38 48-43 45-5 61 39 12 38-4 65-24 30-66 26-30-7-35-50Z" fill="url(#face)" stroke="#2b182d" stroke-width="6"/>
+<path d="M112 110Q99 97 105 75q8-21 30-28l10-15 15 11 16-12 10 14q37-3 43 42l-16-9-4 23-17-17-27-5-22 13-28-7Z" fill="url(#hair)" stroke="#160d21" stroke-width="6"/>
+<path d="M115 80q22-34 50-29M160 55q27-9 43 16" stroke="#b26b81" stroke-width="4" opacity=".65"/>
+<path d="M118 111q15-12 28-2m27-5q14-10 25 0" stroke="#44162f" stroke-width="7" stroke-linecap="round"/>
+<path d="M115 111q16-4 33 2l-1 25q-20 8-32-6Zm53-1q18-7 34 0l-4 23q-17 8-30 0Z" fill="#311a30aa" stroke="#efc4ae" stroke-width="3"/>
+<path d="m147 119 20-1" stroke="#d2aabb" stroke-width="3"/>
+<path d="m123 121 20 12m0-12-20 12m50-12 20 12m0-12-20 12" stroke="#a94051" stroke-width="4"/>
+<path d="m155 134 8 7-10 2" stroke="#8f5570" stroke-width="2.5" fill="none"/>
+<path d="M145 150q14-11 30 4l-9 12q-12 4-21-16Z" fill="#421226" stroke="#8f3c49" stroke-width="3"/><path d="M149 150q12-4 19 1" fill="none" stroke="#fff1d7" stroke-width="4"/>
+<path d="M128 166q27 12 55-1" fill="none" stroke="#ffeece" stroke-width="2" opacity=".45"/>
+<!-- angry badge and red office pin -->
+<path d="M118 202l27 1 1 22-28-3Z" fill="#f9d59e" stroke="#673247" stroke-width="3"/><path d="M123 207h15m-15 6h13m-13 5h11" stroke="#9e4454" stroke-width="2"/>
+<circle cx="204" cy="196" r="6" fill="url(#blood)" stroke="#ffe5b7" stroke-width="2"/>
+</g>
+
+
+</g><g transform="translate(960 0)">
+<ellipse cx="162" cy="278" rx="110" ry="13" fill="#120916" opacity=".65"/>
+<ellipse cx="165" cy="183" rx="122" ry="108" fill="url(#aura)" opacity="0.32"/>
+<g fill="#fce7da" stroke="#613852" stroke-width="2"><path d="m36 70 27-14 12 33-30 6Z"/><path d="m246 44 30 7-12 30-30-8Z"/><path d="m53 213 22-14 8 21-22 8Z"/></g>
+<g transform="translate(13 45) rotate(38 160 205)">
+<!-- Black tailored coat silhouette, cloth folds, shoulder plates and two actual boots -->
+<path d="M111 229 97 263l-5 15q26 14 49-2l7-37M173 231l22 39q12 15 35 4l-11-24-11-29" fill="url(#coat)" stroke="#1a1225" stroke-width="7"/>
+<path d="M89 270q25 11 51-1l2 12q-29 18-55 3Zm121-4q29 4 43 15l-4 11q-31 0-43-11Z" fill="#2c2030" stroke="#1a1421" stroke-width="5"/>
+<path d="M105 152Q81 163 79 198L93 261Q143 286 206 261l23-63Q224 157 198 146l-44-23Z" fill="url(#coat)" stroke="#160c21" stroke-width="8"/>
+<path d="M93 181q-16 44 0 74l24-13-4-65Z" fill="#58314b" opacity=".55"/>
+<path d="M212 174q14 56-2 80l-25-8 13-72Z" fill="#8f5167" opacity=".48"/>
+<path d="M126 152 151 225l-41 29 22-100Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M187 147 158 222l42 33-15-104Z" fill="url(#coatLit)" stroke="#3b2341" stroke-width="3"/>
+<path d="M131 147l25 41 31-41-25-17Z" fill="#fff4d9" stroke="#5b3549" stroke-width="3"/>
+<path d="M150 169 160 188l-8 39 17 24 12-25-15-36 7-19-11-9Z" fill="#9c1f45" stroke="#ec9d91" stroke-width="2"/>
+<path d="M147 207l15 15 10-20" stroke="#ffb189" stroke-width="3" opacity=".65" fill="none"/>
+<path d="M113 198h24m44 0h24m-79 17h15m44 0h13" stroke="#9a7484" stroke-width="2" opacity=".65"/>
+<path d="M113 232 100 268m118-34 8 31" stroke="#130e1d" stroke-width="4"/>
+<!-- shoulder insignia and security red ribbon -->
+<path d="M109 160 87 174l23 15 19-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M197 159 221 175l-23 14-18-25Z" fill="#925167" stroke="#efb692" stroke-width="3"/>
+<path d="M102 182l-12-14 8-4 14 14Z" fill="#e9b681" stroke="#3d2533" stroke-width="2"/>
+<!-- Left arm gripping rejected paperwork, individually redrawn hand positions -->
+<path d="M108 170Q87 185 69 212" fill="none" stroke="#1b1122" stroke-width="25" stroke-linecap="round"/>
+<path d="M108 170Q83 185 68 208" fill="none" stroke="url(#coatLit)" stroke-width="19" stroke-linecap="round"/>
+<ellipse cx="65" cy="216" rx="15" ry="16" fill="url(#face)" stroke="#341a2c" stroke-width="4"/>
+<path d="m31 199 36-16 27 31-39 21Z" fill="#f7e6d7" stroke="#6e3b59" stroke-width="4"/>
+<path d="m43 194 23-7m-20 16 23-7m-16 16 21-8" stroke="#c95864" stroke-width="3"/>
+<path d="m35 198 12-19 37 35" fill="none" stroke="#bd7590" stroke-width="2"/>
+<!-- Right stamp arm: phase-specific silhouette, hand and weapon in the same moving coordinate system -->
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="#1c1124" stroke-width="29" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M195 173 Q225 204 223 244" fill="none" stroke="url(#coatLit)" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M199 168Q210 175 213 186" fill="none" stroke="#c48a8c" stroke-width="4"/>
+<ellipse cx="223" cy="229" rx="15" ry="14" fill="url(#face)" stroke="#4c2839" stroke-width="4"/>
+<g transform="translate(227 257) rotate(52)">
+<path d="M-3-31 Q-20-30-18-12 L-14 2 Q-4 10 12 3L15-11Q13-27-3-31Z" fill="url(#stamp)" stroke="#291329" stroke-width="5"/>
+<path d="M-4-26q-5 0-6 11" fill="none" stroke="#ffe2ae" stroke-width="3"/>
+<path d="M-34-2L31-5 37 20 -35 23Z" fill="#492139" stroke="#271325" stroke-width="6"/>
+<path d="M-36 18L39 16 43 37-34 42Z" fill="url(#blood)" stroke="#38142b" stroke-width="6"/>
+<path d="M-29 24L30 23" stroke="#ffca91" stroke-width="4"/>
+<path d="M-20 30h41" stroke="#fff2be" stroke-width="2" stroke-dasharray="3 5"/>
+</g>
+<!-- Proprietary face and fine-rim glasses -->
+<path d="M113 125Q103 109 109 88q7-38 48-43 45-5 61 39 12 38-4 65-24 30-66 26-30-7-35-50Z" fill="url(#face)" stroke="#2b182d" stroke-width="6"/>
+<path d="M112 110Q99 97 105 75q8-21 30-28l10-15 15 11 16-12 10 14q37-3 43 42l-16-9-4 23-17-17-27-5-22 13-28-7Z" fill="url(#hair)" stroke="#160d21" stroke-width="6"/>
+<path d="M115 80q22-34 50-29M160 55q27-9 43 16" stroke="#b26b81" stroke-width="4" opacity=".65"/>
+<path d="M118 111q15-12 28-2m27-5q14-10 25 0" stroke="#44162f" stroke-width="7" stroke-linecap="round"/>
+<path d="M115 111q16-4 33 2l-1 25q-20 8-32-6Zm53-1q18-7 34 0l-4 23q-17 8-30 0Z" fill="#311a30aa" stroke="#efc4ae" stroke-width="3"/>
+<path d="m147 119 20-1" stroke="#d2aabb" stroke-width="3"/>
+<path d="m123 121 20 12m0-12-20 12m50-12 20 12m0-12-20 12" stroke="#a94051" stroke-width="4"/>
+<path d="m155 134 8 7-10 2" stroke="#8f5570" stroke-width="2.5" fill="none"/>
+<path d="M145 150q14-11 30 4l-9 12q-12 4-21-16Z" fill="#421226" stroke="#8f3c49" stroke-width="3"/><path d="M149 150q12-4 19 1" fill="none" stroke="#fff1d7" stroke-width="4"/>
+<path d="M128 166q27 12 55-1" fill="none" stroke="#ffeece" stroke-width="2" opacity=".45"/>
+<!-- angry badge and red office pin -->
+<path d="M118 202l27 1 1 22-28-3Z" fill="#f9d59e" stroke="#673247" stroke-width="3"/><path d="M123 207h15m-15 6h13m-13 5h11" stroke="#9e4454" stroke-width="2"/>
+<circle cx="204" cy="196" r="6" fill="url(#blood)" stroke="#ffe5b7" stroke-width="2"/>
+</g>
+
+
+</g></svg>
