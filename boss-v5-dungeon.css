@@ -300,3 +300,84 @@ body.v3-dev #v5DevSkip{display:block}
 @keyframes v60ShadowShift{0%{opacity:0;transform:translate(-34px,17px) rotate(-28deg)}50%{opacity:1;transform:translate(10px,-12px) rotate(18deg)}100%{opacity:0;transform:translate(35px,-25px) rotate(37deg)}}
 @keyframes v60CoffeeClear{0%{opacity:0;scale:.4;translate:0 23px}28%{opacity:1;scale:.95;translate:0 0}65%{opacity:.95;scale:1.06;translate:0 -12px}100%{opacity:0;scale:1.2;translate:0 -28px}}
 @media(max-height:690px){.game .v60Vfx{width:117%;height:123%}.game .v5Enemy .v60MageTarget{width:132%}}
+
+/* V6.1 — fixes from real 29s iPhone recording (2026-11-12).
+ * Keep seven complete silhouettes and state badges visible. */
+.game.v5Boss .boss-zone{
+  top:17.5%!important;
+  height:32.5%!important;
+  left:3%!important;
+  right:3%!important;
+  transform-origin:50% 30%;
+}
+.game.v5Boss .boss-rig{width:89%!important}
+.game.v5Boss .boss-frame img{width:92%!important}
+.game.v5Boss .team-zone{top:54%!important;bottom:19%!important}
+/* QA controls are intentionally only shown in ?dev=1, but must not cover units.
+ * Put tiny accessible controls in the title bar, never on the party row. */
+#v5DevSkip,#v3DevUlt{
+  position:absolute!important;
+  top:calc(7px + env(safe-area-inset-top,0px))!important;
+  bottom:auto!important;
+  right:76px!important;
+  left:auto!important;
+  z-index:64!important;
+  width:29px!important;
+  min-width:29px!important;
+  height:29px!important;
+  max-height:29px!important;
+  padding:0!important;
+  border-radius:8px!important;
+  font-size:18px!important;
+  line-height:28px!important;
+  text-align:center!important;
+  box-shadow:0 2px 5px #150a25ac;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+body.v3-dev .game.v5Mobs #v5DevSkip{display:block!important}
+body.v3-dev .game.v5Boss #v3DevUlt{display:block!important}
+.game.v5Boss #v5DevSkip{display:none!important}
+.game.v5Mobs #v3DevUlt{display:none!important}
+/* Make blade-light readable without swallowing the whole monster.
+ * Each independent transparent layer stays on the *attacked* enemy. */
+.game .v60AssassinCast{
+  width:103%!important;
+  height:116%!important;
+  top:24%!important;
+  opacity:.85;
+}
+.game .v5Enemy .v60AssassinTarget{
+  width:81%!important;
+  height:94%!important;
+  top:32%!important;
+  z-index:16!important;
+  opacity:.83;
+  filter:drop-shadow(0 0 4px #a27ce3);
+}
+.game .v5Enemy .v60AssassinTarget .v60Part1{opacity:.64}
+.game .v5Enemy .v60MageTarget{
+  width:112%!important;
+  height:118%!important;
+  top:36%!important;
+  opacity:.79;
+}
+/* Three miniature flyers must not hide the elite's face when winding up. */
+.game .v5Enemy[data-species="red-stamp-manager"] .v52PaperHalo{
+  width:39px!important;
+  height:46px!important;
+  max-width:39px!important;
+  max-height:46px!important;
+  opacity:.88;
+}
+.game .v5Enemy[data-species="red-stamp-manager"] .v52PaperHalo0{left:9%!important;top:3%!important}
+.game .v5Enemy[data-species="red-stamp-manager"] .v52PaperHalo1{left:70%!important;top:-13%!important}
+.game .v5Enemy[data-species="red-stamp-manager"] .v52PaperHalo2{left:80%!important;top:23%!important}
+@media(max-width:350px){
+ #v5DevSkip,#v3DevUlt{width:25px!important;min-width:25px!important;height:25px!important;line-height:24px!important;font-size:16px!important;right:62px!important;top:7px!important}
+ .game .v5Enemy .v60AssassinTarget{width:78%!important;height:89%!important}
+}
+@media(max-height:710px){
+ .game.v5Boss .boss-zone{top:19%!important;height:29%!important}
+ .game.v5Boss .team-zone{top:52.5%!important;bottom:20%!important}
+}
