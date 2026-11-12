@@ -10,6 +10,7 @@ on:
       - "v19/s1-hell-monday-dungeon.mjs"
       - "tests/s1-hell-monday-dungeon.test.mjs"
       - "tests/boss-v5-wave-dungeon-browser.mjs"
+      - "tests/boss-v5-full-auto-playthrough.mjs"
       - ".github/workflows/boss-v5-dungeon.yml"
   workflow_dispatch:
 
@@ -31,11 +32,14 @@ jobs:
         run: |
           node --check boss-v5-dungeon-runtime.js
           node --check tests/boss-v5-wave-dungeon-browser.mjs
+          node --check tests/boss-v5-full-auto-playthrough.mjs
           node --test tests/s1-hell-monday-dungeon.test.mjs
           test -s art/v19/runtime/monsters/paper-gremlin/attack.png
           test -s art/v19/runtime/monsters/chair-golem/attack.webp
       - name: Verify four waves, real sprite assets and final Boss in mobile browser
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-wave-dungeon-browser.mjs
+      - name: Confirm full auto-clear from first mob to final boss
+        run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-full-auto-playthrough.mjs
       - name: Upload rendered screenshots and failure logs
         if: always()
         uses: actions/upload-artifact@v4
