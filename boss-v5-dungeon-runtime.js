@@ -194,7 +194,7 @@ function v59Reset(){
 let v60AI=null;
 const v60Cooldown={guard:-Infinity,mage:-Infinity,assassin:-Infinity,cleanse:-Infinity};
 const v60Guard={target:-1,expires:0,guardIndex:0};
-const tieshiAwakening={biographyCleared:false,energy:0,lastCast:-Infinity,activeUntil:0};
+const tieshiAwakening={biographyCleared:false,energy:0,lastCast:-Infinity,activeUntil:0,protectUntil:0};
 function tieshiBattleEvent(type){document.dispatchEvent(new CustomEvent(type,{detail:{at:v4Time,wave:clock.wave}}))}
 function tieshiGainEnergy(points){tieshiAwakening.energy=Math.min(100,tieshiAwakening.energy+points)}
 function tieshiUltimate(){
@@ -202,6 +202,7 @@ function tieshiUltimate(){
  const awakened=tieshiAwakening.biographyCleared;
  tieshiAwakening.energy=0;tieshiAwakening.lastCast=v4Time;
  tieshiAwakening.activeUntil=awakened?v4Time+1800:0;
+ tieshiAwakening.protectUntil=awakened?v4Time+6000:0;
  const protectedAllies=[];
  for(let i=0;i<7;i++)if(allies[i]>0){v59ApplyShield(i,awakened?.08:.05,awakened?'鐵時・最後一道門':'鐵時・終夜守衛',awakened?6000:4000);protectedAllies.push(i)}
  v60Fx(team[0],'GuardCast',['guard-watch-shield.svg','guard-escort-wings.svg'],awakened?1800:850);
@@ -226,6 +227,7 @@ function v60Fx(element,kind,parts,duration){
 }
 function v60Reset(full=true){
  if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}
+ tieshiAwakening.protectUntil=0;
  if(full){tieshiAwakening.energy=0;tieshiAwakening.lastCast=-Infinity}
 
  v60Guard.target=-1;v60Guard.expires=0;v60Busy.clear();
@@ -339,6 +341,13 @@ function v60Intercept(i,baseDamage){
 
 function flash(i,amt,heavy=false,protectedPortion=false){
  if(allies[i]<=0)return;
+ if(!protectedPortion&&i!==0&&allies[0]>0&&tieshiAwakening.protectUntil>v4Time){
+  const redirected=Math.round(amt*.30*100)/100;
+  amt=Math.max(0,amt-redirected);
+  v60Record({type:'tieshi-ultimate-intercept',guard:0,target:i,redirected});
+  v60Fx(team[0],'GuardImpact',['guard-watch-shield.svg','guard-escort-wings.svg'],380);
+  flash(0,redirected,false,true);
+ }
  if(!protectedPortion)amt=v60Intercept(i,amt);
  amt=clock.wave===4?Math.round(amt*1.4*10)/10:amt;
  if(v60AI)amt=Math.round(amt*v60AI.damageDefenseModifier(v59AI.ALLY_ROLES[i].defense)*100)/100;
@@ -1040,7 +1049,7 @@ window.__salaryBossV5={
  get skillTime(){return v4Time},
  get guardState(){return {...v60Guard}},
  get tieshiAwakening(){return {...tieshiAwakening}},
- devTieshiBiography:(cleared)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.biographyCleared=Boolean(cleared);if(!cleared&&tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}return true},
+ devTieshiBiography:(cleared)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.biographyCleared=Boolean(cleared);if(!cleared){tieshiAwakening.protectUntil=0;if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}}return true},
  devTieshiEnergy:(energy)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.energy=Math.max(0,Math.min(100,Number(energy)||0));return true},
  devTieshiCast:()=>new URLSearchParams(location.search).get('dev')==='1'&&tieshiUltimate(),
  get skillCooldowns(){return {...v60Cooldown}},
@@ -1107,6 +1116,7 @@ v5AnimationTimer=setInterval(v5AnimateMobs,120);
 async function bossStep(){if(clock.wave<4)return v5MobStep();if(clock.paused||clock.busy||clock.done)return;clock.busy=true;try{clock.turn++;if(clock.energy>=100)await ultimate();else if(clock.turn%4===0)await bombard();else await normal();if(clock.energy>=100&&!clock.paused&&!clock.done)await ultimate()}finally{clock.busy=false}}
 function partyStep(){
  if(tieshiAwakening.activeUntil>0&&v4Time>=tieshiAwakening.activeUntil){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}
+ if(tieshiAwakening.protectUntil>0&&v4Time>=tieshiAwakening.protectUntil)tieshiAwakening.protectUntil=0;
 if(clock.wave<4)return v5PartyVsMobs();if(clock.paused||clock.done||clock.inUltimate)return;const living=available([0,1,2,3,4,5,6]);if(!living.length){clock.done=true;label('隊伍全滅｜請重新挑戰');return}// Every teammate acts in an independent round robin; debuffs can now stop a *real* action.
 clock.allyTurn=(clock.allyTurn||0)+1;
 const i=(clock.allyTurn-1)%7,unit=team[i];
