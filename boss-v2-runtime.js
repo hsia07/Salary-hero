@@ -1,0 +1,40 @@
+(()=>{
+'use strict';
+if(!document.querySelector('#bossRig')||window.__salaryBossV2)return;window.__salaryBossV2=true;
+clearInterval(combatTicker);if(frameTicker)clearInterval(frameTicker);if(stateTimer)clearTimeout(stateTimer);
+const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$('bossFrame'),zone=$('bossZone'),team=[...document.querySelectorAll('.team-zone .unit')];
+const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
+const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
+const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
+document.querySelector('.footer .hint').textContent='Boss 能量、巨爪命中、全隊大招測試｜隊友仍為暫用獨立素材';
+const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
+const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
+const clock={energy:0,hp:100,wave:1,rage:false,turn:0,pace:1,paused:false,done:false,busy:false};
+let bossTimer,allyTimer;
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms/clock.pace));
+function center(el){let a=el.getBoundingClientRect(),g=root.getBoundingClientRect();return{x:a.left+a.width/2-g.left,y:a.top+a.height*.6-g.top}}
+function pointBoss(){let a=zone.getBoundingClientRect(),g=root.getBoundingClientRect();return{x:a.left+a.width*.55-g.left,y:a.top+a.height*.68-g.top}}
+function piece(tag,cls,x,y,url){const e=document.createElement(tag);e.className=cls;e.style.left=x+'px';e.style.top=y+'px';if(url)e.src=url;plane.append(e);setTimeout(()=>e.remove(),1100/clock.pace);return e}
+function setEnergy(v){clock.energy=Math.max(0,Math.min(100,v));$('energyFill').style.width=clock.energy+'%';$('energyText').textContent=Math.round(clock.energy)+' / 100'}
+function setHp(v){clock.hp=Math.max(0,v);hpFill.style.width=clock.hp+'%';hpText.textContent=Math.round(clock.hp)+'%';if(!clock.rage&&clock.hp<=60){clock.rage=true;root.classList.add('v2Rage');warning.textContent='狂暴化｜加班永無止境';warning.classList.add('active');setTimeout(()=>warning.classList.remove('active'),850);setEnergy(clock.energy+20)}}
+function label(t,on=false){warning.textContent=t;warning.classList.toggle('active',on);status.textContent=t}
+function ring(i,ult){const p=center(team[i]);let e=piece('div','v2Ring'+(ult?' ult':''),p.x,p.y);setTimeout(()=>e.remove(),1100/clock.pace)}
+function flash(i,amt,heavy=false){if(allies[i]<=0)return;let unit=team[i],p=center(unit);piece('img','v2Slash',p.x,p.y-10,ART.parts.slash_fx);let n=piece('span','v2Dmg',p.x,p.y-20);n.textContent='-'+(amt*630).toLocaleString();allies[i]=Math.max(0,allies[i]-amt);unit.querySelector('.v2Health').style.width=allies[i]+'%';unit.classList.remove('v2Hit');void unit.offsetWidth;unit.classList.add('v2Hit');setTimeout(()=>unit.classList.remove('v2Hit'),580/clock.pace);if(!allies[i])unit.classList.add('v2Down')}
+function shake(big=false){root.classList.remove('v2Shake','v2UltShake');void root.offsetWidth;root.classList.add(big?'v2UltShake':'v2Shake');setTimeout(()=>root.classList.remove('v2Shake','v2UltShake'),big?700:360)}
+function effectTravel(i){let from=pointBoss(),to=center(team[i]);let dx=to.x-from.x,dy=to.y-from.y;let path=piece('div','v2Trail',from.x,from.y);path.style.width=Math.hypot(dx,dy)+'px';path.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';let p=piece('img','v2Paper',from.x,from.y,ART.parts.paper_stack);p.animate([{transform:'translate(-50%,-50%) scale(.12) rotate(-15deg)'},{transform:'translate('+(dx-40)+'px,'+(dy-40)+'px) scale(.38) rotate(290deg)'}],{duration:540/clock.pace,easing:'ease-in',fill:'forwards'})}
+function available(list){return list.filter(i=>allies[i]>0)}
+async function normal(){let variant=clock.turn%5;let target=variant===2?available([0,1,2]):available([0,1,2,3,4,5,6]).slice(0,1);if(!target.length)return;label(variant===2?'橫掃公文爪':variant===4?'牛角突頂':'巨爪拍擊');target.forEach(i=>ring(i,false));sequence('attack',110);await pause(310);if(clock.paused||clock.done)return;target.forEach(effectTravel);await pause(560);if(clock.paused||clock.done)return;target.forEach(i=>flash(i,variant===4?22:variant===2?12:17));shake(variant===4);setEnergy(clock.energy+26+(clock.rage?9:0))}
+async function bombard(){label('文件轟炸｜全員警戒');const target=available([0,1,2,3,4,5,6]);target.forEach(i=>{ring(i,false);effectTravel(i)});sequence('attack',100);await pause(700);if(clock.paused||clock.done)return;target.forEach((i,k)=>setTimeout(()=>flash(i,7),k*58/clock.pace));shake();setEnergy(clock.energy+21+(clock.rage?9:0))}
+async function ultimate(){label('BOSS 必殺｜地獄加班裁決',true);root.classList.add('v2Ult');const targets=available([0,1,2,3,4,5,6]);targets.forEach(i=>ring(i,true));rig.classList.add('charging');await pause(850);if(clock.paused||clock.done)return;sequence('attack',100);targets.forEach(effectTravel);await pause(750);if(clock.paused||clock.done)return;targets.forEach((i,k)=>setTimeout(()=>flash(i,clock.rage?32:25,true),k*35/clock.pace));shake(true);await pause(700);rig.classList.remove('charging');root.classList.remove('v2Ult');label('加班災域｜全隊疲勞');setEnergy(0)}
+async function bossStep(){if(clock.paused||clock.busy||clock.done)return;clock.busy=true;try{clock.turn++;if(clock.energy>=100)await ultimate();else if(clock.turn%4===0)await bombard();else await normal();if(clock.energy>=100&&!clock.paused&&!clock.done)await ultimate()}finally{clock.busy=false}}
+function partyStep(){if(clock.paused||clock.done)return;const living=available([0,1,2,3,4,5,6]);if(!living.length){clock.done=true;label('隊伍全滅｜請重新挑戰');return}let i=living[clock.turn%living.length],unit=team[i];unit.classList.remove('attack');void unit.offsetWidth;unit.classList.add('attack');setTimeout(()=>unit.classList.remove('attack'),500/clock.pace);
+let damage=1+Math.round(Math.random());setHp(clock.hp-damage);let p=pointBoss(),n=piece('span','v2Dmg hero',p.x,p.y);n.textContent='-'+(damage*11900).toLocaleString();
+if(clock.turn%7===0)allies.forEach((v,i)=>{if(v>0){allies[i]=Math.min(100,v+8);team[i].querySelector('.v2Health').style.width=allies[i]+'%'}});
+if(clock.hp===0){if(clock.wave<4){clock.wave++;clock.rage=false;root.classList.remove('v2Rage');clock.hp=100;setHp(100);setEnergy(0);$('wave').textContent='第 '+clock.wave+' / 4 波';label('第 '+clock.wave+' 波・自動推進')}else{clock.done=true;clearInterval(bossTimer);clearInterval(allyTimer);$('wave').textContent='通關';label('地獄星期一｜挑戰成功')}}}
+function restart(){clearInterval(bossTimer);clearInterval(allyTimer);Object.assign(clock,{energy:0,hp:100,wave:1,rage:false,turn:0,pace:1,paused:false,done:false,busy:false});allies.fill(100);team.forEach(u=>{u.classList.remove('v2Down','v2Hit');u.querySelector('.v2Health').style.width='100%'});root.classList.remove('paused','v2Ult','v2Rage');frame.hidden=true;rig.hidden=false;plane.replaceChildren();label('七人自動戰鬥｜Boss 真正命中隊伍');$('wave').textContent='第 1 / 4 波';setHp(100);setEnergy(0);$('speed').textContent='倍速 ×1';$('pace').textContent='×1';$('pause').textContent='暫停';run()}
+function run(){clearInterval(bossTimer);clearInterval(allyTimer);bossTimer=setInterval(bossStep,2600/clock.pace);allyTimer=setInterval(partyStep,1100/clock.pace)}
+for(let id of ['speed','pause','restart']){let old=$(id),newNode=old.cloneNode(true);old.replaceWith(newNode)}
+$('speed').onclick=()=>{clock.pace=clock.pace===1?2:clock.pace===2?3:1;$('speed').textContent='倍速 ×'+clock.pace;$('pace').textContent='×'+clock.pace;run()};
+$('pause').onclick=()=>{clock.paused=!clock.paused;root.classList.toggle('paused',clock.paused);$('pause').textContent=clock.paused?'繼續':'暫停'};
+$('restart').onclick=restart;restart();
+})();
