@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V5.6 四波副本｜近戰距離／死亡清場／命中同步｜Lv.85 測試數值';
+document.querySelector('.footer .hint').textContent='V5.7 四波副本｜近戰避開敵方血條／攻擊接觸修正｜Lv.85 測試數值';
 const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
 const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
 const clock={energy:0,hp:100,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false};
@@ -574,10 +574,15 @@ function v55Impact(target,actorIndex,damage,role){
  let n=piece('span','v2Dmg hero',at.x,at.y-14);
  n.textContent='-'+Math.round(damage*470).toLocaleString();
  const actorRect=team[actorIndex].getBoundingClientRect(),enemyRect=target.node.getBoundingClientRect();
+ const nameRect=target.node.querySelector('.v5Name')?.getBoundingClientRect();
+ const barRect=target.node.querySelector('.v5Bar')?.getBoundingClientRect();
+ const intersect=(a,b)=>Boolean(a&&b&&a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top);
+ const labelOverlap=role==='melee'&&intersect(actorRect,nameRect);
+ const barOverlap=role==='melee'&&intersect(actorRect,barRect);
  const attackerPosition=center(team[actorIndex]);
  const gap=Math.hypot(attackerPosition.x-at.x,attackerPosition.y-at.y);
  const minimumSafeGap=enemyRect.width*.39+actorRect.width*.28;
- v55Contacts.push({actor:actorIndex,enemy:target.species,role,damage,at:v4Time,wave:clock.wave,gap,minimumSafeGap});
+ v55Contacts.push({actor:actorIndex,enemy:target.species,role,damage,at:v4Time,wave:clock.wave,gap,minimumSafeGap,labelOverlap,barOverlap});
  if(v55Contacts.length>80)v55Contacts.shift();
  v5Health(target,damage);
 }
@@ -590,8 +595,15 @@ function v55BeginHeroAttack(index,target,damage){
  const start=center(attacker);
  const end=center(target.node);
  const dx=end.x-start.x,dy=end.y-start.y;
- const enemyWidth=target.node.getBoundingClientRect().width;
- const allyWidth=attacker.getBoundingClientRect().width;
+ const enemyRect=target.node.getBoundingClientRect();
+ const allyRect=attacker.getBoundingClientRect();
+ const enemyWidth=enemyRect.width;
+ const allyWidth=allyRect.width;
+ const labelRect=target.node.querySelector('.v5Name')?.getBoundingClientRect();
+ const hpRect=target.node.querySelector('.v5Bar')?.getBoundingClientRect();
+ const blockingBottom=Math.max(labelRect?.bottom||enemyRect.bottom,hpRect?.bottom||enemyRect.bottom);
+ // Character bodies cannot overlap monster nameplates and HP bars.
+ const maxVerticalAdvance=Math.max(0,allyRect.top-blockingBottom-9);
  const stopDistance=Math.max(63,enemyWidth*.47+allyWidth*.37);
  const initialDistance=Math.hypot(dx,dy);
  const reachDistance=Math.max(0,initialDistance-stopDistance);
@@ -645,7 +657,9 @@ function v55BeginHeroAttack(index,target,damage){
     const reach=Math.max(0,Math.min(reachDistance,curDistance-stopDistance))*dash;
     const unitX=curDistance>0?(position.x-start.x)/curDistance:0;
     const unitY=curDistance>0?(position.y-start.y)/curDistance:0;
-    attacker.style.translate=Math.round(unitX*reach)+'px '+Math.round(unitY*reach)+'px';
+    const xMove=Math.max(-86,Math.min(86,unitX*reach));
+    const yMove=Math.max(-maxVerticalAdvance,Math.min(38,unitY*reach));
+    attacker.style.translate=Math.round(xMove)+'px '+Math.round(yMove)+'px';
     // Allies and enemies remain readable; attack FX is placed at true contact.
     attacker.style.zIndex='22';
     attacker.classList.toggle('v56Lunging',t>=.14&&t<.69);
