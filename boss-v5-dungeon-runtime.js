@@ -557,6 +557,14 @@ window.__salaryBossV5={
  get mobNames(){return encounter?.enemies.map(e=>e.name)||[]},
  get eliteSkills(){return [...v5EliteSkills]},
  get eliteEffects(){return [...v52Effects]},
+ demoEliteSkill:(kind)=>{
+  if(new URLSearchParams(location.search).get('dev')!=='1'||clock.wave!==3||clock.busy||clock.done)return false;
+  const actor=encounter?.enemies.find(e=>e.elite&&e.alive);
+  const order={stamp:0,meeting:1,paper:2};
+  if(!actor||!(kind in order))return false;
+  actor.abilityCount=order[kind];if(v5EnemyTurn%2===1)v5EnemyTurn++;
+  bossStep();return true;
+ },
  get eliteSprite(){return encounter?.enemies.find(e=>e.elite)?.node.querySelector('.v5Visual')?.style.getPropertyValue('--sheet')||''},
  get mobHP(){return encounter?.enemies.map(e=>e.hp)||[]},
  get bossVisible(){return clock.wave===4&&zone.style.visibility==='visible'},
