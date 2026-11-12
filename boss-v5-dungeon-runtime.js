@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V5.4 四波副本｜印章縮放修正／三招實際命中｜Lv.85 測試數值';
+document.querySelector('.footer .hint').textContent='V5.5 四波副本｜近戰接觸／遠程彈道同步傷害｜Lv.85 測試數值';
 const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
 const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
 const clock={energy:0,hp:100,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false};
@@ -358,6 +358,7 @@ function v5Header(){
 }
 function v5AdvanceToWave(next,forced=false){
  if(!mondaySpec||clock.done)return;
+ v55ClearActions();
  v5Epoch++;v5EnemyTurn=0;v5EliteSkills=[];v52Effects=[];
  const fresh=mondaySpawn(next-1);clock.wave=next;clock.turn=0;clock.allyTurn=0;clock.rage=false;clock.busy=false;clock.inUltimate=false;
  root.classList.remove('v2Rage','v2Ult','v3CannonImpact');
@@ -545,28 +546,111 @@ async function v5MobStep(){
    if(!available([0,1,2,3,4,5,6]).length)v5Defeat();
  }finally{v52FinishTelegraph(actor);if(epoch===v5Epoch)clock.busy=false}
 }
-function v5PartyVsMobs(){
- if(clock.done||clock.paused||encounter?.clearing)return;
- const alive=available([0,1,2,3,4,5,6]);if(!alive.length){v5Defeat();return;}
- const targetIndex=clock.allyTurn%7;clock.allyTurn++;
- if(allies[targetIndex]<=0||v4Has(targetIndex,'stun'))return;
- if(v4Has(targetIndex,'slow')&&Math.floor(clock.allyTurn/7)%2===1)return;
- const monsters=encounter.enemies.filter(e=>e.alive);
- if(!monsters.length)return;
- // Auto-target rule: elite first, otherwise weakest remaining; never strike a dead enemy.
- const target=monsters.find(e=>e.elite)||monsters.slice().sort((a,b)=>a.hp-b.hp)[0];
- const attacker=team[targetIndex];
- attacker.classList.remove('attack');void attacker.offsetWidth;attacker.classList.add('attack');
- setTimeout(()=>attacker.classList.remove('attack'),500/clock.pace);
- const damage=21+(targetIndex%3)*3;
- const p=center(target.node);let n=piece('span','v2Dmg hero',p.x,p.y-16);
+/* V5.5: attacks must physically touch an enemy before HP/damage text changes.
+   Melee allies dash to the collision point; ranged allies send an illustrated
+   projectile there. All motion respects pause, battle speed, wave/reset tokens. */
+const v55Actions=new Map(),v55Contacts=[];
+const v55HitArt='./art/v19/candidates/effects/impact.svg';
+const v55SlashArt='./art/v19/candidates/effects/slash.svg';
+function v55ClearActions(){
+ for(const action of v55Actions.values())action.cleanup?.();
+ v55Actions.clear();
+}
+function v55Impact(target,actorIndex,damage,role){
+ if(!target?.alive||clock.done||encounter?.kind==='boss'||encounter?.clearing)return;
+ const at=center(target.node);
+ const img=piece('img','v55HitSpark',at.x,at.y,v55HitArt);
+ img.alt='';img.style.width=(target.elite?75:56)+'px';
+ img.style.height=(target.elite?75:56)+'px';
+ let n=piece('span','v2Dmg hero',at.x,at.y-14);
  n.textContent='-'+Math.round(damage*470).toLocaleString();
+ v55Contacts.push({actor:actorIndex,enemy:target.species,role,damage,at:v4Time,wave:clock.wave});
+ if(v55Contacts.length>80)v55Contacts.shift();
  v5Health(target,damage);
+}
+function v55BeginHeroAttack(index,target,damage){
+ if(v55Actions.has(index)||!target?.alive||clock.done)return;
+ const attacker=team[index],epoch=v5Epoch;
+ // Keep specialized class roles: swords/guards dash; medics, mages, engineers cast.
+ const caption=attacker.textContent||'';
+ const ranged=/醫官|法師|工程師|術師|醫師|治療|魔導/.test(caption)||[1,2,4].includes(index);
+ const start=center(attacker);
+ const end=center(target.node);
+ const dx=end.x-start.x,dy=end.y-start.y;
+ const projectile=ranged?document.createElement('img'):null;
+ if(projectile){
+  projectile.className='v55HeroProjectile';projectile.alt='';projectile.src=v55SlashArt;
+  plane.append(projectile);
+ }
+ attacker.classList.remove('attack');void attacker.offsetWidth;attacker.classList.add('attack');
+ const originalTranslate=attacker.style.translate,originalZ=attacker.style.zIndex;
+ let elapsed=0,last=0,hit=false,closed=false;
+ const duration=ranged?510:615,impactFraction=ranged?.87:.62;
+ function cleanup(){
+  if(closed)return;closed=true;
+  attacker.style.translate=originalTranslate;
+  attacker.style.zIndex=originalZ;
+  attacker.classList.remove('attack');
+  projectile?.remove();
+  v55Actions.delete(index);
+ }
+ const action={cleanup};v55Actions.set(index,action);
+ function frame(now){
+  if(closed)return;
+  if(epoch!==v5Epoch||clock.done||!attacker.isConnected||clock.wave===4){cleanup();return}
+  if(!last)last=now;
+  const dt=Math.max(0,Math.min(80,now-last));last=now;
+  if(!clock.paused)elapsed+=dt*clock.pace;
+  const t=Math.min(1,elapsed/duration);
+  let dest;
+  if(!target.alive)dest=encounter?.enemies.find(e=>e.alive);
+  else dest=target;
+  const position=dest?center(dest.node):end;
+  if(ranged){
+    const travel=Math.max(0,Math.min(1,(t-.15)/.72));
+    const eased=travel*travel*(3-2*travel);
+    if(projectile){
+      projectile.style.left=(start.x+(position.x-start.x)*eased)+'px';
+      projectile.style.top=(start.y+(position.y-start.y)*eased-Math.sin(Math.PI*travel)*32)+'px';
+      projectile.style.opacity=t<.15?'0':t>.94?'0':'1';
+      projectile.style.transform='translate(-50%,-50%) rotate('+Math.round(18+eased*270)+'deg) scale('+(0.56+0.12*travel)+')';
+    }
+  }else{
+    let dash;
+    if(t<.52){let u=t/.52;dash=u*u*(3-2*u)}
+    else if(t<.69)dash=1;
+    else{let u=(t-.69)/.31;dash=1-u*u*(3-2*u)}
+    const reach=.83*dash;
+    attacker.style.translate=(Math.round((position.x-start.x)*reach))+'px '+(Math.round((position.y-start.y)*reach))+'px';
+    attacker.style.zIndex='43';
+  }
+  if(!hit&&t>=impactFraction){
+    hit=true;
+    const struck=target.alive?target:encounter?.enemies.find(e=>e.alive);
+    if(struck&&allies[index]>0&&epoch===v5Epoch)v55Impact(struck,index,damage,ranged?'ranged':'melee');
+  }
+  if(t<1)requestAnimationFrame(frame);else cleanup();
+ }
+ requestAnimationFrame(frame);
+}
+function v5PartyVsMobs(){
+ if(clock.done||clock.paused||encounter?.clearing||encounter?.kind==='boss')return;
+ const alive=available([0,1,2,3,4,5,6]);if(!alive.length){v5Defeat();return}
+ const i=clock.allyTurn%7;clock.allyTurn++;
+ if(allies[i]<=0||v4Has(i,'stun')||v55Actions.has(i))return;
+ if(v4Has(i,'slow')&&Math.floor(clock.allyTurn/7)%2===1)return;
+ const targets=encounter.enemies.filter(e=>e.alive);
+ if(!targets.length)return;
+ const target=targets.find(e=>e.elite)||targets.slice().sort((a,b)=>a.hp-b.hp)[0];
+ const damage=21+(i%3)*3;
+ v55BeginHeroAttack(i,target,damage);
  if(clock.allyTurn%7===0){
-  allies.forEach((v,j)=>{if(v>0){
-   allies[j]=Math.min(100,v+(v4Has(j,'paycut')?1.5:3));
-   team[j].querySelector('.v2Health').style.width=allies[j]+'%';
-  }});
+  allies.forEach((v,j)=>{
+   if(v>0){
+    allies[j]=Math.min(100,v+(v4Has(j,'paycut')?1.5:3));
+    team[j].querySelector('.v2Health').style.width=allies[j]+'%';
+   }
+  });
  }
 }
 function v5ClearWave(){
@@ -600,6 +684,8 @@ window.__salaryBossV5={
  get mobNames(){return encounter?.enemies.map(e=>e.name)||[]},
  get eliteSkills(){return [...v5EliteSkills]},
  get eliteEffects(){return [...v52Effects]},
+ get heroContacts(){return [...v55Contacts]},
+ get activeHeroAttacks(){return v55Actions.size},
  demoEliteSkill:(kind)=>{
   if(new URLSearchParams(location.search).get('dev')!=='1'||clock.wave!==3||clock.busy||clock.done)return false;
   const actor=encounter?.enemies.find(e=>e.elite&&e.alive);
@@ -644,7 +730,7 @@ if(clock.allyTurn%7===0){
   });
 }
 if(clock.hp<=0)v5Victory();}
-function restart(){++v3Token;++v5Epoch;v3Clean();v4ClearStatuses();clearInterval(bossTimer);clearInterval(allyTimer);Object.assign(clock,{energy:0,hp:165,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false});allies.fill(100);team.forEach(u=>{u.classList.remove('v2Down','v2Hit');u.querySelector('.v2Health').style.width='100%'});v5Complete.classList.remove('show');v5HideBanner();root.classList.remove('paused','v2Ult','v2Rage');frame.hidden=true;rig.hidden=false;plane.replaceChildren();label('地獄星期一｜四波副本・真正小怪先出場');v4Ribbon.textContent='Lv.85 測試隊伍｜小怪→精英→魔王';setHp(165);setEnergy(0);$('speed').textContent='倍速 ×1';$('pace').textContent='×1';$('pause').textContent='暫停';v5AdvanceToWave(1);run()}
+function restart(){v55ClearActions();++v3Token;++v5Epoch;v3Clean();v4ClearStatuses();clearInterval(bossTimer);clearInterval(allyTimer);Object.assign(clock,{energy:0,hp:165,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false});allies.fill(100);team.forEach(u=>{u.classList.remove('v2Down','v2Hit');u.querySelector('.v2Health').style.width='100%'});v5Complete.classList.remove('show');v5HideBanner();root.classList.remove('paused','v2Ult','v2Rage');frame.hidden=true;rig.hidden=false;plane.replaceChildren();label('地獄星期一｜四波副本・真正小怪先出場');v4Ribbon.textContent='Lv.85 測試隊伍｜小怪→精英→魔王';setHp(165);setEnergy(0);$('speed').textContent='倍速 ×1';$('pace').textContent='×1';$('pause').textContent='暫停';v5AdvanceToWave(1);run()}
 function run(){clearInterval(bossTimer);clearInterval(allyTimer);bossTimer=setInterval(bossStep,2600/clock.pace);allyTimer=setInterval(partyStep,1100/clock.pace)}
 for(let id of ['speed','pause','restart']){let old=$(id),newNode=old.cloneNode(true);old.replaceWith(newNode)}
 $('speed').onclick=()=>{clock.pace=clock.pace===1?2:clock.pace===2?3:1;$('speed').textContent='倍速 ×'+clock.pace;$('pace').textContent='×'+clock.pace;run()};
