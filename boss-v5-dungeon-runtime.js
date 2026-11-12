@@ -579,7 +579,7 @@ window.__salaryBossV5={
  get global(){return mondaySpec?.global},
  get epoch(){return v5Epoch},
  get ultHits(){return [...v4UltHits]},
- skipTo:(wave)=>{if(!Number.isInteger(wave)||wave<1||wave>4||clock.done)return false;v5AdvanceToWave(wave,true);return true}
+ skipTo:(wave)=>{if(!mondaySpec||!mondaySpawn||!Number.isInteger(wave)||wave<1||wave>4||clock.done)return false;v5AdvanceToWave(wave,true);return true}
 };
 v5AnimationTimer=setInterval(v5AnimateMobs,120);
 async function bossStep(){if(clock.wave<4)return v5MobStep();if(clock.paused||clock.busy||clock.done)return;clock.busy=true;try{clock.turn++;if(clock.energy>=100)await ultimate();else if(clock.turn%4===0)await bombard();else await normal();if(clock.energy>=100&&!clock.paused&&!clock.done)await ultimate()}finally{clock.busy=false}}
