@@ -1,0 +1,42 @@
+name: Salary Hero Boss V4 Seven-Beam Acceptance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "boss-v4-play.html"
+      - "boss-v4-seven-beams-runtime.js"
+      - "boss-v4-seven-beams.css"
+      - "tests/boss-v4-seven-beams-browser.mjs"
+      - ".github/workflows/boss-v4-browser.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-seven-ray:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser driver
+        run: npm install --no-save --ignore-scripts playwright-core@1.56.1
+      - name: Check code and assets
+        run: |
+          node --check boss-v4-seven-beams-runtime.js
+          node --check tests/boss-v4-seven-beams-browser.mjs
+          test -s art/skills/hell-monday/overtime-cannon.svg
+          test -s boss-v1-play.html
+      - name: Test 7 independent beams and real status ailments on mobile
+        run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v4-seven-beams-browser.mjs
+      - name: Upload mobile screenshots and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boss-v4-seven-rays-mobile
+          path: artifacts/
+          if-no-files-found: ignore
