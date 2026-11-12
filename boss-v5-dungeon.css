@@ -110,3 +110,59 @@ body.v3-dev #v5DevSkip{display:block}
 .v52Circle{width:155%;height:128%;left:-27%;top:-30%}
 .game.v5Mobs .v5Enemy[data-species="red-stamp-manager"]{top:43%!important}
 @media(max-height:690px){.v52FlyingDocument{width:40px!important;height:48px!important}.v52PaperHalo{width:46px!important;height:56px!important}}
+
+/* V5.4 mobile-video corrections: the supervisor stamps people; he does not fire a half-screen sword.
+   All shapes below are placed illustrated seal sprites, never placeholder UI strokes. */
+.v5Enemy[data-species="red-stamp-manager"] .v52Charge{
+ width:70px!important;height:64px!important;max-width:70px!important;max-height:64px!important;
+ left:48%!important;top:10%!important;z-index:26;mix-blend-mode:normal;
+ filter:drop-shadow(0 0 6px #ed648d);
+ animation:v54SealCharge .48s ease-out both!important;
+}
+.v5Enemy[data-species="red-stamp-manager"] .v52Slash{
+ width:88px!important;height:76px!important;max-width:88px!important;max-height:76px!important;
+ left:58%!important;top:12%!important;z-index:27;
+ filter:drop-shadow(0 0 6px #ea547d);
+ animation:v54SealRelease .36s ease-out both!important;
+}
+.v52FlyingSeal{
+ width:69px!important;height:64px!important;min-width:0!important;max-width:69px!important;max-height:64px!important;
+ z-index:32;filter:drop-shadow(0 0 6px #e95376);
+}
+.v5Enemy[data-species="red-stamp-manager"].v54Strike .v5Visual{
+ animation:v54EliteStampStrike .34s cubic-bezier(.2,.78,.27,1) both!important;
+}
+.v5Enemy[data-species="red-stamp-manager"].hurt .v5Visual{
+ animation:v54RedInjuryBlink .32s steps(1) 1!important;
+ filter:none!important;
+}
+@keyframes v54SealCharge{
+ 0%{opacity:0;transform:translate(-9px,10px) rotate(-18deg) scale(.34)}
+ 38%{opacity:.72;transform:translate(-4px,1px) rotate(-5deg) scale(.78)}
+ 80%{opacity:.95;transform:translate(0,-1px) rotate(6deg) scale(.96)}
+ 100%{opacity:0;transform:translate(5px,-2px) rotate(8deg) scale(1)}
+}
+@keyframes v54SealRelease{
+ 0%{opacity:0;transform:translate(-13px,-12px) rotate(-20deg) scale(.55)}
+ 25%{opacity:.95;transform:translate(0,1px) rotate(2deg) scale(.94)}
+ 65%{opacity:.78;transform:translate(9px,8px) rotate(11deg) scale(1.08)}
+ 100%{opacity:0;transform:translate(17px,10px) rotate(19deg) scale(1.12)}
+}
+@keyframes v54EliteStampStrike{
+ 0%{transform:translate(-4px,1px) rotate(-2deg) scale(.985)}
+ 28%{transform:translate(9px,-4px) rotate(2deg) scale(1.035)}
+ 57%{transform:translate(11px,4px) rotate(2deg) scale(1.03)}
+ 100%{transform:translate(0,0) rotate(0) scale(1)}
+}
+@keyframes v54RedInjuryBlink{
+ 0%,100%{filter:none}
+ 10%,24%{filter:sepia(.9) saturate(4.2) hue-rotate(300deg) brightness(1.23)}
+ 25%,49%{filter:none}
+ 50%,62%{filter:sepia(.9) saturate(3.8) hue-rotate(302deg) brightness(1.18)}
+ 63%,99%{filter:none}
+}
+@media(max-height:690px){
+ .v5Enemy[data-species="red-stamp-manager"] .v52Charge{width:56px!important;height:53px!important}
+ .v5Enemy[data-species="red-stamp-manager"] .v52Slash{width:71px!important;height:64px!important}
+ .v52FlyingSeal{width:55px!important;height:51px!important}
+}
