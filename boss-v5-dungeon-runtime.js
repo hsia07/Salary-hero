@@ -175,7 +175,7 @@ function v59TrySupport(i){
 }
 function v59WaveRescue(){
  if(!v59AI)return;
- const target=v59AI.pickCriticalAlly(allies,v59MaxHp,v59Shields.map(s=>s.hp));
+ const target=v59AI.pickCriticalAlly(allies,v59MaxHp); // Victory: lowest HP percentage, regardless of existing shields.
  if(target<0)return;
  const gained=v59ApplyShield(target,v59AI.SUPPORT_RULES.waveRescue.shieldPercentOfTargetMaxHp,'薪奴・勝利護盾',v59AI.SUPPORT_RULES.waveRescue.durationMs);
  if(gained>0){v59Log({type:'wave-rescue',target,value:gained});v59AddLayer(team[target],'v59RescueGlow',[{src:'shield-impact.svg',cls:'v59Burst'}],800)}
