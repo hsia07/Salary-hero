@@ -336,6 +336,7 @@ function v5AnimateMobs(){
 }
 function v5Header(){
  const isBoss=encounter?.kind==='boss';
+ const heading=root.querySelector('header .title');if(heading)heading.textContent=isBoss?'地獄星期一・魔王戰':'地獄星期一・副本戰';
  root.classList.toggle('v5Mobs',!isBoss);root.classList.toggle('v5Boss',Boolean(isBoss));
  zone.style.visibility=isBoss?'visible':'hidden';
  if(isBoss){rig.hidden=false;v5Hud.hidden=true;v5Global.style.visibility='visible';}
