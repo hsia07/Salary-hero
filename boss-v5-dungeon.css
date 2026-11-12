@@ -35,3 +35,18 @@ body.v3-dev #v5DevSkip{display:block}
 .game.v5Mobs #v3DevUlt{display:none!important}
 .game.v5Boss #v5EnemyField{display:none!important}
 @media(max-height:720px){#v5EnemyField{top:21%;height:32%}#v5WaveHud{top:calc(101px + env(safe-area-inset-top,0px))}#v5GlobalTag{top:calc(153px + env(safe-area-inset-top,0px))}.v5Enemy{height:120px;width:90px}.v5Enemy .v5Visual{height:93px;flex-basis:93px}.v5Enemy.elite{height:150px;width:127px}.v5Enemy.elite .v5Visual{width:125px;height:114px;flex-basis:114px}}
+
+/* Unique elite manager actor V5.1 — separate authored attack/hurt/defeat SVG frames */
+.v5Enemy[data-species="red-stamp-manager"]{z-index:7!important;width:174px;height:205px;filter:drop-shadow(0 3px 9px #d62755ac) drop-shadow(0 8px 15px #160a1bcc)}
+.v5Enemy[data-species="red-stamp-manager"] .v5Visual{width:170px;height:165px;flex-basis:165px;image-rendering:auto}
+.v5Enemy[data-species="red-stamp-manager"] .v5Name{font-size:12px;color:#ffe0b2;text-shadow:0 2px 3px #140513,0 0 8px #f23862}
+.v5Enemy[data-species="red-stamp-manager"] .v5Bar{height:10px;border:1px solid #ffbd8f;box-shadow:0 0 13px #d72b50d0}
+.v5Enemy[data-species="red-stamp-manager"].hurt .v5Visual{animation:v5RedHurt .37s steps(1) 1}
+.v5StampContact{position:absolute;z-index:16;width:90%;max-width:105px;aspect-ratio:260/220;left:50%;top:49%;transform:translate(-50%,-50%) scale(.42) rotate(-15deg);pointer-events:none;animation:v5RedStampImpact .62s cubic-bezier(.12,.85,.3,1) both;filter:drop-shadow(0 0 7px #ff5176)}
+.v5StunArt{position:absolute;z-index:19;width:108%;height:54%;left:50%;top:-30%;transform:translate(-50%,0);background:url('./art/v19/runtime/monsters/red-stamp-manager/stun-stars.svg') center/contain no-repeat;pointer-events:none;filter:drop-shadow(0 0 5px #ffc261);animation:v5StunOrbit 1s ease-in-out infinite alternate}
+.v5MeetingAura{position:absolute;z-index:13;width:100%;height:65%;left:50%;top:-30%;transform:translate(-50%,0);pointer-events:none;border-radius:50%;background:radial-gradient(ellipse,#d34b9a55,transparent 75%);box-shadow:0 0 19px #b43a9c88;animation:v5MeetingAppear 1.1s ease-out both}
+@keyframes v5RedHurt{0%,100%{filter:none}12%{filter:brightness(3) saturate(.25)}32%{filter:sepia(.7) saturate(3) hue-rotate(-20deg) brightness(1.4)}54%{filter:brightness(2)}}
+@keyframes v5RedStampImpact{0%{opacity:0;transform:translate(-50%,-70%) scale(1.7) rotate(-25deg)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.02) rotate(0deg)}42%{opacity:1;transform:translate(-50%,-50%) scale(.85) rotate(-7deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.35) rotate(6deg)}}
+@keyframes v5StunOrbit{0%{transform:translate(-50%,-3px) rotate(-11deg)}100%{transform:translate(-50%,2px) rotate(12deg)}}
+@keyframes v5MeetingAppear{0%{opacity:0;transform:translate(-50%,15px) scale(.1)}24%{opacity:.95;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-10px) scale(1.35)}}
+@media(max-height:720px){.v5Enemy[data-species="red-stamp-manager"]{width:144px;height:171px}.v5Enemy[data-species="red-stamp-manager"] .v5Visual{width:139px;height:135px;flex-basis:135px}}
