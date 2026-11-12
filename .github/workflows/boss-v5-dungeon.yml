@@ -11,6 +11,10 @@ on:
       - "tests/s1-hell-monday-dungeon.test.mjs"
       - "tests/boss-v5-wave-dungeon-browser.mjs"
       - "tests/boss-v5-red-stamp-elite-browser.mjs"
+      - "tests/boss-v59-party-ai-support-browser.mjs"
+      - "tests/s1-party-ai.test.mjs"
+      - "v19/s1-party-ai.mjs"
+      - "art/s1/support-vfx/**"
       - "art/v19/runtime/monsters/red-stamp-manager/**"
       - "tests/boss-v5-full-auto-playthrough.mjs"
       - ".github/workflows/boss-v5-dungeon.yml"
@@ -35,6 +39,8 @@ jobs:
           node --check boss-v5-dungeon-runtime.js
           node --check tests/boss-v5-wave-dungeon-browser.mjs
           node --check tests/boss-v5-red-stamp-elite-browser.mjs
+          node --check tests/boss-v59-party-ai-support-browser.mjs
+          node --test tests/s1-party-ai.test.mjs
           node --check tests/boss-v5-full-auto-playthrough.mjs
           node --test tests/s1-hell-monday-dungeon.test.mjs
           test -s art/v19/runtime/monsters/paper-gremlin/attack.png
@@ -43,6 +49,8 @@ jobs:
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-wave-dungeon-browser.mjs
       - name: Validate all red-seal manager poses, stamps and office debuffs
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-red-stamp-elite-browser.mjs
+      - name: Verify targeted healing, party shields and individual illustrated layers
+        run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v59-party-ai-support-browser.mjs
       - name: Confirm full auto-clear from first mob to final boss
         run: CHROME_BIN=/usr/bin/google-chrome node tests/boss-v5-full-auto-playthrough.mjs
       - name: Upload rendered screenshots and failure logs
