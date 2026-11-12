@@ -32,6 +32,10 @@ function v4UpdateBadges(){
      badge.hidden=false;badge.textContent=e.short+' '+secs.toFixed(1)+'s';badge.title=ongoing.map(e=>e.name+'：'+e.detail).join('、');
    }
    u.classList.toggle('v4Stunned',v4Has(i,'stun'));
+   let stunArt=u.querySelector('.v5StunArt');
+   if(v4Has(i,'stun')&&allies[i]>0){
+     if(!stunArt){stunArt=document.createElement('div');stunArt.className='v5StunArt';u.append(stunArt)}
+   }else if(stunArt)stunArt.remove();
    u.classList.toggle('v4Slowed',v4Has(i,'slow'));
  });
 }
@@ -263,14 +267,15 @@ async function ultimate(){
 /* V5 Dungeon Director — real monster actors, boss loaded ONLY in wave 4.
    Image sheets contain separately drawn idle/attack/hurt/defeat poses.
    This supplements V4's boss battle without changing existing V4 files. */
-let mondaySpec=null,mondaySpawn=null,encounter=null,v5Epoch=0,v5EnemyTurn=0,v5AnimationTimer=null;
+let mondaySpec=null,mondaySpawn=null,encounter=null,v5Epoch=0,v5EnemyTurn=0,v5AnimationTimer=null,v5EliteSkills=[];
 const v5VisualSpecs={
  'paper-gremlin':{ext:'png',cell:320},
  'coffee-mimic':{ext:'webp',cell:320},
  'deadline-clock':{ext:'webp',cell:384},
  'keyboard-piranha':{ext:'webp',cell:512},
  'chair-golem':{ext:'webp',cell:384},
- 'meeting-ghost':{ext:'webp',cell:384}
+ 'meeting-ghost':{ext:'webp',cell:384},
+ 'red-stamp-manager':{ext:'svg',cell:320}
 };
 const v5Frames={idle:4,attack:5,hurt:3,defeat:4};
 const v5Field=document.createElement('div');v5Field.id='v5EnemyField';root.append(v5Field);
@@ -300,7 +305,7 @@ function v5SetBanner(title,sub){
 }
 function v5HideBanner(){v5Transition.classList.remove('show')}
 function v5CreateMonster(data,index,total){
- const actor={...data,hp:data.maxHp,maxHp:data.maxHp,alive:true,anim:'idle',animStarted:v4Time,animUntil:0,frameIndex:0,elite:data.kind==='elite'&&index===0};
+ const actor={...data,hp:data.maxHp,maxHp:data.maxHp,alive:true,anim:'idle',animStarted:v4Time,animUntil:0,frameIndex:0,elite:data.kind==='elite'&&index===0,abilityCount:0};
  const e=document.createElement('div');e.className='v5Enemy'+(actor.elite?' elite':'');
  const positions=total===4?[[13,42],[38,54],[63,42],[87,54]]:total===3?[[17,45],[50,53],[83,45]]:[[31,50],[69,50]];
  const p=positions[index]||[50,50];e.style.left=p[0]+'%';e.style.top=p[1]+'%';
@@ -345,7 +350,7 @@ function v5Header(){
 }
 function v5AdvanceToWave(next,forced=false){
  if(!mondaySpec||clock.done)return;
- v5Epoch++;v5EnemyTurn=0;
+ v5Epoch++;v5EnemyTurn=0;v5EliteSkills=[];
  const fresh=mondaySpawn(next-1);clock.wave=next;clock.turn=0;clock.allyTurn=0;clock.rage=false;clock.busy=false;clock.inUltimate=false;
  root.classList.remove('v2Rage','v2Ult','v3CannonImpact');
  ++v3Token;v3Clean();v5Field.replaceChildren();v4Status.forEach(m=>m.clear());v4UpdateBadges();
@@ -375,6 +380,19 @@ function v5Health(actor,damage){
  v5Header();
  if(encounter.enemies.every(e=>!e.alive)&&!encounter.clearing)v5ClearWave();
 }
+function v5StampContact(index,meeting=false){
+ const node=team[index];if(!node||allies[index]<=0)return;
+ const mark=document.createElement('img');
+ mark.className='v5StampContact';mark.alt='';
+ mark.src='./art/v19/runtime/monsters/red-stamp-manager/stamp-impact.svg';
+ node.append(mark);
+ mark.addEventListener('animationend',()=>mark.remove(),{once:true});
+ setTimeout(()=>mark.remove(),1500/clock.pace);
+ if(meeting){
+  const ghost=document.createElement('div');ghost.className='v5MeetingAura';node.append(ghost);
+  setTimeout(()=>ghost.remove(),1500/clock.pace);
+ }
+}
 function v5MobAttackProjectile(actor,target){
  const from=center(actor.node),to=center(team[target]);
  const projectile=piece('img','v2Paper',from.x,from.y,ART.parts.paper_stack);
@@ -388,18 +406,34 @@ async function v5MobStep(){
  if(clock.paused||clock.busy||clock.done||encounter?.clearing||encounter?.kind==='boss')return;
  const living=encounter.enemies.filter(e=>e.alive);if(!living.length)return;
  clock.busy=true;const epoch=v5Epoch;
- const actor=living[v5EnemyTurn++%living.length];clock.turn++;
+ const actor=living[v5EnemyTurn++%living.length];clock.turn++;if(actor.elite)actor.abilityCount++;
  const candidates=available([0,1,2,3,4,5,6]);if(!candidates.length){v5Defeat();clock.busy=false;return}
  const target=candidates[(clock.turn+v5EnemyTurn*2)%candidates.length];
- label(actor.name+'｜'+(actor.elite?'主管催件':'怪物襲擊'));
- v5SetPose(actor,'attack',710);v5MobAttackProjectile(actor,target);
+ const eliteMeeting=actor.species==='red-stamp-manager'&&actor.abilityCount%3===2;
+ const eliteSeal=actor.species==='red-stamp-manager'&&actor.abilityCount%4===0;
+ const eliteSkill=eliteMeeting?'無限會議・全員留下！':eliteSeal?'紅章駁回・重做！':'主管蓋章・立刻交件';
+ if(actor.elite)v5EliteSkills.push(eliteSkill);
+ label(actor.name+'｜'+(actor.elite?eliteSkill:'怪物襲擊'));
+ v5SetPose(actor,'attack',710);if(!actor.elite)v5MobAttackProjectile(actor,target);
  try{
   const ok=await v5Sleep(460,epoch);
   if(!ok||encounter?.kind==='boss'||clock.done)return;
   // Global ATK ×1.4 is already reflected in actor.atk; never multiply again.
-  flash(target,actor.atk);
-  if(actor.species==='deadline-clock'&&clock.turn%3===0)v4AddStatus(target,'slow',1800);
-  if(actor.elite&&clock.turn%2===0)v4AddStatus(target,'slow',2600);
+  if(actor.species==='red-stamp-manager'){
+   // Global Monday damage multiplier already applied at spawn, only once.
+   flash(target,actor.atk*(eliteMeeting?.55:eliteSeal?1.13:1));
+   v5StampContact(target,eliteMeeting);
+   if(eliteMeeting){
+     const other=candidates.find(i=>i!==target);
+     v4AddStatus(target,'slow',2300);
+     if(other!==undefined){v4AddStatus(other,'slow',2300);v5StampContact(other,true)}
+   }else if(eliteSeal){
+     v4AddStatus(target,'stun',850);
+   }
+  }else{
+   flash(target,actor.atk);
+   if(actor.species==='deadline-clock'&&clock.turn%3===0)v4AddStatus(target,'slow',1800);
+  }
   if(!available([0,1,2,3,4,5,6]).length)v5Defeat();
  }finally{if(epoch===v5Epoch)clock.busy=false}
 }
@@ -456,6 +490,8 @@ window.__salaryBossV5={
  get wave(){return clock.wave},
  get kind(){return encounter?.kind},
  get mobNames(){return encounter?.enemies.map(e=>e.name)||[]},
+ get eliteSkills(){return [...v5EliteSkills]},
+ get eliteSprite(){return encounter?.enemies.find(e=>e.elite)?.node.querySelector('.v5Visual')?.style.getPropertyValue('--sheet')||''},
  get mobHP(){return encounter?.enemies.map(e=>e.hp)||[]},
  get bossVisible(){return clock.wave===4&&zone.style.visibility==='visible'},
  get done(){return clock.done},
