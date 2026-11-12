@@ -1,0 +1,11 @@
+/* Boss V4 — seven independently tracked red-gold cannon rays and readable employee status ailments */
+#v4StatusRibbon{position:absolute;z-index:47;top:calc(145px + env(safe-area-inset-top,0px));left:5%;right:5%;min-height:19px;text-align:center;font-size:clamp(10px,2.7vw,12px);font-weight:900;color:#ffe9b9;text-shadow:0 2px 5px #240615,0 0 8px #f13a73;pointer-events:none}
+.team-zone .unit{overflow:visible}
+.team-zone .unit .v4StatusBadge{position:absolute;z-index:15;bottom:5%;left:50%;transform:translate(-50%,105%);white-space:nowrap;pointer-events:none;font-size:clamp(8px,2.1vw,10px);font-weight:900;color:#fff0cd;border:1px solid #f2ad71;background:linear-gradient(100deg,#602c44ec,#9b3348ef);box-shadow:0 2px 8px #200a1fcc;border-radius:10px;padding:1px 5px}
+.team-zone .unit.v4Stunned img{filter:saturate(.55) contrast(.9)}
+.team-zone .unit.v4Slowed img{filter:sepia(.2) hue-rotate(24deg)}
+#v3Stage.fire #v3Cannon{filter:drop-shadow(0 0 35px #ff8d75)}
+#v3Stage.fire #v3Tint{opacity:.20}
+#v3Stage.fire #v3Flash{mix-blend-mode:screen}
+#v3Stage.aftermath #v3Scorch{opacity:.64}
+@media(max-height:690px){#v4StatusRibbon{top:calc(123px + env(safe-area-inset-top,0px))}.team-zone .unit .v4StatusBadge{font-size:8px}}
