@@ -267,7 +267,7 @@ async function ultimate(){
 /* V5 Dungeon Director — real monster actors, boss loaded ONLY in wave 4.
    Image sheets contain separately drawn idle/attack/hurt/defeat poses.
    This supplements V4's boss battle without changing existing V4 files. */
-let mondaySpec=null,mondaySpawn=null,encounter=null,v5Epoch=0,v5EnemyTurn=0,v5AnimationTimer=null,v5EliteSkills=[];
+let mondaySpec=null,mondaySpawn=null,encounter=null,v5Epoch=0,v5EnemyTurn=0,v5AnimationTimer=null,v5EliteSkills=[],v52Effects=[];
 const v5VisualSpecs={
  'paper-gremlin':{ext:'png',cell:320},
  'coffee-mimic':{ext:'webp',cell:320},
@@ -350,7 +350,7 @@ function v5Header(){
 }
 function v5AdvanceToWave(next,forced=false){
  if(!mondaySpec||clock.done)return;
- v5Epoch++;v5EnemyTurn=0;v5EliteSkills=[];
+ v5Epoch++;v5EnemyTurn=0;v5EliteSkills=[];v52Effects=[];
  const fresh=mondaySpawn(next-1);clock.wave=next;clock.turn=0;clock.allyTurn=0;clock.rage=false;clock.busy=false;clock.inUltimate=false;
  root.classList.remove('v2Rage','v2Ult','v3CannonImpact');
  ++v3Token;v3Clean();v5Field.replaceChildren();v4Status.forEach(m=>m.clear());v4UpdateBadges();
@@ -380,6 +380,44 @@ function v5Health(actor,damage){
  v5Header();
  if(encounter.enemies.every(e=>!e.alive)&&!encounter.clearing)v5ClearWave();
 }
+
+/** Elite-only telegraph / hit VFX. The actual attached sprite moves with each target. */
+const v52Art='./art/v19/runtime/monsters/red-stamp-manager/';
+function v52SpawnArt(parent,name,cls,until=850){
+ if(!parent)return null;
+ const img=document.createElement('img');img.className='v52FX '+cls;img.src=v52Art+name;
+ img.alt='';img.setAttribute('aria-hidden','true');parent.append(img);
+ v52Effects.push({type:cls,target:parent.className,at:v4Time});
+ setTimeout(()=>img.remove(),until/clock.pace);
+ return img;
+}
+function v52StartTelegraph(actor,targets,kind){
+ actor.node.classList.add('v52Casting');
+ if(kind==='stamp')v52SpawnArt(actor.node,'seal-sweep.svg','v52Charge',490);
+ if(kind==='meeting'){
+   targets.forEach(i=>v52SpawnArt(team[i],'meeting-array.svg','v52Circle',1250));
+   v52SpawnArt(actor.node,'meeting-array.svg','v52CasterGlyph',1150);
+ }
+ if(kind==='paper'){
+  v52SpawnArt(actor.node,'paper-projectile.svg','v52PaperHalo',600);
+ }
+}
+function v52FinishTelegraph(actor){actor?.node?.classList.remove('v52Casting')}
+function v52FlyPaper(actor,index,delay=0){
+ const from=center(actor.node),to=center(team[index]);
+ const img=document.createElement('img');
+ img.className='v52FlyingDocument';img.src=v52Art+'paper-projectile.svg';img.alt='';
+ img.style.left=from.x+'px';img.style.top=from.y+'px';plane.append(img);
+ v52Effects.push({type:'flying-document',target:index,at:v4Time});
+ const dx=to.x-from.x,dy=to.y-from.y;
+ const motion=img.animate([
+  {opacity:0,transform:'translate(-50%,-50%) rotate(-20deg) scale(.15)'},
+  {opacity:1,transform:'translate('+Math.round(dx*.5)+'px,'+Math.round(dy*.5-35)+'px) rotate(220deg) scale(.29)',offset:.58},
+  {opacity:1,transform:'translate('+Math.round(dx)+'px,'+Math.round(dy)+'px) rotate(365deg) scale(.45)'}
+ ],{duration:530/clock.pace,delay:delay/clock.pace,easing:'cubic-bezier(.18,.55,.55,1)',fill:'forwards'});
+ motion.onfinish=()=>img.remove();
+ setTimeout(()=>img.remove(),1400/clock.pace);
+}
 function v5StampContact(index,meeting=false){
  const node=team[index];if(!node||allies[index]<=0)return;
  const mark=document.createElement('img');
@@ -406,36 +444,61 @@ async function v5MobStep(){
  if(clock.paused||clock.busy||clock.done||encounter?.clearing||encounter?.kind==='boss')return;
  const living=encounter.enemies.filter(e=>e.alive);if(!living.length)return;
  clock.busy=true;const epoch=v5Epoch;
- const supervisor=living.find(e=>e.elite);const actor=supervisor&&v5EnemyTurn%2===0?supervisor:living[(v5EnemyTurn+1)%living.length];v5EnemyTurn++;clock.turn++;if(actor.elite)actor.abilityCount++;
- const candidates=available([0,1,2,3,4,5,6]);if(!candidates.length){v5Defeat();clock.busy=false;return}
- const target=candidates[(clock.turn+v5EnemyTurn*2)%candidates.length];
- const eliteMeeting=actor.species==='red-stamp-manager'&&actor.abilityCount%3===2;
- const eliteSeal=actor.species==='red-stamp-manager'&&actor.abilityCount%3===0;
- const eliteSkill=eliteMeeting?'無限會議・全員留下！':eliteSeal?'紅章駁回・重做！':'主管蓋章・立刻交件';
- if(actor.elite)v5EliteSkills.push(eliteSkill);
- label(actor.name+'｜'+(actor.elite?eliteSkill:'怪物襲擊'));
- v5SetPose(actor,'attack',710);if(!actor.elite)v5MobAttackProjectile(actor,target);
+ const supervisor=living.find(e=>e.elite);
+ const actor=supervisor&&v5EnemyTurn%2===0?supervisor:living[(v5EnemyTurn+1)%living.length];
+ v5EnemyTurn++;clock.turn++;if(actor.elite)actor.abilityCount++;
+ const candidates=available([0,1,2,3,4,5,6]);
+ if(!candidates.length){v5Defeat();clock.busy=false;return}
+ const main=candidates[(clock.turn+v5EnemyTurn*2)%candidates.length];
+ const isElite=actor.species==='red-stamp-manager';
+ const kind=isElite?(actor.abilityCount%3===2?'meeting':actor.abilityCount%3===0?'paper':'stamp'):'normal';
+ const name=kind==='meeting'?'無限會議・全員留下！':kind==='paper'?'催件轟炸・不准退件！':'主管蓋章・立刻交件';
+ const targets=kind==='meeting'?candidates.slice().sort((a,b)=>allies[a]-allies[b]).slice(0,3):
+               kind==='paper'?candidates.filter(x=>x!==main).slice(0,3):[main];
+ if(isElite){v5EliteSkills.push(name);v52Effects=[];label(actor.name+'｜'+name);}
+ else label(actor.name+'｜怪物襲擊');
+ v5SetPose(actor,'attack',kind==='normal'?710:1120);
+ if(isElite)v52StartTelegraph(actor,targets,kind);else v5MobAttackProjectile(actor,main);
  try{
-  const ok=await v5Sleep(460,epoch);
-  if(!ok||encounter?.kind==='boss'||clock.done)return;
-  // Global ATK ×1.4 is already reflected in actor.atk; never multiply again.
-  if(actor.species==='red-stamp-manager'){
-   // Global Monday damage multiplier already applied at spawn, only once.
-   flash(target,actor.atk*(eliteMeeting?.55:eliteSeal?1.13:1));
-   v5StampContact(target,eliteMeeting);
-   if(eliteMeeting){
-     const other=candidates.find(i=>i!==target);
-     v4AddStatus(target,'slow',2300);
-     if(other!==undefined){v4AddStatus(other,'slow',2300);v5StampContact(other,true)}
-   }else if(eliteSeal){
-     v4AddStatus(target,'stun',850);
+   // Stage 1: visible preparation. A paused game freezes the attack sequence.
+   if(!await v5Sleep(isElite?560:460,epoch))return;
+   if(!actor.alive||encounter?.kind==='boss'||clock.done||epoch!==v5Epoch)return;
+   if(kind==='stamp'){
+     const slash=v52SpawnArt(actor.node,'seal-sweep.svg','v52Slash',700);
+     if(slash)v52Effects.push({type:'stamp-release',at:v4Time});
+     v5StampContact(main);
+     flash(main,actor.atk);
+     shake(false);
+   }else if(kind==='paper'){
+     // Separate flight to three unique targets; each hit occurs after its own flight.
+     for(let k=0;k<targets.length;k++)v52FlyPaper(actor,targets[k],k*90);
+     if(!await v5Sleep(550,epoch))return;
+     if(!actor.alive||clock.done||epoch!==v5Epoch)return;
+     for(const [k,index] of targets.entries()){
+       if(allies[index]<=0)continue;
+       v5StampContact(index);
+       flash(index,actor.atk*.47);
+       // D32 "Monday startup": slow, capped by shared effects engine.
+       if(k===0||k===2)v4AddStatus(index,'slow',2400);
+     }
+     shake(false);
+   }else if(kind==='meeting'){
+     // Real summoned meeting circles already attached to three individual units.
+     if(!await v5Sleep(280,epoch))return;
+     if(!actor.alive||clock.done||epoch!==v5Epoch)return;
+     for(const [k,index] of targets.entries()){
+       if(allies[index]<=0)continue;
+       v5StampContact(index,true);
+       flash(index,actor.atk*.28);
+       v4AddStatus(index,k===0?'paycut':'slow',k===0?3100:2450);
+     }
+     shake(false);
+   }else{
+     flash(main,actor.atk);
+     if(actor.species==='deadline-clock'&&clock.turn%3===0)v4AddStatus(main,'slow',1800);
    }
-  }else{
-   flash(target,actor.atk);
-   if(actor.species==='deadline-clock'&&clock.turn%3===0)v4AddStatus(target,'slow',1800);
-  }
-  if(!available([0,1,2,3,4,5,6]).length)v5Defeat();
- }finally{if(epoch===v5Epoch)clock.busy=false}
+   if(!available([0,1,2,3,4,5,6]).length)v5Defeat();
+ }finally{v52FinishTelegraph(actor);if(epoch===v5Epoch)clock.busy=false}
 }
 function v5PartyVsMobs(){
  if(clock.done||clock.paused||encounter?.clearing)return;
@@ -491,6 +554,7 @@ window.__salaryBossV5={
  get kind(){return encounter?.kind},
  get mobNames(){return encounter?.enemies.map(e=>e.name)||[]},
  get eliteSkills(){return [...v5EliteSkills]},
+ get eliteEffects(){return [...v52Effects]},
  get eliteSprite(){return encounter?.enemies.find(e=>e.elite)?.node.querySelector('.v5Visual')?.style.getPropertyValue('--sheet')||''},
  get mobHP(){return encounter?.enemies.map(e=>e.hp)||[]},
  get bossVisible(){return clock.wave===4&&zone.style.visibility==='visible'},
