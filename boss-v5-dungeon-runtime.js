@@ -220,7 +220,7 @@ function flash(i,amt,heavy=false){
 function shake(big=false){root.classList.remove('v2Shake','v2UltShake');void root.offsetWidth;root.classList.add(big?'v2UltShake':'v2Shake');setTimeout(()=>root.classList.remove('v2Shake','v2UltShake'),big?700:360)}
 function effectTravel(i){let from=pointBoss(),to=center(team[i]);let dx=to.x-from.x,dy=to.y-from.y;let path=piece('div','v2Trail',from.x,from.y);path.style.width=Math.hypot(dx,dy)+'px';path.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';let p=piece('img','v2Paper',from.x,from.y,ART.parts.paper_stack);p.animate([{transform:'translate(-50%,-50%) scale(.12) rotate(-15deg)'},{transform:'translate('+(dx-40)+'px,'+(dy-40)+'px) scale(.38) rotate(290deg)'}],{duration:540/clock.pace,easing:'ease-in',fill:'forwards'})}
 function available(list){return list.filter(i=>allies[i]>0)}
-async function normal(){let variant=clock.turn%5;let frontline=available([0,1,2]);let choices=frontline.length?frontline:available([0,1,2,3,4,5,6]);let target=variant===2?choices.slice():choices.length?[choices[(clock.turn-1)%choices.length]]:[];if(!target.length)return;label(variant===2?'橫掃公文爪':variant===4?'牛角突頂':'巨爪拍擊');target.forEach(i=>ring(i,false));sequence('attack',110);await pause(310);if(clock.paused||clock.done)return;target.forEach(effectTravel);await pause(560);if(clock.paused||clock.done)return;target.forEach(i=>{flash(i,variant===4?9:variant===2?6:8);if(variant===4)v4AddStatus(i,'stun',1000);});shake(variant===4);setEnergy(clock.energy+26+(clock.rage?9:0))}
+async function normal(){let variant=clock.turn%5;let frontline=available([0,1,2]);let choices=frontline.length?frontline:available([0,1,2,3,4,5,6]);let target=variant===2?choices.slice():choices.length?[choices[(clock.turn-1)%choices.length]]:[];if(!target.length)return;label(variant===2?'橫掃公文爪':variant===4?'牛角突頂':'巨爪拍擊');target.forEach(i=>ring(i,false));sequence('attack',110);await pause(310);if(clock.paused||clock.done)return;target.forEach(effectTravel);await pause(560);if(clock.paused||clock.done)return;target.forEach(i=>{flash(i,variant===4?7:variant===2?4.5:6.5);if(variant===4)v4AddStatus(i,'stun',1000);});shake(variant===4);setEnergy(clock.energy+26+(clock.rage?9:0))}
 async function bombard(){label('文件轟炸｜全員警戒');const target=available([0,1,2,3,4,5,6]);target.forEach(i=>{ring(i,false);effectTravel(i)});sequence('attack',100);await pause(700);if(clock.paused||clock.done)return;target.forEach((i,k)=>setTimeout(()=>{flash(i,2.5);if(i%3===1)v4AddStatus(i,'slow',2600)},k*58/clock.pace));shake();setEnergy(clock.energy+21+(clock.rage?9:0))}
 
 // V3 cinematic: a separate authored cannon asset and a deterministic canvas effect layer.
@@ -389,7 +389,7 @@ async function ultimate(){
       targets.forEach((i,k)=>{
         if(hitSlots.has(i)||elapsed<560+k*80||myToken!==v3Token)return;
         hitSlots.add(i);v4UltHits.push(i);
-        flash(i,clock.rage?18:14,true);
+        flash(i,clock.rage?15:11,true);
         // Office comedy statuses have real gameplay effects (see partyStep below).
         if(i<=2)v4AddStatus(i,'stun',1000);
         else if(i<=5)v4AddStatus(i,'slow',3000);
@@ -407,7 +407,7 @@ async function ultimate(){
     if(!await v3Play('aftermath',1600,targets,(elapsed)=>{
       if(elapsed>=650&&!burn&&myToken===v3Token){
         burn=true;
-        targets.filter(i=>allies[i]>0).forEach(i=>flash(i,clock.rage?1.5:1,false));
+        targets.filter(i=>allies[i]>0).forEach(i=>flash(i,clock.rage?1.2:.8,false));
       }
     }))return;
     setEnergy(0);
@@ -840,7 +840,7 @@ function v5PartyVsMobs(){
  const choice=v59AI.pickTarget(i,choices,{heroPosition:normalized(heroP),reservations});
  const target=targets.find(e=>e.id===choice?.id)||targets[0];
  const hero=v59AI.ALLY_ROLES[i];
- const damage=Math.max(5,Math.round(21*hero.attack/128));
+ const damage=Math.max(5,Math.round(24*hero.attack/128));
  v59TargetEvents.push({actor:i,role:hero.role,target:target.id,species:target.species,wave:clock.wave});
  if(v59TargetEvents.length>80)v59TargetEvents.shift();
  v55BeginHeroAttack(i,target,damage);
@@ -849,11 +849,11 @@ function v5ClearWave(){
  if(!encounter||encounter.clearing||clock.done)return;
  encounter.clearing=true;const epoch=v5Epoch,was=clock.wave;
  label('第 '+was+' 波完成！');
- v5SetBanner('階段突破！','存活隊友回復最大生命 10%');
+ v5SetBanner('階段突破！','存活隊友回復最大生命 12%，最低血量再獲得 10% 勝利護盾');
  v5Sleep(1200,epoch).then(ok=>{
   if(!ok||clock.done||clock.wave!==was)return;
   allies.forEach((hp,i)=>{if(hp>0){
-    allies[i]=Math.min(100,hp+10);
+    allies[i]=Math.min(100,hp+12);
     team[i].querySelector('.v2Health').style.width=allies[i]+'%';
   }});
   v59WaveRescue();
