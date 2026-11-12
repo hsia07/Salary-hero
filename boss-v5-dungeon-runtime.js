@@ -6,9 +6,18 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V5.7 四波副本｜近戰避開敵方血條／攻擊接觸修正｜Lv.85 測試數值';
-const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
-const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
+document.querySelector('.footer .hint').textContent='V5.8 四波副本｜七人隊形 3+4／無重疊｜Lv.85 測試數值';
+// V5.8: actual seven visible units — 3 backline + 4 frontline, no duplicate center column.
+const positions=[[12.5,75],[37.5,75],[87.5,75],[17.5,26],[50,26],[82.5,26],[62.5,75]];
+const allies=Array(7).fill(100);
+team.forEach((u,i)=>{
+  u.style.left=positions[i][0]+'%';
+  u.style.top=positions[i][1]+'%';
+  u.style.width=(i<3||i===6?'22%':'28%');
+  u.dataset.squadSlot=String(i+1);
+  u.dataset.squadRow=(i<3||i===6?'front':'rear');
+  u.querySelector('.hp').innerHTML='<i class="v2Health"></i>';
+});
 const clock={energy:0,hp:100,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false};
 
 /* V4 status ailments use the battle clock, so pause and ×2/×3 speeds work. */
