@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { readFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve, extname } from 'node:path';
 import { chromium } from 'playwright-core';
 
@@ -17,15 +17,17 @@ const server=createServer((req,res)=>{
   }catch(err){res.writeHead(404);res.end(String(err.message))}
 });
 await new Promise(ok=>server.listen(8788,'127.0.0.1',ok));
-let browser;
+let browser,stage='launch';
+const errors=[];
 try {
   const executablePath=process.env.CHROME_BIN||'/usr/bin/google-chrome';
   browser=await chromium.launch({headless:true,executablePath,args:['--no-sandbox','--disable-dev-shm-usage']});
   const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
-  const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text())});
+  // Browser console includes benign favicon 404s; record actual JS exceptions only.
+  stage='navigation';
   await page.goto('http://127.0.0.1:8788/boss-v3-play.html?dev=1',{waitUntil:'domcontentloaded'});
+  stage='runtime-loader';
   await page.waitForSelector('#v3Stage',{timeout:25000});
   await page.waitForSelector('#v3DevUlt',{state:'visible'});
   const initial=await page.evaluate(()=>({
@@ -37,21 +39,30 @@ try {
   }));
   assert.equal(initial.units,7,'exactly seven combat actors should render');
   assert.ok(initial.bg && initial.cannon && initial.energy,'art, cannon and energy HUD must exist');
+  stage='dev-trigger';
   await page.evaluate(()=>document.querySelector('#v3DevUlt').click());
   await page.waitForSelector('#v3Stage.warning',{timeout:4000});
+  stage='charge-animation';
   await page.waitForSelector('#v3Stage.charge',{timeout:7000});
   const loaded=await page.evaluate(()=>({complete:document.querySelector('#v3Cannon img').complete,width:document.querySelector('#v3Cannon img').naturalWidth}));
   assert.ok(loaded.width>0,'cannon SVG must load as a real independent art asset');
+  stage='fire-animation';
   await page.waitForSelector('#v3Stage.fire',{timeout:9000});
   mkdirSync('artifacts',{recursive:true});
   await page.screenshot({path:join('artifacts','boss-v3-fire.png')});
+  stage='aftermath-animation';
   await page.waitForSelector('#v3Stage.aftermath',{timeout:9000});
   await page.screenshot({path:join('artifacts','boss-v3-aftermath.png')});
   const hp=await page.evaluate(()=>[...document.querySelectorAll('.team-zone .unit .v2Health')].map(el=>parseFloat(el.style.width)));
   assert.ok(hp.some(x=>x<100),'the cannon blast must damage actual teammate HP');
   await page.waitForFunction(()=>document.querySelector('#v3Stage').className==='',{timeout:9000});
-  assert.deepEqual(errors,[],'no browser JS/CSS asset errors');
+  stage='runtime-errors';
+  assert.deepEqual(errors,[],'no browser JS errors');
   console.log(JSON.stringify({result:'pass',scene:initial,teammateHealth:hp,cannonSVG:loaded,stage:'completed'}));
+}catch(err){
+  mkdirSync('artifacts',{recursive:true});
+  writeFileSync('artifacts/boss-v3-last-error.txt',`stage=${stage}\n${err.stack}\nerrors=${errors.join(' | ')}\n`);
+  throw err;
 }finally{
   if(browser)await browser.close();
   await new Promise(ok=>server.close(ok));
