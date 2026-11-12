@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id),root=$('game'),rig=$('bossRig'),frame=$(
 const bar=document.createElement('div');bar.id='bossEnergyHud';bar.innerHTML='<div class="energy-words"><span>魔力／怒氣</span><span id="energyText">0 / 100</span></div><div class="energy-track"><div id="energyFill"></div></div>';document.querySelector('.hud').append(bar);
 const plane=document.createElement('div');plane.id='v2Plane';root.append(plane);const warning=document.createElement('div');warning.id='v2Warning';root.append(warning);
 const status=document.createElement('div');status.id='v2Status';status.textContent='全程自動交戰｜Boss 怒氣大招';root.append(status);
-document.querySelector('.footer .hint').textContent='V5.3 四波副本｜精英三招實際命中／七光束魔王｜Lv.85 測試數值';
+document.querySelector('.footer .hint').textContent='V5.4 四波副本｜印章縮放修正／三招實際命中｜Lv.85 測試數值';
 const positions=[[18,62],[50,64],[82,62],[18,19],[50,21],[82,19],[50,76]];
 const allies=Array(7).fill(100);team.forEach((u,i)=>{u.style.left=positions[i][0]+'%';u.style.top=positions[i][1]+'%';u.querySelector('.hp').innerHTML='<i class="v2Health"></i>'});
 const clock={energy:0,hp:100,maxHp:165,wave:1,rage:false,turn:0,allyTurn:0,pace:1,paused:false,done:false,busy:false,inUltimate:false};
@@ -401,7 +401,7 @@ function v52SpawnArt(parent,name,cls,until=850){
 }
 function v52StartTelegraph(actor,targets,kind){
  actor.node.classList.add('v52Casting');
- if(kind==='stamp')v52SpawnArt(actor.node,'seal-sweep.svg','v52Charge',490);
+ if(kind==='stamp')v52SpawnArt(actor.node,'stamp-impact.svg','v52Charge',490);
  if(kind==='meeting'){
    targets.forEach(i=>v52SpawnArt(team[i],'meeting-array.svg','v52Circle',1250));
    v52SpawnArt(actor.node,'meeting-array.svg','v52CasterGlyph',1150);
@@ -410,7 +410,7 @@ function v52StartTelegraph(actor,targets,kind){
   for(let p=0;p<3;p++)v52SpawnArt(actor.node,'paper-projectile.svg','v52PaperHalo v52PaperHalo'+p,600);
  }
 }
-function v52FinishTelegraph(actor){actor?.node?.classList.remove('v52Casting')}
+function v52FinishTelegraph(actor){actor?.node?.classList.remove('v52Casting','v54Strike')}
 /**
  * V5.3 battle-clock projectile movement. Hit location is the target's live
  * center, and projectile time follows pause + speed instead of the wall clock.
@@ -429,7 +429,8 @@ function v53AnimateFlight(img,source,targetIndex,duration,delay,epoch){
   img.style.left=(source.x+(dest.x-source.x)*ease)+'px';
   img.style.top=(source.y+(dest.y-source.y)*ease-Math.sin(t*Math.PI)*18)+'px';
   img.style.opacity=elapsed<delay?'0':String(Math.min(1,Math.max(0,t*5))*(t>=1?.85:1));
-  img.style.transform='translate(-50%,-50%) rotate('+Math.round(-20+235*ease)+'deg) scale('+(0.55+0.35*ease)+')';
+  const seal=img.classList.contains('v52FlyingSeal');
+  img.style.transform='translate(-50%,-50%) rotate('+Math.round(seal?(-12+42*ease):(-20+235*ease))+'deg) scale('+(seal?(0.68+0.14*ease):(0.55+0.35*ease))+')';
   if(t>=1){img.remove();return;}
   requestAnimationFrame(loop);
  };
@@ -447,7 +448,7 @@ function v52FlyPaper(actor,index,delay=0){
 function v53FlySeal(actor,index){
  if(!actor?.node||!team[index]||allies[index]<=0)return;
  const from=center(actor.node),img=document.createElement('img');
- img.className='v52FlyingSeal';img.src=v52Art+'seal-sweep.svg';img.alt='';
+ img.className='v52FlyingSeal';img.src=v52Art+'stamp-impact.svg';img.alt='';
  img.style.left=from.x+'px';img.style.top=from.y+'px';plane.append(img);
  v52Effects.push({type:'seal-travel',target:index,at:v4Time});
  v53AnimateFlight(img,{x:from.x+35,y:from.y-15},index,260,0,v5Epoch);
@@ -498,7 +499,9 @@ async function v5MobStep(){
    if(!await v5Sleep(isElite?560:460,epoch))return;
    if(!actor.alive||encounter?.kind==='boss'||clock.done||epoch!==v5Epoch)return;
    if(kind==='stamp'){
-     const slash=v52SpawnArt(actor.node,'seal-sweep.svg','v52Slash',550);
+     actor.node.classList.add('v54Strike');
+     setTimeout(()=>actor.node?.classList.remove('v54Strike'),380/clock.pace);
+     const slash=v52SpawnArt(actor.node,'stamp-impact.svg','v52Slash',380);
      if(slash)v52Effects.push({type:'stamp-release',at:v4Time});
      v53FlySeal(actor,main);
      if(!await v5Sleep(280,epoch))return;
