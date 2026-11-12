@@ -69,7 +69,18 @@ try{
  await page.waitForTimeout(1300);
  stage='stamp';
  await page.waitForFunction((kind)=>window.__salaryBossV5?.demoEliteSkill(kind),'stamp',{timeout:9000});
+ await page.waitForSelector('.v52Charge',{state:'attached',timeout:6000});
+ const charge=await page.evaluate(()=>{
+   const e=document.querySelector('.v52Charge');
+   const st=getComputedStyle(e);return {width:parseFloat(st.width),height:parseFloat(st.height),src:e.getAttribute('src')};
+ });
+ assert.ok(charge.width<=72&&charge.height<=66,'elite stamp wind-up must stay weapon-sized instead of hiding the character');
+ assert.ok(charge.src.endsWith('/stamp-impact.svg'),'boss should use the illustrated red seal, not the old half-screen sword');
  await page.waitForSelector('.v52FlyingSeal',{state:'attached',timeout:6000});
+ const flying=await page.evaluate(()=>{const e=document.querySelector('.v52FlyingSeal');return {width:parseFloat(getComputedStyle(e).width),src:e.getAttribute('src')}});
+ assert.ok(flying.width<=72,'traveling seal must fit between characters at mobile size');
+ assert.ok(flying.src.endsWith('/stamp-impact.svg'),'travel effect must be a red seal, not the exaggerated slash');
+
  await page.waitForSelector('.v5StampContact',{state:'attached',timeout:6000});
  const fxLog=await page.evaluate(()=>__salaryBossV5.eliteEffects);
  assert.ok(fxLog.some(e=>e.type==='seal-travel'),'seal must travel from the elite to a teammate before HP damage');
