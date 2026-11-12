@@ -101,6 +101,23 @@ try{
  assert.ok(recorded.some(s=>s.includes('主管蓋章')),'stamp attack logged');
  assert.ok(recorded.some(s=>s.includes('無限會議')),'meeting debuff logged');
  assert.ok(recorded.some(s=>s.includes('催件轟炸')),'triple paper skill logged');
+ stage='melee-range-qa';
+ const melee=await page.evaluate(()=>__salaryBossV5.heroContacts.filter(h=>h.wave===3&&h.enemy==='red-stamp-manager'&&h.role==='melee'));
+ assert.ok(melee.length>0,'melee teammates must physically touch the supervisor');
+ assert.ok(melee.every(h=>h.gap>=h.minimumSafeGap-12),'no melee unit may teleport into the elite face/nameplate');
+ stage='death-cleanup';
+ await page.evaluate(()=>__salaryBossV5.skipTo(3));
+ await page.waitForSelector('.v5Enemy.elite[data-species="red-stamp-manager"]',{state:'attached',timeout:7000});
+ assert.equal(await page.evaluate(()=>__salaryBossV5.devDefeatElite()),true,'developer art QA defeats only the elite, not the whole wave');
+ await page.waitForSelector('.v5Enemy.elite.v56Dead',{state:'attached',timeout:2000});
+ await page.waitForFunction(()=>{
+   const bar=document.querySelector('.v5Enemy.elite.v56Dead .v5Bar');
+   return Boolean(bar)&&parseFloat(getComputedStyle(bar).opacity)<.1;
+ },null,{timeout:2500});
+ await page.waitForFunction(()=>document.querySelector('.v5Enemy.elite.v56Gone')!==null,null,{timeout:4200});
+ await page.waitForFunction(()=>document.querySelector('.v5Enemy.elite')===null,null,{timeout:4200});
+ assert.ok(await page.locator('.v5Enemy').count()>0,'other living enemies must remain after the elite is removed');
+
  assert.deepEqual(errors,[]);
  console.log(JSON.stringify({pass:true,elite:info,skills:recorded}));
 }catch(e){
