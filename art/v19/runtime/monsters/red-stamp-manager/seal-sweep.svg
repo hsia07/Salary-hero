@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 420">
+<defs><radialGradient id="hot"><stop stop-color="#fff5c9"/><stop offset=".26" stop-color="#ffbeaa"/><stop offset=".48" stop-color="#f54567"/><stop offset=".8" stop-color="#a92160" stop-opacity=".6"/><stop offset="1" stop-color="#8a1052" stop-opacity="0"/></radialGradient><linearGradient id="slash" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#e52d52"/><stop offset=".4" stop-color="#ffc0aa"/><stop offset=".6" stop-color="#fff4d5"/><stop offset="1" stop-color="#f62d5e"/></linearGradient></defs>
+<ellipse cx="244" cy="225" rx="222" ry="174" fill="url(#hot)"/>
+<path d="M44 320C160 158 244 178 465 48 321 200 273 300 61 353Z" fill="url(#slash)" stroke="#fe5a78" stroke-width="8"/>
+<path d="M60 352c185-65 276-159 402-298" stroke="#fff6e3" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="m127 60-4 103 30-25m198 32-5 93-42-36M210 347l8-86 43 31" stroke="#ff7383" stroke-width="14" fill="none" stroke-linejoin="round"/>
+<g fill="#fff9d8"><path d="m67 146 12 28 26 12-26 12-12 28-12-28-26-12 26-12Z"/><path d="m400 296 9 19 18 8-18 8-9 20-8-20-19-8 19-8Z"/></g>
+</svg>
