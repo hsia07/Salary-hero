@@ -50,3 +50,22 @@ body.v3-dev #v5DevSkip{display:block}
 @keyframes v5StunOrbit{0%{transform:translate(-50%,-3px) rotate(-11deg)}100%{transform:translate(-50%,2px) rotate(12deg)}}
 @keyframes v5MeetingAppear{0%{opacity:0;transform:translate(-50%,15px) scale(.1)}24%{opacity:.95;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-10px) scale(1.35)}}
 @media(max-height:720px){.v5Enemy[data-species="red-stamp-manager"]{width:144px;height:171px}.v5Enemy[data-species="red-stamp-manager"] .v5Visual{width:139px;height:135px;flex-basis:135px}}
+
+/* Elite V5.2: casting is a legible three-stage event, not a static ability icon. */
+.v5Enemy[data-species="red-stamp-manager"].v52Casting{filter:drop-shadow(0 0 10px #ee4e71) drop-shadow(0 0 19px #7b2c8b)}
+.v52FX{position:absolute;z-index:21;pointer-events:none;object-fit:contain;max-width:none;transform-origin:center}
+.v52Charge{width:110%;height:105%;left:-5%;top:-17%;opacity:0;animation:v52Charge .58s ease-in-out both;mix-blend-mode:screen}
+.v52Slash{width:200%;height:160%;left:-53%;top:-36%;animation:v52Slash .56s cubic-bezier(.2,.68,.2,1) both;filter:drop-shadow(0 0 8px #e94470)}
+.v52CasterGlyph{width:140%;height:90%;left:-20%;top:2%;opacity:0;animation:v52Caster 1.1s ease-in-out both;mix-blend-mode:screen}
+.v52Circle{width:210%;height:170%;left:-55%;top:-55%;animation:v52Circle 1.15s ease-in-out both;filter:drop-shadow(0 0 9px #bd64ff)}
+.v52PaperHalo{width:128%;height:91%;top:-30%;left:-15%;opacity:0;animation:v52PaperHalo .59s ease-in-out both;filter:drop-shadow(0 0 12px #e64f89)}
+.v52FlyingDocument{position:absolute;z-index:33;width:68px;height:78px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 0 8px #ff7c9f) drop-shadow(0 0 13px #5f257d)}
+.v5Enemy[data-species="red-stamp-manager"] .v5Visual{transform-origin:55% 88%}
+.v5Enemy[data-species="red-stamp-manager"].v52Casting .v5Visual{animation:v52BossAnticipation .6s ease-in-out both}
+@keyframes v52BossAnticipation{0%{transform:translateY(0) scale(1)}38%{transform:translateY(8px) scale(.97)}78%{transform:translateY(-4px) scale(1.04)}100%{transform:translateY(-2px) scale(1.04)}}
+@keyframes v52Charge{0%{opacity:0;transform:rotate(-45deg) scale(.35)}40%{opacity:.85;transform:rotate(0deg) scale(.7)}78%{opacity:.95;transform:rotate(18deg) scale(.95)}100%{opacity:0;transform:rotate(42deg) scale(1.06)}}
+@keyframes v52Slash{0%{opacity:0;transform:rotate(-58deg) translate(-35px,-45px) scale(.3)}21%{opacity:1;transform:rotate(-15deg) translate(-13px,-16px) scale(.74)}52%{opacity:1;transform:rotate(12deg) translate(12px,18px) scale(1.12)}100%{opacity:0;transform:rotate(34deg) translate(25px,34px) scale(1.18)}}
+@keyframes v52Circle{0%{opacity:0;transform:rotate(-54deg) scale(.12)}25%{opacity:.96;transform:rotate(-8deg) scale(.8)}55%{opacity:1;transform:rotate(18deg) scale(1.05)}100%{opacity:0;transform:rotate(48deg) scale(1.12)}}
+@keyframes v52Caster{0%{opacity:0;transform:rotate(-64deg) scale(.3)}38%{opacity:1;transform:rotate(8deg) scale(1)}73%{opacity:1;transform:rotate(30deg) scale(1.06)}100%{opacity:0;transform:rotate(60deg) scale(1.1)}}
+@keyframes v52PaperHalo{0%{opacity:0;transform:translateY(10px) rotate(-22deg) scale(.4)}28%{opacity:1;transform:translateY(-12px) rotate(18deg) scale(.9)}76%{opacity:1;transform:translateY(-20px) rotate(48deg) scale(1.07)}100%{opacity:0;transform:translateY(-38px) rotate(95deg) scale(1.2)}}
+@media(max-height:720px){.v52FlyingDocument{width:55px;height:62px}}
