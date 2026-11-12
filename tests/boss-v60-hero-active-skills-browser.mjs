@@ -53,7 +53,7 @@ try{
  });
  assert.equal(start.assassin,true,'assassin should use backline skill');
  assert.equal(start.mage,true,'spreadsheet mage should use 3-target AoE');
- await page.waitForFunction(()=>__salaryBossV5.activeSkills.some(e=>e.type==='mage-hit'),null,{timeout:9000});
+ await page.waitForFunction(()=>__salaryBossV5.activeSkills.filter(e=>e.type==='mage-hit').length>=2,null,{timeout:9000});
  const actions=await page.evaluate(()=>({
    events:__salaryBossV5.activeSkills,
    enemyHP:__salaryBossV5.mobHP,
