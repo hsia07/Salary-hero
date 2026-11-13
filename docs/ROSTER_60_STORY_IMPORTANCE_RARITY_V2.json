@@ -1,0 +1,385 @@
+{
+  "version": "V2",
+  "basis": "PREDEATH_WORLD_STORY_IMPORTANCE",
+  "total": 60,
+  "worlds": [
+    {
+      "world": "近現代職場世界",
+      "count": {
+        "UR": 1,
+        "SSR": 2,
+        "SR": 3,
+        "R": 3,
+        "N": 1
+      },
+      "people": [
+        {
+          "id": "tieshi",
+          "name": "打卡守衛・鐵時",
+          "rarity": "SSR"
+        },
+        {
+          "id": "escape-fighter",
+          "name": "逃班鬥士・五分鐘",
+          "rarity": "R"
+        },
+        {
+          "id": "deadline-assassin",
+          "name": "截止日刺客・赤線",
+          "rarity": "R"
+        },
+        {
+          "id": "sheet-mage",
+          "name": "試算表法師・千式",
+          "rarity": "SR"
+        },
+        {
+          "id": "coffee-medic",
+          "name": "咖啡醫官・小澄",
+          "rarity": "SR"
+        },
+        {
+          "id": "machine-engineer",
+          "name": "機械工程師・阿拓",
+          "rarity": "SR"
+        },
+        {
+          "id": "office-idol",
+          "name": "公關偶像・梨奈",
+          "rarity": "SSR"
+        },
+        {
+          "id": "office-lawyer",
+          "name": "勞權律師・白律",
+          "rarity": "UR"
+        },
+        {
+          "id": "office-chef",
+          "name": "深夜主廚・茉莉",
+          "rarity": "R"
+        },
+        {
+          "id": "office-intern",
+          "name": "見習書記・豆豆",
+          "rarity": "N"
+        }
+      ],
+      "reason": "白律串連職災證詞與制度責任；鐵時代表救援倫理，梨奈代表公共敘事與家族衝突。"
+    },
+    {
+      "world": "自主機械文明世界",
+      "count": {
+        "UR": 1,
+        "SSR": 2,
+        "SR": 3,
+        "R": 4,
+        "N": 0
+      },
+      "people": [
+        {
+          "id": "machine-07",
+          "name": "保全機兵・七號",
+          "rarity": "SR"
+        },
+        {
+          "id": "android-secretary",
+          "name": "仿生秘書・伊芙",
+          "rarity": "SSR"
+        },
+        {
+          "id": "mecha-pilot",
+          "name": "機甲駕駛・嵐",
+          "rarity": "SSR"
+        },
+        {
+          "id": "printer-priest",
+          "name": "列印祭司・墨修",
+          "rarity": "R"
+        },
+        {
+          "id": "digital-auditor",
+          "name": "稽核演算體・零",
+          "rarity": "R"
+        },
+        {
+          "id": "machine-swarm",
+          "name": "蜂群技師・蜂后",
+          "rarity": "SR"
+        },
+        {
+          "id": "clock-automaton",
+          "name": "鐘錶人偶・滴答",
+          "rarity": "R"
+        },
+        {
+          "id": "steel-saint",
+          "name": "鋼鐵聖女・賽芙",
+          "rarity": "UR"
+        },
+        {
+          "id": "scrap-bard",
+          "name": "廢鐵樂師・拍子",
+          "rarity": "R"
+        },
+        {
+          "id": "office-ai-echo",
+          "name": "母腦殘響・分機",
+          "rarity": "SR"
+        }
+      ],
+      "reason": "賽芙的自我犧牲與人格自主構成機械文明的核心信仰衝突；伊芙牽涉母腦與身體主權，嵐牽涉軍民技術倫理。"
+    },
+    {
+      "world": "星際企業文明世界",
+      "count": {
+        "UR": 1,
+        "SSR": 2,
+        "SR": 5,
+        "R": 1,
+        "N": 1
+      },
+      "people": [
+        {
+          "id": "alien-captain",
+          "name": "星艦領班・薩洛",
+          "rarity": "SR"
+        },
+        {
+          "id": "alien-navigator",
+          "name": "星圖領航・妮亞",
+          "rarity": "SR"
+        },
+        {
+          "id": "alien-broker",
+          "name": "銀河掮客・薇菈",
+          "rarity": "SSR"
+        },
+        {
+          "id": "alien-archivist",
+          "name": "群星檔案官・璃音",
+          "rarity": "SSR"
+        },
+        {
+          "id": "alien-intern-ally",
+          "name": "異星實習生・小綠",
+          "rarity": "N"
+        },
+        {
+          "id": "alien-siren",
+          "name": "星際歌姬・露希亞",
+          "rarity": "UR"
+        },
+        {
+          "id": "alien-entomologist",
+          "name": "蟲星研究員・紗翎",
+          "rarity": "SR"
+        },
+        {
+          "id": "alien-radio",
+          "name": "電波主持・波奇",
+          "rarity": "R"
+        },
+        {
+          "id": "alien-void",
+          "name": "虛空清潔員・諾克",
+          "rarity": "SR"
+        },
+        {
+          "id": "alien-judge",
+          "name": "星環裁決者・赫斯",
+          "rarity": "SR"
+        }
+      ],
+      "reason": "露希亞的歌聲與群眾控制牽動星際公眾秩序；薇菈與璃音分別掌握交易與記憶的倫理主線。"
+    },
+    {
+      "world": "神話職務世界",
+      "count": {
+        "UR": 2,
+        "SSR": 2,
+        "SR": 4,
+        "R": 2,
+        "N": 0
+      },
+      "people": [
+        {
+          "id": "myth-wukong",
+          "name": "齊天行者・悟空",
+          "rarity": "UR"
+        },
+        {
+          "id": "myth-bajie",
+          "name": "天蓬食堂長・八戒",
+          "rarity": "SR"
+        },
+        {
+          "id": "myth-sand",
+          "name": "流沙搬運官・悟淨",
+          "rarity": "SR"
+        },
+        {
+          "id": "myth-lotus",
+          "name": "蓮火巡檢・哪吒",
+          "rarity": "UR"
+        },
+        {
+          "id": "myth-dragon",
+          "name": "龍宮財務官・敖璃",
+          "rarity": "SSR"
+        },
+        {
+          "id": "myth-moon",
+          "name": "廣寒巡夜・嫦月",
+          "rarity": "SR"
+        },
+        {
+          "id": "moon-rabbit",
+          "name": "搗藥仙兔・小玉",
+          "rarity": "R"
+        },
+        {
+          "id": "myth-judge",
+          "name": "天庭監察・清目",
+          "rarity": "SR"
+        },
+        {
+          "id": "myth-cloud",
+          "name": "雲端信使・霓霓",
+          "rarity": "R"
+        },
+        {
+          "id": "myth-fox",
+          "name": "九尾審稿官・蘇妲",
+          "rarity": "SSR"
+        }
+      ],
+      "reason": "悟空與哪吒分別代表反抗與體制內武力的重大選擇；敖璃掌握龍宮債制，蘇妲掌握天庭敘事與禁令。"
+    },
+    {
+      "world": "冥府行政世界",
+      "count": {
+        "UR": 1,
+        "SSR": 2,
+        "SR": 5,
+        "R": 2,
+        "N": 0
+      },
+      "people": [
+        {
+          "id": "nether-reaper",
+          "name": "冥府收工人・暮影",
+          "rarity": "SSR"
+        },
+        {
+          "id": "nether-clerk",
+          "name": "陰司書記・墨言",
+          "rarity": "SR"
+        },
+        {
+          "id": "nether-porter",
+          "name": "忘川搬運者・渡",
+          "rarity": "R"
+        },
+        {
+          "id": "nether-singer",
+          "name": "安魂歌者・夜蘭",
+          "rarity": "UR"
+        },
+        {
+          "id": "nether-ferryman",
+          "name": "終站車長・零點",
+          "rarity": "SR"
+        },
+        {
+          "id": "nether-knight",
+          "name": "墓園巡衛・寒鐵",
+          "rarity": "SR"
+        },
+        {
+          "id": "nether-dream",
+          "name": "夢境醫師・眠音",
+          "rarity": "SSR"
+        },
+        {
+          "id": "nether-oracle",
+          "name": "彼岸預言者・緋",
+          "rarity": "SR"
+        },
+        {
+          "id": "nether-mason",
+          "name": "冥界築牆師・磐",
+          "rarity": "R"
+        },
+        {
+          "id": "nether-flame",
+          "name": "鬼火巡燈・幽藍",
+          "rarity": "SR"
+        }
+      ],
+      "reason": "夜蘭的安魂之歌直接觸及冥府存在意義；暮影的錯收魂與眠音的夢境治療形成制度與個人兩條主線。"
+    },
+    {
+      "world": "異常生命與魔法世界",
+      "count": {
+        "UR": 1,
+        "SSR": 2,
+        "SR": 3,
+        "R": 3,
+        "N": 1
+      },
+      "people": [
+        {
+          "id": "anomaly-slime",
+          "name": "工讀史萊姆・噗嚕",
+          "rarity": "N"
+        },
+        {
+          "id": "anomaly-cat",
+          "name": "貓耳特派・鈴",
+          "rarity": "R"
+        },
+        {
+          "id": "anomaly-mushroom",
+          "name": "菇菇藥師・茸茸",
+          "rarity": "R"
+        },
+        {
+          "id": "anomaly-vampire",
+          "name": "夜班血族・薔薇",
+          "rarity": "SSR"
+        },
+        {
+          "id": "anomaly-wolf",
+          "name": "狼人稽查・灰牙",
+          "rarity": "SR"
+        },
+        {
+          "id": "anomaly-dragon",
+          "name": "小龍郵差・火羽",
+          "rarity": "R"
+        },
+        {
+          "id": "anomaly-puppet",
+          "name": "契約人偶・艾莉絲",
+          "rarity": "SSR"
+        },
+        {
+          "id": "anomaly-mirror",
+          "name": "鏡界裁縫・璃璃",
+          "rarity": "SR"
+        },
+        {
+          "id": "anomaly-tree",
+          "name": "年輪檔案樹・森老",
+          "rarity": "SR"
+        },
+        {
+          "id": "anomaly-angel",
+          "name": "失格天使・白羽",
+          "rarity": "UR"
+        }
+      ],
+      "reason": "白羽的祝福與召喚倫理牽涉種族間的生存權；薔薇與灰牙的婚姻衝突、艾莉絲的人格契約構成雙主線。"
+    }
+  ]
+}
