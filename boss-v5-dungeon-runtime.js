@@ -1045,6 +1045,7 @@ window.__salaryBossV5={
  get skillTime(){return v4Time},
  get guardState(){return {...v60Guard}},
  get tieshiAwakening(){return {...tieshiAwakening}},
+ setTieshiStoryAwakened:(unlocked)=>{tieshiAwakening.biographyCleared=Boolean(unlocked);if(!unlocked){tieshiAwakening.protectUntil=0;if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}}return tieshiAwakening.biographyCleared},
  devTieshiBiography:(cleared)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.biographyCleared=Boolean(cleared);if(!cleared){tieshiAwakening.protectUntil=0;if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}}return true},
  devTieshiEnergy:(energy)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.energy=Math.max(0,Math.min(100,Number(energy)||0));return true},
  devTieshiCast:()=>new URLSearchParams(location.search).get('dev')==='1'&&tieshiUltimate(),
