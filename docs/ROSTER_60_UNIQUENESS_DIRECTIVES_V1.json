@@ -1,0 +1,486 @@
+{
+  "version": "V1",
+  "status": "REWRITE_DIRECTIVES",
+  "characters": [
+    {
+      "id": "tieshi",
+      "name": "打卡守衛・鐵時",
+      "central_motif": "三魂一盾",
+      "non_interchangeable_choice": "亡者並非自己的附屬品",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "escape-fighter",
+      "name": "逃班鬥士・五分鐘",
+      "central_motif": "假逃生門",
+      "non_interchangeable_choice": "揭露自己曾造假",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "deadline-assassin",
+      "name": "截止日刺客・赤線",
+      "central_motif": "不可能的期限",
+      "non_interchangeable_choice": "承認失控的承諾",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "sheet-mage",
+      "name": "試算表法師・千式",
+      "central_motif": "附錄裡的異常",
+      "non_interchangeable_choice": "公開被自己藏起的數據",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "coffee-medic",
+      "name": "咖啡醫官・小澄",
+      "central_motif": "疲勞交班",
+      "non_interchangeable_choice": "接受自己也需要被照顧",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "machine-engineer",
+      "name": "機械工程師・阿拓",
+      "central_motif": "停機權",
+      "non_interchangeable_choice": "讓受影響者能關閉機器",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "office-idol",
+      "name": "公關偶像・梨奈",
+      "central_motif": "安全舞台",
+      "non_interchangeable_choice": "親口推翻曾做的安全宣傳",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "office-lawyer",
+      "name": "勞權律師・白律",
+      "central_motif": "南笙保護令",
+      "non_interchangeable_choice": "公開撤回證人保護的罪責",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "office-chef",
+      "name": "深夜主廚・茉莉",
+      "central_motif": "欠帳晚餐",
+      "non_interchangeable_choice": "承認私下偏愛",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "office-intern",
+      "name": "見習書記・豆豆",
+      "central_motif": "錯名識別牌",
+      "non_interchangeable_choice": "拒絕替人代簽",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "machine-07",
+      "name": "保全機兵・七號",
+      "central_motif": "門禁例外",
+      "non_interchangeable_choice": "違規救人並接受調查",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "android-secretary",
+      "name": "仿生秘書・伊芙",
+      "central_motif": "不屬於她的留言",
+      "non_interchangeable_choice": "取得同意才復原資料",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "mecha-pilot",
+      "name": "機甲駕駛・嵐",
+      "central_motif": "聽得見的引擎",
+      "non_interchangeable_choice": "交出駕駛權",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "printer-priest",
+      "name": "列印祭司・墨修",
+      "central_motif": "錯印婚帖",
+      "non_interchangeable_choice": "承認錯誤也創造新關係",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "digital-auditor",
+      "name": "稽核演算體・零",
+      "central_motif": "不完整樣本",
+      "non_interchangeable_choice": "公開無法計算的疑點",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "machine-swarm",
+      "name": "蜂群技師・蜂后",
+      "central_motif": "601號出走",
+      "non_interchangeable_choice": "承認群體成員有自由",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "clock-automaton",
+      "name": "鐘錶人偶・滴答",
+      "central_motif": "偷調的時鐘",
+      "non_interchangeable_choice": "接受時間不可能同步",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "steel-saint",
+      "name": "鋼鐵聖女・賽芙",
+      "central_motif": "有限神蹟",
+      "non_interchangeable_choice": "拒絕無限供能的期待",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "scrap-bard",
+      "name": "廢鐵樂師・拍子",
+      "central_motif": "嘲笑變成歌",
+      "non_interchangeable_choice": "允許錯拍存在",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "office-ai-echo",
+      "name": "母腦殘響・分機",
+      "central_motif": "接錯的電話",
+      "non_interchangeable_choice": "讓真正收件人決定是否接聽",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-captain",
+      "name": "星艦領班・薩洛",
+      "central_motif": "船員生日蛋糕",
+      "non_interchangeable_choice": "丟貨保人而失去艦長資格",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-broker",
+      "name": "銀河掮客・薇菈",
+      "central_motif": "出售的姓名",
+      "non_interchangeable_choice": "贖罪不能換回阿書",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-intern-ally",
+      "name": "異星實習生・小綠",
+      "central_motif": "不安全實習",
+      "non_interchangeable_choice": "拒絕菁英計畫",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-siren",
+      "name": "星際歌姬・露希亞",
+      "central_motif": "不能唱的歌",
+      "non_interchangeable_choice": "拒絕操控觀眾",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-entomologist",
+      "name": "蟲星研究員・紗翎",
+      "central_motif": "601號的研究",
+      "non_interchangeable_choice": "放棄未經同意的採樣",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-radio",
+      "name": "電波主持・波奇",
+      "central_motif": "誤播的求救",
+      "non_interchangeable_choice": "公開自己的錯誤報導",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-void",
+      "name": "虛空清潔員・諾克",
+      "central_motif": "封存污染",
+      "non_interchangeable_choice": "留下危險證據供追責",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-navigator",
+      "name": "星圖領航・妮亞",
+      "central_motif": "星圖盲區",
+      "non_interchangeable_choice": "選擇非最短航路",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-judge",
+      "name": "星環裁決者・赫斯",
+      "central_motif": "南笙轉送令",
+      "non_interchangeable_choice": "退出自己失職的審判",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "alien-archivist",
+      "name": "群星檔案官・璃音",
+      "central_motif": "阿書的借書卡",
+      "non_interchangeable_choice": "允許自選名字而非強制真名",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-wukong",
+      "name": "齊天行者・悟空",
+      "central_motif": "猴群投票",
+      "non_interchangeable_choice": "接受阿栗拒絕大王",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-bajie",
+      "name": "天蓬食堂長・八戒",
+      "central_motif": "挪用的食材",
+      "non_interchangeable_choice": "帳本公開仍有人挨餓",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-sand",
+      "name": "流沙搬運官・悟淨",
+      "central_motif": "阿檀的木箱",
+      "non_interchangeable_choice": "有限負重不能全救",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-moon",
+      "name": "廣寒巡夜・嫦月",
+      "central_motif": "第二張月亮",
+      "non_interchangeable_choice": "承認搭檔也改鐘",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "moon-rabbit",
+      "name": "搗藥仙兔・小玉",
+      "central_motif": "甜藥劑量",
+      "non_interchangeable_choice": "揭露阿豆偷藥",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-judge",
+      "name": "天庭監察・清目",
+      "central_motif": "未核附件",
+      "non_interchangeable_choice": "公開自己的違規核章",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-dragon",
+      "name": "龍宮財務官・敖璃",
+      "central_motif": "弟弟的債券",
+      "non_interchangeable_choice": "查封家產而失去家人",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-lotus",
+      "name": "蓮火巡檢・哪吒",
+      "central_motif": "燒掉的封條",
+      "non_interchangeable_choice": "救人後仍需面對證據損失",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-cloud",
+      "name": "雲端信使・霓霓",
+      "central_motif": "寄件人也是收件人",
+      "non_interchangeable_choice": "尊重信件秘密",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "myth-fox",
+      "name": "九尾審稿官・蘇妲",
+      "central_motif": "五個字的拘留令",
+      "non_interchangeable_choice": "公開修訂責任",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-reaper",
+      "name": "冥府收工人・暮影",
+      "central_motif": "第四個錯收魂",
+      "non_interchangeable_choice": "拒絕配額而被指偏私",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-clerk",
+      "name": "陰司書記・墨言",
+      "central_motif": "妹妹畫的魚",
+      "non_interchangeable_choice": "原卷真相傷害家人",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-porter",
+      "name": "忘川搬運者・渡",
+      "central_motif": "河上的辭職信",
+      "non_interchangeable_choice": "失去運輸資格",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-singer",
+      "name": "安魂歌者・夜蘭",
+      "central_motif": "拒唱的安魂曲",
+      "non_interchangeable_choice": "加害者也有家人",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-knight",
+      "name": "墓園巡衛・寒鐵",
+      "central_motif": "被拆的墓碑",
+      "non_interchangeable_choice": "優先救人而失去紀念",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-dream",
+      "name": "夢境醫師・眠音",
+      "central_motif": "完美週末夢",
+      "non_interchangeable_choice": "讓病人醒來面對真相",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-oracle",
+      "name": "彼岸預言者・緋",
+      "central_motif": "只准晴天",
+      "non_interchangeable_choice": "公布預言造成恐慌",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-mason",
+      "name": "冥界築牆師・磐",
+      "central_motif": "牆內逃生門",
+      "non_interchangeable_choice": "拆掉自己的完工牆",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-flame",
+      "name": "鬼火巡燈・幽藍",
+      "central_motif": "借來的火",
+      "non_interchangeable_choice": "學會求助而非獨燃",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "nether-ferryman",
+      "name": "終站車長・零點",
+      "central_motif": "誤點末班車",
+      "non_interchangeable_choice": "為乘客犧牲準點",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-slime",
+      "name": "工讀史萊姆・噗嚕",
+      "central_motif": "沒有薪水的徽章",
+      "non_interchangeable_choice": "拒絕免費勞動",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-cat",
+      "name": "貓耳特派・鈴",
+      "central_motif": "屋頂回頭",
+      "non_interchangeable_choice": "救人造成藥品遲到",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-mushroom",
+      "name": "菇菇藥師・茸茸",
+      "central_motif": "被賣掉的母株",
+      "non_interchangeable_choice": "向族群承認研究私心",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-vampire",
+      "name": "夜班血族・薔薇",
+      "central_motif": "日光界線",
+      "non_interchangeable_choice": "恨灰牙但不傷害無辜",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-wolf",
+      "name": "狼人稽查・灰牙",
+      "central_motif": "再次吹響的哨",
+      "non_interchangeable_choice": "承認召喚後追捕共犯",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-dragon",
+      "name": "小龍郵差・火羽",
+      "central_motif": "未拆的求救信",
+      "non_interchangeable_choice": "隱私與救援不能兩全",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-puppet",
+      "name": "契約人偶・艾莉絲",
+      "central_motif": "第一個自己的簽名",
+      "non_interchangeable_choice": "拒絕代簽奴役契約",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-mirror",
+      "name": "鏡界裁縫・璃璃",
+      "central_motif": "鏡衣假身分",
+      "non_interchangeable_choice": "拆穿顧客後傷及家庭",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-tree",
+      "name": "年輪檔案樹・森老",
+      "central_motif": "舊年輪地圖",
+      "non_interchangeable_choice": "承認自己的歷史不完整",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    },
+    {
+      "id": "anomaly-angel",
+      "name": "失格天使・白羽",
+      "central_motif": "未經同意的祝福",
+      "non_interchangeable_choice": "救人不能替人決定",
+      "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+      "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+    }
+  ]
+}
