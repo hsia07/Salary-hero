@@ -1,0 +1,982 @@
+{
+  "version": "ROSTER-60-ART-LORE-V1",
+  "status": "PROPOSED_NOT_APPROVED",
+  "total": 60,
+  "sourceAudit": {
+    "previousConfirmed60": false,
+    "enemyCount": 32,
+    "heroStyleCount": 16,
+    "protagonistExcluded": true,
+    "threeTieshiGhostsExcluded": true
+  },
+  "factions": {
+    "office": "勇者公會與辦公室",
+    "machine": "機兵與自動化",
+    "alien": "外星企業",
+    "myth": "神話機構",
+    "nether": "冥府與亡靈",
+    "anomaly": "異常生物與自由陣營"
+  },
+  "characters": [
+    {
+      "id": "tieshi",
+      "name": "打卡守衛・鐵時",
+      "gender": "男",
+      "rarity": "SR",
+      "role": "坦克護盾",
+      "visual": "瘦削2.5頭身、亂黑髮明顯白束、暗紅倦眼、右頰白貼布、紫黑披風、紫黑金08:59直立盾",
+      "past": "夜班火災回頭救人，違法封門造成同事罹難；他背負不屬於他的責任",
+      "secret": "與小燈阿誠阿遠和解，最終09:00覺醒死靈護衛，仍為SR",
+      "links": [
+        "coffee-medic",
+        "office-lawyer"
+      ],
+      "faction": "office",
+      "status": "PARTIAL_EXISTING_CANON"
+    },
+    {
+      "id": "escape-fighter",
+      "name": "逃班鬥士・五分鐘",
+      "gender": "男",
+      "rarity": "R",
+      "role": "突進干擾",
+      "visual": "瘦高棕髮、捲袖制服、黃色逃生指示腰帶、折疊短刃",
+      "past": "疏散員抗議封閉逃生門而遭革職",
+      "secret": "記得公會每條被封鎖的逃生路",
+      "links": [
+        "tieshi",
+        "myth-sand"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "deadline-assassin",
+      "name": "截止日刺客・赤線",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "斬殺刺客",
+      "visual": "成年冷豔女性、健美修長、黑紅短髮、戰術高衩外套、裁紙雙刃",
+      "past": "專案經理被迫替整組背負無限期限",
+      "secret": "倒數能力源於遭竄改的任務時鐘",
+      "links": [
+        "sheet-mage",
+        "alien-broker"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "sheet-mage",
+      "name": "試算表法師・千式",
+      "gender": "女",
+      "rarity": "SR",
+      "role": "法術連鎖",
+      "visual": "成年高挑優雅、藍灰長髮、眼鏡、深藍收腰長袍、公式卷軸",
+      "past": "分析師發現績效帳本遭操控",
+      "secret": "握有被刪除的復活費用表",
+      "links": [
+        "deadline-assassin",
+        "digital-auditor"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "coffee-medic",
+      "name": "咖啡醫官・小澄",
+      "gender": "女",
+      "rarity": "SR",
+      "role": "治療增益",
+      "visual": "成年嬌小可愛、蜜棕雙丸子頭、白綠醫療圍裙、咖啡壺法杖",
+      "past": "輪班護理師厭倦以咖啡代替休息",
+      "secret": "研究不靠刺激劑的真正療癒術",
+      "links": [
+        "tieshi",
+        "moon-rabbit"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "machine-engineer",
+      "name": "機械工程師・阿拓",
+      "gender": "男",
+      "rarity": "SR",
+      "role": "召喚修復",
+      "visual": "短銀髮、護目鏡掛額、油污工作外套、展開式維修臂",
+      "past": "工程師因自動化效率提升反被加派工作",
+      "secret": "曾修復管理局祕密復活裝置",
+      "links": [
+        "machine-07",
+        "android-secretary"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "office-idol",
+      "name": "公關偶像・梨奈",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "士氣輔助",
+      "visual": "成年甜美亮粉長馬尾、偶像舞台外套、星形麥克風",
+      "past": "公關被迫永遠微笑並掩蓋事故",
+      "secret": "替受害員工保留錄音",
+      "links": [
+        "alien-siren",
+        "office-lawyer"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "office-lawyer",
+      "name": "勞權律師・白律",
+      "gender": "男",
+      "rarity": "SSR",
+      "role": "反擊驅散",
+      "visual": "灰白側分髮、墨綠風衣、金屬公文包盾、審判筆",
+      "past": "公益律師追查工傷而遭除名",
+      "secret": "持有召喚契約違法條款",
+      "links": [
+        "tieshi",
+        "office-idol"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "office-chef",
+      "name": "深夜主廚・茉莉",
+      "gender": "女",
+      "rarity": "R",
+      "role": "持續治療",
+      "visual": "成年健康豐滿、深栗捲髮、酒紅廚師裙、巨型湯勺",
+      "past": "餐廳廚師替夜班留飯",
+      "secret": "知道失蹤者最後一餐的名單",
+      "links": [
+        "coffee-medic",
+        "nether-porter"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "office-intern",
+      "name": "見習書記・豆豆",
+      "gender": "男",
+      "rarity": "N",
+      "role": "資源支援",
+      "visual": "成年矮個青年、圓眼鏡、寬大制服、文件背包",
+      "past": "新人被派記錄不可公開的事故",
+      "secret": "筆記未被記憶清洗術抹去",
+      "links": [
+        "office-lawyer",
+        "alien-archivist"
+      ],
+      "faction": "office",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "machine-07",
+      "name": "保全機兵・七號",
+      "gender": "機器人",
+      "rarity": "SR",
+      "role": "攔截坦克",
+      "visual": "小型鐵藍重裝機兵、琥珀獨眼、折疊防爆臂",
+      "past": "事故救援機被改造成保全",
+      "secret": "存有鐵時事故未剪輯影像",
+      "links": [
+        "tieshi",
+        "machine-engineer"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "android-secretary",
+      "name": "仿生秘書・伊芙",
+      "gender": "女型仿生人",
+      "rarity": "SSR",
+      "role": "加速輔助",
+      "visual": "成年銀白波浪髮、修長曲線、精緻黑白秘書服、透明袖口光幕",
+      "past": "被設計成永遠服從的董事秘書",
+      "secret": "自行刪除服從模組",
+      "links": [
+        "machine-engineer",
+        "alien-broker"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "mecha-pilot",
+      "name": "機甲駕駛・嵐",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "爆發破甲",
+      "visual": "成年運動型曲線、短橘髮、黑橘機師服、機械駕駛環",
+      "past": "試飛員反對軍用無人機壓制工人",
+      "secret": "座機原是撤離載具",
+      "links": [
+        "machine-07",
+        "alien-captain"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "printer-priest",
+      "name": "列印祭司・墨修",
+      "gender": "男",
+      "rarity": "R",
+      "role": "封印控場",
+      "visual": "黑白修士袍、墨水機械手、紙卷法杖",
+      "past": "被指派銷毀工會申請",
+      "secret": "暗藏未碎的罷工誓約",
+      "links": [
+        "office-lawyer",
+        "machine-swarm"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "digital-auditor",
+      "name": "稽核演算體・零",
+      "gender": "無性別AI",
+      "rarity": "SSR",
+      "role": "標記法術",
+      "visual": "浮空稜鏡核心、冷白光眼、黑金可動外甲",
+      "past": "董事會稽核子程式",
+      "secret": "發現報表存在時間迴圈",
+      "links": [
+        "sheet-mage",
+        "office-ai-echo"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "machine-swarm",
+      "name": "蜂群技師・蜂后",
+      "gender": "女型機器人",
+      "rarity": "SR",
+      "role": "召喚修復",
+      "visual": "成年琥珀短髮、蜂巢機械披肩、六角維修無人機",
+      "past": "工廠主控拒絕犧牲工人被停機",
+      "secret": "蜂群藏有前勇者錄音",
+      "links": [
+        "printer-priest",
+        "alien-entomologist"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "clock-automaton",
+      "name": "鐘錶人偶・滴答",
+      "gender": "機器人",
+      "rarity": "R",
+      "role": "時間控場",
+      "visual": "銅色機械人偶、單片鏡、發條背包、鐘擺槍",
+      "past": "被迫永不停止計時",
+      "secret": "能指出復活日誌缺少的一分鐘",
+      "links": [
+        "tieshi",
+        "digital-auditor"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "steel-saint",
+      "name": "鋼鐵聖女・賽芙",
+      "gender": "女型仿生人",
+      "rarity": "UR",
+      "role": "反傷坦克",
+      "visual": "成年高挑雕塑感、白金聖鎧、藍色能量長髮、機械羽翼",
+      "past": "救援機兵被奉為不知疲倦的聖女",
+      "secret": "核心保存救援者記憶",
+      "links": [
+        "machine-07",
+        "nether-singer"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "scrap-bard",
+      "name": "廢鐵樂師・拍子",
+      "gender": "男型機器人",
+      "rarity": "R",
+      "role": "節奏輔助",
+      "visual": "銅綠機身、喇叭肩、音叉雙棍",
+      "past": "生產線節拍器被改造成樂器",
+      "secret": "旋律能破解催眠廣播",
+      "links": [
+        "office-idol",
+        "alien-radio"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "office-ai-echo",
+      "name": "母腦殘響・分機",
+      "gender": "AI",
+      "rarity": "SSR",
+      "role": "控場反制",
+      "visual": "浮空玻璃螢幕頭、紫黑資料絲帶、斷裂環形天線",
+      "past": "從董事會母腦分裂的同情副程式",
+      "secret": "能追查命令源頭但非全知",
+      "links": [
+        "digital-auditor",
+        "nether-clerk"
+      ],
+      "faction": "machine",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-captain",
+      "name": "星艦領班・薩洛",
+      "gender": "男外星人",
+      "rarity": "SSR",
+      "role": "前排指揮",
+      "visual": "青藍皮膚、四眼、海軍藍制服、星圖披肩、光束槍",
+      "past": "外星貨運領班遭扣押航行證",
+      "secret": "追查跨星系勞工買賣",
+      "links": [
+        "mecha-pilot",
+        "alien-broker"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-broker",
+      "name": "銀河掮客・薇菈",
+      "gender": "女外星人",
+      "rarity": "SSR",
+      "role": "竊取刺客",
+      "visual": "成年優雅曲線、紫藍肌膚、銀色開衩長外套、雙觸鬚",
+      "past": "仲介拒售勞工而失勢",
+      "secret": "曾藏匿遭追捕的前勇者",
+      "links": [
+        "android-secretary",
+        "deadline-assassin"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-intern-ally",
+      "name": "異星實習生・小綠",
+      "gender": "男外星人",
+      "rarity": "N",
+      "role": "干擾",
+      "visual": "薄荷綠皮膚、大黑眼、軟觸角、不合身西裝",
+      "past": "初來就被迫無薪實習",
+      "secret": "誤拿董事會交通卡",
+      "links": [
+        "office-intern",
+        "alien-archivist"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-siren",
+      "name": "星際歌姬・露希亞",
+      "gender": "女外星人",
+      "rarity": "UR",
+      "role": "群控治療",
+      "visual": "成年高挑優美、藍紫長髮、星雲薄紗禮服、光環麥克風",
+      "past": "巡演歌手被迫用歌聲壓制抗議",
+      "secret": "真歌聲能喚醒封印記憶",
+      "links": [
+        "office-idol",
+        "alien-radio"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-entomologist",
+      "name": "蟲星研究員・紗翎",
+      "gender": "女外星人",
+      "rarity": "SR",
+      "role": "毒傷召喚",
+      "visual": "成年纖細、翠綠複眼、透明甲殼披風、研究背包",
+      "past": "共生研究被挪用為監控蜂群",
+      "secret": "把監控蟲改成救援通訊器",
+      "links": [
+        "machine-swarm",
+        "alien-captain"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-radio",
+      "name": "電波主持・波奇",
+      "gender": "男外星人",
+      "rarity": "R",
+      "role": "增益混亂",
+      "visual": "圓頭三眼、橘紅播音外套、雙耳天線、浮空收音機",
+      "past": "播報真實事故而被封殺",
+      "secret": "保留失蹤者求救訊號",
+      "links": [
+        "scrap-bard",
+        "alien-siren"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-void",
+      "name": "虛空清潔員・諾克",
+      "gender": "男外星人",
+      "rarity": "SSR",
+      "role": "吞噬護盾",
+      "visual": "黑曜半透明皮膚、星點雙瞳、清潔制服、黑洞拖把",
+      "past": "清除企業失敗實驗",
+      "secret": "清潔桶藏著不應存在的勇者證",
+      "links": [
+        "alien-broker",
+        "nether-porter"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-navigator",
+      "name": "星圖領航・妮亞",
+      "gender": "女外星人",
+      "rarity": "SR",
+      "role": "速度支援",
+      "visual": "成年活潑可愛、湖藍短髮、雙星耳飾、飛行夾克",
+      "past": "拒絕引難民艦進陷阱",
+      "secret": "知道通往魔王領域的安全航道",
+      "links": [
+        "alien-captain",
+        "myth-cloud"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-judge",
+      "name": "星環裁決者・赫斯",
+      "gender": "男外星人",
+      "rarity": "UR",
+      "role": "破甲審判",
+      "visual": "修長四臂、白金法袍、環狀光刃、六角星瞳",
+      "past": "星際法官發現跨世界契約違法",
+      "secret": "能解除強加的職業束縛",
+      "links": [
+        "office-lawyer",
+        "myth-judge"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "alien-archivist",
+      "name": "群星檔案官・璃音",
+      "gender": "女外星人",
+      "rarity": "SSR",
+      "role": "法術情報",
+      "visual": "成年冷豔纖長、深靛長髮、浮空書頁裙甲、晶體筆",
+      "past": "為被抹去者保留姓名",
+      "secret": "持有召喚時間線兩版本",
+      "links": [
+        "office-intern",
+        "alien-intern-ally"
+      ],
+      "faction": "alien",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-wukong",
+      "name": "齊天行者・悟空",
+      "gender": "男神猴",
+      "rarity": "UR",
+      "role": "連擊分身",
+      "visual": "成年金棕神猴、紅金束甲、鳳翅冠、金箍棒、靈動戰姿",
+      "past": "花果山自由行者被天庭列不服從名單",
+      "secret": "敵方加班大聖是企業製造的冒名代理形象",
+      "links": [
+        "myth-bajie",
+        "myth-judge"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-bajie",
+      "name": "天蓬食堂長・八戒",
+      "gender": "男神豬",
+      "rarity": "SR",
+      "role": "坦克回復",
+      "visual": "圓潤豬族神將、青金戰袍、九齒釘耙、食堂圍裙",
+      "past": "被調去管理永不休息的天河食堂",
+      "secret": "知道休息時間何時被列違規",
+      "links": [
+        "myth-wukong",
+        "office-chef"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-sand",
+      "name": "流沙搬運官・悟淨",
+      "gender": "男",
+      "rarity": "SR",
+      "role": "守護淨化",
+      "visual": "高大Q版、青黑長髮、僧袍運輸護甲、月牙鏟",
+      "past": "護送難民違反運輸令",
+      "secret": "掌握失蹤勇者渡河紀錄",
+      "links": [
+        "escape-fighter",
+        "myth-wukong"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-moon",
+      "name": "廣寒巡夜・嫦月",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "冰控護盾",
+      "visual": "成年高挑清麗、銀白長髮、月紗長裙、冰晶披肩、月輪",
+      "past": "月宮巡夜官發現玉兔遭強迫勞動",
+      "secret": "月宮與地面時間不同步",
+      "links": [
+        "moon-rabbit",
+        "myth-cloud"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "moon-rabbit",
+      "name": "搗藥仙兔・小玉",
+      "gender": "女兔族",
+      "rarity": "R",
+      "role": "治療",
+      "visual": "成年嬌小靈巧、白兔耳、粉白藥師短袍、玉杵",
+      "past": "藥房學徒被迫無休搗藥",
+      "secret": "藥方能緩解復活記憶疲勞",
+      "links": [
+        "coffee-medic",
+        "myth-moon"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-judge",
+      "name": "天庭監察・清目",
+      "gender": "男神將",
+      "rarity": "SSR",
+      "role": "標記反制",
+      "visual": "三目神將、深藍銀甲、三尖槍、額頭銀紋",
+      "past": "稽核官質疑績效神諭",
+      "secret": "發現齊天集團冒用神話身份",
+      "links": [
+        "myth-wukong",
+        "alien-judge"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-dragon",
+      "name": "龍宮財務官・敖璃",
+      "gender": "女龍族",
+      "rarity": "SSR",
+      "role": "水法破甲",
+      "visual": "成年高挑曲線、青綠龍角、海藍戰裙、珠光護肩、潮汐槍",
+      "past": "拒將海民壽命抵貸款",
+      "secret": "掌握公會與龍宮祕密債務",
+      "links": [
+        "myth-sand",
+        "myth-lotus"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-lotus",
+      "name": "蓮火巡檢・哪吒",
+      "gender": "男神將",
+      "rarity": "UR",
+      "role": "機動爆發",
+      "visual": "青年成年形象、紅金束髮、蓮火雙輪、混天綾、火尖槍",
+      "past": "拒絕焚毀抗議卷宗",
+      "secret": "風火輪能穿越行政結界",
+      "links": [
+        "myth-dragon",
+        "myth-wukong"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-cloud",
+      "name": "雲端信使・霓霓",
+      "gender": "女",
+      "rarity": "R",
+      "role": "速度驅散",
+      "visual": "成年俏皮可愛、白藍短髮、雲披肩、羽翼短靴",
+      "past": "偷偷送出被攔截的辭呈",
+      "secret": "保存未送達女神的信",
+      "links": [
+        "alien-navigator",
+        "myth-moon"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "myth-fox",
+      "name": "九尾審稿官・蘇妲",
+      "gender": "女狐族",
+      "rarity": "SSR",
+      "role": "魅惑幻術",
+      "visual": "成年成熟妖豔、深紅長髮、九條紅金狐尾、修身玄紅宮服",
+      "past": "狐族文官負責審核天庭故事版本",
+      "secret": "能辨識被改寫的英雄傳說",
+      "links": [
+        "myth-judge",
+        "nether-clerk"
+      ],
+      "faction": "myth",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-reaper",
+      "name": "冥府收工人・暮影",
+      "gender": "男",
+      "rarity": "SSR",
+      "role": "幽冥斬殺",
+      "visual": "蒼白銀髮、黑紫收工長袍、鐮刀形打卡器",
+      "past": "拒絕執行無限收魂配額",
+      "secret": "發現死者被重複召喚",
+      "links": [
+        "nether-clerk",
+        "nether-porter"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-clerk",
+      "name": "陰司書記・墨言",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "詛咒法術",
+      "visual": "成年冷豔黑髮、修身黑金官服、幽綠判官筆",
+      "past": "生死簿文官發現紀錄遭外包竄改",
+      "secret": "簽章與勇者公會相同",
+      "links": [
+        "office-ai-echo",
+        "myth-fox"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-porter",
+      "name": "忘川搬運者・渡",
+      "gender": "男",
+      "rarity": "R",
+      "role": "坦克搬運",
+      "visual": "斗笠幽藍骨甲船夫、木槳巨盾、河霧斗篷",
+      "past": "被禁止運送離職申請",
+      "secret": "船艙藏有前勇者行李",
+      "links": [
+        "office-chef",
+        "alien-void"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-singer",
+      "name": "安魂歌者・夜蘭",
+      "gender": "女",
+      "rarity": "UR",
+      "role": "治療護持",
+      "visual": "成年優雅豐滿、墨藍長髮、黑紫禮服、靈魂豎琴",
+      "past": "為無人悼念的員工唱安魂曲",
+      "secret": "歌聲使復活者短暫想起原名",
+      "links": [
+        "alien-siren",
+        "nether-reaper"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-knight",
+      "name": "墓園巡衛・寒鐵",
+      "gender": "男",
+      "rarity": "SR",
+      "role": "反傷坦克",
+      "visual": "鏽黑全身甲、青焰面甲、斷裂工牌鎖鏈",
+      "past": "墓園守護被當消耗品的前勇者",
+      "secret": "認得被抹去的墓碑名字",
+      "links": [
+        "nether-porter",
+        "steel-saint"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-dream",
+      "name": "夢境醫師・眠音",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "睡眠淨化",
+      "visual": "成年柔和可愛、霧紫波浪髮、睡衣式法袍、月枕杖",
+      "past": "睡眠研究者拒絕夢境商品化",
+      "secret": "能在夢中拼回被刪記憶",
+      "links": [
+        "coffee-medic",
+        "nether-singer"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-oracle",
+      "name": "彼岸預言者・緋",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "預測反制",
+      "visual": "成年神祕冷豔、深紅長髮、白黑長袍、碎裂時鏡",
+      "past": "預言員被迫只報喜訊",
+      "secret": "看見多種革命結局不願指定命運",
+      "links": [
+        "myth-moon",
+        "nether-clerk"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-mason",
+      "name": "冥界築牆師・磐",
+      "gender": "男",
+      "rarity": "R",
+      "role": "護盾構築",
+      "visual": "石灰灰髮、墓石護肩、工地反光背心、幽冥泥鏝",
+      "past": "替亡者修築安全歸處",
+      "secret": "發現公會在冥界築了秘密拘留所",
+      "links": [
+        "nether-knight",
+        "office-lawyer"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-flame",
+      "name": "鬼火巡燈・幽藍",
+      "gender": "女亡靈",
+      "rarity": "SR",
+      "role": "燃燒支援",
+      "visual": "成年藍白短髮、深紫巡燈制服、漂浮藍焰燈籠",
+      "past": "守護亡者通道的夜班燈使",
+      "secret": "能照出隱形的召喚鎖鏈",
+      "links": [
+        "nether-porter",
+        "myth-cloud"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "nether-ferryman",
+      "name": "終站車長・零點",
+      "gender": "男亡靈",
+      "rarity": "SSR",
+      "role": "時間防禦",
+      "visual": "灰色列車長制服、懷錶單片鏡、鐵道長槍",
+      "past": "負責接送錯過最後一班車的亡者",
+      "secret": "列車時刻表藏有世界重置時間",
+      "links": [
+        "clock-automaton",
+        "nether-oracle"
+      ],
+      "faction": "nether",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-slime",
+      "name": "工讀史萊姆・噗嚕",
+      "gender": "無性別",
+      "rarity": "N",
+      "role": "承傷吸收",
+      "visual": "紫色半透明圓潤身體、歪領帶、小背包、清晰表情",
+      "past": "被當免薪勞工後逃離倉庫",
+      "secret": "能吞契約卻消化不了誓言",
+      "links": [
+        "office-intern",
+        "anomaly-mushroom"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-cat",
+      "name": "貓耳特派・鈴",
+      "gender": "女獸人",
+      "rarity": "SSR",
+      "role": "閃避刺客",
+      "visual": "成年俏皮可愛、栗色貓耳、靈巧尾巴、黑白短外套、爪刃",
+      "past": "快遞員靠屋頂避開監控",
+      "secret": "偷看過管理局頂層地圖",
+      "links": [
+        "escape-fighter",
+        "anomaly-wolf"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-mushroom",
+      "name": "菇菇藥師・茸茸",
+      "gender": "無性別",
+      "rarity": "R",
+      "role": "孢子治療",
+      "visual": "圓蘑菇帽、奶油菌柄、藥瓶背包、短靴",
+      "past": "地下菌群庇護過勞工人",
+      "secret": "菌絲可傳遞禁言區訊息",
+      "links": [
+        "anomaly-slime",
+        "moon-rabbit"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-vampire",
+      "name": "夜班血族・薔薇",
+      "gender": "女",
+      "rarity": "SSR",
+      "role": "吸血輸出",
+      "visual": "成年成熟性感、酒紅長捲髮、黑紅高領禮服、蝙蝠披肩",
+      "past": "血族被當成夜班永動員工",
+      "secret": "拒絕以弱者生命維持特權",
+      "links": [
+        "nether-singer",
+        "anomaly-wolf"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-wolf",
+      "name": "狼人稽查・灰牙",
+      "gender": "男獸人",
+      "rarity": "SR",
+      "role": "追擊破甲",
+      "visual": "銀灰狼耳、黑金制服、粗壯前臂、嗅覺護目鏡",
+      "past": "曾追捕逃班者",
+      "secret": "發現目標只想回家而反叛",
+      "links": [
+        "anomaly-cat",
+        "nether-reaper"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-dragon",
+      "name": "小龍郵差・火羽",
+      "gender": "女龍族",
+      "rarity": "R",
+      "role": "火法支援",
+      "visual": "成年嬌小活潑、橘紅短髮、龍角短翼、郵差護甲",
+      "past": "送禁運信件而被開除",
+      "secret": "信件證明魔王與公會交換過人質",
+      "links": [
+        "myth-dragon",
+        "myth-cloud"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-puppet",
+      "name": "契約人偶・艾莉絲",
+      "gender": "女型人偶",
+      "rarity": "SSR",
+      "role": "傀儡控場",
+      "visual": "成年精緻洋娃娃造型、黑金蕾絲、瓷白關節、絲線指環",
+      "past": "被製成自動簽署契約的人偶",
+      "secret": "剪斷絲線學會拒絕",
+      "links": [
+        "android-secretary",
+        "anomaly-mirror"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-mirror",
+      "name": "鏡界裁縫・璃璃",
+      "gender": "女",
+      "rarity": "SR",
+      "role": "幻術增益",
+      "visual": "成年時尚高挑、銀紫雙色髮、鏡面剪裁服、浮動鏡片",
+      "past": "服裝設計師被迫替權貴製造假身份",
+      "secret": "能拆穿加班大聖偽裝",
+      "links": [
+        "anomaly-puppet",
+        "myth-wukong"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-tree",
+      "name": "年輪檔案樹・森老",
+      "gender": "樹人",
+      "rarity": "SR",
+      "role": "再生坦克",
+      "visual": "粗樹根腿、溫柔木質臉、枝條書架、青苔斗篷",
+      "past": "古樹記錄世界重置",
+      "secret": "年輪藏有第一位勇者姓名",
+      "links": [
+        "alien-archivist",
+        "anomaly-mushroom"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "anomaly-angel",
+      "name": "失格天使・白羽",
+      "gender": "女",
+      "rarity": "UR",
+      "role": "治療護盾",
+      "visual": "成年高挑聖潔、金白長髮、白金戰裙、破損六翼、圓環長杖",
+      "past": "質疑召喚代價遭放逐",
+      "secret": "女神可能受到更高層契約限制",
+      "links": [
+        "steel-saint",
+        "myth-cloud"
+      ],
+      "faction": "anomaly",
+      "status": "PROPOSED"
+    }
+  ]
+}
