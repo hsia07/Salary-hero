@@ -1,0 +1,2221 @@
+{
+  "version": "V2",
+  "status": "DRAFT_NOT_CANON",
+  "phases": [
+    "S0 原世界工作死亡",
+    "S1 召喚廳與公會初遇",
+    "S2 建立日常關係與社群",
+    "S3 失名之夜及身分司法危機",
+    "S4 夜車追捕與聚落瓦解",
+    "S5 重建與長期敵對"
+  ],
+  "characters": [
+    {
+      "id": "tieshi",
+      "name": "打卡守衛・鐵時",
+      "unique": {
+        "id": "tieshi",
+        "name": "打卡守衛・鐵時",
+        "central_motif": "三魂一盾",
+        "non_interchangeable_choice": "亡者並非自己的附屬品",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-001",
+        "REL-002"
+      ],
+      "pending_links": [
+        "office-lawyer"
+      ]
+    },
+    {
+      "id": "escape-fighter",
+      "name": "逃班鬥士・五分鐘",
+      "unique": {
+        "id": "escape-fighter",
+        "name": "逃班鬥士・五分鐘",
+        "central_motif": "假逃生門",
+        "non_interchangeable_choice": "揭露自己曾造假",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-003"
+      ],
+      "pending_links": [
+        "tieshi",
+        "myth-sand"
+      ]
+    },
+    {
+      "id": "deadline-assassin",
+      "name": "截止日刺客・赤線",
+      "unique": {
+        "id": "deadline-assassin",
+        "name": "截止日刺客・赤線",
+        "central_motif": "不可能的期限",
+        "non_interchangeable_choice": "承認失控的承諾",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-004"
+      ],
+      "pending_links": [
+        "sheet-mage",
+        "alien-broker"
+      ]
+    },
+    {
+      "id": "sheet-mage",
+      "name": "試算表法師・千式",
+      "unique": {
+        "id": "sheet-mage",
+        "name": "試算表法師・千式",
+        "central_motif": "附錄裡的異常",
+        "non_interchangeable_choice": "公開被自己藏起的數據",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-005"
+      ],
+      "pending_links": [
+        "deadline-assassin"
+      ]
+    },
+    {
+      "id": "coffee-medic",
+      "name": "咖啡醫官・小澄",
+      "unique": {
+        "id": "coffee-medic",
+        "name": "咖啡醫官・小澄",
+        "central_motif": "疲勞交班",
+        "non_interchangeable_choice": "接受自己也需要被照顧",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-002"
+      ],
+      "pending_links": [
+        "moon-rabbit"
+      ]
+    },
+    {
+      "id": "machine-engineer",
+      "name": "機械工程師・阿拓",
+      "unique": {
+        "id": "machine-engineer",
+        "name": "機械工程師・阿拓",
+        "central_motif": "停機權",
+        "non_interchangeable_choice": "讓受影響者能關閉機器",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-006",
+        "REL-034"
+      ],
+      "pending_links": [
+        "android-secretary"
+      ]
+    },
+    {
+      "id": "office-idol",
+      "name": "公關偶像・梨奈",
+      "unique": {
+        "id": "office-idol",
+        "name": "公關偶像・梨奈",
+        "central_motif": "安全舞台",
+        "non_interchangeable_choice": "親口推翻曾做的安全宣傳",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-007"
+      ],
+      "pending_links": [
+        "office-lawyer"
+      ]
+    },
+    {
+      "id": "office-lawyer",
+      "name": "勞權律師・白律",
+      "unique": {
+        "id": "office-lawyer",
+        "name": "勞權律師・白律",
+        "central_motif": "南笙保護令",
+        "non_interchangeable_choice": "公開撤回證人保護的罪責",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-008"
+      ],
+      "pending_links": [
+        "tieshi",
+        "office-idol"
+      ]
+    },
+    {
+      "id": "office-chef",
+      "name": "深夜主廚・茉莉",
+      "unique": {
+        "id": "office-chef",
+        "name": "深夜主廚・茉莉",
+        "central_motif": "欠帳晚餐",
+        "non_interchangeable_choice": "承認私下偏愛",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-009"
+      ],
+      "pending_links": [
+        "coffee-medic",
+        "nether-porter"
+      ]
+    },
+    {
+      "id": "office-intern",
+      "name": "見習書記・豆豆",
+      "unique": {
+        "id": "office-intern",
+        "name": "見習書記・豆豆",
+        "central_motif": "錯名識別牌",
+        "non_interchangeable_choice": "拒絕替人代簽",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-010"
+      ],
+      "pending_links": [
+        "office-lawyer",
+        "alien-archivist"
+      ]
+    },
+    {
+      "id": "machine-07",
+      "name": "保全機兵・七號",
+      "unique": {
+        "id": "machine-07",
+        "name": "保全機兵・七號",
+        "central_motif": "門禁例外",
+        "non_interchangeable_choice": "違規救人並接受調查",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-001",
+        "REL-006"
+      ],
+      "pending_links": []
+    },
+    {
+      "id": "android-secretary",
+      "name": "仿生秘書・伊芙",
+      "unique": {
+        "id": "android-secretary",
+        "name": "仿生秘書・伊芙",
+        "central_motif": "不屬於她的留言",
+        "non_interchangeable_choice": "取得同意才復原資料",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-011",
+        "REL-033"
+      ],
+      "pending_links": [
+        "machine-engineer",
+        "alien-broker"
+      ]
+    },
+    {
+      "id": "mecha-pilot",
+      "name": "機甲駕駛・嵐",
+      "unique": {
+        "id": "mecha-pilot",
+        "name": "機甲駕駛・嵐",
+        "central_motif": "聽得見的引擎",
+        "non_interchangeable_choice": "交出駕駛權",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-012"
+      ],
+      "pending_links": [
+        "machine-07",
+        "alien-captain"
+      ]
+    },
+    {
+      "id": "printer-priest",
+      "name": "列印祭司・墨修",
+      "unique": {
+        "id": "printer-priest",
+        "name": "列印祭司・墨修",
+        "central_motif": "錯印婚帖",
+        "non_interchangeable_choice": "承認錯誤也創造新關係",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-013"
+      ],
+      "pending_links": [
+        "office-lawyer",
+        "machine-swarm"
+      ]
+    },
+    {
+      "id": "digital-auditor",
+      "name": "稽核演算體・零",
+      "unique": {
+        "id": "digital-auditor",
+        "name": "稽核演算體・零",
+        "central_motif": "不完整樣本",
+        "non_interchangeable_choice": "公開無法計算的疑點",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-005",
+        "REL-041"
+      ],
+      "pending_links": [
+        "office-ai-echo"
+      ]
+    },
+    {
+      "id": "machine-swarm",
+      "name": "蜂群技師・蜂后",
+      "unique": {
+        "id": "machine-swarm",
+        "name": "蜂群技師・蜂后",
+        "central_motif": "601號出走",
+        "non_interchangeable_choice": "承認群體成員有自由",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-014",
+        "REL-043"
+      ],
+      "pending_links": [
+        "printer-priest"
+      ]
+    },
+    {
+      "id": "clock-automaton",
+      "name": "鐘錶人偶・滴答",
+      "unique": {
+        "id": "clock-automaton",
+        "name": "鐘錶人偶・滴答",
+        "central_motif": "偷調的時鐘",
+        "non_interchangeable_choice": "接受時間不可能同步",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-004",
+        "REL-024"
+      ],
+      "pending_links": [
+        "tieshi",
+        "digital-auditor"
+      ]
+    },
+    {
+      "id": "steel-saint",
+      "name": "鋼鐵聖女・賽芙",
+      "unique": {
+        "id": "steel-saint",
+        "name": "鋼鐵聖女・賽芙",
+        "central_motif": "有限神蹟",
+        "non_interchangeable_choice": "拒絕無限供能的期待",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-015",
+        "REL-031"
+      ],
+      "pending_links": [
+        "machine-07"
+      ]
+    },
+    {
+      "id": "scrap-bard",
+      "name": "廢鐵樂師・拍子",
+      "unique": {
+        "id": "scrap-bard",
+        "name": "廢鐵樂師・拍子",
+        "central_motif": "嘲笑變成歌",
+        "non_interchangeable_choice": "允許錯拍存在",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-016"
+      ],
+      "pending_links": [
+        "office-idol",
+        "alien-radio"
+      ]
+    },
+    {
+      "id": "office-ai-echo",
+      "name": "母腦殘響・分機",
+      "unique": {
+        "id": "office-ai-echo",
+        "name": "母腦殘響・分機",
+        "central_motif": "接錯的電話",
+        "non_interchangeable_choice": "讓真正收件人決定是否接聽",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-011"
+      ],
+      "pending_links": [
+        "digital-auditor",
+        "nether-clerk"
+      ]
+    },
+    {
+      "id": "alien-captain",
+      "name": "星艦領班・薩洛",
+      "unique": {
+        "id": "alien-captain",
+        "name": "星艦領班・薩洛",
+        "central_motif": "船員生日蛋糕",
+        "non_interchangeable_choice": "丟貨保人而失去艦長資格",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-040"
+      ],
+      "pending_links": [
+        "mecha-pilot",
+        "alien-broker"
+      ]
+    },
+    {
+      "id": "alien-broker",
+      "name": "銀河掮客・薇菈",
+      "unique": {
+        "id": "alien-broker",
+        "name": "銀河掮客・薇菈",
+        "central_motif": "出售的姓名",
+        "non_interchangeable_choice": "贖罪不能換回阿書",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-017",
+        "REL-018",
+        "REL-027"
+      ],
+      "pending_links": [
+        "android-secretary",
+        "deadline-assassin"
+      ]
+    },
+    {
+      "id": "alien-intern-ally",
+      "name": "異星實習生・小綠",
+      "unique": {
+        "id": "alien-intern-ally",
+        "name": "異星實習生・小綠",
+        "central_motif": "不安全實習",
+        "non_interchangeable_choice": "拒絕菁英計畫",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-010"
+      ],
+      "pending_links": [
+        "alien-archivist"
+      ]
+    },
+    {
+      "id": "alien-siren",
+      "name": "星際歌姬・露希亞",
+      "unique": {
+        "id": "alien-siren",
+        "name": "星際歌姬・露希亞",
+        "central_motif": "不能唱的歌",
+        "non_interchangeable_choice": "拒絕操控觀眾",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-007"
+      ],
+      "pending_links": [
+        "alien-radio"
+      ]
+    },
+    {
+      "id": "alien-entomologist",
+      "name": "蟲星研究員・紗翎",
+      "unique": {
+        "id": "alien-entomologist",
+        "name": "蟲星研究員・紗翎",
+        "central_motif": "601號的研究",
+        "non_interchangeable_choice": "放棄未經同意的採樣",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-043"
+      ],
+      "pending_links": [
+        "alien-captain"
+      ]
+    },
+    {
+      "id": "alien-radio",
+      "name": "電波主持・波奇",
+      "unique": {
+        "id": "alien-radio",
+        "name": "電波主持・波奇",
+        "central_motif": "誤播的求救",
+        "non_interchangeable_choice": "公開自己的錯誤報導",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-019"
+      ],
+      "pending_links": [
+        "scrap-bard",
+        "alien-siren"
+      ]
+    },
+    {
+      "id": "alien-void",
+      "name": "虛空清潔員・諾克",
+      "unique": {
+        "id": "alien-void",
+        "name": "虛空清潔員・諾克",
+        "central_motif": "封存污染",
+        "non_interchangeable_choice": "留下危險證據供追責",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-020"
+      ],
+      "pending_links": [
+        "alien-broker",
+        "nether-porter"
+      ]
+    },
+    {
+      "id": "alien-navigator",
+      "name": "星圖領航・妮亞",
+      "unique": {
+        "id": "alien-navigator",
+        "name": "星圖領航・妮亞",
+        "central_motif": "星圖盲區",
+        "non_interchangeable_choice": "選擇非最短航路",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-012",
+        "REL-040"
+      ],
+      "pending_links": [
+        "myth-cloud"
+      ]
+    },
+    {
+      "id": "alien-judge",
+      "name": "星環裁決者・赫斯",
+      "unique": {
+        "id": "alien-judge",
+        "name": "星環裁決者・赫斯",
+        "central_motif": "南笙轉送令",
+        "non_interchangeable_choice": "退出自己失職的審判",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-008"
+      ],
+      "pending_links": [
+        "myth-judge"
+      ]
+    },
+    {
+      "id": "alien-archivist",
+      "name": "群星檔案官・璃音",
+      "unique": {
+        "id": "alien-archivist",
+        "name": "群星檔案官・璃音",
+        "central_motif": "阿書的借書卡",
+        "non_interchangeable_choice": "允許自選名字而非強制真名",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-017",
+        "REL-038"
+      ],
+      "pending_links": [
+        "office-intern",
+        "alien-intern-ally"
+      ]
+    },
+    {
+      "id": "myth-wukong",
+      "name": "齊天行者・悟空",
+      "unique": {
+        "id": "myth-wukong",
+        "name": "齊天行者・悟空",
+        "central_motif": "猴群投票",
+        "non_interchangeable_choice": "接受阿栗拒絕大王",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-021",
+        "REL-022"
+      ],
+      "pending_links": [
+        "myth-judge"
+      ]
+    },
+    {
+      "id": "myth-bajie",
+      "name": "天蓬食堂長・八戒",
+      "unique": {
+        "id": "myth-bajie",
+        "name": "天蓬食堂長・八戒",
+        "central_motif": "挪用的食材",
+        "non_interchangeable_choice": "帳本公開仍有人挨餓",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-009",
+        "REL-022"
+      ],
+      "pending_links": []
+    },
+    {
+      "id": "myth-sand",
+      "name": "流沙搬運官・悟淨",
+      "unique": {
+        "id": "myth-sand",
+        "name": "流沙搬運官・悟淨",
+        "central_motif": "阿檀的木箱",
+        "non_interchangeable_choice": "有限負重不能全救",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-023"
+      ],
+      "pending_links": [
+        "escape-fighter",
+        "myth-wukong"
+      ]
+    },
+    {
+      "id": "myth-moon",
+      "name": "廣寒巡夜・嫦月",
+      "unique": {
+        "id": "myth-moon",
+        "name": "廣寒巡夜・嫦月",
+        "central_motif": "第二張月亮",
+        "non_interchangeable_choice": "承認搭檔也改鐘",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-024"
+      ],
+      "pending_links": [
+        "moon-rabbit",
+        "myth-cloud"
+      ]
+    },
+    {
+      "id": "moon-rabbit",
+      "name": "搗藥仙兔・小玉",
+      "unique": {
+        "id": "moon-rabbit",
+        "name": "搗藥仙兔・小玉",
+        "central_motif": "甜藥劑量",
+        "non_interchangeable_choice": "揭露阿豆偷藥",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-025"
+      ],
+      "pending_links": [
+        "coffee-medic",
+        "myth-moon"
+      ]
+    },
+    {
+      "id": "myth-judge",
+      "name": "天庭監察・清目",
+      "unique": {
+        "id": "myth-judge",
+        "name": "天庭監察・清目",
+        "central_motif": "未核附件",
+        "non_interchangeable_choice": "公開自己的違規核章",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-026"
+      ],
+      "pending_links": [
+        "myth-wukong",
+        "alien-judge"
+      ]
+    },
+    {
+      "id": "myth-dragon",
+      "name": "龍宮財務官・敖璃",
+      "unique": {
+        "id": "myth-dragon",
+        "name": "龍宮財務官・敖璃",
+        "central_motif": "弟弟的債券",
+        "non_interchangeable_choice": "查封家產而失去家人",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-027"
+      ],
+      "pending_links": [
+        "myth-sand",
+        "myth-lotus"
+      ]
+    },
+    {
+      "id": "myth-lotus",
+      "name": "蓮火巡檢・哪吒",
+      "unique": {
+        "id": "myth-lotus",
+        "name": "蓮火巡檢・哪吒",
+        "central_motif": "燒掉的封條",
+        "non_interchangeable_choice": "救人後仍需面對證據損失",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-021"
+      ],
+      "pending_links": [
+        "myth-dragon"
+      ]
+    },
+    {
+      "id": "myth-cloud",
+      "name": "雲端信使・霓霓",
+      "unique": {
+        "id": "myth-cloud",
+        "name": "雲端信使・霓霓",
+        "central_motif": "寄件人也是收件人",
+        "non_interchangeable_choice": "尊重信件秘密",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-013",
+        "REL-028"
+      ],
+      "pending_links": [
+        "alien-navigator",
+        "myth-moon"
+      ]
+    },
+    {
+      "id": "myth-fox",
+      "name": "九尾審稿官・蘇妲",
+      "unique": {
+        "id": "myth-fox",
+        "name": "九尾審稿官・蘇妲",
+        "central_motif": "五個字的拘留令",
+        "non_interchangeable_choice": "公開修訂責任",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-026",
+        "REL-030"
+      ],
+      "pending_links": []
+    },
+    {
+      "id": "nether-reaper",
+      "name": "冥府收工人・暮影",
+      "unique": {
+        "id": "nether-reaper",
+        "name": "冥府收工人・暮影",
+        "central_motif": "第四個錯收魂",
+        "non_interchangeable_choice": "拒絕配額而被指偏私",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-029"
+      ],
+      "pending_links": [
+        "nether-porter"
+      ]
+    },
+    {
+      "id": "nether-clerk",
+      "name": "陰司書記・墨言",
+      "unique": {
+        "id": "nether-clerk",
+        "name": "陰司書記・墨言",
+        "central_motif": "妹妹畫的魚",
+        "non_interchangeable_choice": "原卷真相傷害家人",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-029",
+        "REL-030",
+        "REL-039"
+      ],
+      "pending_links": [
+        "office-ai-echo"
+      ]
+    },
+    {
+      "id": "nether-porter",
+      "name": "忘川搬運者・渡",
+      "unique": {
+        "id": "nether-porter",
+        "name": "忘川搬運者・渡",
+        "central_motif": "河上的辭職信",
+        "non_interchangeable_choice": "失去運輸資格",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-023"
+      ],
+      "pending_links": [
+        "office-chef",
+        "alien-void"
+      ]
+    },
+    {
+      "id": "nether-singer",
+      "name": "安魂歌者・夜蘭",
+      "unique": {
+        "id": "nether-singer",
+        "name": "安魂歌者・夜蘭",
+        "central_motif": "拒唱的安魂曲",
+        "non_interchangeable_choice": "加害者也有家人",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-016",
+        "REL-031"
+      ],
+      "pending_links": [
+        "alien-siren",
+        "nether-reaper"
+      ]
+    },
+    {
+      "id": "nether-knight",
+      "name": "墓園巡衛・寒鐵",
+      "unique": {
+        "id": "nether-knight",
+        "name": "墓園巡衛・寒鐵",
+        "central_motif": "被拆的墓碑",
+        "non_interchangeable_choice": "優先救人而失去紀念",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-032"
+      ],
+      "pending_links": [
+        "nether-porter",
+        "steel-saint"
+      ]
+    },
+    {
+      "id": "nether-dream",
+      "name": "夢境醫師・眠音",
+      "unique": {
+        "id": "nether-dream",
+        "name": "夢境醫師・眠音",
+        "central_motif": "完美週末夢",
+        "non_interchangeable_choice": "讓病人醒來面對真相",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-033"
+      ],
+      "pending_links": [
+        "coffee-medic",
+        "nether-singer"
+      ]
+    },
+    {
+      "id": "nether-oracle",
+      "name": "彼岸預言者・緋",
+      "unique": {
+        "id": "nether-oracle",
+        "name": "彼岸預言者・緋",
+        "central_motif": "只准晴天",
+        "non_interchangeable_choice": "公布預言造成恐慌",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-041"
+      ],
+      "pending_links": [
+        "myth-moon",
+        "nether-clerk"
+      ]
+    },
+    {
+      "id": "nether-mason",
+      "name": "冥界築牆師・磐",
+      "unique": {
+        "id": "nether-mason",
+        "name": "冥界築牆師・磐",
+        "central_motif": "牆內逃生門",
+        "non_interchangeable_choice": "拆掉自己的完工牆",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-003",
+        "REL-034"
+      ],
+      "pending_links": [
+        "nether-knight",
+        "office-lawyer"
+      ]
+    },
+    {
+      "id": "nether-flame",
+      "name": "鬼火巡燈・幽藍",
+      "unique": {
+        "id": "nether-flame",
+        "name": "鬼火巡燈・幽藍",
+        "central_motif": "借來的火",
+        "non_interchangeable_choice": "學會求助而非獨燃",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-020"
+      ],
+      "pending_links": [
+        "nether-porter",
+        "myth-cloud"
+      ]
+    },
+    {
+      "id": "nether-ferryman",
+      "name": "終站車長・零點",
+      "unique": {
+        "id": "nether-ferryman",
+        "name": "終站車長・零點",
+        "central_motif": "誤點末班車",
+        "non_interchangeable_choice": "為乘客犧牲準點",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-035",
+        "REL-036",
+        "REL-042"
+      ],
+      "pending_links": [
+        "clock-automaton",
+        "nether-oracle"
+      ]
+    },
+    {
+      "id": "anomaly-slime",
+      "name": "工讀史萊姆・噗嚕",
+      "unique": {
+        "id": "anomaly-slime",
+        "name": "工讀史萊姆・噗嚕",
+        "central_motif": "沒有薪水的徽章",
+        "non_interchangeable_choice": "拒絕免費勞動",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-014"
+      ],
+      "pending_links": [
+        "office-intern",
+        "anomaly-mushroom"
+      ]
+    },
+    {
+      "id": "anomaly-cat",
+      "name": "貓耳特派・鈴",
+      "unique": {
+        "id": "anomaly-cat",
+        "name": "貓耳特派・鈴",
+        "central_motif": "屋頂回頭",
+        "non_interchangeable_choice": "救人造成藥品遲到",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-019",
+        "REL-036"
+      ],
+      "pending_links": [
+        "escape-fighter",
+        "anomaly-wolf"
+      ]
+    },
+    {
+      "id": "anomaly-mushroom",
+      "name": "菇菇藥師・茸茸",
+      "unique": {
+        "id": "anomaly-mushroom",
+        "name": "菇菇藥師・茸茸",
+        "central_motif": "被賣掉的母株",
+        "non_interchangeable_choice": "向族群承認研究私心",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-025"
+      ],
+      "pending_links": [
+        "anomaly-slime"
+      ]
+    },
+    {
+      "id": "anomaly-vampire",
+      "name": "夜班血族・薔薇",
+      "unique": {
+        "id": "anomaly-vampire",
+        "name": "夜班血族・薔薇",
+        "central_motif": "日光界線",
+        "non_interchangeable_choice": "恨灰牙但不傷害無辜",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-037",
+        "REL-042"
+      ],
+      "pending_links": [
+        "nether-singer"
+      ]
+    },
+    {
+      "id": "anomaly-wolf",
+      "name": "狼人稽查・灰牙",
+      "unique": {
+        "id": "anomaly-wolf",
+        "name": "狼人稽查・灰牙",
+        "central_motif": "再次吹響的哨",
+        "non_interchangeable_choice": "承認召喚後追捕共犯",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-035",
+        "REL-037"
+      ],
+      "pending_links": [
+        "anomaly-cat",
+        "nether-reaper"
+      ]
+    },
+    {
+      "id": "anomaly-dragon",
+      "name": "小龍郵差・火羽",
+      "unique": {
+        "id": "anomaly-dragon",
+        "name": "小龍郵差・火羽",
+        "central_motif": "未拆的求救信",
+        "non_interchangeable_choice": "隱私與救援不能兩全",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-028"
+      ],
+      "pending_links": [
+        "myth-dragon"
+      ]
+    },
+    {
+      "id": "anomaly-puppet",
+      "name": "契約人偶・艾莉絲",
+      "unique": {
+        "id": "anomaly-puppet",
+        "name": "契約人偶・艾莉絲",
+        "central_motif": "第一個自己的簽名",
+        "non_interchangeable_choice": "拒絕代簽奴役契約",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-018"
+      ],
+      "pending_links": [
+        "android-secretary",
+        "anomaly-mirror"
+      ]
+    },
+    {
+      "id": "anomaly-mirror",
+      "name": "鏡界裁縫・璃璃",
+      "unique": {
+        "id": "anomaly-mirror",
+        "name": "鏡界裁縫・璃璃",
+        "central_motif": "鏡衣假身分",
+        "non_interchangeable_choice": "拆穿顧客後傷及家庭",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-038"
+      ],
+      "pending_links": [
+        "anomaly-puppet",
+        "myth-wukong"
+      ]
+    },
+    {
+      "id": "anomaly-tree",
+      "name": "年輪檔案樹・森老",
+      "unique": {
+        "id": "anomaly-tree",
+        "name": "年輪檔案樹・森老",
+        "central_motif": "舊年輪地圖",
+        "non_interchangeable_choice": "承認自己的歷史不完整",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-032",
+        "REL-039"
+      ],
+      "pending_links": [
+        "alien-archivist",
+        "anomaly-mushroom"
+      ]
+    },
+    {
+      "id": "anomaly-angel",
+      "name": "失格天使・白羽",
+      "unique": {
+        "id": "anomaly-angel",
+        "name": "失格天使・白羽",
+        "central_motif": "未經同意的祝福",
+        "non_interchangeable_choice": "救人不能替人決定",
+        "production_note": "保留既有工作死亡事實；禁止套用另一角色的選擇／結尾",
+        "status": "REWRITE_DIRECTIVE_NOT_FINAL_SCRIPT"
+      },
+      "relationship_ids": [
+        "REL-015"
+      ],
+      "pending_links": [
+        "myth-cloud"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "REL-001",
+      "a": "tieshi",
+      "b": "machine-07",
+      "a_name": "打卡守衛・鐵時",
+      "b_name": "保全機兵・七號",
+      "first_meeting": "第一章公會入口",
+      "trajectory": "門禁衝突→共同救援",
+      "turning_point": "互相尊重但不認同對方程序",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S1"
+    },
+    {
+      "id": "REL-002",
+      "a": "tieshi",
+      "b": "coffee-medic",
+      "a_name": "打卡守衛・鐵時",
+      "b_name": "咖啡醫官・小澄",
+      "first_meeting": "第一章後醫療站",
+      "trajectory": "抗拒治療→接受照顧",
+      "turning_point": "小澄要求鐵時也接受治療",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S1"
+    },
+    {
+      "id": "REL-003",
+      "a": "escape-fighter",
+      "b": "nether-mason",
+      "a_name": "逃班鬥士・五分鐘",
+      "b_name": "冥界築牆師・磐",
+      "first_meeting": "避難區改建",
+      "trajectory": "揭穿造假→共同建門",
+      "turning_point": "彼此知道對方曾封死逃生門",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-004",
+      "a": "deadline-assassin",
+      "b": "clock-automaton",
+      "a_name": "截止日刺客・赤線",
+      "b_name": "鐘錶人偶・滴答",
+      "first_meeting": "每日任務失序",
+      "trajectory": "競爭→協商期限",
+      "turning_point": "一人要求準點，一人曾偷調鐘",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-005",
+      "a": "sheet-mage",
+      "b": "digital-auditor",
+      "a_name": "試算表法師・千式",
+      "b_name": "稽核演算體・零",
+      "first_meeting": "資料庫疑案",
+      "trajectory": "爭論樣本→共同審計",
+      "turning_point": "承認資料不足",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-006",
+      "a": "machine-engineer",
+      "b": "machine-07",
+      "a_name": "機械工程師・阿拓",
+      "b_name": "保全機兵・七號",
+      "first_meeting": "公會機房",
+      "trajectory": "爭吵→共同訂停機權",
+      "turning_point": "停機權與安全協議衝突",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-007",
+      "a": "office-idol",
+      "b": "alien-siren",
+      "a_name": "公關偶像・梨奈",
+      "b_name": "星際歌姬・露希亞",
+      "first_meeting": "募款舞台",
+      "trajectory": "競演→取消危險演出",
+      "turning_point": "拒絕操控觀眾",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-008",
+      "a": "office-lawyer",
+      "b": "alien-judge",
+      "a_name": "勞權律師・白律",
+      "b_name": "星環裁決者・赫斯",
+      "first_meeting": "合法處決",
+      "trajectory": "合作→共同過失→互相追責",
+      "turning_point": "南笙的死亡不可撤銷",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S3"
+    },
+    {
+      "id": "REL-009",
+      "a": "office-chef",
+      "b": "myth-bajie",
+      "a_name": "深夜主廚・茉莉",
+      "b_name": "天蓬食堂長・八戒",
+      "first_meeting": "公會食堂",
+      "trajectory": "配給競爭→共同開伙",
+      "turning_point": "食材偏愛與欠帳",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-010",
+      "a": "office-intern",
+      "b": "alien-intern-ally",
+      "a_name": "見習書記・豆豆",
+      "b_name": "異星實習生・小綠",
+      "first_meeting": "公會新手任務",
+      "trajectory": "誤登記→坦白→朋友",
+      "turning_point": "交換錯名識別牌",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-011",
+      "a": "android-secretary",
+      "b": "office-ai-echo",
+      "a_name": "仿生秘書・伊芙",
+      "b_name": "母腦殘響・分機",
+      "first_meeting": "訊息復原事件",
+      "trajectory": "合作→隱私裂縫",
+      "turning_point": "拒絕復原未獲同意的電話",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-012",
+      "a": "mecha-pilot",
+      "b": "alien-navigator",
+      "a_name": "機甲駕駛・嵐",
+      "b_name": "星圖領航・妮亞",
+      "first_meeting": "星港救援",
+      "trajectory": "互疑→雙人駕駛",
+      "turning_point": "聽引擎與看星圖互補",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-013",
+      "a": "printer-priest",
+      "b": "myth-cloud",
+      "a_name": "列印祭司・墨修",
+      "b_name": "雲端信使・霓霓",
+      "first_meeting": "失名郵路",
+      "trajectory": "錯印→追信",
+      "turning_point": "墨修錯印收件標籤",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S3"
+    },
+    {
+      "id": "REL-014",
+      "a": "machine-swarm",
+      "b": "anomaly-slime",
+      "a_name": "蜂群技師・蜂后",
+      "b_name": "工讀史萊姆・噗嚕",
+      "first_meeting": "工坊失蹤",
+      "trajectory": "誤認601→重新建立關係",
+      "turning_point": "噗嚕拒絕替代601",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-015",
+      "a": "steel-saint",
+      "b": "anomaly-angel",
+      "a_name": "鋼鐵聖女・賽芙",
+      "b_name": "失格天使・白羽",
+      "first_meeting": "祝福危機",
+      "trajectory": "救援→祝福同意爭論",
+      "turning_point": "有限供能與自願接受",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-016",
+      "a": "scrap-bard",
+      "b": "nether-singer",
+      "a_name": "廢鐵樂師・拍子",
+      "b_name": "安魂歌者・夜蘭",
+      "first_meeting": "亡魂音樂節",
+      "trajectory": "合作→未授權採樣決裂",
+      "turning_point": "不能把哀悼剪成娛樂",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-017",
+      "a": "alien-broker",
+      "b": "alien-archivist",
+      "a_name": "銀河掮客・薇菈",
+      "b_name": "群星檔案官・璃音",
+      "first_meeting": "被賣掉的名字",
+      "trajectory": "交易→失名之夜→永久敵對",
+      "turning_point": "阿書死亡、索引外洩",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-018",
+      "a": "alien-broker",
+      "b": "anomaly-puppet",
+      "a_name": "銀河掮客・薇菈",
+      "b_name": "契約人偶・艾莉絲",
+      "first_meeting": "失名之夜後",
+      "trajectory": "交易→拒簽補償",
+      "turning_point": "艾莉絲拒絕被補償契約收買",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S3"
+    },
+    {
+      "id": "REL-019",
+      "a": "alien-radio",
+      "b": "anomaly-cat",
+      "a_name": "電波主持・波奇",
+      "b_name": "貓耳特派・鈴",
+      "first_meeting": "夜車封鎖",
+      "trajectory": "合作→曝光路線→失信",
+      "turning_point": "廣播使鈴遭追捕",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S4"
+    },
+    {
+      "id": "REL-020",
+      "a": "alien-void",
+      "b": "nether-flame",
+      "a_name": "虛空清潔員・諾克",
+      "b_name": "鬼火巡燈・幽藍",
+      "first_meeting": "虛空裂隙",
+      "trajectory": "光源相剋→合作封印",
+      "turning_point": "燈光暴露污染",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-021",
+      "a": "myth-wukong",
+      "b": "myth-lotus",
+      "a_name": "齊天行者・悟空",
+      "b_name": "蓮火巡檢・哪吒",
+      "first_meeting": "神話擂台",
+      "trajectory": "英雄競爭→共戰",
+      "turning_point": "一人主張投票，一人主張先救",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-022",
+      "a": "myth-wukong",
+      "b": "myth-bajie",
+      "a_name": "齊天行者・悟空",
+      "b_name": "天蓬食堂長・八戒",
+      "first_meeting": "公會食堂",
+      "trajectory": "誤認同鄉→結伴",
+      "turning_point": "不得假設生前同一西遊世界",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-023",
+      "a": "myth-sand",
+      "b": "nether-porter",
+      "a_name": "流沙搬運官・悟淨",
+      "b_name": "忘川搬運者・渡",
+      "first_meeting": "河岸撤離",
+      "trajectory": "搬運合作→載重衝突",
+      "turning_point": "木箱與乘客無法兼顧",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-024",
+      "a": "myth-moon",
+      "b": "clock-automaton",
+      "a_name": "廣寒巡夜・嫦月",
+      "b_name": "鐘錶人偶・滴答",
+      "first_meeting": "雙月失序",
+      "trajectory": "懷疑調鐘→共同觀測",
+      "turning_point": "時間異常尚未解釋",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-025",
+      "a": "moon-rabbit",
+      "b": "anomaly-mushroom",
+      "a_name": "搗藥仙兔・小玉",
+      "b_name": "菇菇藥師・茸茸",
+      "first_meeting": "藥園支線",
+      "trajectory": "藥師競爭→共同警示",
+      "turning_point": "甜藥劑量與菌絲毒性",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-026",
+      "a": "myth-judge",
+      "b": "myth-fox",
+      "a_name": "天庭監察・清目",
+      "b_name": "九尾審稿官・蘇妲",
+      "first_meeting": "三萬份判詞",
+      "trajectory": "共事→災難→互揭罪證",
+      "turning_point": "霜婆死亡，雙方都負責",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S3"
+    },
+    {
+      "id": "REL-027",
+      "a": "myth-dragon",
+      "b": "alien-broker",
+      "a_name": "龍宮財務官・敖璃",
+      "b_name": "銀河掮客・薇菈",
+      "first_meeting": "商盟債券案",
+      "trajectory": "債券談判→對抗",
+      "turning_point": "敖璃查封家族債",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-028",
+      "a": "myth-cloud",
+      "b": "anomaly-dragon",
+      "a_name": "雲端信使・霓霓",
+      "b_name": "小龍郵差・火羽",
+      "first_meeting": "禁運信件",
+      "trajectory": "競速→共同郵路",
+      "turning_point": "不拆信是否合理",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-029",
+      "a": "nether-reaper",
+      "b": "nether-clerk",
+      "a_name": "冥府收工人・暮影",
+      "b_name": "陰司書記・墨言",
+      "first_meeting": "冥府舊卷追索",
+      "trajectory": "互疑→驗卷同盟",
+      "turning_point": "錯收魂單與原始卷",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-030",
+      "a": "nether-clerk",
+      "b": "myth-fox",
+      "a_name": "陰司書記・墨言",
+      "b_name": "九尾審稿官・蘇妲",
+      "first_meeting": "公告修訂案",
+      "trajectory": "文字合作→選擇性曝光衝突",
+      "turning_point": "保留修訂紀錄",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-031",
+      "a": "nether-singer",
+      "b": "steel-saint",
+      "a_name": "安魂歌者・夜蘭",
+      "b_name": "鋼鐵聖女・賽芙",
+      "first_meeting": "安魂祭",
+      "trajectory": "互敬→倫理分歧",
+      "turning_point": "加害者是否有權被治療",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-032",
+      "a": "nether-knight",
+      "b": "anomaly-tree",
+      "a_name": "墓園巡衛・寒鐵",
+      "b_name": "年輪檔案樹・森老",
+      "first_meeting": "無名墓園",
+      "trajectory": "共同紀念→版本矛盾",
+      "turning_point": "墓碑與年輪記憶不一致",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-033",
+      "a": "nether-dream",
+      "b": "android-secretary",
+      "a_name": "夢境醫師・眠音",
+      "b_name": "仿生秘書・伊芙",
+      "first_meeting": "夢境備份案",
+      "trajectory": "醫療合作→隱私界線",
+      "turning_point": "病人同意權",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-034",
+      "a": "nether-mason",
+      "b": "machine-engineer",
+      "a_name": "冥界築牆師・磐",
+      "b_name": "機械工程師・阿拓",
+      "first_meeting": "收容所改建",
+      "trajectory": "爭執→共同安全標準",
+      "turning_point": "逃生門與停機權",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-035",
+      "a": "nether-ferryman",
+      "b": "anomaly-wolf",
+      "a_name": "終站車長・零點",
+      "b_name": "狼人稽查・灰牙",
+      "first_meeting": "最後一班夜車",
+      "trajectory": "夜車封鎖→公開追捕記錄",
+      "turning_point": "零點拒絕灰牙封車",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S4"
+    },
+    {
+      "id": "REL-036",
+      "a": "nether-ferryman",
+      "b": "anomaly-cat",
+      "a_name": "終站車長・零點",
+      "b_name": "貓耳特派・鈴",
+      "first_meeting": "最後一班夜車",
+      "trajectory": "等車誤點→互救",
+      "turning_point": "鈴送來逃亡名冊",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S4"
+    },
+    {
+      "id": "REL-037",
+      "a": "anomaly-vampire",
+      "b": "anomaly-wolf",
+      "a_name": "夜班血族・薔薇",
+      "b_name": "狼人稽查・灰牙",
+      "first_meeting": "最後一班夜車",
+      "trajectory": "追捕→阿澪死亡→血仇",
+      "turning_point": "薔薇與灰牙都有責任",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S4"
+    },
+    {
+      "id": "REL-038",
+      "a": "anomaly-mirror",
+      "b": "alien-archivist",
+      "a_name": "鏡界裁縫・璃璃",
+      "b_name": "群星檔案官・璃音",
+      "first_meeting": "失名庇護所",
+      "trajectory": "身分衝突→保護自選名字",
+      "turning_point": "真名與外貌哪個代表人",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S3"
+    },
+    {
+      "id": "REL-039",
+      "a": "anomaly-tree",
+      "b": "nether-clerk",
+      "a_name": "年輪檔案樹・森老",
+      "b_name": "陰司書記・墨言",
+      "first_meeting": "世界重置調查",
+      "trajectory": "比對記錄→版本矛盾",
+      "turning_point": "兩種史料不能強行合併",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-040",
+      "a": "alien-captain",
+      "b": "alien-navigator",
+      "a_name": "星艦領班・薩洛",
+      "b_name": "星圖領航・妮亞",
+      "first_meeting": "星港護航",
+      "trajectory": "雇傭→抗命→重新分工",
+      "turning_point": "是否繞路救人",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-041",
+      "a": "digital-auditor",
+      "b": "nether-oracle",
+      "a_name": "稽核演算體・零",
+      "b_name": "彼岸預言者・緋",
+      "first_meeting": "預言台",
+      "trajectory": "方法論衝突→互相監督",
+      "turning_point": "機率公告造成行為變化",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    },
+    {
+      "id": "REL-042",
+      "a": "nether-ferryman",
+      "b": "anomaly-vampire",
+      "a_name": "終站車長・零點",
+      "b_name": "夜班血族・薔薇",
+      "first_meeting": "最後一班夜車",
+      "trajectory": "載人合作→分歧",
+      "turning_point": "不願犧牲整車乘客",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S4"
+    },
+    {
+      "id": "REL-043",
+      "a": "alien-entomologist",
+      "b": "machine-swarm",
+      "a_name": "蟲星研究員・紗翎",
+      "b_name": "蜂群技師・蜂后",
+      "first_meeting": "蜂群601號失蹤調查",
+      "trajectory": "研究合作→未授權採樣衝突→共同尋找601",
+      "turning_point": "紗翎放棄珍貴標本以尊重601自主權",
+      "origin": "POST_SUMMON",
+      "status": "EVENT_DRAFT_NOT_SCRIPTED",
+      "bidirectional": true,
+      "phase": "S2"
+    }
+  ],
+  "pending": [
+    {
+      "from": "tieshi",
+      "to": "office-lawyer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "escape-fighter",
+      "to": "tieshi",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "escape-fighter",
+      "to": "myth-sand",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "deadline-assassin",
+      "to": "sheet-mage",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "deadline-assassin",
+      "to": "alien-broker",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "sheet-mage",
+      "to": "deadline-assassin",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "coffee-medic",
+      "to": "moon-rabbit",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "machine-engineer",
+      "to": "android-secretary",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-idol",
+      "to": "office-lawyer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-lawyer",
+      "to": "tieshi",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-lawyer",
+      "to": "office-idol",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-chef",
+      "to": "coffee-medic",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-chef",
+      "to": "nether-porter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-intern",
+      "to": "office-lawyer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-intern",
+      "to": "alien-archivist",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "android-secretary",
+      "to": "machine-engineer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "android-secretary",
+      "to": "alien-broker",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "mecha-pilot",
+      "to": "machine-07",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "mecha-pilot",
+      "to": "alien-captain",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "printer-priest",
+      "to": "office-lawyer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "printer-priest",
+      "to": "machine-swarm",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "digital-auditor",
+      "to": "office-ai-echo",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "machine-swarm",
+      "to": "printer-priest",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "clock-automaton",
+      "to": "tieshi",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "clock-automaton",
+      "to": "digital-auditor",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "steel-saint",
+      "to": "machine-07",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "scrap-bard",
+      "to": "office-idol",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "scrap-bard",
+      "to": "alien-radio",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-ai-echo",
+      "to": "digital-auditor",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "office-ai-echo",
+      "to": "nether-clerk",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-captain",
+      "to": "mecha-pilot",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-captain",
+      "to": "alien-broker",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-broker",
+      "to": "android-secretary",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-broker",
+      "to": "deadline-assassin",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-intern-ally",
+      "to": "alien-archivist",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-siren",
+      "to": "alien-radio",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-entomologist",
+      "to": "alien-captain",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-radio",
+      "to": "scrap-bard",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-radio",
+      "to": "alien-siren",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-void",
+      "to": "alien-broker",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-void",
+      "to": "nether-porter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-navigator",
+      "to": "myth-cloud",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-judge",
+      "to": "myth-judge",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-archivist",
+      "to": "office-intern",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "alien-archivist",
+      "to": "alien-intern-ally",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-wukong",
+      "to": "myth-judge",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-sand",
+      "to": "escape-fighter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-sand",
+      "to": "myth-wukong",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-moon",
+      "to": "moon-rabbit",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-moon",
+      "to": "myth-cloud",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "moon-rabbit",
+      "to": "coffee-medic",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "moon-rabbit",
+      "to": "myth-moon",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-judge",
+      "to": "myth-wukong",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-judge",
+      "to": "alien-judge",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-dragon",
+      "to": "myth-sand",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-dragon",
+      "to": "myth-lotus",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-lotus",
+      "to": "myth-dragon",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-cloud",
+      "to": "alien-navigator",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "myth-cloud",
+      "to": "myth-moon",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-reaper",
+      "to": "nether-porter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-clerk",
+      "to": "office-ai-echo",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-porter",
+      "to": "office-chef",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-porter",
+      "to": "alien-void",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-singer",
+      "to": "alien-siren",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-singer",
+      "to": "nether-reaper",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-knight",
+      "to": "nether-porter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-knight",
+      "to": "steel-saint",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-dream",
+      "to": "coffee-medic",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-dream",
+      "to": "nether-singer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-oracle",
+      "to": "myth-moon",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-oracle",
+      "to": "nether-clerk",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-mason",
+      "to": "nether-knight",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-mason",
+      "to": "office-lawyer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-flame",
+      "to": "nether-porter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-flame",
+      "to": "myth-cloud",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-ferryman",
+      "to": "clock-automaton",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "nether-ferryman",
+      "to": "nether-oracle",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-slime",
+      "to": "office-intern",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-slime",
+      "to": "anomaly-mushroom",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-cat",
+      "to": "escape-fighter",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-cat",
+      "to": "anomaly-wolf",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-mushroom",
+      "to": "anomaly-slime",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-vampire",
+      "to": "nether-singer",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-wolf",
+      "to": "anomaly-cat",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-wolf",
+      "to": "nether-reaper",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-dragon",
+      "to": "myth-dragon",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-puppet",
+      "to": "android-secretary",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-puppet",
+      "to": "anomaly-mirror",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-mirror",
+      "to": "anomaly-puppet",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-mirror",
+      "to": "myth-wukong",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-tree",
+      "to": "alien-archivist",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-tree",
+      "to": "anomaly-mushroom",
+      "reason": "缺雙方互動事件，保留候選"
+    },
+    {
+      "from": "anomaly-angel",
+      "to": "myth-cloud",
+      "reason": "缺雙方互動事件，保留候選"
+    }
+  ]
+}
