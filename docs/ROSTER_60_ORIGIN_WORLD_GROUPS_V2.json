@@ -1,0 +1,415 @@
+{
+  "version": "V2",
+  "status": "WORLD_BASED_GROUPING",
+  "supersedes": "ROSTER_60_RELATIONSHIP_REWRITE_GROUPS_V1",
+  "group_count": 12,
+  "character_count": 60,
+  "group_size": 5,
+  "rules": [
+    "Each character belongs to one group only",
+    "Group by origin world type, not post-summon bonds",
+    "Same origin world type does not prove pre-death acquaintance",
+    "Post-summon relationships can cross groups without changing group membership",
+    "Pre-death relationship candidates require same specific subworld and timeline"
+  ],
+  "groups": [
+    {
+      "id": "W01",
+      "title": "近現代職場世界 A｜辦公與日常",
+      "origin_world": "近現代職場平行世界",
+      "members": [
+        {
+          "id": "tieshi",
+          "name": "打卡守衛・鐵時"
+        },
+        {
+          "id": "escape-fighter",
+          "name": "逃班鬥士・五分鐘"
+        },
+        {
+          "id": "deadline-assassin",
+          "name": "截止日刺客・赤線"
+        },
+        {
+          "id": "sheet-mage",
+          "name": "試算表法師・千式"
+        },
+        {
+          "id": "coffee-medic",
+          "name": "咖啡醫官・小澄"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W02",
+      "title": "近現代職場世界 B｜專業與服務",
+      "origin_world": "近現代職場平行世界",
+      "members": [
+        {
+          "id": "machine-engineer",
+          "name": "機械工程師・阿拓"
+        },
+        {
+          "id": "office-idol",
+          "name": "公關偶像・梨奈"
+        },
+        {
+          "id": "office-lawyer",
+          "name": "勞權律師・白律"
+        },
+        {
+          "id": "office-chef",
+          "name": "深夜主廚・茉莉"
+        },
+        {
+          "id": "office-intern",
+          "name": "見習書記・豆豆"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W03",
+      "title": "自主機械世界 A｜保全與系統",
+      "origin_world": "自主機械文明平行世界",
+      "members": [
+        {
+          "id": "machine-07",
+          "name": "保全機兵・七號"
+        },
+        {
+          "id": "android-secretary",
+          "name": "仿生秘書・伊芙"
+        },
+        {
+          "id": "mecha-pilot",
+          "name": "機甲駕駛・嵐"
+        },
+        {
+          "id": "printer-priest",
+          "name": "列印祭司・墨修"
+        },
+        {
+          "id": "digital-auditor",
+          "name": "稽核演算體・零"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W04",
+      "title": "自主機械世界 B｜工坊與意識",
+      "origin_world": "自主機械文明平行世界",
+      "members": [
+        {
+          "id": "machine-swarm",
+          "name": "蜂群技師・蜂后"
+        },
+        {
+          "id": "clock-automaton",
+          "name": "鐘錶人偶・滴答"
+        },
+        {
+          "id": "steel-saint",
+          "name": "鋼鐵聖女・賽芙"
+        },
+        {
+          "id": "scrap-bard",
+          "name": "廢鐵樂師・拍子"
+        },
+        {
+          "id": "office-ai-echo",
+          "name": "母腦殘響・分機"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W05",
+      "title": "星際企業世界 A｜航運與交易",
+      "origin_world": "星際企業文明平行世界",
+      "members": [
+        {
+          "id": "alien-captain",
+          "name": "星艦領班・薩洛"
+        },
+        {
+          "id": "alien-navigator",
+          "name": "星圖領航・妮亞"
+        },
+        {
+          "id": "alien-broker",
+          "name": "銀河掮客・薇菈"
+        },
+        {
+          "id": "alien-archivist",
+          "name": "群星檔案官・璃音"
+        },
+        {
+          "id": "alien-intern-ally",
+          "name": "異星實習生・小綠"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W06",
+      "title": "星際企業世界 B｜文化與星環",
+      "origin_world": "星際企業文明平行世界",
+      "members": [
+        {
+          "id": "alien-siren",
+          "name": "星際歌姬・露希亞"
+        },
+        {
+          "id": "alien-entomologist",
+          "name": "蟲星研究員・紗翎"
+        },
+        {
+          "id": "alien-radio",
+          "name": "電波主持・波奇"
+        },
+        {
+          "id": "alien-void",
+          "name": "虛空清潔員・諾克"
+        },
+        {
+          "id": "alien-judge",
+          "name": "星環裁決者・赫斯"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W07",
+      "title": "神話職務世界 A｜花果山與天河",
+      "origin_world": "神話職務平行世界",
+      "members": [
+        {
+          "id": "myth-wukong",
+          "name": "齊天行者・悟空"
+        },
+        {
+          "id": "myth-bajie",
+          "name": "天蓬食堂長・八戒"
+        },
+        {
+          "id": "myth-sand",
+          "name": "流沙搬運官・悟淨"
+        },
+        {
+          "id": "myth-lotus",
+          "name": "蓮火巡檢・哪吒"
+        },
+        {
+          "id": "myth-dragon",
+          "name": "龍宮財務官・敖璃"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W08",
+      "title": "神話職務世界 B｜天庭與廣寒",
+      "origin_world": "神話職務平行世界",
+      "members": [
+        {
+          "id": "myth-moon",
+          "name": "廣寒巡夜・嫦月"
+        },
+        {
+          "id": "moon-rabbit",
+          "name": "搗藥仙兔・小玉"
+        },
+        {
+          "id": "myth-judge",
+          "name": "天庭監察・清目"
+        },
+        {
+          "id": "myth-cloud",
+          "name": "雲端信使・霓霓"
+        },
+        {
+          "id": "myth-fox",
+          "name": "九尾審稿官・蘇妲"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W09",
+      "title": "冥府行政世界 A｜渡口與記錄",
+      "origin_world": "冥府行政平行世界",
+      "members": [
+        {
+          "id": "nether-reaper",
+          "name": "冥府收工人・暮影"
+        },
+        {
+          "id": "nether-clerk",
+          "name": "陰司書記・墨言"
+        },
+        {
+          "id": "nether-porter",
+          "name": "忘川搬運者・渡"
+        },
+        {
+          "id": "nether-singer",
+          "name": "安魂歌者・夜蘭"
+        },
+        {
+          "id": "nether-ferryman",
+          "name": "終站車長・零點"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W10",
+      "title": "冥府行政世界 B｜守夜與預言",
+      "origin_world": "冥府行政平行世界",
+      "members": [
+        {
+          "id": "nether-knight",
+          "name": "墓園巡衛・寒鐵"
+        },
+        {
+          "id": "nether-dream",
+          "name": "夢境醫師・眠音"
+        },
+        {
+          "id": "nether-oracle",
+          "name": "彼岸預言者・緋"
+        },
+        {
+          "id": "nether-mason",
+          "name": "冥界築牆師・磐"
+        },
+        {
+          "id": "nether-flame",
+          "name": "鬼火巡燈・幽藍"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W11",
+      "title": "異常魔法世界 A｜聚落與夜班",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "members": [
+        {
+          "id": "anomaly-slime",
+          "name": "工讀史萊姆・噗嚕"
+        },
+        {
+          "id": "anomaly-cat",
+          "name": "貓耳特派・鈴"
+        },
+        {
+          "id": "anomaly-mushroom",
+          "name": "菇菇藥師・茸茸"
+        },
+        {
+          "id": "anomaly-vampire",
+          "name": "夜班血族・薔薇"
+        },
+        {
+          "id": "anomaly-wolf",
+          "name": "狼人稽查・灰牙"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    },
+    {
+      "id": "W12",
+      "title": "異常魔法世界 B｜工坊與異種",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "members": [
+        {
+          "id": "anomaly-dragon",
+          "name": "小龍郵差・火羽"
+        },
+        {
+          "id": "anomaly-puppet",
+          "name": "契約人偶・艾莉絲"
+        },
+        {
+          "id": "anomaly-mirror",
+          "name": "鏡界裁縫・璃璃"
+        },
+        {
+          "id": "anomaly-tree",
+          "name": "年輪檔案樹・森老"
+        },
+        {
+          "id": "anomaly-angel",
+          "name": "失格天使・白羽"
+        }
+      ],
+      "note": "同世界類型的寫作分組，不自動宣稱五人同一城市或同一時間；是否生前相識須另寫證據"
+    }
+  ],
+  "character_to_group": {
+    "tieshi": "W01",
+    "escape-fighter": "W01",
+    "deadline-assassin": "W01",
+    "sheet-mage": "W01",
+    "coffee-medic": "W01",
+    "machine-engineer": "W02",
+    "office-idol": "W02",
+    "office-lawyer": "W02",
+    "office-chef": "W02",
+    "office-intern": "W02",
+    "machine-07": "W03",
+    "android-secretary": "W03",
+    "mecha-pilot": "W03",
+    "printer-priest": "W03",
+    "digital-auditor": "W03",
+    "machine-swarm": "W04",
+    "clock-automaton": "W04",
+    "steel-saint": "W04",
+    "scrap-bard": "W04",
+    "office-ai-echo": "W04",
+    "alien-captain": "W05",
+    "alien-navigator": "W05",
+    "alien-broker": "W05",
+    "alien-archivist": "W05",
+    "alien-intern-ally": "W05",
+    "alien-siren": "W06",
+    "alien-entomologist": "W06",
+    "alien-radio": "W06",
+    "alien-void": "W06",
+    "alien-judge": "W06",
+    "myth-wukong": "W07",
+    "myth-bajie": "W07",
+    "myth-sand": "W07",
+    "myth-lotus": "W07",
+    "myth-dragon": "W07",
+    "myth-moon": "W08",
+    "moon-rabbit": "W08",
+    "myth-judge": "W08",
+    "myth-cloud": "W08",
+    "myth-fox": "W08",
+    "nether-reaper": "W09",
+    "nether-clerk": "W09",
+    "nether-porter": "W09",
+    "nether-singer": "W09",
+    "nether-ferryman": "W09",
+    "nether-knight": "W10",
+    "nether-dream": "W10",
+    "nether-oracle": "W10",
+    "nether-mason": "W10",
+    "nether-flame": "W10",
+    "anomaly-slime": "W11",
+    "anomaly-cat": "W11",
+    "anomaly-mushroom": "W11",
+    "anomaly-vampire": "W11",
+    "anomaly-wolf": "W11",
+    "anomaly-dragon": "W12",
+    "anomaly-puppet": "W12",
+    "anomaly-mirror": "W12",
+    "anomaly-tree": "W12",
+    "anomaly-angel": "W12"
+  }
+}
