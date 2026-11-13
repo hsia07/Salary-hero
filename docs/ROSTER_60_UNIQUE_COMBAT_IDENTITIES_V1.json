@@ -1,0 +1,1386 @@
+{
+  "version": 1,
+  "status": "DESIGN_NOT_IMPLEMENTED",
+  "units": [
+    {
+      "identity": "低血量攔截盾",
+      "mechanic": "每6秒攔截最危險攻擊並為最低血量友軍上盾",
+      "visual": "真實盾面碰撞與08:59光紋",
+      "counter": "破盾與驅散",
+      "id": "tieshi",
+      "name": "打卡守衛・鐵時",
+      "rarity": "SR",
+      "faction": "office",
+      "role": "坦克護盾",
+      "link_ids": [
+        "coffee-medic",
+        "office-lawyer"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "逃班位移",
+      "mechanic": "受鎖定後向敵人側翼突進並打斷蓄力",
+      "visual": "腳步變向與近身踢擊",
+      "counter": "定身",
+      "id": "escape-fighter",
+      "name": "逃班鬥士・五分鐘",
+      "rarity": "R",
+      "faction": "office",
+      "role": "突進干擾",
+      "link_ids": [
+        "tieshi",
+        "myth-sand"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "截止斬殺",
+      "mechanic": "對低血量目標累積截止刻度後接觸斬殺",
+      "visual": "紅線劃過武器與實體刀光",
+      "counter": "護盾",
+      "id": "deadline-assassin",
+      "name": "截止日刺客・赤線",
+      "rarity": "R",
+      "faction": "office",
+      "role": "斬殺刺客",
+      "link_ids": [
+        "sheet-mage",
+        "alien-broker"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "表格連鎖",
+      "mechanic": "法彈在不同敵人間依列欄順序彈跳且逐次衰減",
+      "visual": "飛行中的數字符文轉向",
+      "counter": "分散站位",
+      "id": "sheet-mage",
+      "name": "試算表法師・千式",
+      "rarity": "SR",
+      "faction": "office",
+      "role": "法術連鎖",
+      "link_ids": [
+        "deadline-assassin",
+        "digital-auditor"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "咖啡急救",
+      "mechanic": "優先救最低血量並短暫增加受治療者攻速",
+      "visual": "杯具傾斜與液體弧線落到隊友",
+      "counter": "治療封鎖",
+      "id": "coffee-medic",
+      "name": "咖啡醫官・小澄",
+      "rarity": "SR",
+      "faction": "office",
+      "role": "治療增益",
+      "link_ids": [
+        "tieshi",
+        "moon-rabbit"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "維修機偶",
+      "mechanic": "召喚不佔編制的維修機偶修護前排裝甲",
+      "visual": "工具臂實際焊接與機偶移動",
+      "counter": "範圍清召喚",
+      "id": "machine-engineer",
+      "name": "機械工程師・阿拓",
+      "rarity": "SR",
+      "faction": "office",
+      "role": "召喚修復",
+      "link_ids": [
+        "machine-07",
+        "android-secretary"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "士氣連鎖",
+      "mechanic": "連續不受控場的表演讓附近友軍逐層獲得能量",
+      "visual": "舞台動作與節奏光點沿隊友流動",
+      "counter": "沉默",
+      "id": "office-idol",
+      "name": "公關偶像・梨奈",
+      "rarity": "SR",
+      "faction": "office",
+      "role": "士氣輔助",
+      "link_ids": [
+        "alien-siren",
+        "office-lawyer"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "反制條款",
+      "mechanic": "敵人首次施加控制時反駁並返還一層減益",
+      "visual": "卷宗翻頁與封印條撕裂",
+      "counter": "多段低傷攻擊",
+      "id": "office-lawyer",
+      "name": "勞權律師・白律",
+      "rarity": "SSR",
+      "faction": "office",
+      "role": "反擊驅散",
+      "link_ids": [
+        "tieshi",
+        "office-idol"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "餐點續航",
+      "mechanic": "在地面放置可拾取補給，低血量友軍會靠近領取",
+      "visual": "鍋具翻炒與餐盒實物落地",
+      "counter": "位移干擾",
+      "id": "office-chef",
+      "name": "深夜主廚・茉莉",
+      "rarity": "R",
+      "faction": "office",
+      "role": "持續治療",
+      "link_ids": [
+        "coffee-medic",
+        "nether-porter"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "實習補給",
+      "mechanic": "每波第一次成功普攻產生少量隊伍能量",
+      "visual": "文件傳遞與物件交接",
+      "counter": "短戰無後續產出",
+      "id": "office-intern",
+      "name": "見習書記・豆豆",
+      "rarity": "N",
+      "faction": "office",
+      "role": "資源支援",
+      "link_ids": [
+        "office-lawyer",
+        "alien-archivist"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "保全路線",
+      "mechanic": "沿前排巡邏線攔截第一個突進敵人",
+      "visual": "履帶／腿部轉向與攔截盾撞擊",
+      "counter": "遠程繞後",
+      "id": "machine-07",
+      "name": "保全機兵・七號",
+      "rarity": "SR",
+      "faction": "machine",
+      "role": "攔截坦克",
+      "link_ids": [
+        "tieshi",
+        "machine-engineer"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "同步超頻",
+      "mechanic": "依友軍行動順序提供不重複的攻速窗口",
+      "visual": "機械指節與時間刻度實際加速",
+      "counter": "行動中斷",
+      "id": "android-secretary",
+      "name": "仿生秘書・伊芙",
+      "rarity": "SSR",
+      "faction": "machine",
+      "role": "加速輔助",
+      "link_ids": [
+        "machine-engineer",
+        "alien-broker"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "破甲駕駛",
+      "mechanic": "命中同一裝甲部位三次觸發破甲後改打次弱點",
+      "visual": "駕駛艙與機甲砲口分層切換",
+      "counter": "高機動目標",
+      "id": "mecha-pilot",
+      "name": "機甲駕駛・嵐",
+      "rarity": "SSR",
+      "faction": "machine",
+      "role": "爆發破甲",
+      "link_ids": [
+        "machine-07",
+        "alien-captain"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "封印紙陣",
+      "mechanic": "射出可被擊破的紙頁封印敵人主動技能",
+      "visual": "紙張飛行貼附與破裂",
+      "counter": "清除負面",
+      "id": "printer-priest",
+      "name": "列印祭司・墨修",
+      "rarity": "R",
+      "faction": "machine",
+      "role": "封印控場",
+      "link_ids": [
+        "office-lawyer",
+        "machine-swarm"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "審計標記",
+      "mechanic": "每次不同隊友命中同目標增加審計記號",
+      "visual": "投影數字附著目標肩部",
+      "counter": "單一輸出隊",
+      "id": "digital-auditor",
+      "name": "稽核演算體・零",
+      "rarity": "R",
+      "faction": "machine",
+      "role": "標記法術",
+      "link_ids": [
+        "sheet-mage",
+        "office-ai-echo"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "蜂群維修",
+      "mechanic": "微型蜂群分成修護與騷擾兩隊",
+      "visual": "多架蜂體不同軌跡飛行",
+      "counter": "範圍燃燒",
+      "id": "machine-swarm",
+      "name": "蜂群技師・蜂后",
+      "rarity": "SR",
+      "faction": "machine",
+      "role": "召喚修復",
+      "link_ids": [
+        "printer-priest",
+        "alien-entomologist"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "延遲齒輪",
+      "mechanic": "讓敵方下一次技能前搖延長且不可無限連控",
+      "visual": "齒輪實際轉動與關節卡頓",
+      "counter": "控制免疫",
+      "id": "clock-automaton",
+      "name": "鐘錶人偶・滴答",
+      "rarity": "R",
+      "faction": "machine",
+      "role": "時間控場",
+      "link_ids": [
+        "tieshi",
+        "digital-auditor"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "反傷聖盾",
+      "mechanic": "精準格擋窗口反射部分實際承受傷害",
+      "visual": "聖甲展開與盾面折射命中彈道",
+      "counter": "持續傷害",
+      "id": "steel-saint",
+      "name": "鋼鐵聖女・賽芙",
+      "rarity": "UR",
+      "faction": "machine",
+      "role": "反傷坦克",
+      "link_ids": [
+        "machine-07",
+        "nether-singer"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "廢鐵節拍",
+      "mechanic": "隊友按不同攻擊節奏命中時觸發節拍支援",
+      "visual": "樂器打擊與不同拍點粒子",
+      "counter": "攻速紊亂",
+      "id": "scrap-bard",
+      "name": "廢鐵樂師・拍子",
+      "rarity": "R",
+      "faction": "machine",
+      "role": "節奏輔助",
+      "link_ids": [
+        "office-idol",
+        "alien-radio"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "錯誤回音",
+      "mechanic": "記錄最近一次敵方技能並延後回放弱化版",
+      "visual": "訊號波形沿空中延遲重播",
+      "counter": "瞬發普攻",
+      "id": "office-ai-echo",
+      "name": "母腦殘響・分機",
+      "rarity": "SR",
+      "faction": "machine",
+      "role": "控場反制",
+      "link_ids": [
+        "digital-auditor",
+        "nether-clerk"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "艦隊指揮",
+      "mechanic": "將前排分成守線與突進兩種戰術指令",
+      "visual": "全息旗標與角色走位同步變化",
+      "counter": "分割陣型",
+      "id": "alien-captain",
+      "name": "星艦領班・薩洛",
+      "rarity": "SR",
+      "faction": "alien",
+      "role": "前排指揮",
+      "link_ids": [
+        "mecha-pilot",
+        "alien-broker"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "代價交易",
+      "mechanic": "竊取敵人一項增益轉交最需要的友軍",
+      "visual": "實體能量貨幣從敵人飛向友軍",
+      "counter": "無增益敵人",
+      "id": "alien-broker",
+      "name": "銀河掮客・薇菈",
+      "rarity": "SSR",
+      "faction": "alien",
+      "role": "竊取刺客",
+      "link_ids": [
+        "android-secretary",
+        "deadline-assassin"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "外星干擾",
+      "mechanic": "普攻機率將敵人攻擊方向短暫偏轉",
+      "visual": "觸角與干擾波造成瞄準偏移",
+      "counter": "免疫干擾",
+      "id": "alien-intern-ally",
+      "name": "異星實習生・小綠",
+      "rarity": "N",
+      "faction": "alien",
+      "role": "干擾",
+      "link_ids": [
+        "office-intern",
+        "alien-archivist"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "共鳴歌聲",
+      "mechanic": "音波命中敵群使其短暫失衡並為友軍治療",
+      "visual": "胸腔呼吸嘴型與環形音波有傳播速度",
+      "counter": "沉默與音波抗性",
+      "id": "alien-siren",
+      "name": "星際歌姬・露希亞",
+      "rarity": "UR",
+      "faction": "alien",
+      "role": "群控治療",
+      "link_ids": [
+        "office-idol",
+        "alien-radio"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "蟲群孢毒",
+      "mechanic": "毒蟲寄生敵人後隨移動擴散低額毒傷",
+      "visual": "蟲體爬附與孢子脈動",
+      "counter": "淨化",
+      "id": "alien-entomologist",
+      "name": "蟲星研究員・紗翎",
+      "rarity": "SR",
+      "faction": "alien",
+      "role": "毒傷召喚",
+      "link_ids": [
+        "machine-swarm",
+        "alien-captain"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "失真廣播",
+      "mechanic": "隨機在兩種可預覽的戰術訊號間切換",
+      "visual": "收音天線轉向與訊號掃描",
+      "counter": "穩定免疫",
+      "id": "alien-radio",
+      "name": "電波主持・波奇",
+      "rarity": "R",
+      "faction": "alien",
+      "role": "增益混亂",
+      "link_ids": [
+        "scrap-bard",
+        "alien-siren"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "虛空回收",
+      "mechanic": "吞噬敵方護盾後將一部分轉為自身防護",
+      "visual": "空洞沿盾面擴張而非單一黑圈",
+      "counter": "無護盾隊",
+      "id": "alien-void",
+      "name": "虛空清潔員・諾克",
+      "rarity": "SR",
+      "faction": "alien",
+      "role": "吞噬護盾",
+      "link_ids": [
+        "alien-broker",
+        "nether-porter"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "航道預判",
+      "mechanic": "提前在地面標出安全走位讓友軍避開範圍攻擊",
+      "visual": "星圖路徑與實際角色移動",
+      "counter": "追蹤型攻擊",
+      "id": "alien-navigator",
+      "name": "星圖領航・妮亞",
+      "rarity": "SR",
+      "faction": "alien",
+      "role": "速度支援",
+      "link_ids": [
+        "alien-captain",
+        "myth-cloud"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "星環裁決",
+      "mechanic": "對已被不同職業命中的敵人啟動破甲裁決",
+      "visual": "環形法器拆分成多段命中光刃",
+      "counter": "單職業隊",
+      "id": "alien-judge",
+      "name": "星環裁決者・赫斯",
+      "rarity": "UR",
+      "faction": "alien",
+      "role": "破甲審判",
+      "link_ids": [
+        "office-lawyer",
+        "myth-judge"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "情報揭露",
+      "mechanic": "開場揭露一名敵人弱點並逐波累積情報",
+      "visual": "翻動透明星圖與弱點聚焦鏡頭",
+      "counter": "快速換怪",
+      "id": "alien-archivist",
+      "name": "群星檔案官・璃音",
+      "rarity": "SSR",
+      "faction": "alien",
+      "role": "法術情報",
+      "link_ids": [
+        "office-intern",
+        "alien-intern-ally"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "真假分身",
+      "mechanic": "本體近身連擊後生成短時可被擊破的分身轉火",
+      "visual": "毫毛吹出與不同分身打擊動作",
+      "counter": "範圍清場",
+      "id": "myth-wukong",
+      "name": "齊天行者・悟空",
+      "rarity": "UR",
+      "faction": "myth",
+      "role": "連擊分身",
+      "link_ids": [
+        "myth-bajie",
+        "myth-judge"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "飽食護衛",
+      "mechanic": "承傷後累積食氣並在休息動作中自療",
+      "visual": "九齒釘耙格擋與吞食動作",
+      "counter": "重傷",
+      "id": "myth-bajie",
+      "name": "天蓬食堂長・八戒",
+      "rarity": "SR",
+      "faction": "myth",
+      "role": "坦克回復",
+      "link_ids": [
+        "myth-wukong",
+        "office-chef"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "流沙搬運",
+      "mechanic": "把被擊退的友軍拉回安全位並淨化一層",
+      "visual": "流沙繩索實際牽引",
+      "counter": "定身",
+      "id": "myth-sand",
+      "name": "流沙搬運官・悟淨",
+      "rarity": "SR",
+      "faction": "myth",
+      "role": "守護淨化",
+      "link_ids": [
+        "escape-fighter",
+        "myth-wukong"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "月相冰盾",
+      "mechanic": "月相隨技能循環在冰控與護盾間切換",
+      "visual": "月輪分層旋轉與關節結霜",
+      "counter": "持續灼燒",
+      "id": "myth-moon",
+      "name": "廣寒巡夜・嫦月",
+      "rarity": "SSR",
+      "faction": "myth",
+      "role": "冰控護盾",
+      "link_ids": [
+        "moon-rabbit",
+        "myth-cloud"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "搗藥調和",
+      "mechanic": "三次普攻後搗藥生成一次小範圍治療",
+      "visual": "藥杵敲擊與藥霧飛散",
+      "counter": "打斷",
+      "id": "moon-rabbit",
+      "name": "搗藥仙兔・小玉",
+      "rarity": "R",
+      "faction": "myth",
+      "role": "治療",
+      "link_ids": [
+        "coffee-medic",
+        "myth-moon"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "天眼反制",
+      "mechanic": "預判敵方最高傷害技能並標記其施法者",
+      "visual": "第三眼開合與定向光束",
+      "counter": "多個小技能",
+      "id": "myth-judge",
+      "name": "天庭監察・清目",
+      "rarity": "SR",
+      "faction": "myth",
+      "role": "標記反制",
+      "link_ids": [
+        "myth-wukong",
+        "alien-judge"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "龍宮水壓",
+      "mechanic": "水壓逐步沖刷護甲並推開前排",
+      "visual": "水帶沿地面流動與龍鱗變色",
+      "counter": "抗擊退",
+      "id": "myth-dragon",
+      "name": "龍宮財務官・敖璃",
+      "rarity": "SSR",
+      "faction": "myth",
+      "role": "水法破甲",
+      "link_ids": [
+        "myth-sand",
+        "myth-lotus"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "蓮火輪舞",
+      "mechanic": "踩風火輪穿越可達敵人造成連段傷害",
+      "visual": "雙輪真實旋轉與路徑火痕",
+      "counter": "定身",
+      "id": "myth-lotus",
+      "name": "蓮火巡檢・哪吒",
+      "rarity": "UR",
+      "faction": "myth",
+      "role": "機動爆發",
+      "link_ids": [
+        "myth-dragon",
+        "myth-wukong"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "雲路傳信",
+      "mechanic": "把一名友軍的負面狀態轉為短時加速",
+      "visual": "雲朵承托足部與符箋傳遞",
+      "counter": "不可淨化狀態",
+      "id": "myth-cloud",
+      "name": "雲端信使・霓霓",
+      "rarity": "R",
+      "faction": "myth",
+      "role": "速度驅散",
+      "link_ids": [
+        "alien-navigator",
+        "myth-moon"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "九尾審稿",
+      "mechanic": "幻術使敵人短時誤判目標並受魅惑限制",
+      "visual": "九尾分層擺動與眼神誘導",
+      "counter": "首領魅惑免疫",
+      "id": "myth-fox",
+      "name": "九尾審稿官・蘇妲",
+      "rarity": "SSR",
+      "faction": "myth",
+      "role": "魅惑幻術",
+      "link_ids": [
+        "myth-judge",
+        "nether-clerk"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "最後工時",
+      "mechanic": "記錄敵人失去生命的刻度，在臨界時斬擊",
+      "visual": "鐮刃拖影與沙漏細砂",
+      "counter": "護盾回復",
+      "id": "nether-reaper",
+      "name": "冥府收工人・暮影",
+      "rarity": "SSR",
+      "faction": "nether",
+      "role": "幽冥斬殺",
+      "link_ids": [
+        "nether-clerk",
+        "nether-porter"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "死亡註記",
+      "mechanic": "對敵人施加可被驅散的詛咒欄位",
+      "visual": "紙頁烙印在敵人身側",
+      "counter": "淨化",
+      "id": "nether-clerk",
+      "name": "陰司書記・墨言",
+      "rarity": "SR",
+      "faction": "nether",
+      "role": "詛咒法術",
+      "link_ids": [
+        "office-ai-echo",
+        "myth-fox"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "忘川搬運",
+      "mechanic": "將敵人搬離隊伍後排，產生短距離控位",
+      "visual": "扛舉與落地碰撞",
+      "counter": "不可搬運首領",
+      "id": "nether-porter",
+      "name": "忘川搬運者・渡",
+      "rarity": "R",
+      "faction": "nether",
+      "role": "坦克搬運",
+      "link_ids": [
+        "office-chef",
+        "alien-void"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "安魂庇護",
+      "mechanic": "治療時清除一層恐懼並給短暫減傷",
+      "visual": "歌者呼吸與音符沿傷口癒合",
+      "counter": "沉默",
+      "id": "nether-singer",
+      "name": "安魂歌者・夜蘭",
+      "rarity": "UR",
+      "faction": "nether",
+      "role": "治療護持",
+      "link_ids": [
+        "alien-siren",
+        "nether-reaper"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "墓園反擊",
+      "mechanic": "成功格擋後實體反擊並吸引最近敵人",
+      "visual": "鏽甲碰撞與長槍反刺",
+      "counter": "遠程法術",
+      "id": "nether-knight",
+      "name": "墓園巡衛・寒鐵",
+      "rarity": "SR",
+      "faction": "nether",
+      "role": "反傷坦克",
+      "link_ids": [
+        "nether-porter",
+        "steel-saint"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "夢境醫療",
+      "mechanic": "把超額治療轉成可控短時睡眠防護而非永久護盾",
+      "visual": "睡眠紗幕貼合友軍與呼吸節奏",
+      "counter": "沉默",
+      "id": "nether-dream",
+      "name": "夢境醫師・眠音",
+      "rarity": "SSR",
+      "faction": "nether",
+      "role": "睡眠淨化",
+      "link_ids": [
+        "coffee-medic",
+        "nether-singer"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "彼岸預示",
+      "mechanic": "預告下一次敵方大招方向並短暫提高閃避",
+      "visual": "預言絲線指向危險區",
+      "counter": "追蹤必中",
+      "id": "nether-oracle",
+      "name": "彼岸預言者・緋",
+      "rarity": "SR",
+      "faction": "nether",
+      "role": "預測反制",
+      "link_ids": [
+        "myth-moon",
+        "nether-clerk"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "冥牆施工",
+      "mechanic": "建立可破壞的掩體改變彈道與走位",
+      "visual": "石塊實際砌築與破碎",
+      "counter": "穿透",
+      "id": "nether-mason",
+      "name": "冥界築牆師・磐",
+      "rarity": "R",
+      "faction": "nether",
+      "role": "護盾構築",
+      "link_ids": [
+        "nether-knight",
+        "office-lawyer"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "鬼火巡燈",
+      "mechanic": "將友軍燃燒轉為低傷鬼火，回收一部分能量",
+      "visual": "燈火從隊友身上被引回燈籠",
+      "counter": "冰凍",
+      "id": "nether-flame",
+      "name": "鬼火巡燈・幽藍",
+      "rarity": "SR",
+      "faction": "nether",
+      "role": "燃燒支援",
+      "link_ids": [
+        "nether-porter",
+        "myth-cloud"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "末班列車",
+      "mechanic": "每波一次將瀕死友軍移到安全線並給短暫免傷",
+      "visual": "車門與月台殘影、實際位移",
+      "counter": "持續範圍傷害",
+      "id": "nether-ferryman",
+      "name": "終站車長・零點",
+      "rarity": "SSR",
+      "faction": "nether",
+      "role": "時間防禦",
+      "link_ids": [
+        "clock-automaton",
+        "nether-oracle"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "吸收形變",
+      "mechanic": "承受傷害後體積變化，滿額噴出緩速液",
+      "visual": "身體真正壓縮伸展與黏液飛行",
+      "counter": "斬擊破體",
+      "id": "anomaly-slime",
+      "name": "工讀史萊姆・噗嚕",
+      "rarity": "N",
+      "faction": "anomaly",
+      "role": "承傷吸收",
+      "link_ids": [
+        "office-intern",
+        "anomaly-mushroom"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "貓步閃避",
+      "mechanic": "成功閃避後瞬間靠近目標背側反擊",
+      "visual": "耳尾分層與四肢跨步",
+      "counter": "必中",
+      "id": "anomaly-cat",
+      "name": "貓耳特派・鈴",
+      "rarity": "R",
+      "faction": "anomaly",
+      "role": "閃避刺客",
+      "link_ids": [
+        "escape-fighter",
+        "anomaly-wolf"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "孢子共生",
+      "mechanic": "在友軍附近長出可被破壞的治療菇",
+      "visual": "菌傘生長與孢子擴散",
+      "counter": "範圍火焰",
+      "id": "anomaly-mushroom",
+      "name": "菇菇藥師・茸茸",
+      "rarity": "R",
+      "faction": "anomaly",
+      "role": "孢子治療",
+      "link_ids": [
+        "anomaly-slime",
+        "moon-rabbit"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "血契夜宴",
+      "mechanic": "以自身生命施放強擊，命中才回收生命",
+      "visual": "披風展開與紅色能量回流",
+      "counter": "治療封鎖",
+      "id": "anomaly-vampire",
+      "name": "夜班血族・薔薇",
+      "rarity": "SSR",
+      "faction": "anomaly",
+      "role": "吸血輸出",
+      "link_ids": [
+        "nether-singer",
+        "anomaly-wolf"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "群獵追蹤",
+      "mechanic": "標記敵人後從不同角度近身追擊",
+      "visual": "狼耳鼻息與奔跑抓擊",
+      "counter": "嘲諷改目標",
+      "id": "anomaly-wolf",
+      "name": "狼人稽查・灰牙",
+      "rarity": "SR",
+      "faction": "anomaly",
+      "role": "追擊破甲",
+      "link_ids": [
+        "anomaly-cat",
+        "nether-reaper"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "郵件龍焰",
+      "mechanic": "投遞火焰信封給敵人，延時引燃",
+      "visual": "飛行郵件碰撞後點火",
+      "counter": "淨化",
+      "id": "anomaly-dragon",
+      "name": "小龍郵差・火羽",
+      "rarity": "R",
+      "faction": "anomaly",
+      "role": "火法支援",
+      "link_ids": [
+        "myth-dragon",
+        "myth-cloud"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "絲線操偶",
+      "mechanic": "用可被斬斷的絲線短暫操控敵方普攻方向",
+      "visual": "關節轉動與絲線斷裂",
+      "counter": "首領免控",
+      "id": "anomaly-puppet",
+      "name": "契約人偶・艾莉絲",
+      "rarity": "SR",
+      "faction": "anomaly",
+      "role": "傀儡控場",
+      "link_ids": [
+        "android-secretary",
+        "anomaly-mirror"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "鏡縫裁衣",
+      "mechanic": "複製友軍最近一項增益的弱化版給另一人",
+      "visual": "鏡片反射與布料縫合",
+      "counter": "無增益隊",
+      "id": "anomaly-mirror",
+      "name": "鏡界裁縫・璃璃",
+      "rarity": "SR",
+      "faction": "anomaly",
+      "role": "幻術增益",
+      "link_ids": [
+        "anomaly-puppet",
+        "myth-wukong"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "年輪守根",
+      "mechanic": "扎根後持續恢復並降低擊退，移動時停止",
+      "visual": "根系鑽地與年輪亮起",
+      "counter": "燃燒",
+      "id": "anomaly-tree",
+      "name": "年輪檔案樹・森老",
+      "rarity": "SR",
+      "faction": "anomaly",
+      "role": "再生坦克",
+      "link_ids": [
+        "alien-archivist",
+        "anomaly-mushroom"
+      ],
+      "attack_delivery": "接觸式近戰或專屬武器實體命中",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    },
+    {
+      "identity": "失格羽翼",
+      "mechanic": "以自身護盾承擔友軍致命傷一次，並觸發光羽重生動畫",
+      "visual": "六片羽翼獨立折疊與羽片破碎",
+      "counter": "連續斬殺",
+      "id": "anomaly-angel",
+      "name": "失格天使・白羽",
+      "rarity": "UR",
+      "faction": "anomaly",
+      "role": "治療護盾",
+      "link_ids": [
+        "steel-saint",
+        "myth-cloud"
+      ],
+      "attack_delivery": "投射物／有距離的施法",
+      "qa": [
+        "必須有專屬分層施法與受擊回饋",
+        "不可與其他角色完全同效果只改名字",
+        "狀態效果有角色本體動畫",
+        "技能AI有合理目標與反制窗口"
+      ],
+      "status": "MECHANIC_CONCEPT_NOT_BALANCED"
+    }
+  ]
+}
