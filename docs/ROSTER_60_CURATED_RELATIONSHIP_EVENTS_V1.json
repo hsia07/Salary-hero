@@ -547,6 +547,19 @@
       "origin": "POST_SUMMON",
       "status": "PROPOSED_NEEDS_SCRIPT_VALIDATION",
       "bidirectional": true
+    },
+    {
+      "id": "REL-043",
+      "a": "alien-entomologist",
+      "b": "machine-swarm",
+      "a_name": "蟲星研究員・紗翎",
+      "b_name": "蜂群技師・蜂后",
+      "first_meeting": "蜂群601號失蹤調查",
+      "trajectory": "研究合作→未授權採樣衝突→共同尋找601",
+      "turning_point": "紗翎放棄珍貴標本以尊重601自主權",
+      "origin": "POST_SUMMON",
+      "status": "PROPOSED_NEEDS_SCRIPT_VALIDATION",
+      "bidirectional": true
     }
   ],
   "unresolved_original_links": [
@@ -666,11 +679,6 @@
       "curated": false
     },
     {
-      "from": "machine-swarm",
-      "to": "alien-entomologist",
-      "curated": false
-    },
-    {
       "from": "clock-automaton",
       "to": "tieshi",
       "curated": false
@@ -733,11 +741,6 @@
     {
       "from": "alien-siren",
       "to": "alien-radio",
-      "curated": false
-    },
-    {
-      "from": "alien-entomologist",
-      "to": "machine-swarm",
       "curated": false
     },
     {
@@ -1026,7 +1029,5 @@
       "curated": false
     }
   ],
-  "uncovered_characters": [
-    "alien-entomologist"
-  ]
+  "uncovered_characters": []
 }
