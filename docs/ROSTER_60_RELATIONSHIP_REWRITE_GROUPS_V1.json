@@ -1,0 +1,330 @@
+{
+  "version": "V1",
+  "status": "GROUPED_FOR_SEQUENTIAL_REWRITE",
+  "count": 60,
+  "group_count": 11,
+  "assignment_rule": "Each hero belongs to exactly one primary rewrite group; relationships across groups are preserved as bridges",
+  "groups": [
+    {
+      "id": "G01",
+      "title": "失名、契約與舊友",
+      "order": 1,
+      "primary_members": [
+        "alien-broker",
+        "alien-archivist",
+        "anomaly-puppet",
+        "anomaly-mirror",
+        "myth-dragon"
+      ],
+      "story_core": "薇菈與璃音生前好友候選、阿書事件；艾莉絲契約自由、璃璃身分、敖璃債務",
+      "continuity_checks": "生前好友或死後初遇二擇一；交易時點、阿書的選擇與不可逆背叛",
+      "internal_existing_event_edges": [
+        "REL-017",
+        "REL-018",
+        "REL-027",
+        "REL-038"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G02",
+      "title": "法律、文化與不可赦免的審判",
+      "order": 2,
+      "primary_members": [
+        "myth-fox",
+        "myth-judge",
+        "office-lawyer",
+        "alien-judge",
+        "nether-clerk",
+        "nether-reaper"
+      ],
+      "story_core": "蘇妲清目文化抹除與白律赫斯司法背叛，墨言原卷、暮影錯收魂作旁證",
+      "continuity_checks": "分清兩宗罪責、霜婆版本、南笙事件與審判先後",
+      "internal_existing_event_edges": [
+        "REL-008",
+        "REL-026",
+        "REL-029",
+        "REL-030"
+      ],
+      "cross_group_existing_event_edges": [
+        {
+          "id": "REL-039",
+          "other_group": "G08",
+          "from": "anomaly-tree",
+          "to": "nether-clerk"
+        }
+      ],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G03",
+      "title": "夜車、血族家園與追捕",
+      "order": 3,
+      "primary_members": [
+        "anomaly-vampire",
+        "anomaly-wolf",
+        "nether-ferryman",
+        "anomaly-cat",
+        "alien-radio"
+      ],
+      "story_core": "薔薇灰牙生前夫妻候選與死後血仇；零點鈴波奇造成夜車因果鏈",
+      "continuity_checks": "夫妻與死後初遇二擇一、灰牙追捕動機、阿澪命運",
+      "internal_existing_event_edges": [
+        "REL-019",
+        "REL-035",
+        "REL-036",
+        "REL-037",
+        "REL-042"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G04",
+      "title": "三魂一盾與停機權",
+      "order": 4,
+      "primary_members": [
+        "tieshi",
+        "machine-07",
+        "coffee-medic",
+        "machine-engineer",
+        "nether-mason",
+        "escape-fighter"
+      ],
+      "story_core": "鐵時三魂、小澄照顧、七號保全、阿拓磐安全工程、五分鐘假逃生路線",
+      "continuity_checks": "三魂與工作死亡固定，避免六人都成救世英雄",
+      "internal_existing_event_edges": [
+        "REL-001",
+        "REL-002",
+        "REL-003",
+        "REL-006",
+        "REL-034"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G05",
+      "title": "星艦舊情與航線抉擇",
+      "order": 5,
+      "primary_members": [
+        "alien-captain",
+        "alien-navigator",
+        "mecha-pilot",
+        "alien-void",
+        "nether-flame"
+      ],
+      "story_core": "薩洛妮亞生前戀人或前任候選；嵐機甲、諾克污染、幽藍光源",
+      "continuity_checks": "同一星際子宇宙證據與死亡時序；不同工作死亡不可合併",
+      "internal_existing_event_edges": [
+        "REL-012",
+        "REL-020",
+        "REL-040"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G06",
+      "title": "神話義兄弟與食堂人情",
+      "order": 6,
+      "primary_members": [
+        "myth-wukong",
+        "myth-bajie",
+        "myth-sand",
+        "myth-lotus",
+        "office-chef",
+        "nether-porter"
+      ],
+      "story_core": "悟空八戒生前結義候選；哪吒悟淨責任、茉莉渡生活關係",
+      "continuity_checks": "神話子宇宙、經典武器、避免全靠天庭陰謀",
+      "internal_existing_event_edges": [
+        "REL-009",
+        "REL-021",
+        "REL-022",
+        "REL-023"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G07",
+      "title": "音樂、哀悼與舞台真相",
+      "order": 7,
+      "primary_members": [
+        "nether-singer",
+        "scrap-bard",
+        "alien-siren",
+        "office-idol",
+        "steel-saint",
+        "anomaly-angel"
+      ],
+      "story_core": "夜蘭拍子創作倫理、露希亞梨奈舞台競爭、賽芙白羽祝福同意",
+      "continuity_checks": "藝術侵權與醫療倫理是不同故事",
+      "internal_existing_event_edges": [
+        "REL-007",
+        "REL-015",
+        "REL-016",
+        "REL-031"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G08",
+      "title": "母腦、夢境與私人記憶",
+      "order": 8,
+      "primary_members": [
+        "android-secretary",
+        "office-ai-echo",
+        "nether-dream",
+        "anomaly-tree",
+        "nether-knight"
+      ],
+      "story_core": "伊芙分機私訊、眠音夢境療法、森老寒鐵歷史與墓碑",
+      "continuity_checks": "隱私與公共紀念衝突，記憶恢復不是萬能",
+      "internal_existing_event_edges": [
+        "REL-011",
+        "REL-032",
+        "REL-033"
+      ],
+      "cross_group_existing_event_edges": [
+        {
+          "id": "REL-039",
+          "other_group": "G02",
+          "from": "anomaly-tree",
+          "to": "nether-clerk"
+        }
+      ],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G09",
+      "title": "預言、時間與數據",
+      "order": 9,
+      "primary_members": [
+        "digital-auditor",
+        "sheet-mage",
+        "nether-oracle",
+        "clock-automaton",
+        "deadline-assassin",
+        "myth-moon"
+      ],
+      "story_core": "零千式誤差、緋預言、滴答赤線期限、嫦月雙月",
+      "continuity_checks": "不使用時間倒流復活，不讓預言無條件正確",
+      "internal_existing_event_edges": [
+        "REL-004",
+        "REL-005",
+        "REL-024",
+        "REL-041"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G10",
+      "title": "工坊失蹤與非血緣家庭",
+      "order": 10,
+      "primary_members": [
+        "machine-swarm",
+        "anomaly-slime",
+        "alien-entomologist",
+        "anomaly-mushroom",
+        "moon-rabbit"
+      ],
+      "story_core": "蜂后601紗翎研究倫理、噗嚕自主、茸茸小玉藥園",
+      "continuity_checks": "601不是噗嚕替身，藥物需有限制",
+      "internal_existing_event_edges": [
+        "REL-014",
+        "REL-025",
+        "REL-043"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    },
+    {
+      "id": "G11",
+      "title": "郵路、錯信與新手同盟",
+      "order": 11,
+      "primary_members": [
+        "myth-cloud",
+        "anomaly-dragon",
+        "printer-priest",
+        "office-intern",
+        "alien-intern-ally"
+      ],
+      "story_core": "霓霓火羽郵路、墨修錯印、豆豆小綠錯名；喜劇與成長",
+      "continuity_checks": "錯名不等於失名主線，郵件秘密不可萬能破解",
+      "internal_existing_event_edges": [
+        "REL-010",
+        "REL-013",
+        "REL-028"
+      ],
+      "cross_group_existing_event_edges": [],
+      "status": "GROUPING_FOR_REWRITE_NOT_FINAL_CANON"
+    }
+  ],
+  "character_primary_group": {
+    "alien-broker": "G01",
+    "alien-archivist": "G01",
+    "anomaly-puppet": "G01",
+    "anomaly-mirror": "G01",
+    "myth-dragon": "G01",
+    "myth-fox": "G02",
+    "myth-judge": "G02",
+    "office-lawyer": "G02",
+    "alien-judge": "G02",
+    "nether-clerk": "G02",
+    "nether-reaper": "G02",
+    "anomaly-vampire": "G03",
+    "anomaly-wolf": "G03",
+    "nether-ferryman": "G03",
+    "anomaly-cat": "G03",
+    "alien-radio": "G03",
+    "tieshi": "G04",
+    "machine-07": "G04",
+    "coffee-medic": "G04",
+    "machine-engineer": "G04",
+    "nether-mason": "G04",
+    "escape-fighter": "G04",
+    "alien-captain": "G05",
+    "alien-navigator": "G05",
+    "mecha-pilot": "G05",
+    "alien-void": "G05",
+    "nether-flame": "G05",
+    "myth-wukong": "G06",
+    "myth-bajie": "G06",
+    "myth-sand": "G06",
+    "myth-lotus": "G06",
+    "office-chef": "G06",
+    "nether-porter": "G06",
+    "nether-singer": "G07",
+    "scrap-bard": "G07",
+    "alien-siren": "G07",
+    "office-idol": "G07",
+    "steel-saint": "G07",
+    "anomaly-angel": "G07",
+    "android-secretary": "G08",
+    "office-ai-echo": "G08",
+    "nether-dream": "G08",
+    "anomaly-tree": "G08",
+    "nether-knight": "G08",
+    "digital-auditor": "G09",
+    "sheet-mage": "G09",
+    "nether-oracle": "G09",
+    "clock-automaton": "G09",
+    "deadline-assassin": "G09",
+    "myth-moon": "G09",
+    "machine-swarm": "G10",
+    "anomaly-slime": "G10",
+    "alien-entomologist": "G10",
+    "anomaly-mushroom": "G10",
+    "moon-rabbit": "G10",
+    "myth-cloud": "G11",
+    "anomaly-dragon": "G11",
+    "printer-priest": "G11",
+    "office-intern": "G11",
+    "alien-intern-ally": "G11"
+  }
+}
