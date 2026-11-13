@@ -1,0 +1,50 @@
+{
+  "version": "V1",
+  "status": "STORY_DRAFT_PRE_DEATH_RELATIONSHIPS",
+  "shared_origin_clusters": [
+    {
+      "id": "mirror-bay",
+      "world_type": "星際企業文明平行世界",
+      "members": [
+        "alien-captain",
+        "alien-navigator"
+      ],
+      "relationship": "FORMER_ROMANTIC_PARTNERS",
+      "duration": "7年",
+      "before_death": true,
+      "death_separate": true,
+      "post_summon": "REUNION_NOT_FIRST_MEETING"
+    },
+    {
+      "id": "seven-rings",
+      "world_type": "星際企業文明平行世界",
+      "members": [
+        "alien-broker",
+        "alien-archivist"
+      ],
+      "relationship": "FORMER_CLOSE_FRIENDS",
+      "before_death": true,
+      "death_separate": true,
+      "post_summon": "REUNION_THEN_BETRAYAL"
+    },
+    {
+      "id": "ninth-heaven",
+      "world_type": "神話職務平行世界",
+      "members": [
+        "myth-fox",
+        "myth-judge"
+      ],
+      "relationship": "SECRET_ROMANTIC_PARTNERS",
+      "duration": "3年",
+      "before_death": true,
+      "death_separate": true,
+      "post_summon": "REUNION_THEN_POLITICAL_RUPTURE"
+    }
+  ],
+  "superseded_first_meeting_claims": [
+    "薩洛妮亞死後初遇",
+    "薇菈璃音死後初遇",
+    "蘇妲清目死後初遇"
+  ],
+  "canon_lock": false
+}
