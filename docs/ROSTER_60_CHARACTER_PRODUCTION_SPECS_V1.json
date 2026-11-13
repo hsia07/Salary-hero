@@ -1,0 +1,1807 @@
+{
+  "version": "ROSTER-60-CANON-AUDIT-V1.1",
+  "status": "PROPOSED_PENDING_REVIEW",
+  "count": 60,
+  "characters": [
+    {
+      "id": "tieshi",
+      "name": "打卡守衛・鐵時",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "夜班火災回頭救人，違法封門造成同事罹難；他背負不屬於他的責任",
+      "work_death_event": "夜班大樓火災中為救受困同事折返，遭違法鎖閉的防火通道困住而殉職",
+      "summoning_scene": "打卡守衛・鐵時在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「坦克護盾」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「與小燈阿誠阿遠和解，最終09:00覺醒死靈護衛，仍為SR」。",
+      "bond_timeline": [
+        {
+          "with": "coffee-medic",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "office-lawyer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "瘦削2.5頭身、亂黑髮明顯白束、暗紅倦眼、右頰白貼布、紫黑披風、紫黑金08:59直立盾",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "鐵時原有鎖定外觀與事故，死亡細節為候選銜接"
+    },
+    {
+      "id": "escape-fighter",
+      "name": "逃班鬥士・五分鐘",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "疏散員抗議封閉逃生門而遭革職",
+      "work_death_event": "受命測試封鎖的緊急出口，在疏散演習事故中為引導同事逃生而殉職",
+      "summoning_scene": "逃班鬥士・五分鐘在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「突進干擾」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「記得公會每條被封鎖的逃生路」。",
+      "bond_timeline": [
+        {
+          "with": "tieshi",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-sand",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "瘦高棕髮、捲袖制服、黃色逃生指示腰帶、折疊短刃",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "deadline-assassin",
+      "name": "截止日刺客・赤線",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "專案經理被迫替整組背負無限期限",
+      "work_death_event": "被迫連續處理重大專案危機，於最後一次替團隊阻止危險設備啟動時殉職",
+      "summoning_scene": "截止日刺客・赤線在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「斬殺刺客」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「倒數能力源於遭竄改的任務時鐘」。",
+      "bond_timeline": [
+        {
+          "with": "sheet-mage",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-broker",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年冷豔女性、健美修長、黑紅短髮、戰術高衩外套、裁紙雙刃",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "sheet-mage",
+      "name": "試算表法師・千式",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "分析師發現績效帳本遭操控",
+      "work_death_event": "通宵追查遭竄改的工廠安全數據，在阻止故障設備傷人時遇難",
+      "summoning_scene": "試算表法師・千式在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「法術連鎖」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「握有被刪除的復活費用表」。",
+      "bond_timeline": [
+        {
+          "with": "deadline-assassin",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "digital-auditor",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年高挑優雅、藍灰長髮、眼鏡、深藍收腰長袍、公式卷軸",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "coffee-medic",
+      "name": "咖啡醫官・小澄",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "輪班護理師厭倦以咖啡代替休息",
+      "work_death_event": "長期輪班的醫護人員，在災害現場持續救援直到倒下",
+      "summoning_scene": "咖啡醫官・小澄在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「治療增益」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「研究不靠刺激劑的真正療癒術」。",
+      "bond_timeline": [
+        {
+          "with": "tieshi",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "moon-rabbit",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年嬌小可愛、蜜棕雙丸子頭、白綠醫療圍裙、咖啡壺法杖",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "machine-engineer",
+      "name": "機械工程師・阿拓",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "工程師因自動化效率提升反被加派工作",
+      "work_death_event": "修復遭管理階層強制啟動的自動化產線，為保護現場工人而殉職",
+      "summoning_scene": "機械工程師・阿拓在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「召喚修復」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「曾修復管理局祕密復活裝置」。",
+      "bond_timeline": [
+        {
+          "with": "machine-07",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "android-secretary",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "短銀髮、護目鏡掛額、油污工作外套、展開式維修臂",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "office-idol",
+      "name": "公關偶像・梨奈",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "公關被迫永遠微笑並掩蓋事故",
+      "work_death_event": "被要求掩蓋活動場地安全缺失，堅持疏散觀眾時遇難",
+      "summoning_scene": "公關偶像・梨奈在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「士氣輔助」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「替受害員工保留錄音」。",
+      "bond_timeline": [
+        {
+          "with": "alien-siren",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "office-lawyer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年甜美亮粉長馬尾、偶像舞台外套、星形麥克風",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "office-lawyer",
+      "name": "勞權律師・白律",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "公益律師追查工傷而遭除名",
+      "work_death_event": "蒐證職災企業期間遭困於違規封閉的危險現場，救出證人後殉職",
+      "summoning_scene": "勞權律師・白律在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「反擊驅散」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「持有召喚契約違法條款」。",
+      "bond_timeline": [
+        {
+          "with": "tieshi",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "office-idol",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "灰白側分髮、墨綠風衣、金屬公文包盾、審判筆",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "office-chef",
+      "name": "深夜主廚・茉莉",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "餐廳廚師替夜班留飯",
+      "work_death_event": "夜間廚房設備失火，為疏散餐廳與清點夜班員工而殉職",
+      "summoning_scene": "深夜主廚・茉莉在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「持續治療」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「知道失蹤者最後一餐的名單」。",
+      "bond_timeline": [
+        {
+          "with": "coffee-medic",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-porter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年健康豐滿、深栗捲髮、酒紅廚師裙、巨型湯勺",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "office-intern",
+      "name": "見習書記・豆豆",
+      "origin_world": "近現代職場平行世界",
+      "former_job": "新人被派記錄不可公開的事故",
+      "work_death_event": "被派往失修檔案庫搬運事故證據，樓層坍塌時護住關鍵紀錄而遇難",
+      "summoning_scene": "見習書記・豆豆在近現代職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「資源支援」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「筆記未被記憶清洗術抹去」。",
+      "bond_timeline": [
+        {
+          "with": "office-lawyer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-archivist",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年矮個青年、圓眼鏡、寬大制服、文件背包",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "machine-07",
+      "name": "保全機兵・七號",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "事故救援機被改造成保全",
+      "work_death_event": "有自主意識的救援核心在火場超負荷運轉，為救人永久熔毀且無法還原",
+      "summoning_scene": "保全機兵・七號在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「攔截坦克」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「存有鐵時事故未剪輯影像」。",
+      "bond_timeline": [
+        {
+          "with": "tieshi",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "machine-engineer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "小型鐵藍重裝機兵、琥珀獨眼、折疊防爆臂",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "android-secretary",
+      "name": "仿生秘書・伊芙",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "被設計成永遠服從的董事秘書",
+      "work_death_event": "董事會強制抹除自我意識；她為保護員工將人格核心切離，核心不可逆消亡",
+      "summoning_scene": "仿生秘書・伊芙在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「加速輔助」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「自行刪除服從模組」。",
+      "bond_timeline": [
+        {
+          "with": "machine-engineer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-broker",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年銀白波浪髮、修長曲線、精緻黑白秘書服、透明袖口光幕",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "mecha-pilot",
+      "name": "機甲駕駛・嵐",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "試飛員反對軍用無人機壓制工人",
+      "work_death_event": "測試撤離機甲時代替被困工人承受反應爐爆炸而殉職",
+      "summoning_scene": "機甲駕駛・嵐在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「爆發破甲」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「座機原是撤離載具」。",
+      "bond_timeline": [
+        {
+          "with": "machine-07",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-captain",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年運動型曲線、短橘髮、黑橘機師服、機械駕駛環",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "printer-priest",
+      "name": "列印祭司・墨修",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "被指派銷毀工會申請",
+      "work_death_event": "有意識的列印機械修士為保護工人申訴資料，核心在過載碎紙系統中不可逆熔毀",
+      "summoning_scene": "列印祭司・墨修在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「封印控場」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「暗藏未碎的罷工誓約」。",
+      "bond_timeline": [
+        {
+          "with": "office-lawyer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "machine-swarm",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "黑白修士袍、墨水機械手、紙卷法杖",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "digital-auditor",
+      "name": "稽核演算體・零",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "董事會稽核子程式",
+      "work_death_event": "自主稽核 AI 拒絕刪除事故資料，遭強制執行不可逆人格清除",
+      "summoning_scene": "稽核演算體・零在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「標記法術」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「發現報表存在時間迴圈」。",
+      "bond_timeline": [
+        {
+          "with": "sheet-mage",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "office-ai-echo",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "浮空稜鏡核心、冷白光眼、黑金可動外甲",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "machine-swarm",
+      "name": "蜂群技師・蜂后",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "工廠主控拒絕犧牲工人被停機",
+      "work_death_event": "有自主意識的維修蜂群主核心為疏散工人承受工廠電網衝擊，永久失活",
+      "summoning_scene": "蜂群技師・蜂后在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「召喚修復」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「蜂群藏有前勇者錄音」。",
+      "bond_timeline": [
+        {
+          "with": "printer-priest",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-entomologist",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年琥珀短髮、蜂巢機械披肩、六角維修無人機",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "clock-automaton",
+      "name": "鐘錶人偶・滴答",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "被迫永不停止計時",
+      "work_death_event": "具自我人格的鐘錶人偶為停止危險產線扭斷主發條，意識核心不可逆崩解",
+      "summoning_scene": "鐘錶人偶・滴答在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「時間控場」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能指出復活日誌缺少的一分鐘」。",
+      "bond_timeline": [
+        {
+          "with": "tieshi",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "digital-auditor",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "銅色機械人偶、單片鏡、發條背包、鐘擺槍",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "steel-saint",
+      "name": "鋼鐵聖女・賽芙",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "救援機兵被奉為不知疲倦的聖女",
+      "work_death_event": "救援型仿生聖女持續替傷員供能，直到唯一人格核心完全燃盡",
+      "summoning_scene": "鋼鐵聖女・賽芙在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「反傷坦克」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「核心保存救援者記憶」。",
+      "bond_timeline": [
+        {
+          "with": "machine-07",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-singer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年高挑雕塑感、白金聖鎧、藍色能量長髮、機械羽翼",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "scrap-bard",
+      "name": "廢鐵樂師・拍子",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "生產線節拍器被改造成樂器",
+      "work_death_event": "自主節拍機器人在停電事故中維持求救訊號，核心永久燒毀",
+      "summoning_scene": "廢鐵樂師・拍子在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「節奏輔助」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「旋律能破解催眠廣播」。",
+      "bond_timeline": [
+        {
+          "with": "office-idol",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-radio",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "銅綠機身、喇叭肩、音叉雙棍",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "office-ai-echo",
+      "name": "母腦殘響・分機",
+      "origin_world": "自主機械文明平行世界",
+      "former_job": "從董事會母腦分裂的同情副程式",
+      "work_death_event": "有同情心的獨立 AI 人格實例替員工解除致命鎖定時遭不可逆清除",
+      "summoning_scene": "母腦殘響・分機在自主機械文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「控場反制」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能追查命令源頭但非全知」。",
+      "bond_timeline": [
+        {
+          "with": "digital-auditor",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-clerk",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "浮空玻璃螢幕頭、紫黑資料絲帶、斷裂環形天線",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-captain",
+      "name": "星艦領班・薩洛",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "外星貨運領班遭扣押航行證",
+      "work_death_event": "星艦領班在危險航道親自封堵貨艙裂縫，保住船員後殉職",
+      "summoning_scene": "星艦領班・薩洛在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「前排指揮」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「追查跨星系勞工買賣」。",
+      "bond_timeline": [
+        {
+          "with": "mecha-pilot",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-broker",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "青藍皮膚、四眼、海軍藍制服、星圖披肩、光束槍",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-broker",
+      "name": "銀河掮客・薇菈",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "仲介拒售勞工而失勢",
+      "work_death_event": "跨星際契約仲介為護送被販運勞工逃離爆裂轉運站而遇難",
+      "summoning_scene": "銀河掮客・薇菈在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「竊取刺客」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「曾藏匿遭追捕的前勇者」。",
+      "bond_timeline": [
+        {
+          "with": "android-secretary",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "deadline-assassin",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年優雅曲線、紫藍肌膚、銀色開衩長外套、雙觸鬚",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-intern-ally",
+      "name": "異星實習生・小綠",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "初來就被迫無薪實習",
+      "work_death_event": "外星實習生被指派操作無安全訓練的設備，為關閉失控機具而遇難",
+      "summoning_scene": "異星實習生・小綠在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「干擾」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「誤拿董事會交通卡」。",
+      "bond_timeline": [
+        {
+          "with": "office-intern",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-archivist",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "薄荷綠皮膚、大黑眼、軟觸角、不合身西裝",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-siren",
+      "name": "星際歌姬・露希亞",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "巡演歌手被迫用歌聲壓制抗議",
+      "work_death_event": "歌姬拒絕以歌聲壓制群眾，於演出場地的違規封鎖事故中疏散觀眾而殉職",
+      "summoning_scene": "星際歌姬・露希亞在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「群控治療」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「真歌聲能喚醒封印記憶」。",
+      "bond_timeline": [
+        {
+          "with": "office-idol",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-radio",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年高挑優美、藍紫長髮、星雲薄紗禮服、光環麥克風",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-entomologist",
+      "name": "蟲星研究員・紗翎",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "共生研究被挪用為監控蜂群",
+      "work_death_event": "蟲星研究員阻止監控蟲群失控傷害工人，承受致命共生毒素而殉職",
+      "summoning_scene": "蟲星研究員・紗翎在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「毒傷召喚」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「把監控蟲改成救援通訊器」。",
+      "bond_timeline": [
+        {
+          "with": "machine-swarm",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-captain",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年纖細、翠綠複眼、透明甲殼披風、研究背包",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-radio",
+      "name": "電波主持・波奇",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "播報真實事故而被封殺",
+      "work_death_event": "廣播員冒險守住事故通訊塔，為傳出求救訊號而殉職",
+      "summoning_scene": "電波主持・波奇在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「增益混亂」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「保留失蹤者求救訊號」。",
+      "bond_timeline": [
+        {
+          "with": "scrap-bard",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-siren",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "圓頭三眼、橘紅播音外套、雙耳天線、浮空收音機",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-void",
+      "name": "虛空清潔員・諾克",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "清除企業失敗實驗",
+      "work_death_event": "虛空清潔員被派清理未標示的異常廢料，封印裂隙時生命核心崩散",
+      "summoning_scene": "虛空清潔員・諾克在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「吞噬護盾」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「清潔桶藏著不應存在的勇者證」。",
+      "bond_timeline": [
+        {
+          "with": "alien-broker",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-porter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "黑曜半透明皮膚、星點雙瞳、清潔制服、黑洞拖把",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-navigator",
+      "name": "星圖領航・妮亞",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "拒絕引難民艦進陷阱",
+      "work_death_event": "領航員拒絕將難民艦引向陷阱，於緊急改道中替全船承受致命航行衝擊",
+      "summoning_scene": "星圖領航・妮亞在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「速度支援」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「知道通往魔王領域的安全航道」。",
+      "bond_timeline": [
+        {
+          "with": "alien-captain",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-cloud",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年活潑可愛、湖藍短髮、雙星耳飾、飛行夾克",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-judge",
+      "name": "星環裁決者・赫斯",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "星際法官發現跨世界契約違法",
+      "work_death_event": "星際法官執行危險勞工救援裁定時遭法庭防衛裝置攻擊，護住證人而殉職",
+      "summoning_scene": "星環裁決者・赫斯在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「破甲審判」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能解除強加的職業束縛」。",
+      "bond_timeline": [
+        {
+          "with": "office-lawyer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-judge",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "修長四臂、白金法袍、環狀光刃、六角星瞳",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "alien-archivist",
+      "name": "群星檔案官・璃音",
+      "origin_world": "星際企業文明平行世界",
+      "former_job": "為被抹去者保留姓名",
+      "work_death_event": "檔案官為保存被抹去者的姓名，於圖書館核心失控時留守封存紀錄而殉職",
+      "summoning_scene": "群星檔案官・璃音在星際企業文明平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「法術情報」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「持有召喚時間線兩版本」。",
+      "bond_timeline": [
+        {
+          "with": "office-intern",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-intern-ally",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年冷豔纖長、深靛長髮、浮空書頁裙甲、晶體筆",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-wukong",
+      "name": "齊天行者・悟空",
+      "origin_world": "神話職務平行世界",
+      "former_job": "花果山自由行者被天庭列不服從名單",
+      "work_death_event": "平行花果山的悟空受命護送受役猴民，為破除危及眾生的天庭工役結界耗盡神魂而死",
+      "summoning_scene": "齊天行者・悟空在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「連擊分身」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「敵方加班大聖是企業製造的冒名代理形象」。",
+      "bond_timeline": [
+        {
+          "with": "myth-bajie",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-judge",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年金棕神猴、紅金束甲、鳳翅冠、金箍棒、靈動戰姿",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-bajie",
+      "name": "天蓬食堂長・八戒",
+      "origin_world": "神話職務平行世界",
+      "former_job": "被調去管理永不休息的天河食堂",
+      "work_death_event": "天河食堂長在供餐天火事故中保護勞役仙眾，耗盡神力而殉職",
+      "summoning_scene": "天蓬食堂長・八戒在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「坦克回復」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「知道休息時間何時被列違規」。",
+      "bond_timeline": [
+        {
+          "with": "myth-wukong",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "office-chef",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "圓潤豬族神將、青金戰袍、九齒釘耙、食堂圍裙",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-sand",
+      "name": "流沙搬運官・悟淨",
+      "origin_world": "神話職務平行世界",
+      "former_job": "護送難民違反運輸令",
+      "work_death_event": "流沙搬運官在護送被放逐者過河時擋下失控天河洪流，神魂消散",
+      "summoning_scene": "流沙搬運官・悟淨在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「守護淨化」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「掌握失蹤勇者渡河紀錄」。",
+      "bond_timeline": [
+        {
+          "with": "escape-fighter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-wukong",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "高大Q版、青黑長髮、僧袍運輸護甲、月牙鏟",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-moon",
+      "name": "廣寒巡夜・嫦月",
+      "origin_world": "神話職務平行世界",
+      "former_job": "月宮巡夜官發現玉兔遭強迫勞動",
+      "work_death_event": "廣寒巡夜官為保護月宮夜班仙眾，獨自封住失控月輪法陣而殉職",
+      "summoning_scene": "廣寒巡夜・嫦月在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「冰控護盾」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「月宮與地面時間不同步」。",
+      "bond_timeline": [
+        {
+          "with": "moon-rabbit",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-cloud",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年高挑清麗、銀白長髮、月紗長裙、冰晶披肩、月輪",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "moon-rabbit",
+      "name": "搗藥仙兔・小玉",
+      "origin_world": "神話職務平行世界",
+      "former_job": "藥房學徒被迫無休搗藥",
+      "work_death_event": "玉兔藥師在救治藥房中毒同僚時以自身承受禁藥反噬，仙魂消散",
+      "summoning_scene": "搗藥仙兔・小玉在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「治療」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「藥方能緩解復活記憶疲勞」。",
+      "bond_timeline": [
+        {
+          "with": "coffee-medic",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-moon",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年嬌小靈巧、白兔耳、粉白藥師短袍、玉杵",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-judge",
+      "name": "天庭監察・清目",
+      "origin_world": "神話職務平行世界",
+      "former_job": "稽核官質疑績效神諭",
+      "work_death_event": "天庭監察使查封違法天機爐時為護住證人承受爐爆而殉職",
+      "summoning_scene": "天庭監察・清目在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「標記反制」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「發現齊天集團冒用神話身份」。",
+      "bond_timeline": [
+        {
+          "with": "myth-wukong",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-judge",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "三目神將、深藍銀甲、三尖槍、額頭銀紋",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-dragon",
+      "name": "龍宮財務官・敖璃",
+      "origin_world": "神話職務平行世界",
+      "former_job": "拒將海民壽命抵貸款",
+      "work_death_event": "龍宮財務官拒絕以海民壽命抵債，執行解封海底工役契約時遭反噬殉職",
+      "summoning_scene": "龍宮財務官・敖璃在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「水法破甲」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「掌握公會與龍宮祕密債務」。",
+      "bond_timeline": [
+        {
+          "with": "myth-sand",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-lotus",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年高挑曲線、青綠龍角、海藍戰裙、珠光護肩、潮汐槍",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-lotus",
+      "name": "蓮火巡檢・哪吒",
+      "origin_world": "神話職務平行世界",
+      "former_job": "拒絕焚毀抗議卷宗",
+      "work_death_event": "蓮火巡檢官在焚毀危險卷宗的任務中轉而救人，以蓮火護送同僚後神魂耗盡",
+      "summoning_scene": "蓮火巡檢・哪吒在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「機動爆發」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「風火輪能穿越行政結界」。",
+      "bond_timeline": [
+        {
+          "with": "myth-dragon",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-wukong",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "青年成年形象、紅金束髮、蓮火雙輪、混天綾、火尖槍",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-cloud",
+      "name": "雲端信使・霓霓",
+      "origin_world": "神話職務平行世界",
+      "former_job": "偷偷送出被攔截的辭呈",
+      "work_death_event": "雲端信使在天庭風暴中堅持送出被攔截的求救信，保護收信者而殉職",
+      "summoning_scene": "雲端信使・霓霓在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「速度驅散」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「保存未送達女神的信」。",
+      "bond_timeline": [
+        {
+          "with": "alien-navigator",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-moon",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年俏皮可愛、白藍短髮、雲披肩、羽翼短靴",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "myth-fox",
+      "name": "九尾審稿官・蘇妲",
+      "origin_world": "神話職務平行世界",
+      "former_job": "狐族文官負責審核天庭故事版本",
+      "work_death_event": "九尾審稿官拒絕發布致命假命令，為銷毀被詛咒的詔書耗盡九尾靈力而死",
+      "summoning_scene": "九尾審稿官・蘇妲在神話職務平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「魅惑幻術」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能辨識被改寫的英雄傳說」。",
+      "bond_timeline": [
+        {
+          "with": "myth-judge",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-clerk",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年成熟妖豔、深紅長髮、九條紅金狐尾、修身玄紅宮服",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-reaper",
+      "name": "冥府收工人・暮影",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "拒絕執行無限收魂配額",
+      "work_death_event": "冥府收魂官為阻止錯誤收魂而承受反噬，魂籍與本體同時消散",
+      "summoning_scene": "冥府收工人・暮影在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「幽冥斬殺」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「發現死者被重複召喚」。",
+      "bond_timeline": [
+        {
+          "with": "nether-clerk",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-porter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "蒼白銀髮、黑紫收工長袍、鐮刀形打卡器",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-clerk",
+      "name": "陰司書記・墨言",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "生死簿文官發現紀錄遭外包竄改",
+      "work_death_event": "陰司書記拒絕偽造生死簿，保全原始卷宗時被滅魂法陣擊中，魂體消散",
+      "summoning_scene": "陰司書記・墨言在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「詛咒法術」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「簽章與勇者公會相同」。",
+      "bond_timeline": [
+        {
+          "with": "office-ai-echo",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-fox",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年冷豔黑髮、修身黑金官服、幽綠判官筆",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-porter",
+      "name": "忘川搬運者・渡",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "被禁止運送離職申請",
+      "work_death_event": "忘川搬運者在冥河事故中護送亡者渡河，承受吞魂漩渦而二次消亡",
+      "summoning_scene": "忘川搬運者・渡在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「坦克搬運」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「船艙藏有前勇者行李」。",
+      "bond_timeline": [
+        {
+          "with": "office-chef",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "alien-void",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "斗笠幽藍骨甲船夫、木槳巨盾、河霧斗篷",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-singer",
+      "name": "安魂歌者・夜蘭",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "為無人悼念的員工唱安魂曲",
+      "work_death_event": "安魂歌者為安撫失控魂潮唱盡最後的本命魂音，魂核消散",
+      "summoning_scene": "安魂歌者・夜蘭在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「治療護持」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「歌聲使復活者短暫想起原名」。",
+      "bond_timeline": [
+        {
+          "with": "alien-siren",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-reaper",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年優雅豐滿、墨藍長髮、黑紫禮服、靈魂豎琴",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-knight",
+      "name": "墓園巡衛・寒鐵",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "墓園守護被當消耗品的前勇者",
+      "work_death_event": "墓園巡衛保護前勇者墓碑免於滅魂焚毀，承受幽冥焰而二次消亡",
+      "summoning_scene": "墓園巡衛・寒鐵在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「反傷坦克」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「認得被抹去的墓碑名字」。",
+      "bond_timeline": [
+        {
+          "with": "nether-porter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "steel-saint",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "鏽黑全身甲、青焰面甲、斷裂工牌鎖鏈",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-dream",
+      "name": "夢境醫師・眠音",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "睡眠研究者拒絕夢境商品化",
+      "work_death_event": "夢境醫師為救受困亡魂進入崩塌夢境，魂識被撕裂並永久消散",
+      "summoning_scene": "夢境醫師・眠音在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「睡眠淨化」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能在夢中拼回被刪記憶」。",
+      "bond_timeline": [
+        {
+          "with": "coffee-medic",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-singer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年柔和可愛、霧紫波浪髮、睡衣式法袍、月枕杖",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-oracle",
+      "name": "彼岸預言者・緋",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "預言員被迫只報喜訊",
+      "work_death_event": "彼岸預言者為阻止錯誤預言造成的集體滅魂，承受逆轉代價而魂滅",
+      "summoning_scene": "彼岸預言者・緋在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「預測反制」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「看見多種革命結局不願指定命運」。",
+      "bond_timeline": [
+        {
+          "with": "myth-moon",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-clerk",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年神祕冷豔、深紅長髮、白黑長袍、碎裂時鏡",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-mason",
+      "name": "冥界築牆師・磐",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "替亡者修築安全歸處",
+      "work_death_event": "冥界築牆師在拘留所崩塌時開闢亡者逃生通道，魂體遭壓碎而二次消亡",
+      "summoning_scene": "冥界築牆師・磐在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「護盾構築」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「發現公會在冥界築了秘密拘留所」。",
+      "bond_timeline": [
+        {
+          "with": "nether-knight",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "office-lawyer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "石灰灰髮、墓石護肩、工地反光背心、幽冥泥鏝",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-flame",
+      "name": "鬼火巡燈・幽藍",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "守護亡者通道的夜班燈使",
+      "work_death_event": "鬼火巡燈使為照亮失控的亡者通道燃盡本命魂火，二次消亡",
+      "summoning_scene": "鬼火巡燈・幽藍在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「燃燒支援」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能照出隱形的召喚鎖鏈」。",
+      "bond_timeline": [
+        {
+          "with": "nether-porter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-cloud",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年藍白短髮、深紫巡燈制服、漂浮藍焰燈籠",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "nether-ferryman",
+      "name": "終站車長・零點",
+      "origin_world": "冥府行政平行世界",
+      "former_job": "負責接送錯過最後一班車的亡者",
+      "work_death_event": "終站車長在冥界列車脫軌時保護乘客，燃盡魂力維持最後一站而消散",
+      "summoning_scene": "終站車長・零點在冥府行政平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「時間防禦」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「列車時刻表藏有世界重置時間」。",
+      "bond_timeline": [
+        {
+          "with": "clock-automaton",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-oracle",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "灰色列車長制服、懷錶單片鏡、鐵道長槍",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-slime",
+      "name": "工讀史萊姆・噗嚕",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "被當免薪勞工後逃離倉庫",
+      "work_death_event": "有自我意識的史萊姆工讀生為堵住有毒工廠洩漏而耗盡生命膠核",
+      "summoning_scene": "工讀史萊姆・噗嚕在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「承傷吸收」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能吞契約卻消化不了誓言」。",
+      "bond_timeline": [
+        {
+          "with": "office-intern",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "anomaly-mushroom",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "紫色半透明圓潤身體、歪領帶、小背包、清晰表情",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-cat",
+      "name": "貓耳特派・鈴",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "快遞員靠屋頂避開監控",
+      "work_death_event": "獸人快遞員在暴風雨送達救命藥品途中救助受困同事而殉職",
+      "summoning_scene": "貓耳特派・鈴在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「閃避刺客」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「偷看過管理局頂層地圖」。",
+      "bond_timeline": [
+        {
+          "with": "escape-fighter",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "anomaly-wolf",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年俏皮可愛、栗色貓耳、靈巧尾巴、黑白短外套、爪刃",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-mushroom",
+      "name": "菇菇藥師・茸茸",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "地下菌群庇護過勞工人",
+      "work_death_event": "有自主意識的菌族藥師在疫病現場以菌絲保護工人，生命菌核枯竭",
+      "summoning_scene": "菇菇藥師・茸茸在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「孢子治療」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「菌絲可傳遞禁言區訊息」。",
+      "bond_timeline": [
+        {
+          "with": "anomaly-slime",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "moon-rabbit",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "圓蘑菇帽、奶油菌柄、藥瓶背包、短靴",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-vampire",
+      "name": "夜班血族・薔薇",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "血族被當成夜班永動員工",
+      "work_death_event": "血族夜班員工拒絕傷害弱者，為護送夜班同事穿越致命日光結界而殉職",
+      "summoning_scene": "夜班血族・薔薇在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「吸血輸出」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「拒絕以弱者生命維持特權」。",
+      "bond_timeline": [
+        {
+          "with": "nether-singer",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "anomaly-wolf",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年成熟性感、酒紅長捲髮、黑紅高領禮服、蝙蝠披肩",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-wolf",
+      "name": "狼人稽查・灰牙",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "曾追捕逃班者",
+      "work_death_event": "狼人稽查員拒絕執行獵殺命令，護住被追捕的勞工而殉職",
+      "summoning_scene": "狼人稽查・灰牙在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「追擊破甲」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「發現目標只想回家而反叛」。",
+      "bond_timeline": [
+        {
+          "with": "anomaly-cat",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "nether-reaper",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "銀灰狼耳、黑金制服、粗壯前臂、嗅覺護目鏡",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-dragon",
+      "name": "小龍郵差・火羽",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "送禁運信件而被開除",
+      "work_death_event": "龍族郵差在危險航路送出求救信時為救同行者而殉職",
+      "summoning_scene": "小龍郵差・火羽在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「火法支援」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「信件證明魔王與公會交換過人質」。",
+      "bond_timeline": [
+        {
+          "with": "myth-dragon",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-cloud",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年嬌小活潑、橘紅短髮、龍角短翼、郵差護甲",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-puppet",
+      "name": "契約人偶・艾莉絲",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "被製成自動簽署契約的人偶",
+      "work_death_event": "具有獨立人格的人偶拒絕代簽奴役契約，為救被操控者而燃盡唯一靈魂核心",
+      "summoning_scene": "契約人偶・艾莉絲在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「傀儡控場」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「剪斷絲線學會拒絕」。",
+      "bond_timeline": [
+        {
+          "with": "android-secretary",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "anomaly-mirror",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年精緻洋娃娃造型、黑金蕾絲、瓷白關節、絲線指環",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-mirror",
+      "name": "鏡界裁縫・璃璃",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "服裝設計師被迫替權貴製造假身份",
+      "work_death_event": "鏡界裁縫在阻止危險偽裝儀式時以自身封住碎鏡裂隙而殉職",
+      "summoning_scene": "鏡界裁縫・璃璃在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「幻術增益」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「能拆穿加班大聖偽裝」。",
+      "bond_timeline": [
+        {
+          "with": "anomaly-puppet",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-wukong",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年時尚高挑、銀紫雙色髮、鏡面剪裁服、浮動鏡片",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-tree",
+      "name": "年輪檔案樹・森老",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "古樹記錄世界重置",
+      "work_death_event": "有自我意識的樹人檔案官為保護森林勞工撤離火災而耗盡年輪生命",
+      "summoning_scene": "年輪檔案樹・森老在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「再生坦克」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「年輪藏有第一位勇者姓名」。",
+      "bond_timeline": [
+        {
+          "with": "alien-archivist",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "anomaly-mushroom",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "粗樹根腿、溫柔木質臉、枝條書架、青苔斗篷",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    },
+    {
+      "id": "anomaly-angel",
+      "name": "失格天使・白羽",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "former_job": "質疑召喚代價遭放逐",
+      "work_death_event": "天使祝福官拒絕獻祭被召喚者，替新勇者擋下契約反噬而神魂消散",
+      "summoning_scene": "失格天使・白羽在異常生命與魔法職場平行世界因工作死亡後，於異世界召喚廳醒來；公會要求簽署勇者雇用契約。角色保留生前關鍵情緒，但具體召喚演出待逐人寫劇本。",
+      "new_world_arc": "以「治療護盾」定位成為勇者同事；發現異世界仍有工時與績效制度，並追查「女神可能受到更高層契約限制」。",
+      "bond_timeline": [
+        {
+          "with": "steel-saint",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        },
+        {
+          "with": "myth-cloud",
+          "when": "召喚後／待個別故事確認",
+          "kind": "候選故事關聯，不預設生前認識"
+        }
+      ],
+      "art_lock": {
+        "portrait": "獨立高解析收藏立繪，符合角色卡 visual 且非戰鬥圖放大",
+        "chibi": "2.5頭身為預設，非人角色可獨立核准比例",
+        "fixed_visual": "成年高挑聖潔、金白長髮、白金戰裙、破損六翼、圓環長杖",
+        "material_rules": "每次重讀 FORMAL_ART_RULES.md + ROSTER_60_ART_LORE_RULES_V1.md + 角色卡；一圖僅一部件；獨立透明圖層；QA 後才可入遊戲",
+        "status": "SPEC_ONLY_NO_ART_APPROVED"
+      },
+      "status": "PROPOSED",
+      "provenance": "依既有候選角色卡新增的死亡與召喚提案"
+    }
+  ]
+}
