@@ -1,0 +1,372 @@
+{
+  "version": "V3",
+  "status": "ORIGIN_WORLD_GROUPING_6x10",
+  "supersedes": "ROSTER_60_ORIGIN_WORLD_GROUPS_V2",
+  "count": 60,
+  "groups": [
+    {
+      "id": "WORLD-01",
+      "name": "近現代職場世界",
+      "origin_world": "近現代職場平行世界",
+      "members": [
+        {
+          "id": "tieshi",
+          "name": "打卡守衛・鐵時"
+        },
+        {
+          "id": "escape-fighter",
+          "name": "逃班鬥士・五分鐘"
+        },
+        {
+          "id": "deadline-assassin",
+          "name": "截止日刺客・赤線"
+        },
+        {
+          "id": "sheet-mage",
+          "name": "試算表法師・千式"
+        },
+        {
+          "id": "coffee-medic",
+          "name": "咖啡醫官・小澄"
+        },
+        {
+          "id": "machine-engineer",
+          "name": "機械工程師・阿拓"
+        },
+        {
+          "id": "office-idol",
+          "name": "公關偶像・梨奈"
+        },
+        {
+          "id": "office-lawyer",
+          "name": "勞權律師・白律"
+        },
+        {
+          "id": "office-chef",
+          "name": "深夜主廚・茉莉"
+        },
+        {
+          "id": "office-intern",
+          "name": "見習書記・豆豆"
+        }
+      ],
+      "predeath_note": "同一原世界類型，實際共同時空與生前交情需劇情證實；可完全沒有交集",
+      "postdeath_note": "跨組關係自由建立，不影響出生世界歸屬"
+    },
+    {
+      "id": "WORLD-02",
+      "name": "自主機械文明世界",
+      "origin_world": "自主機械文明平行世界",
+      "members": [
+        {
+          "id": "machine-07",
+          "name": "保全機兵・七號"
+        },
+        {
+          "id": "android-secretary",
+          "name": "仿生秘書・伊芙"
+        },
+        {
+          "id": "mecha-pilot",
+          "name": "機甲駕駛・嵐"
+        },
+        {
+          "id": "printer-priest",
+          "name": "列印祭司・墨修"
+        },
+        {
+          "id": "digital-auditor",
+          "name": "稽核演算體・零"
+        },
+        {
+          "id": "machine-swarm",
+          "name": "蜂群技師・蜂后"
+        },
+        {
+          "id": "clock-automaton",
+          "name": "鐘錶人偶・滴答"
+        },
+        {
+          "id": "steel-saint",
+          "name": "鋼鐵聖女・賽芙"
+        },
+        {
+          "id": "scrap-bard",
+          "name": "廢鐵樂師・拍子"
+        },
+        {
+          "id": "office-ai-echo",
+          "name": "母腦殘響・分機"
+        }
+      ],
+      "predeath_note": "同一原世界類型，實際共同時空與生前交情需劇情證實；可完全沒有交集",
+      "postdeath_note": "跨組關係自由建立，不影響出生世界歸屬"
+    },
+    {
+      "id": "WORLD-03",
+      "name": "星際企業文明世界",
+      "origin_world": "星際企業文明平行世界",
+      "members": [
+        {
+          "id": "alien-captain",
+          "name": "星艦領班・薩洛"
+        },
+        {
+          "id": "alien-navigator",
+          "name": "星圖領航・妮亞"
+        },
+        {
+          "id": "alien-broker",
+          "name": "銀河掮客・薇菈"
+        },
+        {
+          "id": "alien-archivist",
+          "name": "群星檔案官・璃音"
+        },
+        {
+          "id": "alien-intern-ally",
+          "name": "異星實習生・小綠"
+        },
+        {
+          "id": "alien-siren",
+          "name": "星際歌姬・露希亞"
+        },
+        {
+          "id": "alien-entomologist",
+          "name": "蟲星研究員・紗翎"
+        },
+        {
+          "id": "alien-radio",
+          "name": "電波主持・波奇"
+        },
+        {
+          "id": "alien-void",
+          "name": "虛空清潔員・諾克"
+        },
+        {
+          "id": "alien-judge",
+          "name": "星環裁決者・赫斯"
+        }
+      ],
+      "predeath_note": "同一原世界類型，實際共同時空與生前交情需劇情證實；可完全沒有交集",
+      "postdeath_note": "跨組關係自由建立，不影響出生世界歸屬"
+    },
+    {
+      "id": "WORLD-04",
+      "name": "神話職務世界",
+      "origin_world": "神話職務平行世界",
+      "members": [
+        {
+          "id": "myth-wukong",
+          "name": "齊天行者・悟空"
+        },
+        {
+          "id": "myth-bajie",
+          "name": "天蓬食堂長・八戒"
+        },
+        {
+          "id": "myth-sand",
+          "name": "流沙搬運官・悟淨"
+        },
+        {
+          "id": "myth-lotus",
+          "name": "蓮火巡檢・哪吒"
+        },
+        {
+          "id": "myth-dragon",
+          "name": "龍宮財務官・敖璃"
+        },
+        {
+          "id": "myth-moon",
+          "name": "廣寒巡夜・嫦月"
+        },
+        {
+          "id": "moon-rabbit",
+          "name": "搗藥仙兔・小玉"
+        },
+        {
+          "id": "myth-judge",
+          "name": "天庭監察・清目"
+        },
+        {
+          "id": "myth-cloud",
+          "name": "雲端信使・霓霓"
+        },
+        {
+          "id": "myth-fox",
+          "name": "九尾審稿官・蘇妲"
+        }
+      ],
+      "predeath_note": "同一原世界類型，實際共同時空與生前交情需劇情證實；可完全沒有交集",
+      "postdeath_note": "跨組關係自由建立，不影響出生世界歸屬"
+    },
+    {
+      "id": "WORLD-05",
+      "name": "冥府行政世界",
+      "origin_world": "冥府行政平行世界",
+      "members": [
+        {
+          "id": "nether-reaper",
+          "name": "冥府收工人・暮影"
+        },
+        {
+          "id": "nether-clerk",
+          "name": "陰司書記・墨言"
+        },
+        {
+          "id": "nether-porter",
+          "name": "忘川搬運者・渡"
+        },
+        {
+          "id": "nether-singer",
+          "name": "安魂歌者・夜蘭"
+        },
+        {
+          "id": "nether-ferryman",
+          "name": "終站車長・零點"
+        },
+        {
+          "id": "nether-knight",
+          "name": "墓園巡衛・寒鐵"
+        },
+        {
+          "id": "nether-dream",
+          "name": "夢境醫師・眠音"
+        },
+        {
+          "id": "nether-oracle",
+          "name": "彼岸預言者・緋"
+        },
+        {
+          "id": "nether-mason",
+          "name": "冥界築牆師・磐"
+        },
+        {
+          "id": "nether-flame",
+          "name": "鬼火巡燈・幽藍"
+        }
+      ],
+      "predeath_note": "同一原世界類型，實際共同時空與生前交情需劇情證實；可完全沒有交集",
+      "postdeath_note": "跨組關係自由建立，不影響出生世界歸屬"
+    },
+    {
+      "id": "WORLD-06",
+      "name": "異常生命與魔法世界",
+      "origin_world": "異常生命與魔法職場平行世界",
+      "members": [
+        {
+          "id": "anomaly-slime",
+          "name": "工讀史萊姆・噗嚕"
+        },
+        {
+          "id": "anomaly-cat",
+          "name": "貓耳特派・鈴"
+        },
+        {
+          "id": "anomaly-mushroom",
+          "name": "菇菇藥師・茸茸"
+        },
+        {
+          "id": "anomaly-vampire",
+          "name": "夜班血族・薔薇"
+        },
+        {
+          "id": "anomaly-wolf",
+          "name": "狼人稽查・灰牙"
+        },
+        {
+          "id": "anomaly-dragon",
+          "name": "小龍郵差・火羽"
+        },
+        {
+          "id": "anomaly-puppet",
+          "name": "契約人偶・艾莉絲"
+        },
+        {
+          "id": "anomaly-mirror",
+          "name": "鏡界裁縫・璃璃"
+        },
+        {
+          "id": "anomaly-tree",
+          "name": "年輪檔案樹・森老"
+        },
+        {
+          "id": "anomaly-angel",
+          "name": "失格天使・白羽"
+        }
+      ],
+      "predeath_note": "同一原世界類型，實際共同時空與生前交情需劇情證實；可完全沒有交集",
+      "postdeath_note": "跨組關係自由建立，不影響出生世界歸屬"
+    }
+  ],
+  "character_to_group": {
+    "tieshi": "WORLD-01",
+    "escape-fighter": "WORLD-01",
+    "deadline-assassin": "WORLD-01",
+    "sheet-mage": "WORLD-01",
+    "coffee-medic": "WORLD-01",
+    "machine-engineer": "WORLD-01",
+    "office-idol": "WORLD-01",
+    "office-lawyer": "WORLD-01",
+    "office-chef": "WORLD-01",
+    "office-intern": "WORLD-01",
+    "machine-07": "WORLD-02",
+    "android-secretary": "WORLD-02",
+    "mecha-pilot": "WORLD-02",
+    "printer-priest": "WORLD-02",
+    "digital-auditor": "WORLD-02",
+    "machine-swarm": "WORLD-02",
+    "clock-automaton": "WORLD-02",
+    "steel-saint": "WORLD-02",
+    "scrap-bard": "WORLD-02",
+    "office-ai-echo": "WORLD-02",
+    "alien-captain": "WORLD-03",
+    "alien-navigator": "WORLD-03",
+    "alien-broker": "WORLD-03",
+    "alien-archivist": "WORLD-03",
+    "alien-intern-ally": "WORLD-03",
+    "alien-siren": "WORLD-03",
+    "alien-entomologist": "WORLD-03",
+    "alien-radio": "WORLD-03",
+    "alien-void": "WORLD-03",
+    "alien-judge": "WORLD-03",
+    "myth-wukong": "WORLD-04",
+    "myth-bajie": "WORLD-04",
+    "myth-sand": "WORLD-04",
+    "myth-lotus": "WORLD-04",
+    "myth-dragon": "WORLD-04",
+    "myth-moon": "WORLD-04",
+    "moon-rabbit": "WORLD-04",
+    "myth-judge": "WORLD-04",
+    "myth-cloud": "WORLD-04",
+    "myth-fox": "WORLD-04",
+    "nether-reaper": "WORLD-05",
+    "nether-clerk": "WORLD-05",
+    "nether-porter": "WORLD-05",
+    "nether-singer": "WORLD-05",
+    "nether-ferryman": "WORLD-05",
+    "nether-knight": "WORLD-05",
+    "nether-dream": "WORLD-05",
+    "nether-oracle": "WORLD-05",
+    "nether-mason": "WORLD-05",
+    "nether-flame": "WORLD-05",
+    "anomaly-slime": "WORLD-06",
+    "anomaly-cat": "WORLD-06",
+    "anomaly-mushroom": "WORLD-06",
+    "anomaly-vampire": "WORLD-06",
+    "anomaly-wolf": "WORLD-06",
+    "anomaly-dragon": "WORLD-06",
+    "anomaly-puppet": "WORLD-06",
+    "anomaly-mirror": "WORLD-06",
+    "anomaly-tree": "WORLD-06",
+    "anomaly-angel": "WORLD-06"
+  },
+  "rules": [
+    "Each hero assigned exactly once",
+    "10 per origin world",
+    "Shared world does not imply acquaintance",
+    "No artificial predeath ties",
+    "Post-summon cross-world relationships allowed",
+    "Each story must be individually distinctive"
+  ]
+}
