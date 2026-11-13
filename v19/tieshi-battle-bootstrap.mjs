@@ -18,6 +18,7 @@ try {
  });
  window.__salaryBossV5?.setTieshiStoryAwakened(story.tieshiStoryAwakened(storyState));
  await import('./tieshi-battle-clock.mjs');
+ await import('./tieshi-spirit-bridge.mjs');
 } catch(error){
  console.error('[Salary Hero] Tieshi battle bootstrap failed',error);
  const message=document.createElement('div');message.setAttribute('role','alert');

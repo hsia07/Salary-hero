@@ -1045,6 +1045,33 @@ window.__salaryBossV5={
  get skillTime(){return v4Time},
  get guardState(){return {...v60Guard}},
  get tieshiAwakening(){return {...tieshiAwakening}},
+ get tieshiSpiritSnapshot(){return window.__tieshiSpiritBridge?.snapshot?.()||null},
+ applyTieshiSpiritEffect(effect){
+  if(clock.done||clock.paused||!effect||!tieshiAwakening.biographyCleared)return false;
+  const i=effect.targetIndex;
+  if(effect.kind==='heal'){
+   if(!Number.isInteger(i)||i<0||i>=allies.length||allies[i]<=0)return false;
+   const before=allies[i];allies[i]=Math.min(v59MaxHp[i],allies[i]+Math.max(0,effect.amount||0));
+   const actual=allies[i]-before;if(actual<=0)return false;
+   const health=team[i]?.querySelector('.v2Health');if(health)health.style.width=(allies[i]/v59MaxHp[i]*100)+'%';
+   v59Log({type:'heal',source:'小燈',target:i,value:actual});
+   document.dispatchEvent(new CustomEvent('tieshi:spirit-visual',{detail:{kind:'lantern',target:i,durationMs:500}}));
+   return true;
+  }
+  if(effect.kind==='shield'){
+   if(!Number.isInteger(i)||i<0||i>=allies.length||allies[i]<=0)return false;
+   const ratio=Math.max(0,(effect.amount||0)/v59MaxHp[i]);
+   v59ApplyShield(i,ratio,'阿誠',5000);
+   document.dispatchEvent(new CustomEvent('tieshi:spirit-visual',{detail:{kind:'engineer',target:i,durationMs:600}}));
+   return true;
+  }
+  if(effect.kind==='weaken'){
+   // Multi-enemy debuffs require per-enemy damage routing; do not pretend to apply one.
+   return false;
+  }
+  return false;
+ },
+
  setTieshiStoryAwakened:(unlocked)=>{tieshiAwakening.biographyCleared=Boolean(unlocked);if(!unlocked){tieshiAwakening.protectUntil=0;if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}}return tieshiAwakening.biographyCleared},
  devTieshiBiography:(cleared)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.biographyCleared=Boolean(cleared);if(!cleared){tieshiAwakening.protectUntil=0;if(tieshiAwakening.activeUntil>0){tieshiAwakening.activeUntil=0;tieshiBattleEvent('tieshi:awakened-ultimate:end')}}return true},
  devTieshiEnergy:(energy)=>{if(new URLSearchParams(location.search).get('dev')!=='1')return false;tieshiAwakening.energy=Math.max(0,Math.min(100,Number(energy)||0));return true},
