@@ -1,0 +1,29 @@
+name: Tieshi story and rarity regression
+
+on:
+  push:
+    paths:
+      - 'v19/tieshi-*.mjs'
+      - 'tests/tieshi-*.test.mjs'
+      - '.github/workflows/tieshi-regression.yml'
+  pull_request:
+    paths:
+      - 'v19/tieshi-*.mjs'
+      - 'tests/tieshi-*.test.mjs'
+      - '.github/workflows/tieshi-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify Tieshi character, story and final-class regressions
+        run: node --test tests/tieshi-character-content.test.mjs tests/tieshi-necromancer.test.mjs tests/tieshi-story-progress.test.mjs
