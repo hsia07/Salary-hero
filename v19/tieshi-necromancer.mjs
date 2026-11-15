@@ -6,7 +6,7 @@ export const TIESHI_SPIRITS=Object.freeze({
  engineer:Object.freeze({id:'engineer',name:'阿誠',role:'shield',cooldownMs:8000,shieldMaxHpRatio:.08}),
  scout:Object.freeze({id:'scout',name:'阿遠',role:'weaken',cooldownMs:10000,damageReductionRatio:.12,durationMs:4000})
 });
-export const TIESHI_FINAL_CLASS=Object.freeze({id:'necromantic-guardian',name:'死靈護衛',rarity:'SR',clock:'09:00',bond:'不滅的交班',maxWill:6});
+export const TIESHI_FINAL_CLASS=Object.freeze({id:'necromantic-guardian',name:'死靈護衛',rarity:'SSR',clock:'09:00',bond:'不滅的交班',maxWill:6});
 export function tieshiFinalUnlocked({midgameAwakened=false,finalEvent=false}={}){return midgameAwakened===true&&finalEvent===true;}
 export function tieshiFinalState(raw={}){return {finalEvent:raw?.finalEvent===true,primarySpirit:Object.hasOwn(TIESHI_SPIRITS,raw?.primarySpirit)?raw.primarySpirit:'engineer'};}
 export function tieshiFinalAdvance(raw,event,{midgameAwakened=false}={}){
