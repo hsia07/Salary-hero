@@ -4,9 +4,9 @@
  * are normalized to a 100-HP reference, NOT the final RPG stat scale.
  */
 export const ALLY_ROLES=Object.freeze([
- {id:"guard",name:"打卡守衛",tier:"SR",role:"guardian",attack:90,defense:155,maxHp:150,attackInterval:1.15,targeting:"frontline",skill:"intercept"},
+ {id:"guard",name:"打卡守衛",tier:"SSR",role:"guardian",attack:90,defense:155,maxHp:150,attackInterval:1.15,targeting:"frontline",skill:"intercept"},
  {id:"fighter",name:"逃班鬥士",tier:"R",role:"fighter",attack:128,defense:100,maxHp:118,attackInterval:.95,targeting:"nearest",skill:"rage"},
- {id:"assassin",name:"截止日刺客",tier:"SSR",role:"assassin",attack:173,defense:75,maxHp:88,attackInterval:1.10,targeting:"backline",skill:"execute"},
+ {id:"assassin",name:"截止日刺客",tier:"R",role:"assassin",attack:173,defense:75,maxHp:88,attackInterval:1.10,targeting:"backline",skill:"execute"},
  {id:"medic",name:"咖啡醫官",tier:"SR",role:"healer",attack:83,defense:98,maxHp:106,attackInterval:1.20,targeting:"self-defense",skill:"triage"},
  {id:"mage",name:"試算表法師",tier:"SR",role:"mage",attack:148,defense:74,maxHp:92,attackInterval:1.25,targeting:"cluster",skill:"area"},
  {id:"engineer",name:"機械工程師",tier:"SR",role:"protector",attack:102,defense:126,maxHp:116,attackInterval:1.30,targeting:"shield-breaking",skill:"team-shield"},
