@@ -1,8 +1,8 @@
 /** Tieshi is one SR character. Awakening changes artwork and skills, never rarity. */
 export const TIESHI=Object.freeze({id:'guard',name:'打卡守衛・鐵時',rarity:'SSR',role:'tank',origin:'舊世企業',synergy:'鋼鐵契約',exclusiveWeapon:'終夜打卡盾',shieldClock:'08:59'});
 export const TIESHI_CARDS=Object.freeze([
- Object.freeze({id:'tieshi-ssr-original',rarity:'SSR',title:'終夜打卡守衛',portrait:'original',requiresStoryAwakening:false}),
- Object.freeze({id:'tieshi-ssr-awakened',rarity:'SSR',title:'最後一道門',portrait:'awakened',requiresStoryAwakening:true})
+ Object.freeze({id:'tieshi-sr-original',rarity:'SSR',title:'終夜打卡守衛',portrait:'original',requiresStoryAwakening:false}),
+ Object.freeze({id:'tieshi-sr-awakened',rarity:'SSR',title:'最後一道門',portrait:'awakened',requiresStoryAwakening:true})
 ]);
 export const TIESHI_SKILLS=Object.freeze([
  {id:'shield-strike',name:'巡夜盾擊',kind:'attack',target:'enemy',animation:['anticipation','contact','recovery']},
