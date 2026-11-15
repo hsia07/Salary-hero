@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {ALLY_ROLES,SUPPORT_RULES,pickTarget,pickCriticalAlly,healForTarget,shieldForTarget,capShield,absorbHit} from '../v19/s1-party-ai.mjs';
+import {TIESHI} from '../v19/tieshi-character-content.mjs';
 const enemies=[
  {id:'a',species:'red-stamp-manager',elite:true,hp:170,maxHp:170,x:12,y:40},
  {id:'b',species:'paper-gremlin',hp:34,maxHp:70,x:44,y:38},
@@ -34,4 +35,11 @@ test('shields protect first, do not overflow, and lowest effective health accoun
 test('heals use recipient maximum HP and are not arbitrary flat values',()=>{
  assert.equal(healForTarget(200,.1),20);
  assert.equal(SUPPORT_RULES.healer.triggerBelow,.78);
+});
+
+test('first-world squad rarity follows canonical roster, not legacy draft tiers',()=>{
+ assert.equal(ALLY_ROLES.find(x=>x.id==='guard').tier,TIESHI.rarity);
+ assert.equal(ALLY_ROLES.find(x=>x.id==='assassin').tier,'R');
+ for(const id of ['medic','mage','engineer'])assert.equal(ALLY_ROLES.find(x=>x.id===id).tier,'SR');
+ assert.equal(ALLY_ROLES.find(x=>x.id==='fighter').tier,'R');
 });
