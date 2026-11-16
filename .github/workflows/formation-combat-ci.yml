@@ -1,0 +1,25 @@
+name: Formation Combat Tests
+on:
+  push:
+    paths:
+      - 'v19/formation-combat-ai.mjs'
+      - 'v19/formation-combat-runtime.mjs'
+      - 'v19/world01-formation-encounter.mjs'
+      - 'v19/v21-squad-core.mjs'
+      - 'v19/roster.mjs'
+      - 'tests/formation-combat-ai.test.mjs'
+      - 'tests/formation-combat-runtime.test.mjs'
+      - 'tests/world01-formation-encounter.test.mjs'
+      - '.github/workflows/formation-combat-ci.yml'
+  workflow_dispatch:
+jobs:
+  node-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run seven-unit formation combat tests
+        run: node --test tests/formation-combat-ai.test.mjs tests/formation-combat-runtime.test.mjs tests/world01-formation-encounter.test.mjs
