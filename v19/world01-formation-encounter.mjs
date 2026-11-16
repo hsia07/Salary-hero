@@ -24,7 +24,7 @@ export function world01AllySquad(draft,{slaveLevel=1,hero=null}={}){
  const allies=slots.flatMap((m,i)=>{
   if(!m)return [];
   return [{id:m.id,name:m.name,role:m.role==='caster'?'caster':m.role,
-   row:i<2?'front':i<4?'front':'rear',lane:i%2===0?0:2,
+   row:i<3?'front':'rear',lane:i%3,
    hp:m.maxHp,maxHp:m.maxHp,attack:m.attack,attackInterval:Math.max(.7,2.1-m.speed*.025),
    healPower:m.role==='healer'?Math.round(m.attack*1.5):0,
    shieldPower:m.role==='support'?Math.round(m.attack*1.4):0,shieldReady:m.role==='support'}];
