@@ -6,7 +6,7 @@ import {squadStats,normalizeSquadDraft} from './v21-squad-core.mjs';
 import {createFormationBattle,tickFormationBattle} from './formation-combat-runtime.mjs';
 export const WORLD01_MONSTERS=Object.freeze([...COMMON_ENEMIES,...ELITE_ENEMIES,...BOSSES]);
 const byId=new Map(WORLD01_MONSTERS.map(m=>[m.id,m]));
-const roleOf=m=>m.trait==='guard'?'tank':m.trait==='leech'?'healer':m.trait==='rage'?'assassin':'melee';
+const roleOf=m=>m.trait==='guard'?'tank':m.trait==='leech'?'melee':m.trait==='rage'?'assassin':'melee';
 export function world01Enemy(id,{level=1,lane=1,row='front',index=0}={}){
  const m=byId.get(id);
  if(!m)return null;
@@ -17,7 +17,8 @@ export function world01Enemy(id,{level=1,lane=1,row='front',index=0}={}){
  return {id:id+'#'+index,monsterId:m.id,name:m.name,tier,role:roleOf(m),row,lane,
   hp,maxHp:hp,attack:Math.round((10+lvl*2)*Math.sqrt(multiplier)),
   attackInterval:m.trait==='rage'?1.4:1.8,threat:m.trait==='guard'?5:1,
-  healPower:m.trait==='leech'?Math.round(hp*.035):0};
+  armor:m.trait==='guard'?Math.round(35*multiplier):0,
+  lifeSteal:m.trait==='leech'?.25:0};
 }
 export function world01AllySquad(draft,{slaveLevel=1,hero=null}={}){
  const slots=squadStats(normalizeSquadDraft(draft),slaveLevel);
