@@ -11,7 +11,8 @@ export function createFormationBattle({allies=[],enemies=[]}={}){
 }
 const living=arr=>arr.filter(x=>x.hp>0);
 function damage(target,amount){
- const raw=Math.max(1,Math.round(amount)),blocked=Math.min(target.shield,raw);
+ const armor=Math.max(0,Number(target.armor)||0);
+ const raw=Math.max(1,Math.round(Math.max(1,amount)*(100/(100+armor)))),blocked=Math.min(target.shield,raw);
  target.shield-=blocked;
  const dealt=Math.min(target.hp,raw-blocked);
  target.hp-=dealt;
@@ -50,6 +51,10 @@ export function tickFormationBattle(previous,dt=0.1){
    const {dealt,blocked}=damage(target,actor.attack);
    actor.energy=clamp(actor.energy+8,0,100);
    s.events.push({type:'attack',actorId:actor.id,targetId:target.id,damage:dealt,blocked});
+   if(actor.lifeSteal&&dealt>0){
+    const healed=Math.min(actor.maxHp-actor.hp,Math.floor(dealt*clamp(actor.lifeSteal,0,.5)));
+    if(healed>0){actor.hp+=healed;s.events.push({type:'leech',actorId:actor.id,targetId:actor.id,amount:healed});}
+   }
    if(target.hp===0)s.events.push({type:'defeat',targetId:target.id});
   }
   actor.cooldown=actor.attackInterval;
