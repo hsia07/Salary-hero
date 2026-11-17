@@ -77,3 +77,33 @@ export function applyColleagueRetaliation(previous,damage,{enemyRole='melee',tar
  if(target.hp===0)events.push({type:'colleague-defeat',targetId:target.id});
  return {state:{...previous,battle},events};
 }
+
+/** Resolve ONE enemy retaliation target across hero and deployed colleagues.
+ * Existing hero mitigation is calculated upstream; no secondary splash hit.
+ * A colleague's shield absorbs damage before HP, and the original state is immutable.
+ */
+export function routeLiveRetaliation(previous,damage,{heroHp=0,heroMaxHp=1,enemyRole='melee',targetId=null}={}){
+ const amount=Math.max(0,Math.round(Number(damage)||0));
+ if(!amount)return {state:previous,heroDamage:0,events:[],targetId:null};
+ const units=previous?.battle?.allies||[];
+ const hero={id:'salary-hero',role:'melee',row:'hero',lane:1,hp:Math.max(0,Number(heroHp)||0),maxHp:Math.max(1,Number(heroMaxHp)||1)};
+ const living=[...units.filter(x=>x.hp>0),...(hero.hp>0?[hero]:[])];
+ if(!living.length)return {state:previous,heroDamage:0,events:[],targetId:null};
+ const attacker={id:'live-enemy',role:enemyRole,row:'front',lane:1,hp:1,maxHp:1};
+ const target=(targetId&&living.find(x=>x.id===targetId))||chooseAttackTarget(attacker,living);
+ if(!target)return {state:previous,heroDamage:0,events:[],targetId:null};
+ if(target.id==='salary-hero'){
+  return {state:previous,heroDamage:Math.min(hero.hp,amount),
+   events:[{type:'hero-hit',actorId:attacker.id,targetId:hero.id,damage:Math.min(hero.hp,amount)}],targetId:hero.id};
+ }
+ const battle={...previous.battle,allies:units.map(x=>({...x,statuses:(x.statuses||[]).map(y=>({...y}))})),
+  enemies:previous.battle.enemies.map(x=>({...x})),events:[]};
+ const victim=battle.allies.find(x=>x.id===target.id);
+ const blocked=Math.min(Math.max(0,victim.shield||0),amount);
+ victim.shield=Math.max(0,(victim.shield||0)-blocked);
+ const dealt=Math.min(victim.hp,amount-blocked);
+ victim.hp-=dealt;
+ const events=[{type:'colleague-hit',actorId:attacker.id,targetId:victim.id,damage:dealt,blocked}];
+ if(victim.hp===0)events.push({type:'colleague-defeat',targetId:victim.id});
+ return {state:{...previous,battle},heroDamage:0,events,targetId:victim.id};
+}
