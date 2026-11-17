@@ -12,7 +12,7 @@ import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
 import {SQUAD_JOBS,normalizeSquadDraft,assignSquadMember} from './v21-squad-core.mjs';
-import {resolveSquadAssist} from './s1-squad-combat.mjs';
+import {advanceLiveColleagues} from './s1-formation-live.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -715,20 +715,21 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    }
    if(specialistHit.cooldownReduction)s.skillCooldowns.burst=Math.max(0,s.skillCooldowns.burst-specialistHit.cooldownReduction);
    if(skill?.id==='drain')s.heroHp=Math.min(s.maxHp,s.heroHp+Math.max(1,25+s.skillRank*5+skillMods.drainHeal));
-   // S1 interim squad assist: recruited starters participate in real damage
-   // calculations. Dedicated seven-actor sprite choreography is still pending.
-   const squadTurn=resolveSquadAssist(s.colleagueFormation,s.level,{
-     enemyHp:s.enemy.hp,heroHp:s.heroHp,heroMaxHp:s.maxHp,turn:s.liteCombo
+   // Each deployed colleague now has independent HP, cooldown and action
+   // selection. Hero attack and legacy rewards remain authoritative.
+   const squadTurn=advanceLiveColleagues({
+     draft:s.colleagueFormation,level:s.level,enemy:{...s.enemy,wave:s.wave},
+     previous:s.formationCombat,seconds:1.8
    });
+   s.formationCombat=squadTurn.state;
    const colleagueAssist=squadTurn.damage;
-   if(squadTurn.heal)s.heroHp=Math.min(s.maxHp,s.heroHp+squadTurn.heal);
    if(colleagueAssist)damage+=colleagueAssist;
-   if(squadTurn.units)notice(s,'🤝 '+squadTurn.units+' 位同事協力：追加 '+colleagueAssist+' 傷害'+(squadTurn.heal?'、治療 '+squadTurn.heal:'')+'！');
+   if(squadTurn.actions.length)notice(s,'🤝 同事獨立行動：追加 '+colleagueAssist+' 傷害');
    const enemyHpBefore=s.enemy.hp;
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
    const lifeSteal=Math.floor(Math.min(damage,enemyHpBefore)*Math.min(.35,liteStats.lifeSteal+liteSpecialist.lifeSteal));
    if(lifeSteal)s.heroHp=Math.min(s.maxHp,s.heroHp+lifeSteal);
-   s.last={type:'hit',damage,colleagueAssist,colleagueActions:squadTurn.breakdown,colleagueHeal:squadTurn.heal,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
+   s.last={type:'hit',damage,colleagueAssist,colleagueActions:squadTurn.actions,colleagueHeal:squadTurn.heal,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
      tacticalExtra:tactical.extra,tacticalHeal:tactical.heal,tacticalSpent:tactical.spent,tacticalExtracted:tactical.extracted,tacticalStun:tactical.skipRetaliation,
      liteBuild:liteSpecialist.id,buildProc:specialistHit.proc,buildDamage:specialistHit.extra,
      poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal};
