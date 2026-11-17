@@ -3,6 +3,7 @@
  * cooldowns and action targets instead of an unconditional damage bonus.
  */
 import {squadStats} from './v21-squad-core.mjs';
+import {chooseAttackTarget} from './formation-combat-ai.mjs';
 import {createFormationBattle,tickFormationBattle} from './formation-combat-runtime.mjs';
 export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds=1.8}={}){
  const members=squadStats(draft,level).filter(Boolean);
@@ -55,20 +56,24 @@ export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds
  * colleagues. This never changes the legacy hero's HP or rewards.
  * Defeated colleagues remain inactive until the next encounter.
  */
-export function applyColleagueRetaliation(previous,damage){
+export function applyColleagueRetaliation(previous,damage,{enemyRole='melee',targetId=null}={}){
  if(!previous?.battle||!(Number(damage)>0))return {state:previous,events:[]};
  const battle={...previous.battle,allies:previous.battle.allies.map(u=>({...u,statuses:(u.statuses||[]).map(x=>({...x}))})),
   enemies:previous.battle.enemies.map(u=>({...u})),events:[]};
  const living=battle.allies.filter(u=>u.hp>0);
  if(!living.length)return {state:previous,events:[]};
- const target=living.slice().sort((a,b)=>(a.row==='front'?0:1)-(b.row==='front'?0:1)||
-  (a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp))||a.id.localeCompare(b.id))[0];
+ // The enemy chooses a real target, respecting taunt, row and assassin priorities.
+ // targetId is reserved for deterministic scripted boss mechanics.
+ const enemy={id:'live-enemy',role:enemyRole,row:'front',lane:1,hp:1,maxHp:1};
+ const chosen=targetId?living.find(u=>u.id===targetId):null;
+ const target=chosen||chooseAttackTarget(enemy,living);
+ if(!target)return {state:previous,events:[]};
  const amount=Math.max(1,Math.round(Number(damage)*.35));
  const blocked=Math.min(target.shield||0,amount);
  target.shield=Math.max(0,(target.shield||0)-blocked);
  const lost=Math.min(target.hp,amount-blocked);
  target.hp-=lost;
- const events=[{type:'colleague-hit',targetId:target.id,damage:lost,blocked}];
+ const events=[{type:'colleague-hit',actorId:'live-enemy',targetId:target.id,damage:lost,blocked}];
  if(target.hp===0)events.push({type:'colleague-defeat',targetId:target.id});
  return {state:{...previous,battle},events};
 }
