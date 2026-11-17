@@ -60,15 +60,15 @@ export function chooseShieldTarget(caster,allies){
  scored.sort((a,b)=>b.score-a.score||idOrder(a.target,b.target));
  return scored[0].target;
 }
-export function planFormationActions(allies,enemies){
+export function planFormationActions(allies,enemies,fullTeam=allies){
  const focus={},actions=[];
  for(const actor of (Array.isArray(allies)?allies:[]).filter(alive)){
   if(role(actor)==='healer'){
-   const target=chooseHealTarget(actor,allies);
+   const target=chooseHealTarget(actor,fullTeam);
    if(target){actions.push({actorId:actor.id,targetId:target.id,type:'heal'});continue;}
   }
   if(role(actor)==='support'&&actor.shieldReady){
-   const target=chooseShieldTarget(actor,allies);
+   const target=chooseShieldTarget(actor,fullTeam);
    if(target){actions.push({actorId:actor.id,targetId:target.id,type:'shield'});continue;}
   }
   const target=chooseAttackTarget(actor,enemies,{focus});
