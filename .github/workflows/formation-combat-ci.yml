@@ -5,11 +5,14 @@ on:
       - 'v19/formation-combat-ai.mjs'
       - 'v19/formation-combat-runtime.mjs'
       - 'v19/world01-formation-encounter.mjs'
+      - 'v19/s1-formation-live.mjs'
+      - 'v19/engine.mjs'
       - 'v19/v21-squad-core.mjs'
       - 'v19/roster.mjs'
       - 'tests/formation-combat-ai.test.mjs'
       - 'tests/formation-combat-runtime.test.mjs'
       - 'tests/world01-formation-encounter.test.mjs'
+      - 'tests/s1-formation-live.test.mjs'
       - '.github/workflows/formation-combat-ci.yml'
   workflow_dispatch:
 jobs:
@@ -22,4 +25,4 @@ jobs:
         with:
           node-version: '22'
       - name: Run seven-unit formation combat tests
-        run: node --test tests/formation-combat-ai.test.mjs tests/formation-combat-runtime.test.mjs tests/world01-formation-encounter.test.mjs
+        run: node --test tests/formation-combat-ai.test.mjs tests/formation-combat-runtime.test.mjs tests/world01-formation-encounter.test.mjs tests/s1-formation-live.test.mjs
