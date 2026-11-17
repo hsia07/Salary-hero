@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {advanceLiveColleagues,applyColleagueRetaliation} from '../v19/s1-formation-live.mjs';
+import {advanceLiveColleagues,applyColleagueRetaliation,routeLiveRetaliation} from '../v19/s1-formation-live.mjs';
 const draft={slots:[
  {id:'starter-fighter',job:'fighter',level:10,stars:1},
  {id:'starter-medic',job:'medic',level:10,stars:1},
@@ -76,4 +76,35 @@ test('retaliation ignores defeated units when selecting a target',()=>{
  const battle={...first.state.battle,allies:first.state.battle.allies.map((u,i)=>({...u,hp:i===0?0:u.hp}))};
  const hit=applyColleagueRetaliation({...first.state,battle},60);
  assert.notEqual(hit.events[0].targetId,battle.allies[0].id);
+});
+
+test('single-target retaliation against hero leaves colleague HP unchanged',()=>{
+ const initial=advanceLiveColleagues({draft,level:10,enemy,seconds:.1}).state;
+ const routed=routeLiveRetaliation(initial,30,{heroHp:80,heroMaxHp:100,targetId:'salary-hero'});
+ assert.equal(routed.heroDamage,30);
+ assert.deepEqual(routed.state.battle.allies.map(x=>x.hp),initial.battle.allies.map(x=>x.hp));
+ assert.equal(routed.targetId,'salary-hero');
+});
+test('single-target retaliation against colleague leaves hero unharmed',()=>{
+ const initial=advanceLiveColleagues({draft,level:10,enemy,seconds:.1}).state;
+ const target=initial.battle.allies[0];
+ const routed=routeLiveRetaliation(initial,40,{heroHp:80,heroMaxHp:100,targetId:target.id});
+ assert.equal(routed.heroDamage,0);
+ assert.equal(routed.events[0].targetId,target.id);
+ assert.equal(routed.state.battle.allies[0].hp,target.hp-40);
+ assert.equal(initial.battle.allies[0].hp,target.hp);
+});
+test('no deployed colleagues routes retaliation to hero',()=>{
+ const routed=routeLiveRetaliation(null,15,{heroHp:40,heroMaxHp:100});
+ assert.equal(routed.heroDamage,15);
+ assert.equal(routed.targetId,'salary-hero');
+});
+test('colleague shield absorbs routed damage before health',()=>{
+ const initial=advanceLiveColleagues({draft,level:10,enemy,seconds:.1}).state;
+ const target=initial.battle.allies[0];
+ const state={...initial,battle:{...initial.battle,allies:initial.battle.allies.map(x=>x.id===target.id?{...x,shield:50}:x)}};
+ const routed=routeLiveRetaliation(state,30,{heroHp:100,heroMaxHp:100,targetId:target.id});
+ assert.equal(routed.events[0].blocked,30);
+ assert.equal(routed.events[0].damage,0);
+ assert.equal(routed.state.battle.allies[0].hp,target.hp);
 });
