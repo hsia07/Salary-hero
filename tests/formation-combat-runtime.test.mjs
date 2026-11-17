@@ -86,3 +86,19 @@ test('poison damage ticks at two seconds and does not mutate source status',()=>
  assert.ok(s.enemies[0].hp<=93);
  assert.equal(poison.duration,6);
 });
+
+test('healer with ready cooldown can heal teammate still cooling down',()=>{
+ const medic={...u('medic','healer'),healPower:30};
+ const tank={...u('tank','tank',40),cooldown:5};
+ const n=tickFormationBattle(createFormationBattle({allies:[medic,tank],enemies:[{...u('boss','tank'),cooldown:5}]}),.1);
+ assert.equal(n.allies.find(x=>x.id==='tank').hp,70);
+ assert.ok(n.events.some(x=>x.type==='heal'&&x.targetId==='tank'));
+});
+test('cooling-down ally does not distort target distribution for ready attackers',()=>{
+ const ready={...u('ready','melee'),lane:0};
+ const cooling={...u('cooling','melee'),lane:0,cooldown:5};
+ const targets=[{...u('left','tank'),lane:0,cooldown:5},{...u('right','tank'),lane:2,cooldown:5}];
+ const n=tickFormationBattle(createFormationBattle({allies:[cooling,ready],enemies:targets}),.1);
+ assert.equal(n.events.filter(x=>x.type==='attack'&&x.actorId==='ready').length,1);
+ assert.equal(n.events.filter(x=>x.type==='attack'&&x.actorId==='cooling').length,0);
+});
