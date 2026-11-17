@@ -12,7 +12,7 @@ import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
 import {SQUAD_JOBS,normalizeSquadDraft,assignSquadMember} from './v21-squad-core.mjs';
-import {advanceLiveColleagues} from './s1-formation-live.mjs';
+import {advanceLiveColleagues,applyColleagueRetaliation} from './s1-formation-live.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -861,6 +861,16 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      // Persist the actual HP lost within this attack result. If the hero dies and
      // instantly respawns, comparing only before/after HP would miss the injury.
      s.last.retaliationDamage=hpBeforeRetaliation-s.heroHp;
+     // Mirror part of the actual enemy hit onto a frontline colleague.
+     // This does not increase damage taken by the protagonist.
+     if(s.last.retaliationDamage>0&&s.formationCombat){
+       const splash=applyColleagueRetaliation(s.formationCombat,s.last.retaliationDamage);
+       s.formationCombat=splash.state;
+       s.last.colleagueHits=splash.events;
+       for(const event of splash.events){
+         if(event.type==='colleague-defeat')notice(s,'同事倒下：'+(s.colleagueFormation.slots.find(m=>m?.id===event.targetId)?.name||event.targetId));
+       }
+     }
      if(s.last.retaliationDamage>0){
        const regen=(skill?.id==='guard'?skillMods.guardHeal:0)+legend.guardRegen;
        if(regen){s.heroHp=Math.min(s.maxHp,s.heroHp+regen);s.last.guardRegen=regen;notice(s,'🛡️ 護衛裝備：承傷後恢復 '+regen+' HP。');}
