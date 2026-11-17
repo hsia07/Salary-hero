@@ -895,6 +895,7 @@ function renderSquadStage(){
  if(!stage)return;
  const slots=state.colleagueFormation?.slots||[];
  const actions=state.last?.colleagueActions||[];
+ const combatUnits=state.formationCombat?.battle?.allies||[];
  const recent=fx&&performance.now()-fx.start<850&&['hit','victory'].includes(fx.result?.type);
  // The stage is an interim combat readout; final actors need separate art atlases.
  stage.hidden=!slots.some(Boolean);
@@ -904,10 +905,12 @@ function renderSquadStage(){
   const job=SQUAD_JOBS.find(x=>x.id===member.job);
   if(!job)return '<div class="s1-squad-empty" aria-hidden="true"></div>';
   const action=recent?actions.find(x=>x.id===member.id):null;
+  const unit=combatUnits.find(x=>x.id===member.id);
+  const hpRatio=unit?Math.max(0,Math.min(100,100*unit.hp/Math.max(1,unit.maxHp))):100;
   const kind=action?(action.heal?'heal':action.shield?'shield':'damage'):'';
   const detail=action?(action.heal?'治療 +'+action.heal:action.shield?'護盾 +'+action.shield:'傷害 '+action.damage):'Lv.'+member.level;
   const role=job.role==='tank'?'防':job.role==='melee'?'戰':job.role==='assassin'?'刺':job.role==='caster'?'法':job.role==='healer'?'療':'輔';
-  return '<div class="s1-squad-unit" data-row="'+(i<3?'front':'rear')+'" data-action-kind="'+kind+'" title="'+escapeHTML(job.name)+'"><span class="s1-squad-role">'+role+'</span><span class="s1-squad-copy"><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(detail)+'</small></span></div>';
+  return '<div class="s1-squad-unit" data-row="'+(i<3?'front':'rear')+'" data-action-kind="'+kind+'" data-alive="'+(unit?.hp===0?'false':'true')+'" title="'+escapeHTML(job.name)+'"><span class="s1-squad-role">'+role+'</span><span class="s1-squad-copy"><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(detail)+'</small><span class="s1-squad-hp"><span style="width:'+hpRatio.toFixed(1)+'%"></span></span></span></div>';
  }).join('');
 }
 
