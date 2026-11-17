@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {advanceLiveColleagues} from '../v19/s1-formation-live.mjs';
+import {advanceLiveColleagues,applyColleagueRetaliation} from '../v19/s1-formation-live.mjs';
 const draft={slots:[
  {id:'starter-fighter',job:'fighter',level:10,stars:1},
  {id:'starter-medic',job:'medic',level:10,stars:1},
@@ -29,4 +29,29 @@ test('empty formation has no phantom damage',()=>{
  const result=advanceLiveColleagues({draft:{slots:[]},enemy});
  assert.equal(result.damage,0);
  assert.equal(result.state,null);
+});
+
+test('retaliation damages a frontline colleague without mutating previous state',()=>{
+ const first=advanceLiveColleagues({draft,level:10,enemy,seconds:.1});
+ const before=first.state.battle.allies.map(x=>x.hp);
+ const hit=applyColleagueRetaliation(first.state,60);
+ assert.ok(hit.events.some(x=>x.type==='colleague-hit'));
+ assert.ok(hit.state.battle.allies.some((x,i)=>x.hp<before[i]));
+ assert.deepEqual(first.state.battle.allies.map(x=>x.hp),before);
+});
+test('shield absorbs colleague retaliation before HP',()=>{
+ const first=advanceLiveColleagues({draft,level:10,enemy,seconds:.1});
+ const before=first.state.battle.allies;
+ const guarded=before.find(x=>x.row==='front');
+ const shielded={...first.state,battle:{...first.state.battle,allies:before.map(x=>x.id===guarded.id?{...x,shield:1000}:x)}};
+ const hit=applyColleagueRetaliation(shielded,30);
+ assert.ok(hit.events.some(x=>x.blocked>0));
+ assert.equal(hit.state.battle.allies.find(x=>x.id===guarded.id).hp,guarded.hp);
+});
+test('defeated colleague stays down within the encounter',()=>{
+ let current=advanceLiveColleagues({draft,level:10,enemy,seconds:.1}).state;
+ for(let i=0;i<10;i++)current=applyColleagueRetaliation(current,10000).state;
+ assert.ok(current.battle.allies.every(x=>x.hp===0));
+ const next=advanceLiveColleagues({draft,level:10,enemy,previous:current,seconds:.1});
+ assert.equal(next.damage,0);
 });
