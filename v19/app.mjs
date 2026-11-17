@@ -907,7 +907,8 @@ function renderSquadStage(){
   const action=recent?actions.find(x=>x.id===member.id):null;
   const unit=combatUnits.find(x=>x.id===member.id);
   const hpRatio=unit?Math.max(0,Math.min(100,100*unit.hp/Math.max(1,unit.maxHp))):100;
-  const kind=action?(action.heal?'heal':action.shield?'shield':'damage'):'';
+  const injured=recent&&(state.last?.colleagueHits||[]).some(x=>x.type==='colleague-hit'&&x.targetId===member.id);
+  const kind=injured?'hurt':action?(action.heal?'heal':action.shield?'shield':'damage'):'';
   const detail=action?(action.heal?'治療 +'+action.heal:action.shield?'護盾 +'+action.shield:'傷害 '+action.damage):'Lv.'+member.level;
   const role=job.role==='tank'?'防':job.role==='melee'?'戰':job.role==='assassin'?'刺':job.role==='caster'?'法':job.role==='healer'?'療':'輔';
   return '<div class="s1-squad-unit" data-row="'+(i<3?'front':'rear')+'" data-action-kind="'+kind+'" data-alive="'+(unit?.hp===0?'false':'true')+'" title="'+escapeHTML(job.name)+'"><span class="s1-squad-role">'+role+'</span><span class="s1-squad-copy"><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(detail)+'</small><span class="s1-squad-hp"><span style="width:'+hpRatio.toFixed(1)+'%"></span></span></span></div>';
