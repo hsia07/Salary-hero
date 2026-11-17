@@ -4,7 +4,7 @@
  */
 import {planFormationActions} from './formation-combat-ai.mjs';
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number.isFinite(Number(n))?Number(n):min));
-const copy=u=>{const maxHp=Math.max(1,Number(u.maxHp)||1);return {...u,maxHp,hp:clamp(u.hp??maxHp,0,maxHp),shield:Math.max(0,Number(u.shield)||0),energy:clamp(u.energy??0,0,100),cooldown:Math.max(0,Number(u.cooldown)||0)};};
+const copy=u=>{const maxHp=Math.max(1,Number(u.maxHp)||1);return {...u,maxHp,hp:clamp(u.hp??maxHp,0,maxHp),shield:Math.max(0,Number(u.shield)||0),energy:clamp(u.energy??0,0,100),cooldown:Math.max(0,Number(u.cooldown)||0),statuses:Array.isArray(u.statuses)?u.statuses.map(x=>({...x})):[]};};
 export function createFormationBattle({allies=[],enemies=[]}={}){
  const normalize=(arr,side)=>arr.map((u,i)=>({...copy(u),id:String(u.id??side+i),side,attack:Math.max(1,Number(u.attack)||10),attackInterval:Math.max(.3,Number(u.attackInterval)||1.8)}));
  return {time:0,allies:normalize(allies,'ally'),enemies:normalize(enemies,'enemy'),events:[],winner:null};
@@ -21,7 +21,27 @@ function damage(target,amount){
 export function tickFormationBattle(previous,dt=0.1){
  const elapsed=clamp(dt,0,1),s={...previous,time:previous.time+elapsed,allies:previous.allies.map(copy),enemies:previous.enemies.map(copy),events:[]};
  if(previous.winner||!elapsed)return {...s,winner:previous.winner};
- for(const u of [...s.allies,...s.enemies]){u.cooldown=Math.max(0,u.cooldown-elapsed);u.shieldCooldown=Math.max(0,(u.shieldCooldown||0)-elapsed);if(u.role==='support'&&u.shieldCooldown===0)u.shieldReady=true;}
+ for(const u of [...s.allies,...s.enemies]){
+  u.cooldown=Math.max(0,u.cooldown-elapsed);
+  u.shieldCooldown=Math.max(0,(u.shieldCooldown||0)-elapsed);
+  if(u.role==='support'&&u.shieldCooldown===0)u.shieldReady=true;
+  const active=[];
+  for(const status of u.statuses){
+   const remaining=Math.max(0,(Number(status.duration)||0)-elapsed);
+   const next={...status,duration:remaining};
+   if((status.type==='poison'||status.type==='burn')&&u.hp>0){
+    next.tickClock=(Number(status.tickClock)||0)+elapsed;
+    while(next.tickClock>=2){
+     next.tickClock-=2;
+     const {dealt,blocked}=damage(u,(Number(status.power)||1)*Math.max(1,Math.min(10,Number(status.stacks)||1)));
+     s.events.push({type:'dot',status:status.type,targetId:u.id,damage:dealt,blocked});
+     if(u.hp===0){s.events.push({type:'defeat',targetId:u.id});break;}
+    }
+   }
+   if(remaining>0)active.push(next);
+  }
+  u.statuses=active;
+ }
  // Both teams plan from the same tick snapshot. An actor killed earlier in the
  // tick cannot perform its queued action.
  const queue=[
@@ -34,6 +54,7 @@ export function tickFormationBattle(previous,dt=0.1){
   const actor=own.find(u=>u.id===action.actorId);
   const target=(action.type==='attack'?opponents:own).find(u=>u.id===action.targetId);
   if(!actor||actor.hp<=0||actor.cooldown>0||!target||target.hp<=0)continue;
+  if(actor.statuses.some(x=>x.type==='stun'&&x.duration>0))continue;
   // Never execute an action selected for an ally on the opposing side.
   if(action.type==='attack'&&target.side===actor.side)continue;
   if(action.type!=='attack'&&target.side!==actor.side)continue;
@@ -60,7 +81,7 @@ export function tickFormationBattle(previous,dt=0.1){
    }
    if(target.hp===0)s.events.push({type:'defeat',targetId:target.id});
   }
-  actor.cooldown=actor.attackInterval;
+  actor.cooldown=actor.attackInterval*(actor.statuses.some(x=>x.type==='slow'&&x.duration>0)?1.35:1);
  }
  if(!living(s.enemies).length&&!living(s.allies).length)s.winner='draw';
  else if(!living(s.enemies).length)s.winner='allies';
