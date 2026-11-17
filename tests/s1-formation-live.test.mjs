@@ -44,7 +44,7 @@ test('shield absorbs colleague retaliation before HP',()=>{
  const before=first.state.battle.allies;
  const guarded=before.find(x=>x.row==='front');
  const shielded={...first.state,battle:{...first.state.battle,allies:before.map(x=>x.id===guarded.id?{...x,shield:1000}:x)}};
- const hit=applyColleagueRetaliation(shielded,30);
+ const hit=applyColleagueRetaliation(shielded,30,{targetId:guarded.id});
  assert.ok(hit.events.some(x=>x.blocked>0));
  assert.equal(hit.state.battle.allies.find(x=>x.id===guarded.id).hp,guarded.hp);
 });
@@ -54,4 +54,26 @@ test('defeated colleague stays down within the encounter',()=>{
  assert.ok(current.battle.allies.every(x=>x.hp===0));
  const next=advanceLiveColleagues({draft,level:10,enemy,previous:current,seconds:.1});
  assert.equal(next.damage,0);
+});
+
+test('scripted retaliation targets the selected colleague only',()=>{
+ const first=advanceLiveColleagues({draft,level:10,enemy,seconds:.1});
+ const target=first.state.battle.allies.find(x=>x.role==='healer');
+ const hit=applyColleagueRetaliation(first.state,100,{targetId:target.id});
+ assert.equal(hit.events[0].targetId,target.id);
+ for(const unit of first.state.battle.allies.filter(x=>x.id!==target.id)){
+  assert.equal(hit.state.battle.allies.find(x=>x.id===unit.id).hp,unit.hp);
+ }
+});
+test('assassin retaliation prioritizes vulnerable rear over frontline',()=>{
+ const first=advanceLiveColleagues({draft,level:10,enemy,seconds:.1});
+ const battle={...first.state.battle,allies:first.state.battle.allies.map((u,i)=>({...u,row:i===2?'rear':'front',lane:1}))};
+ const hit=applyColleagueRetaliation({...first.state,battle},60,{enemyRole:'assassin'});
+ assert.equal(hit.events[0].targetId,battle.allies[2].id);
+});
+test('retaliation ignores defeated units when selecting a target',()=>{
+ const first=advanceLiveColleagues({draft,level:10,enemy,seconds:.1});
+ const battle={...first.state.battle,allies:first.state.battle.allies.map((u,i)=>({...u,hp:i===0?0:u.hp}))};
+ const hit=applyColleagueRetaliation({...first.state,battle},60);
+ assert.notEqual(hit.events[0].targetId,battle.allies[0].id);
 });
