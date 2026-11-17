@@ -15,7 +15,7 @@ export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds
  if(reset){
   const allies=members.map(m=>({
    id:m.id,name:m.name,role:m.role,row:m.slot?.startsWith('rear')?'rear':'front',
-   lane:members.indexOf(m)%3,maxHp:m.maxHp,hp:m.maxHp,attack:m.attack,
+   lane:Math.max(0,Math.min(2,(squadStats(draft,level).findIndex(x=>x?.id===m.id))%3)),maxHp:m.maxHp,hp:m.maxHp,attack:m.attack,
    attackInterval:Math.max(.7,2.1-m.speed*.025),
    healPower:m.role==='healer'?Math.round(m.attack*1.5):0,
    shieldPower:m.role==='support'?Math.round(m.attack*1.4):0,
@@ -29,13 +29,12 @@ export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds
    attack:1,attackInterval:999999,cooldown:999999
   }]});
  }else{
-  battle=createFormationBattle(previous.battle);
   battle={...previous.battle,allies:previous.battle.allies.map(u=>({...u,statuses:u.statuses?.map(x=>({...x}))||[]})),
    enemies:previous.battle.enemies.map(u=>({...u,statuses:u.statuses?.map(x=>({...x}))||[]})),events:[],winner:null};
   battle.enemies[0].hp=Math.max(1,Math.min(enemyMaxHp,Number(enemy?.hp)||1));
  }
  const events=[];
- const total=Math.max(.1,Math.min(5,Number(seconds)||1.8));
+ const total=Math.max(.1,Math.min(5,Number.isFinite(Number(seconds))?Number(seconds):1.8));
  for(let t=0;t<total-1e-8;t+=.1){
   battle=tickFormationBattle(battle,Math.min(.1,total-t));
   events.push(...battle.events);
@@ -50,4 +49,26 @@ export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds
  });
  return {state:{battle,enemyKey:key,enemyMaxHp,units:members.map(m=>m.id),wave:enemy?.wave},
   damage,heal:0,shield:0,actions,events};
+}
+
+/** Apply a portion of a real enemy retaliation as splash against deployed
+ * colleagues. This never changes the legacy hero's HP or rewards.
+ * Defeated colleagues remain inactive until the next encounter.
+ */
+export function applyColleagueRetaliation(previous,damage){
+ if(!previous?.battle||!(Number(damage)>0))return {state:previous,events:[]};
+ const battle={...previous.battle,allies:previous.battle.allies.map(u=>({...u,statuses:(u.statuses||[]).map(x=>({...x}))})),
+  enemies:previous.battle.enemies.map(u=>({...u})),events:[]};
+ const living=battle.allies.filter(u=>u.hp>0);
+ if(!living.length)return {state:previous,events:[]};
+ const target=living.slice().sort((a,b)=>(a.row==='front'?0:1)-(b.row==='front'?0:1)||
+  (a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp))||a.id.localeCompare(b.id))[0];
+ const amount=Math.max(1,Math.round(Number(damage)*.35));
+ const blocked=Math.min(target.shield||0,amount);
+ target.shield=Math.max(0,(target.shield||0)-blocked);
+ const lost=Math.min(target.hp,amount-blocked);
+ target.hp-=lost;
+ const events=[{type:'colleague-hit',targetId:target.id,damage:lost,blocked}];
+ if(target.hp===0)events.push({type:'colleague-defeat',targetId:target.id});
+ return {state:{...previous,battle},events};
 }
