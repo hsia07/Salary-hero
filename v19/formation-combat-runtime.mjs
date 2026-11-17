@@ -34,6 +34,9 @@ export function tickFormationBattle(previous,dt=0.1){
   const actor=own.find(u=>u.id===action.actorId);
   const target=(action.type==='attack'?opponents:own).find(u=>u.id===action.targetId);
   if(!actor||actor.hp<=0||actor.cooldown>0||!target||target.hp<=0)continue;
+  // Never execute an action selected for an ally on the opposing side.
+  if(action.type==='attack'&&target.side===actor.side)continue;
+  if(action.type!=='attack'&&target.side!==actor.side)continue;
   if(action.type==='heal'){
    const healed=Math.min(target.maxHp-target.hp,Math.max(1,Math.round(actor.healPower??actor.attack*1.1)));
    if(healed<=0)continue;
@@ -59,14 +62,16 @@ export function tickFormationBattle(previous,dt=0.1){
   }
   actor.cooldown=actor.attackInterval;
  }
- if(!living(s.enemies).length)s.winner='allies';
+ if(!living(s.enemies).length&&!living(s.allies).length)s.winner='draw';
+ else if(!living(s.enemies).length)s.winner='allies';
  else if(!living(s.allies).length)s.winner='enemies';
  else s.winner=null;
  return s;
 }
 export function simulateFormationBattle(config,{step=.1,maxSeconds=180}={}){
  let state=createFormationBattle(config);
- const count=Math.ceil(clamp(maxSeconds,0,3600)/clamp(step,.01,1));
- for(let i=0;i<count&&!state.winner;i++)state=tickFormationBattle(state,step);
+ const safeStep=clamp(step,.01,1);
+ const count=Math.ceil(clamp(maxSeconds,0,3600)/safeStep);
+ for(let i=0;i<count&&!state.winner;i++)state=tickFormationBattle(state,safeStep);
  return state;
 }
