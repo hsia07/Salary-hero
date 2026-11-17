@@ -64,3 +64,25 @@ test('simulation clamps zero timestep and terminates',()=>{
  const s=simulateFormationBattle({allies:[u('hero','melee',100,200)],enemies:[u('enemy','tank',20,1)]},{step:0,maxSeconds:2});
  assert.equal(s.winner,'allies');
 });
+
+test('stun prevents action until duration expires',()=>{
+ const hero={...u('hero','melee',100,50),statuses:[{type:'stun',duration:.5}]};
+ let s=createFormationBattle({allies:[hero],enemies:[{...u('enemy','tank'),attack:1}]});
+ s=tickFormationBattle(s,.1);
+ assert.equal(s.enemies[0].hp,100);
+ s=tickFormationBattle(s,.5);
+ assert.ok(s.enemies[0].hp<100);
+});
+test('slow extends attack cooldown',()=>{
+ const hero={...u('hero','melee'),statuses:[{type:'slow',duration:5}]};
+ const s=tickFormationBattle(createFormationBattle({allies:[hero],enemies:[u('enemy','tank')]}),.1);
+ assert.equal(s.allies[0].cooldown,1.35);
+});
+test('poison damage ticks at two seconds and does not mutate source status',()=>{
+ const poison={type:'poison',duration:6,stacks:2,power:3};
+ const enemy={...u('enemy','tank'),attack:1,attackInterval:10,statuses:[poison]};
+ let s=createFormationBattle({allies:[{...u('hero','tank'),attack:1,attackInterval:10}],enemies:[enemy]});
+ for(let i=0;i<20;i++)s=tickFormationBattle(s,.1);
+ assert.ok(s.enemies[0].hp<=93);
+ assert.equal(poison.duration,6);
+});
