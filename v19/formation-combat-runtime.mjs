@@ -31,8 +31,8 @@ export function tickFormationBattle(previous,dt=0.1){
    const next={...status,duration:remaining};
    if((status.type==='poison'||status.type==='burn')&&u.hp>0){
     next.tickClock=(Number(status.tickClock)||0)+elapsed;
-    while(next.tickClock>=2){
-     next.tickClock-=2;
+    while(next.tickClock>=2-1e-8){
+     next.tickClock=Math.max(0,next.tickClock-2);
      const {dealt,blocked}=damage(u,(Number(status.power)||1)*Math.max(1,Math.min(10,Number(status.stacks)||1)));
      s.events.push({type:'dot',status:status.type,targetId:u.id,damage:dealt,blocked});
      if(u.hp===0){s.events.push({type:'defeat',targetId:u.id});break;}
@@ -45,8 +45,8 @@ export function tickFormationBattle(previous,dt=0.1){
  // Both teams plan from the same tick snapshot. An actor killed earlier in the
  // tick cannot perform its queued action.
  const queue=[
-  ...planFormationActions(s.allies,s.enemies).map(x=>({...x,side:'ally'})),
-  ...planFormationActions(s.enemies,s.allies).map(x=>({...x,side:'enemy'}))
+  ...planFormationActions(s.allies.filter(u=>u.hp>0&&u.cooldown<=0&&!u.statuses.some(x=>x.type==='stun'&&x.duration>0)),s.enemies,s.allies).map(x=>({...x,side:'ally'})),
+  ...planFormationActions(s.enemies.filter(u=>u.hp>0&&u.cooldown<=0&&!u.statuses.some(x=>x.type==='stun'&&x.duration>0)),s.allies,s.enemies).map(x=>({...x,side:'enemy'}))
  ];
  for(const action of queue){
   const own=action.side==='ally'?s.allies:s.enemies;
