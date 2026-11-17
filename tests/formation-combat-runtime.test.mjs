@@ -41,3 +41,26 @@ test('simulation leaves original input untouched',()=>{
  simulateFormationBattle({allies:[hero],enemies:[enemy]});
  assert.equal(hero.hp,100);assert.equal(enemy.hp,100);
 });
+
+test('support shield returns after its own cooldown',()=>{
+ const support={...u('support','support'),shieldReady:true,shieldInterval:1,shieldPower:20};
+ const tank={...u('tank','tank',50),attack:1};
+ let s=createFormationBattle({allies:[support,tank],enemies:[{...u('boss','tank',100,1),attackInterval:10}]});
+ s=tickFormationBattle(s,.1);
+ assert.equal(s.allies[0].shieldReady,false);
+ assert.ok(s.allies[0].shieldCooldown>0);
+ for(let i=0;i<11;i++)s=tickFormationBattle(s,.1);
+ assert.ok(s.events.every(x=>x.type!=='shield')||s.allies[0].shieldCooldown>=0);
+});
+test('missing HP defaults to maximum HP and is not mistaken for dead',()=>{
+ const s=createFormationBattle({allies:[{id:'hero',maxHp:120,attack:20}],enemies:[u('enemy','tank')]});
+ assert.equal(s.allies[0].hp,120);
+});
+test('simultaneous knockout is reported as draw',()=>{
+ const s=createFormationBattle({allies:[],enemies:[]});
+ assert.equal(tickFormationBattle(s,.1).winner,'draw');
+});
+test('simulation clamps zero timestep and terminates',()=>{
+ const s=simulateFormationBattle({allies:[u('hero','melee',100,200)],enemies:[u('enemy','tank',20,1)]},{step:0,maxSeconds:2});
+ assert.equal(s.winner,'allies');
+});
