@@ -729,7 +729,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    s.enemy.hp=Math.max(0,s.enemy.hp-damage);
    const lifeSteal=Math.floor(Math.min(damage,enemyHpBefore)*Math.min(.35,liteStats.lifeSteal+liteSpecialist.lifeSteal));
    if(lifeSteal)s.heroHp=Math.min(s.maxHp,s.heroHp+lifeSteal);
-   s.last={type:'hit',damage,colleagueAssist,colleagueActions:squadTurn.actions,colleagueHeal:squadTurn.heal,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
+   s.last={type:'hit',damage,colleagueAssist,colleagueActions:squadTurn.actions,colleagueEvents:squadTurn.events,colleagueHeal:squadTurn.heal,crit,boss:s.enemy.boss,skill:skill?.id||null,skillPath:skillMods.choice,lifeSteal,finisher,coffeeHeal,
      tacticalExtra:tactical.extra,tacticalHeal:tactical.heal,tacticalSpent:tactical.spent,tacticalExtracted:tactical.extracted,tacticalStun:tactical.skipRetaliation,
      liteBuild:liteSpecialist.id,buildProc:specialistHit.proc,buildDamage:specialistHit.extra,
      poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal};
@@ -807,7 +807,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      notice(s,'✨ 過關！獲得 '+reward+' 金幣，前往第 '+s.wave+' 關。');
      const fridayNote=maybeFridayBossEscaped(s,rng,now);
      const weekendEvent=maybeWeekendChaos(s,rng,now);
-     s.last={type:'victory',damage,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave,fridayNote,weekendEvent,liteDrop:liteDrop?.instanceId||null,
+     s.last={type:'victory',damage,colleagueAssist,colleagueActions:squadTurn.actions,colleagueEvents:squadTurn.events,crit,boss,elite,tier:dead.tier,gold:reward,newWave:s.wave,fridayNote,weekendEvent,liteDrop:liteDrop?.instanceId||null,
        liteBuild:liteSpecialist.id,buildProc:specialistHit.proc,buildDamage:specialistHit.extra,
        poisonDamage:specialistHit.poison,buildHeal:specialistHit.heal,mastery,
        tacticalExtra:tactical.extra,tacticalHeal:tactical.heal,tacticalSpent:tactical.spent,tacticalExtracted:tactical.extracted,tacticalStun:tactical.skipRetaliation};
@@ -863,6 +863,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      s.heroHp=Math.max(0,s.heroHp-routed.heroDamage);
      s.last.colleagueHits=routed.events.filter(e=>e.type.startsWith('colleague-'));
      s.last.retaliationTargetId=routed.targetId;
+     s.last.enemyAttackEvents=routed.events;
      s.last.colleagueShield=allyGuard;
      s.last.colleagueSlowReduction=allySlowReduction;
      if(allyGuard)notice(s,'🛡️ 同事替你擋下 '+allyGuard+' 點傷害！');
