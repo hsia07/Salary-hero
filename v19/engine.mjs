@@ -864,7 +864,9 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      // Mirror part of the actual enemy hit onto a frontline colleague.
      // This does not increase damage taken by the protagonist.
      if(s.last.retaliationDamage>0&&s.formationCombat){
-       const splash=applyColleagueRetaliation(s.formationCombat,s.last.retaliationDamage);
+       const splash=applyColleagueRetaliation(s.formationCombat,s.last.retaliationDamage,{
+         enemyRole:s.enemy.trait==='rage'?'assassin':s.enemy.trait==='guard'?'tank':'melee'
+       });
        s.formationCombat=splash.state;
        s.last.colleagueHits=splash.events;
        for(const event of splash.events){
