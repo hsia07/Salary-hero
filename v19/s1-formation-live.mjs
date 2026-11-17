@@ -6,17 +6,18 @@ import {squadStats} from './v21-squad-core.mjs';
 import {chooseAttackTarget} from './formation-combat-ai.mjs';
 import {createFormationBattle,tickFormationBattle} from './formation-combat-runtime.mjs';
 export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds=1.8}={}){
- const members=squadStats(draft,level).filter(Boolean);
+ const slots=squadStats(draft,level);
+ const members=slots.flatMap((m,i)=>m?[{...m,formationIndex:i}]:[]);
  if(!members.length)return {state:null,damage:0,heal:0,shield:0,actions:[],events:[]};
  const key=String(enemy?.typeId??enemy?.id??'enemy');
  const enemyMaxHp=Math.max(1,Number(enemy?.maxHp)||1);
  const reset=!previous||previous.enemyKey!==key||previous.enemyMaxHp!==enemyMaxHp||
-  previous.units.join('|')!==members.map(m=>m.id).join('|')||previous.wave!==enemy?.wave;
+  !Array.isArray(previous.units)||previous.units.join('|')!==members.map(m=>m.id+':'+m.formationIndex).join('|')||!Array.isArray(previous.battle?.allies)||!previous.battle?.enemies?.length||previous.wave!==enemy?.wave;
  let battle;
  if(reset){
   const allies=members.map(m=>({
-   id:m.id,name:m.name,role:m.role,row:m.slot?.startsWith('rear')?'rear':'front',
-   lane:Math.max(0,Math.min(2,(squadStats(draft,level).findIndex(x=>x?.id===m.id))%3)),maxHp:m.maxHp,hp:m.maxHp,attack:m.attack,
+   id:m.id,name:m.name,role:m.role,row:m.formationIndex<3?'front':'rear',
+   lane:m.formationIndex%3,maxHp:m.maxHp,hp:m.maxHp,attack:m.attack,
    attackInterval:Math.max(.7,2.1-m.speed*.025),
    healPower:m.role==='healer'?Math.round(m.attack*1.5):0,
    shieldPower:m.role==='support'?Math.round(m.attack*1.4):0,
@@ -47,8 +48,8 @@ export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds
   return {id:m.id,damage:e.filter(x=>x.type==='attack').reduce((a,x)=>a+x.damage,0),
    heal:e.filter(x=>x.type==='heal').reduce((a,x)=>a+x.amount,0),
    shield:e.filter(x=>x.type==='shield').reduce((a,x)=>a+x.amount,0)};
- });
- return {state:{battle,enemyKey:key,enemyMaxHp,units:members.map(m=>m.id),wave:enemy?.wave},
+ }).filter(a=>a.damage||a.heal||a.shield);
+ return {state:{battle,enemyKey:key,enemyMaxHp,units:members.map(m=>m.id+':'+m.formationIndex),wave:enemy?.wave},
   damage,heal:0,shield:0,actions,events};
 }
 
