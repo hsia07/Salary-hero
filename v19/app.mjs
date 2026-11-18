@@ -2,6 +2,9 @@
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {xpToNext,teamAura,colleagueCap,colleagueUpgradeCost} from './s1-progression.mjs';
 import {SQUAD_JOBS,memberIdFor} from './v21-squad-core.mjs';
+import {syncRigActors,rigLog,rigStats,debugRigPlay,debugRigTip} from './rig-battle-actors.mjs';
+window.__rigLog=rigLog;window.__rigStats=rigStats;
+window.__rigDebug={play:(id,a)=>debugRigPlay(state,id,a),tip:debugRigTip};
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -919,6 +922,7 @@ function renderSquadStage(){
 
 function render(){
  renderSquadStage();
+ try{syncRigActors(state,{canvas:world});}catch(e){console.warn('rig actors',e);}
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  const enemyTier=state.enemy.tier||'normal';
