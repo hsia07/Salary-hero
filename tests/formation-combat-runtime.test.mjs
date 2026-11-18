@@ -21,8 +21,12 @@ test('healer restores wounded ally and does not exceed maximum',()=>{
  const medic={...u('medic','healer'),healPower:50},tank=u('tank','tank',70);
  const s=createFormationBattle({allies:[medic,tank],enemies:[u('boss','tank')]});
  const n=tickFormationBattle(s,.1);
- assert.equal(n.allies.find(x=>x.id==='tank').hp,100);
- assert.ok(n.events.some(x=>x.type==='heal'));
+ // 治療先結算（70→100，不溢補），同一 tick 敵人反擊可能再扣血，故檢查治療事件量而非 tick 後血量
+ const heal=n.events.find(x=>x.type==='heal'&&x.targetId==='tank');
+ assert.ok(heal);
+ assert.equal(heal.amount,30);
+ const hit=n.events.filter(x=>x.type==='attack'&&x.targetId==='tank').reduce((a,x)=>a+x.damage,0);
+ assert.equal(n.allies.find(x=>x.id==='tank').hp,100-hit);
 });
 test('shield support applies capped protection',()=>{
  const support={...u('support','support'),shieldReady:true,shieldPower:90};
