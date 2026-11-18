@@ -2,7 +2,7 @@
 授權原話：「好 自動流程跟畫到遊戲做出來」。每小時排程檢查會讀本檔決定下一步；**完成一階段就更新「目前狀態」**。
 
 ## 目前狀態
-STAGE=2_EXPLORE（night1 批次 216 張執行中，log: `D:/AI/runs/night1.log`；ComfyUI 伺服器 log: `D:/AI/comfyui.log`）
+STAGE=2_EXPLORE（**目標已改**：對照使用者參考圖 `art/characters/office-lawyer/references/bailu_reference.png`。目前 IPA 試生未達標：臉偏萌、線條粗、色偏藍綠。進行中：bailu-ipa1 40 張＋img2img 決定性測試；log 在 `D:/AI/runs/*.log`）
 - ComfyUI 若掛掉：`cd /d/AI/ComfyUI_windows_portable && ./python_embeded/python.exe -s ComfyUI/main.py --windows-standalone-build --listen 127.0.0.1 --port 8188 --disable-auto-launch`（背景執行）
 - 批次若中斷：`python tools/art/comfy_batch.py D:/AI/plan-night1.json`（已完成的會自動跳過）
 （0_DOWNLOAD → 1_INSTALL → 2_EXPLORE → 3_LOCK → 4_LORA → 5_ASSETS → 6_INTEGRATE → 7_REVIEW）
@@ -23,7 +23,7 @@ STAGE=2_EXPLORE（night1 批次 216 張執行中，log: `D:/AI/runs/night1.log`�
 |---|---|---|
 | 0_DOWNLOAD | ComfyUI、Animagine 4.0、BiRefNet、IP-Adapter＋編碼器 | 檔案大小等於官方大小 |
 | 1_INSTALL | 解壓、放模型、裝 IPAdapter_plus、試生 1 張 | 1 張 raw＋cut 成功 |
-| 2_EXPLORE | 216 張畫風掃描（make_plan_night1）＋依結果第二輪 | 找到 ≥1 組設定：頭身 2.5（head_ratio 0.36–0.44）、單人、去背乾淨，且**與現有正式美術（v19 runtime 怪物、v20 背景）並排不違和** |
+| 2_EXPLORE | 以參考圖為基準（IP-Adapter／img2img／LoRA 實驗）找能穩定重現此畫風的設定 | **與 `references/bailu_reference.png` 並排時：臉型成熟、灰眼、線稿精細度與配色同級**（人工目視判定；PASS_AUTO 只代表去背/單人/不貼邊，不代表畫風達標） |
 | 3_LOCK | 用最佳設定生 60+ 張同設定白律，挑 15–20 張臉最一致者 | 挑選清單寫入 ASSET_LEDGER |
 | 4_LORA | sd-scripts 訓練白律 LoRA | LoRA 生 10 張，臉一致率目測 ≥8/10 |
 | 5_ASSETS | 動作圖／分層部件（依 DESIGN_LOCK §4、§5） | 全部 PASS_AUTO＋目視通過，入 `art/characters/office-lawyer/incoming/`（驗收通過再分入 layers/、portrait/ 等） |
@@ -31,6 +31,8 @@ STAGE=2_EXPLORE（night1 批次 216 張執行中，log: `D:/AI/runs/night1.log`�
 | 7_REVIEW | 停下等使用者看 | 使用者同意才合併 main |
 
 ## 硬規則（自動流程也不得違反）
+- **不得只憑 PASS_AUTO 進入 3_LOCK 以後**；必須人工對照參考圖達標。本機達不到就照實回報，並改走「缺件清單＋ChatGPT 提示詞」備案，不量產次一級畫風。
+- 頭身自動指標已停用（參考圖本身偵測失效），比例以人工對照 references/ 判斷。
 - 每次生圖前重讀 `docs/FORMAL_ART_RULES.md`；素材只入 `art/characters/<id>/incoming/`，不入 runtime，直到使用者核准。
 - 遊戲改動只在 `auto/bailu-v1` 分支，不推 main 的遊戲檔；不清存檔。
 - 不下載清單外的檔案（已同意清單見 CHANGELOG 2026-11-19 授權列）。

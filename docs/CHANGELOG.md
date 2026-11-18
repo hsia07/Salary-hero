@@ -18,3 +18,4 @@
 2026-11-19｜(結構)｜依使用者提議建立角色美術資料庫標準結構：art/characters/<id>/{references,incoming,portrait,layers,weapons,awakening,animations,vfx}、docs/characters/<id>/{DESIGN_LOCK.md,ASSET_LEDGER.md,prompts/,QA/}；白律既有文件改名搬入；新增 tools/art/new_character.py 供 60 人沿用｜路徑引用已全部更新｜「建議讓 Claude 將所有角色按照下列目錄整理」
 2026-11-19｜(入庫)｜使用者上傳白律素材包 4 張：reference 入 references/，全身、頭部、服裝候選入 incoming/；驗收結果記 ASSET_LEDGER｜真透明、深淺底邊緣檢查通過；已重讀 ART-RULES-1.0｜（上傳 Salary-hero-character-assets.zip）
 2026-11-19｜(自動)｜批次支援 IP-Adapter 參考圖約束；試生 4 張：姿勢、披風、聖帶、公文包更接近參考圖，但臉偏萌、紅眼、色偏藍綠、精緻度未達參考圖→補眼色/成熟臉/壓萌後跑 40 張（bailu-ipa1）；純文字版 ref1 停在 25 張留作備用｜已重讀 ART-RULES-1.0；全部留在 D:\AI\runs 未入庫｜—
+2026-11-19｜(修正)｜自動流程完成條件改為「對照使用者參考圖人工目視達標」，禁止只憑 PASS_AUTO 往後推進；頭身自動指標以參考圖校準失效→停用；鎖定檔 §2 與舊提示詞標為已取代、分層清單依參考圖重列（披風前後片、聖帶、手套等）；新增 img2img 決定性測試｜qa.py 對參考圖回傳 head_ratio=None 為停用依據｜—

@@ -48,6 +48,14 @@ def workflow(plan, job, seed, rembg_node):
         "6": {"class_type": "VAEDecode", "inputs": {"samples": ["5", 0], "vae": ["1", 2]}},
         "7": {"class_type": "SaveImage", "inputs": {"images": ["6", 0], "filename_prefix": f"raw_{job['id']}_{seed}"}},
     }
+    init = job.get("init_image")
+    if init:  # img2img：從參考圖出發，denoise 越低越像原圖
+        g["40"] = {"class_type": "LoadImage", "inputs": {"image": init}}
+        g["41"] = {"class_type": "ImageScale", "inputs": {"image": ["40", 0], "upscale_method": "lanczos", "width": w, "height": h, "crop": "center"}}
+        g["42"] = {"class_type": "VAEEncode", "inputs": {"pixels": ["41", 0], "vae": ["1", 2]}}
+        g["5"]["inputs"]["latent_image"] = ["42", 0]
+        g["5"]["inputs"]["denoise"] = job.get("denoise", 0.5)
+        del g["4"]
     ipa = job.get("ipa", plan.get("ipa"))
     if ipa:  # 參考圖約束（IP-Adapter）：image 為 ComfyUI/input 內的檔名
         g["30"] = {"class_type": "LoadImage", "inputs": {"image": ipa["image"]}}

@@ -64,8 +64,9 @@ def inspect(path):
     problems = []
     if r["border_opaque"] > 0.02: problems.append("BORDER")          # 主體貼邊或背景沒去乾淨
     if r["subjects"] != 1: problems.append("MULTI")                  # 多主體／展示板嫌疑
-    hr = r["head_ratio"]
-    if hr is None or not (0.34 <= hr <= 0.46): problems.append("RATIO")
+    # 頭身指標只做參考：以使用者參考圖校準（2026-11-19）時，披風＋蓬髮造型會讓頸部偵測失效（回傳 None），
+    # 故不再列入判定；比例改由人工對照 references/ 判斷。
+    r["ratio_note"] = "info-only"
     r["problems"] = problems
     r["verdict"] = "PASS_AUTO" if not problems else "FLAG_" + "+".join(problems)
     return r
