@@ -6,3 +6,4 @@
 2026-11-18｜(架構)｜建立省 token 架構：CLAUDE.md、docs/ARCHITECTURE.md、本檔、tools/check.mjs、.claude/agents（tester/lore-checker/art-intake）；白律鎖定檔草稿與軀幹單部件提示詞｜check.mjs 實跑 ALL GREEN｜「像之前那樣建立起省token的架構」
 2026-11-18｜(裁決)｜白律戰鬥 Q 版頭身定為 2.5（鎖定檔 §3-1、ARCHITECTURE §7 同步）｜文件變更，無程式｜「2.5 頭身」
 2026-11-18｜(裁決)｜白律年齡呈現定為 40 代後半、清瘦男性（鎖定檔 §3-2）｜文件變更｜「照建議」
+2026-11-18｜(裁決)｜白律採用金白審判光效，獨立 VFX 層（鎖定檔 §3-3）｜文件變更｜「採用」
