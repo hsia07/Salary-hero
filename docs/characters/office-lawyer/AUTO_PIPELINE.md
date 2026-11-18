@@ -2,7 +2,7 @@
 授權原話：「好 自動流程跟畫到遊戲做出來」。每小時排程檢查會讀本檔決定下一步；**完成一階段就更新「目前狀態」**。
 
 ## 目前狀態
-STAGE=7_REVIEW（白律，2026-11-19 03:10）：等使用者看。
+STAGE=7_REVIEW（白律，2026-11-19 03:10）：等使用者看。賽芙：設計方向挑選頁 docs/characters/steel-saint/QA/design_pick_v1.html 等使用者挑；正式圖走 ChatGPT（prompts/PROMPT_00_REF_FULLBODY_CHATGPT.md）。
   - 分層：7 層（頭、身體、持筆手、提包手＋袖、雙腿），來自使用者頭部/服裝候選＋由參考圖/全身候選切出；全部 CANDIDATE
   - 遊戲：分支 auto/bailu-v1（commit 534db5e）— 招募、編隊、反擊條款、無效條款、場上骨架角色（走位/普攻接觸/受擊紅閃/格擋/驅散/倒地）
   - 預覽：嘗試在 main 加獨立預覽資料夾被安全檢查擋下（視為未經核准上線），已撤回；使用者看錄影或本機 http://localhost:8767/v19/play.html
