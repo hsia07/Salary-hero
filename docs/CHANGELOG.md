@@ -17,3 +17,4 @@
 2026-11-19｜(裁決)｜使用者提供白律正式造型參考圖並指定全角色依此畫風；鎖定檔新增 §0 參考圖特徵（取代側分髮、風衣、金屬公文包描述）；停止舊探索，改跑照參考圖的 162 張｜試生 4 張，2 張 PASS_AUTO、特徵明顯接近｜「原本白綠形象差不多設定是這樣 請按照這個風格來」「其他人物也都按這個風格來」
 2026-11-19｜(結構)｜依使用者提議建立角色美術資料庫標準結構：art/characters/<id>/{references,incoming,portrait,layers,weapons,awakening,animations,vfx}、docs/characters/<id>/{DESIGN_LOCK.md,ASSET_LEDGER.md,prompts/,QA/}；白律既有文件改名搬入；新增 tools/art/new_character.py 供 60 人沿用｜路徑引用已全部更新｜「建議讓 Claude 將所有角色按照下列目錄整理」
 2026-11-19｜(入庫)｜使用者上傳白律素材包 4 張：reference 入 references/，全身、頭部、服裝候選入 incoming/；驗收結果記 ASSET_LEDGER｜真透明、深淺底邊緣檢查通過；已重讀 ART-RULES-1.0｜（上傳 Salary-hero-character-assets.zip）
+2026-11-19｜(自動)｜批次支援 IP-Adapter 參考圖約束；試生 4 張：姿勢、披風、聖帶、公文包更接近參考圖，但臉偏萌、紅眼、色偏藍綠、精緻度未達參考圖→補眼色/成熟臉/壓萌後跑 40 張（bailu-ipa1）；純文字版 ref1 停在 25 張留作備用｜已重讀 ART-RULES-1.0；全部留在 D:\AI\runs 未入庫｜—

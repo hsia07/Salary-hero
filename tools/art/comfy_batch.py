@@ -48,6 +48,16 @@ def workflow(plan, job, seed, rembg_node):
         "6": {"class_type": "VAEDecode", "inputs": {"samples": ["5", 0], "vae": ["1", 2]}},
         "7": {"class_type": "SaveImage", "inputs": {"images": ["6", 0], "filename_prefix": f"raw_{job['id']}_{seed}"}},
     }
+    ipa = job.get("ipa", plan.get("ipa"))
+    if ipa:  # 參考圖約束（IP-Adapter）：image 為 ComfyUI/input 內的檔名
+        g["30"] = {"class_type": "LoadImage", "inputs": {"image": ipa["image"]}}
+        g["31"] = {"class_type": "IPAdapterUnifiedLoader", "inputs": {"model": ["1", 0], "preset": ipa.get("preset", "PLUS (high strength)")}}
+        g["32"] = {"class_type": "IPAdapterAdvanced", "inputs": {
+            "model": ["31", 0], "ipadapter": ["31", 1], "image": ["30", 0],
+            "weight": ipa.get("weight", 0.7), "weight_type": ipa.get("weight_type", "linear"),
+            "combine_embeds": "concat", "start_at": ipa.get("start_at", 0.0), "end_at": ipa.get("end_at", 1.0),
+            "embeds_scaling": ipa.get("embeds_scaling", "V only")}}
+        g["5"]["inputs"]["model"] = ["32", 0]
     if rembg_node:
         g.update(rembg_node(["6", 0], f"cut_{job['id']}_{seed}"))
     return g

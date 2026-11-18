@@ -4,7 +4,7 @@
 金尖鋼筆指向前方；黑靴；約 2.5 頭身、精細線稿、日系手遊 Q 版。
 用法：python tools/art/make_plan_bailu_ref.py D:/AI/runs/bailu-ref1 > plan.json
 """
-import json, sys
+import json, sys, os
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "D:/AI/runs/bailu-ref1"
 
@@ -47,5 +47,6 @@ jobs = [{"id": f"{ck}-{sk}-cfg{int(cfg)}", "prompt": f"{chibi}, {CHAR}, {style},
          "cfg": cfg, "steps": 28, "sampler": "euler_ancestral", "scheduler": "normal", "seeds": SEEDS}
         for ck, chibi in CHIBI.items() for sk, style in STYLE.items() for cfg in CFGS]
 
-print(json.dumps({"out": OUT, "checkpoint": "animagine-xl-4.0-opt.safetensors", "width": 832, "height": 1216,
-                  "negative": NEG, "rembg": True, "jobs": jobs}, ensure_ascii=False, indent=1))
+if __name__ == "__main__":
+    print(json.dumps({"out": OUT, "checkpoint": "animagine-xl-4.0-opt.safetensors", "width": 832, "height": 1216,
+                      "negative": NEG, "rembg": True, "jobs": jobs}, ensure_ascii=False, indent=1))
