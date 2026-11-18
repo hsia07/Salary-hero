@@ -7,6 +7,12 @@ STAGE=2_EXPLORE（night1 批次 216 張執行中，log: `D:/AI/runs/night1.log`�
 - 批次若中斷：`python tools/art/comfy_batch.py D:/AI/plan-night1.json`（已完成的會自動跳過）
 （0_DOWNLOAD → 1_INSTALL → 2_EXPLORE → 3_LOCK → 4_LORA → 5_ASSETS → 6_INTEGRATE → 7_REVIEW）
 
+## 使用者早上驗收方式（2026-11-19 01:25 指示）
+原話：「明天 我需要驗證的是 你覺得類似的風格 且已經開始製作的一些遊戲畫面 我覺得不對 就重做 所以你也要繼續有其他備用素材」
+- **主方向**：探索結果中最接近現有美術的 1 組 → 推進到鎖定、LoRA、素材、遊戲畫面（分支 auto/bailu-v1）。
+- **備用方向**：第 2、3 名各保留一套「同設定 12+ 張全身圖＋去背＋並排現有美術的戰鬥畫面截圖」，使用者否決主方向時可直接切換，不必從頭探索。
+- 早上交付：①畫風挑選頁（主＋備用並列）②主方向已做的遊戲畫面截圖 ③目前進度與未完成項目。
+
 ## 路徑
 - 工具：`D:\AI\ComfyUI_windows_portable\`（ComfyUI 在 http://127.0.0.1:8188）；下載暫存 `D:\AI\downloads\`
 - 生圖紀錄：`D:\AI\runs\<run>\results.jsonl`、`raw/`、`cut/`
