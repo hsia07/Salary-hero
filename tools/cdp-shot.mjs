@@ -21,10 +21,11 @@ const ws=new WebSocket(page.webSocketDebuggerUrl);await new Promise(r=>ws.onopen
 let id=0;const pending=new Map();const logs=[];
 ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.id&&pending.has(m.id)){pending.get(m.id)(m);pending.delete(m.id);}
  if(m.method==='Runtime.consoleAPICalled')logs.push(m.params.type+': '+m.params.args.map(a=>a.value??a.description).join(' '));
+ if(m.method==='Log.entryAdded')logs.push('LOG '+m.params.entry.level+': '+m.params.entry.text+' '+(m.params.entry.url||''));
  if(m.method==='Runtime.exceptionThrown')logs.push('EXCEPTION: '+m.params.exceptionDetails.exception?.description);};
 const send=(method,params={})=>new Promise(r=>{const i=++id;pending.set(i,r);ws.send(JSON.stringify({id:i,method,params}));});
 const evalJS=async src=>{const r=await send('Runtime.evaluate',{expression:`(async()=>{${src}})()`,awaitPromise:true,returnByValue:true});return r.result?.result?.value??r.result?.exceptionDetails?.exception?.description;};
-await send('Runtime.enable');await send('Page.enable');
+await send('Runtime.enable');await send('Page.enable');await send('Log.enable');
 await send('Emulation.setDeviceMetricsOverride',{width:W,height:H,deviceScaleFactor:2,mobile:true});
 await send('Page.navigate',{url});await sleep(WAIT);
 // --clip x,y,w,h（CSS 像素）只擷取局部並用 JPEG，加快逐格擷取
