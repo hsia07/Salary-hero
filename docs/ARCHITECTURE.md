@@ -50,4 +50,5 @@ v19-gameplay-ci（主）、formation-combat-ci、tieshi-regression、v19-art-run
 | 世界分組 | `ROSTER_60_ORIGIN_WORLD_GROUPS_V3` | V2 |
 | 小說基線 | `docs/novel/world01/expanded/PHASE1_CANONICAL_STORY_MANIFEST_2026_11_15.md`（凍結，不無限微修） | 早期 24 個暫稱（保全哥等） |
 | 專武覺醒階數 | **未定案**：聊天提 N/R基礎、SR專屬、SSR二階、UR三階 vs DEEP_PRODUCTION_RULES_V2 的 0–4 階 | 不得擅自覆寫 |
+| 全角色畫風 | **以白律參考圖的畫風為準**：日系手遊 Q 版、精細線稿＋柔和漸層上色、約 2.5 頭身（使用者 2026-11-19：「其他人物也都按這個風格來」） | 程式繪製向量風（已否決） |
 | 戰鬥頭身 | **2.5 頭身**（使用者 2026-11-18 裁決，含白律） | 聊天曾提 3.5 頭身 |
