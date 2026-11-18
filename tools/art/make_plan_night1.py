@@ -8,17 +8,18 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else "D:/AI/runs/bailu-night1"
 
 CHAR = ("1boy, solo, mature male, middle-aged man, slender, grey hair, white hair, short hair, side part, "
         "tired eyes, dark circles, calm expression, closed mouth, "
-        "dark green trench coat, long coat, open coat, white collared shirt, grey necktie, black pants, black shoes, "
+        "(dark green trench coat:1.2), forest green coat, long coat, open coat, white collared shirt, grey necktie, black pants, black shoes, "
         "holding briefcase, silver metal briefcase, holding pen, oversized fountain pen, "
         "full body, standing, three-quarter view, facing right, looking at viewer")
 BG = "simple background, white background"
 QUALITY = "masterpiece, high score, great score, absurdres"
 
 CHIBI = {  # 頭身控制
-    "c06": "(chibi:0.6)",
-    "c08": "(chibi:0.8)",
+    # 試生確認 (chibi:0.8) 仍是 8 頭身寫實比例 → 整體往上調
     "c10": "chibi, big head",
     "c12": "(chibi:1.2), big head, small body",
+    "c14": "(chibi:1.4), super deformed, big head, small body, short legs",
+    "c16": "(chibi:1.6), (super deformed:1.2), big head, small body, short legs",
 }
 STYLE = {
     "anime": "anime coloring, clean lineart, cel shading",

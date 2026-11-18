@@ -16,7 +16,7 @@ plan.json 格式：
 每張圖都是獨立請求（不共享上下文），參數完全記錄在 results.jsonl，可重現。
 已完成的 (job, seed) 會跳過，所以中斷後重跑會續做。
 """
-import json, sys, time, uuid, urllib.request, urllib.parse, pathlib
+import json, sys, time, uuid, urllib.request, urllib.parse, urllib.error, pathlib
 
 HOST = "http://127.0.0.1:8188"
 
@@ -54,7 +54,13 @@ def workflow(plan, job, seed, rembg_node):
 
 
 def run_one(plan, job, seed, rembg_node, out):
-    pid = api("/prompt", {"prompt": workflow(plan, job, seed, rembg_node), "client_id": str(uuid.uuid4())})["prompt_id"]
+    try:
+        resp = api("/prompt", {"prompt": workflow(plan, job, seed, rembg_node), "client_id": str(uuid.uuid4())})
+    except urllib.error.HTTPError as e:
+        raise RuntimeError("prompt 被拒：" + e.read().decode("utf-8", "replace")[:400])
+    if resp.get("node_errors"):
+        raise RuntimeError("節點驗證失敗：" + json.dumps(resp["node_errors"], ensure_ascii=False)[:400])
+    pid = resp["prompt_id"]
     t0 = time.time()
     while True:
         hist = api(f"/history/{pid}")
