@@ -10,7 +10,8 @@ CHAR = ("1boy, solo, mature male, middle-aged man, slender, grey hair, white hai
         "tired eyes, dark circles, calm expression, closed mouth, "
         "(dark green trench coat:1.2), forest green coat, long coat, open coat, white collared shirt, grey necktie, black pants, black shoes, "
         "holding briefcase, silver metal briefcase, holding pen, oversized fountain pen, "
-        "full body, standing, three-quarter view, facing right, looking at viewer")
+        "(full body:1.3), standing, feet, shoes, wide shot, small character centered, empty space around character, "
+        "three-quarter view, facing right, looking at viewer")
 BG = "simple background, white background"
 QUALITY = "masterpiece, high score, great score, absurdres"
 
@@ -22,7 +23,8 @@ CHIBI = {  # 頭身控制
     "c16": "(chibi:1.6), (super deformed:1.2), big head, small body, short legs",
 }
 STYLE = {
-    "anime": "anime coloring, clean lineart, cel shading",
+    # 現有遊戲素材為厚塗質感；平塗 cel 試生最不像 → 換成厚塗方向
+    "paint": "(thick painting:0.8), painterly, detailed shading, glossy highlights, rim light, game cg",
     "game": "official art, game cg, soft shading, detailed",
     "dark": "dark fantasy, muted colors, rim light, detailed",
 }
@@ -32,6 +34,8 @@ SEEDS = [101, 202, 303, 404, 505, 606]
 NEG = ("lowres, bad anatomy, bad hands, missing fingers, extra digits, fewer digits, extra arms, "
        "text, signature, watermark, username, logo, error, cropped, blurry, jpeg artifacts, "
        "worst quality, low quality, low score, bad score, average score, "
+       "cropped legs, out of frame, close-up, upper body, portrait, cowboy shot, "
+       "effects, swirl, leaves, petals, aura, tree, branches, plant, "
        "multiple views, reference sheet, character sheet, turnaround, comic, 2koma, 4koma, collage, "
        "female, 1girl, child, loli, shota, muscular, old man, "
        "background, scenery, floor, shadow, gradient background")
