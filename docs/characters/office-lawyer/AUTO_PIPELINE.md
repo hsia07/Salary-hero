@@ -2,7 +2,11 @@
 授權原話：「好 自動流程跟畫到遊戲做出來」。每小時排程檢查會讀本檔決定下一步；**完成一階段就更新「目前狀態」**。
 
 ## 目前狀態
-STAGE=2_EXPLORE（**目標已改**：對照使用者參考圖 `art/characters/office-lawyer/references/bailu_reference.png`。目前 IPA 試生未達標：臉偏萌、線條粗、色偏藍綠。進行中：bailu-ipa1 40 張＋img2img 決定性測試；log 在 `D:/AI/runs/*.log`）
+STAGE=4_LORA（實驗中）。2_EXPLORE 結論（2026-11-19 03:00）：底模 Animagine 4.0 無法自行畫出參考圖畫風——
+  - 純文字/IP-Adapter：臉偏萌、髮塌、紋章糊（`D:/AI/runs/ipa-dpm`）；img2img 只在 denoise≤0.35 保住畫風，0.5 即劣化（`D:/AI/runs/i2i-dpm`）
+  - 取樣器 euler_ancestral 會造成雜訊顆粒 → 一律改 dpmpp_2m + karras
+  - 現行：用使用者 4 張圖＋裁切＋4 張低 denoise 變體訓練 LoRA `D:/AI/lora/bailu/out/bailu_sh_v1*.safetensors`（log: `D:/AI/lora/bailu/train.log`）
+  - **LoRA 通過條件（先定）**：不加參考圖、換 3 種新姿勢各生 4 張，≥6/12 張在臉（成熟、灰眼、淚痣）、蓬髮、披風＋聖帶、公文包紋章上與參考圖同級；否則改走「缺件清單＋ChatGPT 提示詞」備案
 - ComfyUI 若掛掉：`cd /d/AI/ComfyUI_windows_portable && ./python_embeded/python.exe -s ComfyUI/main.py --windows-standalone-build --listen 127.0.0.1 --port 8188 --disable-auto-launch`（背景執行）
 - 批次若中斷：`python tools/art/comfy_batch.py D:/AI/plan-night1.json`（已完成的會自動跳過）
 （0_DOWNLOAD → 1_INSTALL → 2_EXPLORE → 3_LOCK → 4_LORA → 5_ASSETS → 6_INTEGRATE → 7_REVIEW）
