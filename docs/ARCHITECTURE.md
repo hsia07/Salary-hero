@@ -17,6 +17,8 @@
 | `scripts/` | Python 素材建置與手機 QA |
 | `tools/` | `check.mjs`、素材匯入、`story/check_world01_novel.py` |
 | 根目錄 | 舊版遺產（game.js v51、legacy-v17、play-v14、boss-v1~v5、*-v13x.js）——**不要讀，不要刪** |
+| `art/characters/<id>/` | **角色美術資料庫**（60 人同結構）：references 參考圖、incoming 待驗收、portrait 立繪、layers 分層、weapons 專武、awakening 覺醒、animations 動作、vfx 特效 |
+| `docs/characters/<id>/` | DESIGN_LOCK.md 造型鎖定、ASSET_LEDGER.md 素材帳、prompts/ 提示詞、QA/ 驗收紀錄。新角色用 `python tools/art/new_character.py <id>` 建立 |
 | `v18/`、`tieshi-immersive/` | 舊版頁面／鐵時 demo，僅維護 |
 
 ## 3. 模組地圖（v19）

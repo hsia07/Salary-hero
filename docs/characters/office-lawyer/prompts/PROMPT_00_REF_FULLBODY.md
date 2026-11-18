@@ -1,5 +1,5 @@
 # 生成提示詞｜bailu_ref_fullbody_front（白律全身基準圖，單人）
-**生圖前：完整重讀 `docs/FORMAL_ART_RULES.md` 與 `BAILU_DESIGN_LOCK_V1.md`。**
+**生圖前：完整重讀 `docs/FORMAL_ART_RULES.md` 與 `DESIGN_LOCK.md`。**
 用途：只當後續所有部件的「臉、配色、比例」參考圖，本身不拆層、不進遊戲。
 試生 1（Canva）因約 3.5–4 頭身被退回，所以這版把頭身比寫得更死。
 

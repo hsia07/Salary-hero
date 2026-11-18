@@ -1,5 +1,5 @@
 # 生成提示詞｜bailu_torso（白律軀幹，單一部件）
-**貼給生圖工具前：生圖者須先完整重讀 `docs/FORMAL_ART_RULES.md` 與 `BAILU_DESIGN_LOCK_V1.md`。**
+**貼給生圖工具前：生圖者須先完整重讀 `docs/FORMAL_ART_RULES.md` 與 `DESIGN_LOCK.md`。**
 前置：鎖定檔已 DESIGN_APPROVED（2.5 頭身、40 代後半清瘦男性）。舊候選圖比例不同，若附上只作「配色參考，不要複製比例與構圖」。
 領帶色暫定**炭灰**（鎖定檔 §2 原列暗酒紅/炭灰二選一；炭灰避免與鐵時黑紅領帶撞色）。要改色就在生圖前說。
 

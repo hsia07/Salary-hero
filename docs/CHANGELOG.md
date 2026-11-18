@@ -15,3 +15,4 @@
 2026-11-19｜(自動)｜下載完成並驗證雜湊（ComfyUI v0.45.0、Animagine XL 4.0、BiRefNet、IP-Adapter＋編碼器）；ComfyUI 啟動；試生 1 張：去背三底色乾淨，但 (chibi:0.8) 仍為 8 頭身→調高 Q 版權重；啟動 night1 216 張探索｜已重讀 ART-RULES-1.0；試生判定 FLAG_RATIO 未入庫｜—
 2026-11-19｜(指示)｜早上驗收：主方向推進到遊戲畫面，另保留第 2、3 名畫風的備用素材，被否決可直接切換｜—｜「我覺得不對 就重做 所以你也要繼續有其他備用素材」
 2026-11-19｜(裁決)｜使用者提供白律正式造型參考圖並指定全角色依此畫風；鎖定檔新增 §0 參考圖特徵（取代側分髮、風衣、金屬公文包描述）；停止舊探索，改跑照參考圖的 162 張｜試生 4 張，2 張 PASS_AUTO、特徵明顯接近｜「原本白綠形象差不多設定是這樣 請按照這個風格來」「其他人物也都按這個風格來」
+2026-11-19｜(結構)｜依使用者提議建立角色美術資料庫標準結構：art/characters/<id>/{references,incoming,portrait,layers,weapons,awakening,animations,vfx}、docs/characters/<id>/{DESIGN_LOCK.md,ASSET_LEDGER.md,prompts/,QA/}；白律既有文件改名搬入；新增 tools/art/new_character.py 供 60 人沿用｜路徑引用已全部更新｜「建議讓 Claude 將所有角色按照下列目錄整理」

@@ -28,7 +28,8 @@
 | 改模組後快取 | 同步 `v19/play.html`、`v19/app.mjs` 的 `?v=` |
 | 小說結構檢查 | `python tools/story/check_world01_novel.py` |
 | 手機 QA | `python scripts/qa-v19-mobile-smoke.py`（需 playwright） |
-| 白律美術進度 | `docs/characters/office-lawyer/` |
+| 角色美術資料 | `docs/characters/<id>/`（鎖定檔、素材帳、提示詞）＋ `art/characters/<id>/`；新角色 `python tools/art/new_character.py <id>` |
+| 本機生圖 | ComfyUI 在 `D:\AI`；流程見 `docs/characters/office-lawyer/AUTO_PIPELINE.md` |
 
 ## 施工流程與分工（`.claude/agents/`）
 | 段 | 誰 | 可並行 |
