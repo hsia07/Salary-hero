@@ -5,14 +5,14 @@
 import json, sys
 CID, OUT = sys.argv[1], sys.argv[2]
 DESIGNS = {
- "steel-saint": {
-  "base": ("1girl, solo, adult woman, tall, android, mechanical joints, (white and gold holy armor:1.2), ornate breastplate, "
-           "(glowing blue long hair:1.2), energy hair, (mechanical wings:1.2), white metal wings, calm gentle expression, blue eyes, "
-           "serene, rescue saint, faint halo"),
+ "steel-saint": {  # 依 docs/characters/steel-saint/DESIGN_BRIEF.md（小說細節）
+  "base": ("1girl, solo, adult woman, tall, android, visible mechanical joints, (white and gold holy armor:1.2), layered breastplate, "
+           "chest maintenance hatch panel, small blank metal plate hanging on chest, faint glowing blue cracks on armor, "
+           "(glowing blue long hair:1.2), energy hair, (white metal mechanical wings:1.2), calm tired gentle expression, blue eyes"),
   "directions": {
-   "shield": "holding large white-gold tower shield, standing guard",
-   "open": "one hand on chest, other hand open, standing",
-   "lance": "holding white-gold rescue lance, standing",
+   "shield": "holding large white-gold rescue shield with folding panels, standing guard",
+   "shieldgun": "large white-gold rescue shield on one arm, compact energy gun in other hand, standing",
+   "hatch": "one hand closing chest maintenance hatch, rescue shield on back, standing",
   },
  },
 }
