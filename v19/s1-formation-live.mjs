@@ -21,7 +21,8 @@ export function advanceLiveColleagues({draft,level=1,enemy,previous=null,seconds
    attackInterval:Math.max(.7,2.1-m.speed*.025),
    healPower:m.role==='healer'?Math.round(m.attack*1.5):0,
    shieldPower:m.role==='support'?Math.round(m.attack*1.4):0,
-   shieldReady:m.role==='support',shieldInterval:8
+   shieldReady:m.role==='support',shieldInterval:8,
+   counter:m.counter||0,counterInterval:1.5,dispelPower:m.dispel?1:0,dispelInterval:8
   }));
   // Enemy retaliation is handled by the legacy battle until full migration.
   // The formation opponent is a target-only proxy, never an extra attacker.
@@ -85,16 +86,16 @@ export function applyColleagueRetaliation(previous,damage,{enemyRole='melee',tar
  */
 export function routeLiveRetaliation(previous,damage,{heroHp=0,heroMaxHp=1,enemyRole='melee',targetId=null}={}){
  const amount=Math.max(0,Math.round(Number(damage)||0));
- if(!amount)return {state:previous,heroDamage:0,events:[],targetId:null};
+ if(!amount)return {state:previous,heroDamage:0,counterDamage:0,events:[],targetId:null};
  const units=previous?.battle?.allies||[];
  const hero={id:'salary-hero',role:'melee',row:'hero',lane:1,hp:Math.max(0,Number(heroHp)||0),maxHp:Math.max(1,Number(heroMaxHp)||1)};
  const living=[...units.filter(x=>x.hp>0),...(hero.hp>0?[hero]:[])];
- if(!living.length)return {state:previous,heroDamage:0,events:[],targetId:null};
+ if(!living.length)return {state:previous,heroDamage:0,counterDamage:0,events:[],targetId:null};
  const attacker={id:'live-enemy',role:enemyRole,row:'front',lane:1,hp:1,maxHp:1};
  const target=(targetId&&living.find(x=>x.id===targetId))||chooseAttackTarget(attacker,living);
- if(!target)return {state:previous,heroDamage:0,events:[],targetId:null};
+ if(!target)return {state:previous,heroDamage:0,counterDamage:0,events:[],targetId:null};
  if(target.id==='salary-hero'){
-  return {state:previous,heroDamage:Math.min(hero.hp,amount),
+  return {state:previous,heroDamage:Math.min(hero.hp,amount),counterDamage:0,
    events:[{type:'hero-hit',actorId:attacker.id,targetId:hero.id,damage:Math.min(hero.hp,amount)}],targetId:hero.id};
  }
  const battle={...previous.battle,allies:units.map(x=>({...x,statuses:(x.statuses||[]).map(y=>({...y}))})),
@@ -106,5 +107,19 @@ export function routeLiveRetaliation(previous,damage,{heroHp=0,heroMaxHp=1,enemy
  victim.hp-=dealt;
  const events=[{type:'colleague-hit',actorId:attacker.id,targetId:victim.id,damage:dealt,blocked}];
  if(victim.hp===0)events.push({type:'colleague-defeat',targetId:victim.id});
- return {state:{...previous,battle},heroDamage:0,events,targetId:victim.id};
+ // 白律反擊條款：被打且存活 → 立即回擊敵人（由引擎扣敵方 HP）
+ let counterDamage=0;
+ if(victim.hp>0&&Number(victim.counter)>0){
+  counterDamage=Math.max(1,Math.round(victim.attack*Math.min(2,Number(victim.counter))));
+  events.push({type:'colleague-counter',actorId:victim.id,targetId:attacker.id,damage:counterDamage});
+ }
+ return {state:{...previous,battle},heroDamage:0,counterDamage,events,targetId:victim.id};
+}
+
+/** 白律「無效條款」：部署中且存活的驅散同事，會解除當前敵人的契約特性（guard/rage/leech）。 */
+export const DISPELLABLE_TRAITS=Object.freeze(['guard','rage','leech']);
+export function activeDispeller(draft,formationState){
+ const slots=Array.isArray(draft?.slots)?draft.slots:[];
+ const alive=new Map((formationState?.battle?.allies||[]).map(u=>[u.id,u.hp>0]));
+ return slots.find(m=>m&&m.job==='lawyer'&&alive.get(m.id)!==false)||null;
 }

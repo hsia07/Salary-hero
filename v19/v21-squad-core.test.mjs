@@ -6,7 +6,9 @@ const m=(id,job,path)=>({id,job,path,level:12,stars:2});
 test('six actual tactical slots, every profession has three distinct paths, and protagonist is a seventh COMMAND role, not a forced party slot',()=>{
  assert.equal(SQUAD_SLOTS.length,6);
  assert.deepEqual(SQUAD_SLOTS.map(x=>x.row),['front','front','middle','middle','rear','rear']);
- assert.equal(SQUAD_JOBS.length,6);
+ // 6 個基礎職業＋60 人名冊的具名同事（有 memberId），具名同事不得佔用 starter- 編號
+ assert.equal(SQUAD_JOBS.filter(j=>!j.memberId).length,6);
+ assert.ok(SQUAD_JOBS.filter(j=>j.memberId).every(j=>!j.memberId.startsWith('starter-')));
  for(const j of SQUAD_JOBS){
   assert.equal(j.paths.length,3);
   assert.equal(new Set(j.paths.map(x=>x.id)).size,3);

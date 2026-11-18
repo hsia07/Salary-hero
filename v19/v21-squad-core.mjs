@@ -32,8 +32,20 @@ export const SQUAD_JOBS=Object.freeze([
  {id:'engineer',name:'機械工程師',role:'support',tags:['office','mecha'],hp:128,atk:23,spd:10,paths:[
   {id:'turret',name:'自動砲台',effect:'summon',value:.27},
   {id:'overdrive',name:'超頻機兵',effect:'overdrive',value:.33},
-  {id:'logistics',name:'資源調度',effect:'buff',value:.14}]}
+  {id:'logistics',name:'資源調度',effect:'buff',value:.14}]},
+ // 60 人名冊第一位正式同事（UR）：勞權律師・白律｜反擊驅散。memberId 對應 ROSTER_60 角色 id。
+ {id:'lawyer',memberId:'office-lawyer',name:'勞權律師・白律',rarity:'UR',role:'caster',roleLabel:'反擊驅散',tags:['office','arcane'],hp:146,atk:31,spd:11,
+  counter:.5,dispel:true,
+  // 候選美術（使用者提供的造型基準圖縮圖）；正式分層動畫完成前只作頭像與卡面。
+  art:{status:'candidate',avatar:'../art/characters/office-lawyer/incoming/bailu_avatar_candidate.webp',card:'../art/characters/office-lawyer/incoming/bailu_card_candidate.webp'},
+  paths:[
+  {id:'counterclause',name:'反擊條款',effect:'counter',value:.5},
+  {id:'nullclause',name:'無效條款',effect:'dispel',value:1},
+  {id:'witness',name:'證人保護',effect:'guard',value:.12}]}
 ]);
+/** 同事在養成存檔中的成員 id：舊六職業維持 starter-<job>（存檔相容），具名同事用名冊 id。 */
+export const memberIdFor=jobOrId=>{const j=typeof jobOrId==='string'?job(jobOrId):jobOrId;return j?(j.memberId||'starter-'+j.id):null;};
+export const jobForMember=memberId=>SQUAD_JOBS.find(j=>memberIdFor(j)===memberId)||null;
 export const COMMANDER_PATHS=Object.freeze([
  {id:'overtime',name:'爆肝隊長',job:'團隊爆發',ability:'全隊提高傷害與追擊機會',cost:100},
  {id:'strategist',name:'摸魚軍師',job:'控制與轉場',ability:'打斷敵方技能並標記弱點',cost:100},
@@ -99,7 +111,7 @@ export function squadStats(draft,slaveLevel=null){
   const x={id:m.id,name:m.name,job:j.id,role:j.role,preferredRow:roleRows[j.role],
     slot:SQUAD_SLOTS[i].id,row:SQUAD_SLOTS[i].row,path:m.path,effect:p.effect,value:p.value,
     maxHp:Math.round(j.hp*multi*aura),attack:Math.round(j.atk*multi*aura*(1+officeBoost*.035)),
-    speed:j.spd+(m.stars-1),shield:0};
+    speed:j.spd+(m.stars-1),shield:0,counter:j.counter||0,dispel:!!j.dispel,rarity:j.rarity||null};
   if(x.row!==x.preferredRow)x.formationHint='非典型站位：可組特殊陣容';
   return x;
  });

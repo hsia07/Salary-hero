@@ -10,6 +10,8 @@ export function createFormationBattle({allies=[],enemies=[]}={}){
  return {time:0,allies:normalize(allies,'ally'),enemies:normalize(enemies,'enemy'),events:[],winner:null};
 }
 const living=arr=>arr.filter(x=>x.hp>0);
+// 可被驅散的增益狀態（負面狀態如 poison/stun/slow 不受影響）
+export const BUFF_TYPES=new Set(['enrage','fortify','haste','regen','contract']);
 function damage(target,amount){
  const armor=Math.max(0,Number(target.armor)||0);
  const raw=Math.max(1,Math.round(Math.max(1,amount)*(100/(100+armor)))),blocked=Math.min(target.shield,raw);
@@ -24,6 +26,8 @@ export function tickFormationBattle(previous,dt=0.1){
  for(const u of [...s.allies,...s.enemies]){
   u.cooldown=Math.max(0,u.cooldown-elapsed);
   u.shieldCooldown=Math.max(0,(u.shieldCooldown||0)-elapsed);
+  u.dispelCooldown=Math.max(0,(Number(u.dispelCooldown)||0)-elapsed);
+  u.counterCooldown=Math.max(0,(Number(u.counterCooldown)||0)-elapsed);
   if(u.role==='support'&&u.shieldCooldown===0)u.shieldReady=true;
   const active=[];
   for(const status of u.statuses){
@@ -72,6 +76,17 @@ export function tickFormationBattle(previous,dt=0.1){
    actor.shieldCooldown=Math.max(1,Number(actor.shieldInterval)||8);
    s.events.push({type:'shield',actorId:actor.id,targetId:target.id,amount:added});
   }else{
+   // 驅散（白律「無效條款」）：攻擊前先解除目標護盾與增益狀態，有冷卻。
+   if(actor.dispelPower>0&&actor.dispelCooldown<=0){
+    const buffs=target.statuses.filter(x=>BUFF_TYPES.has(x.type));
+    if(target.shield>0||buffs.length){
+     const removedShield=target.shield;
+     target.shield=0;
+     target.statuses=target.statuses.filter(x=>!BUFF_TYPES.has(x.type));
+     actor.dispelCooldown=Math.max(1,Number(actor.dispelInterval)||8);
+     s.events.push({type:'dispel',actorId:actor.id,targetId:target.id,removedShield,removedStatuses:buffs.map(x=>x.type)});
+    }
+   }
    const {dealt,blocked}=damage(target,actor.attack);
    actor.energy=clamp(actor.energy+8,0,100);
    s.events.push({type:'attack',actorId:actor.id,targetId:target.id,damage:dealt,blocked});
@@ -80,6 +95,13 @@ export function tickFormationBattle(previous,dt=0.1){
     if(healed>0){actor.hp+=healed;s.events.push({type:'leech',actorId:actor.id,targetId:actor.id,amount:healed});}
    }
    if(target.hp===0)s.events.push({type:'defeat',targetId:target.id});
+   // 反擊（白律「反擊條款」）：被攻擊且存活時立即回擊攻擊者，有冷卻；不會連鎖反擊。
+   else if(target.counter>0&&target.counterCooldown<=0&&actor.hp>0){
+    const hit=damage(actor,target.attack*clamp(target.counter,0,2));
+    target.counterCooldown=Math.max(.5,Number(target.counterInterval)||1.5);
+    s.events.push({type:'counter',actorId:target.id,targetId:actor.id,damage:hit.dealt,blocked:hit.blocked});
+    if(actor.hp===0)s.events.push({type:'defeat',targetId:actor.id});
+   }
   }
   actor.cooldown=actor.attackInterval*(actor.statuses.some(x=>x.type==='slow'&&x.duration>0)?1.35:1);
  }
