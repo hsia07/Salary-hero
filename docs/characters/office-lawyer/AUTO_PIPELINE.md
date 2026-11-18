@@ -2,8 +2,9 @@
 授權原話：「好 自動流程跟畫到遊戲做出來」。每小時排程檢查會讀本檔決定下一步；**完成一階段就更新「目前狀態」**。
 
 ## 目前狀態
-STAGE=2_EXPLORE（night1 批次 216 張執行中，log: D:AIuns
-ight1.log）
+STAGE=2_EXPLORE（night1 批次 216 張執行中，log: `D:/AI/runs/night1.log`；ComfyUI 伺服器 log: `D:/AI/comfyui.log`）
+- ComfyUI 若掛掉：`cd /d/AI/ComfyUI_windows_portable && ./python_embeded/python.exe -s ComfyUI/main.py --windows-standalone-build --listen 127.0.0.1 --port 8188 --disable-auto-launch`（背景執行）
+- 批次若中斷：`python tools/art/comfy_batch.py D:/AI/plan-night1.json`（已完成的會自動跳過）
 （0_DOWNLOAD → 1_INSTALL → 2_EXPLORE → 3_LOCK → 4_LORA → 5_ASSETS → 6_INTEGRATE → 7_REVIEW）
 
 ## 路徑
