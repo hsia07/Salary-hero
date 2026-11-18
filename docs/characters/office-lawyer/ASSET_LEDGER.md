@@ -15,3 +15,4 @@
 2026-11-19｜bailu_arm_l_case｜layers/bailu_arm_l_case.png（rig/case_sleeve＋case_front）｜448×473｜由參考圖切出提包手＋公文包｜CANDIDATE（切圖）｜把手圈內披風已挖空；公文包後方遮擋面未補繪
 2026-11-19｜bailu_leg_l／leg_r｜rig/leg_l.webp、leg_r.webp｜—｜由服裝候選膝下切出｜CANDIDATE（切圖）｜樞紐在膝蓋，上緣藏於披風下擺
 2026-11-19｜rig 驗收｜QA/2026-11-19_*｜—｜—｜QA_PENDING（待使用者核准）｜375px 無頭 Edge 逐格：普攻筆尖接觸敵人、受擊紅閃、格擋、驅散；未在實機手機測
+2026-11-19｜rig 修正｜rig/rig.json｜—｜使用者回饋「頭接在奇怪的地方」｜CANDIDATE｜頭部右移 38、下移 6（rig 像素），下巴對準衣領；頸部樞紐同步；rig.json 改存 UTF-8
