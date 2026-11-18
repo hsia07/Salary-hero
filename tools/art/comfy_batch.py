@@ -48,6 +48,10 @@ def workflow(plan, job, seed, rembg_node):
         "6": {"class_type": "VAEDecode", "inputs": {"samples": ["5", 0], "vae": ["1", 2]}},
         "7": {"class_type": "SaveImage", "inputs": {"images": ["6", 0], "filename_prefix": f"raw_{job['id']}_{seed}"}},
     }
+    lora = job.get("lora", plan.get("lora"))
+    if lora:  # 角色專屬 LoRA（放在 ComfyUI/models/loras）
+        g["50"] = {"class_type": "LoraLoaderModelOnly", "inputs": {"model": ["1", 0], "lora_name": lora["name"], "strength_model": lora.get("strength", 1.0)}}
+        g["5"]["inputs"]["model"] = ["50", 0]
     init = job.get("init_image")
     if init:  # img2img：從參考圖出發，denoise 越低越像原圖
         g["40"] = {"class_type": "LoadImage", "inputs": {"image": init}}
@@ -59,7 +63,7 @@ def workflow(plan, job, seed, rembg_node):
     ipa = job.get("ipa", plan.get("ipa"))
     if ipa:  # 參考圖約束（IP-Adapter）：image 為 ComfyUI/input 內的檔名
         g["30"] = {"class_type": "LoadImage", "inputs": {"image": ipa["image"]}}
-        g["31"] = {"class_type": "IPAdapterUnifiedLoader", "inputs": {"model": ["1", 0], "preset": ipa.get("preset", "PLUS (high strength)")}}
+        g["31"] = {"class_type": "IPAdapterUnifiedLoader", "inputs": {"model": g["5"]["inputs"]["model"], "preset": ipa.get("preset", "PLUS (high strength)")}}
         g["32"] = {"class_type": "IPAdapterAdvanced", "inputs": {
             "model": ["31", 0], "ipadapter": ["31", 1], "image": ["30", 0],
             "weight": ipa.get("weight", 0.7), "weight_type": ipa.get("weight_type", "linear"),
