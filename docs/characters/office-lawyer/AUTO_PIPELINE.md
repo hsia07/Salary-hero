@@ -2,7 +2,8 @@
 授權原話：「好 自動流程跟畫到遊戲做出來」。每小時排程檢查會讀本檔決定下一步；**完成一階段就更新「目前狀態」**。
 
 ## 目前狀態
-STAGE=4_LORA（實驗中）。2_EXPLORE 結論（2026-11-19 03:00）：底模 Animagine 4.0 無法自行畫出參考圖畫風——
+STAGE=5_ASSETS（分層，使用者 02:10 指示「能直接製作分層嗎 我明天要看到在場上移動攻擊的角色」）：先用使用者的頭＋服裝候選＋參考圖手臂拼接；不足處才補畫。**LoRA 訓練跑完前不得送 ComfyUI 工作（顯存 7.8/8GB）**。並行：4_LORA 實驗。
+舊 4_LORA 紀錄：2_EXPLORE 結論（2026-11-19 03:00）：底模 Animagine 4.0 無法自行畫出參考圖畫風——
   - 純文字/IP-Adapter：臉偏萌、髮塌、紋章糊（`D:/AI/runs/ipa-dpm`）；img2img 只在 denoise≤0.35 保住畫風，0.5 即劣化（`D:/AI/runs/i2i-dpm`）
   - 取樣器 euler_ancestral 會造成雜訊顆粒 → 一律改 dpmpp_2m + karras
   - 現行：用使用者 4 張圖＋裁切＋4 張低 denoise 變體訓練 LoRA `D:/AI/lora/bailu/out/bailu_sh_v1*.safetensors`（log: `D:/AI/lora/bailu/train.log`）
