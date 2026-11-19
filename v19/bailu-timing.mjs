@@ -17,3 +17,10 @@ export function bailuLungeAt(ms){
  if(ms<s6)return BAILU_LUNGE_PX;
  return BAILU_LUNGE_PX*Math.max(0,1-(ms-s6)/BAILU_ATTACK_MS[6]);
 }
+/** 大招「終審判決」：先放 0.7 秒半身特寫（cut-in），再播 8 格；第 6 格（定讞）為命中。 */
+export const BAILU_CUTIN_MS=700;
+export const BAILU_ULT_MS=Object.freeze([150,170,160,190,240,110,220,180]);
+export const BAILU_ULT_TOTAL_MS=BAILU_CUTIN_MS+BAILU_ULT_MS.reduce((a,b)=>a+b,0);
+export const BAILU_ULT_IMPACT_FRAME=5;
+export const BAILU_ULT_IMPACT_MS=BAILU_CUTIN_MS+BAILU_ULT_MS.slice(0,5).reduce((a,b)=>a+b,0);
+export function bailuUltFrameAt(ms){let t=(Number(ms)||0)-BAILU_CUTIN_MS;if(t<0)return -2;for(let i=0;i<BAILU_ULT_MS.length;i++){if(t<BAILU_ULT_MS[i])return i;t-=BAILU_ULT_MS[i];}return -1;}
