@@ -19,7 +19,7 @@ import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas
 import {validateHurtAtlas} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,hurtEffectAt} from './hurt-effects.mjs';
 import {BAILU_ATTACK_TOTAL_MS,bailuFrameAt,bailuLungeAt,BAILU_IMPACT_MS,BAILU_IMPACT_FRAME,BAILU_CUTIN_MS,BAILU_ULT_MS,BAILU_ULT_TOTAL_MS,BAILU_ULT_IMPACT_MS,bailuUltFrameAt} from './bailu-timing.mjs';
-import {ultPhases,drawUltBack,drawUltFront,ultCamera,drawCutin} from './bailu-ult-fx.mjs?v=2';
+import {ultPhases,drawUltBack,drawUltFront,ultCamera,drawCutin,loadUltVfx} from './bailu-ult-fx.mjs?v=4';
 const UP=ultPhases(BAILU_CUTIN_MS,BAILU_ULT_MS);
 const cv=document.getElementById('world'),ctx=cv.getContext('2d');
 const load=s=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=s;});
@@ -27,6 +27,7 @@ const B='../art/characters/office-lawyer/animations/',H='../art/v19/candidates/c
 const [bg,golem,golemHurt,bAtk,bHurt,hAtk,hHurt,hIdle,bUlt,bCut]=await Promise.all([
  load('../art/v20/runtime/backgrounds/battle-library-v20-p10.webp'),load('../art/v19/runtime/monsters/chair-golem/idle.webp'),load('../art/v19/runtime/monsters/chair-golem/hurt.webp'),
  load(B+'attack-7pose-512.png'),load(B+'hurt-5pose-384.png'),load(H+'attack-v2-7pose-512.png'),load(H+'hurt-v1-5pose-384.webp'),load(H+'idle-candidate.webp'),load(B+'ult-8pose-512.png'),load(B+'ult-cutin-800.webp')]);
+const VFX=await loadUltVfx('../art/characters/office-lawyer/vfx/');
 const SETS={bailu:{atk:bAtk,hurt:bHurt,idleFrom:'atk'},hero:{atk:hAtk,hurt:hHurt,idle:hIdle}};
 let who='bailu',mode='idle',start=0,speed=1;
 const HERO_X=116,FLOOR=525,ENEMY_X=334;
@@ -35,7 +36,7 @@ function frame(now){
  const cam=mode==='ult'?ultCamera(t,UP,{enemyX:ENEMY_X,floor:FLOOR}):null;
  if(cam){ctx.save();ctx.translate(cam.cx+cam.shakeX,cam.cy+cam.shakeY);ctx.scale(cam.zoom,cam.zoom);ctx.translate(-cam.cx,-cam.cy);}
  ctx.drawImage(bg,0,0,720,620);
- drawUltBack(ctx,mode==='ult'?t:-1,UP,{heroX:HERO_X,floor:FLOOR,enemyX:ENEMY_X});
+ drawUltBack(ctx,mode==='ult'?t:-1,UP,{heroX:HERO_X,floor:FLOOR,enemyX:ENEMY_X},VFX);
  // 敵人（遊戲既有逐格怪物）
  const impactAt=who==='bailu'?BAILU_IMPACT_MS:405;
  const done=who==='bailu'?bailuFrameAt(t)<0:attackFrameAt(t)<0;
@@ -76,9 +77,9 @@ function frame(now){
   else{const c=512;ctx.drawImage(s.atk,0,0,c,c,HERO_X-25,FLOOR-298,306,306);}
  }
  ctx.restore();
- drawUltFront(ctx,mode==='ult'?t:-1,UP,{heroX:HERO_X,floor:FLOOR,enemyX:ENEMY_X,penTip:{x:HERO_X+215,y:FLOOR-265}});
+ drawUltFront(ctx,mode==='ult'?t:-1,UP,{heroX:HERO_X,floor:FLOOR,enemyX:ENEMY_X,penTip:{x:HERO_X+215,y:FLOOR-265}},VFX);
  if(cam)ctx.restore();
- if(mode==='ult')drawCutin(ctx,t,UP,bCut);
+ if(mode==='ult')drawCutin(ctx,t,UP,bCut,VFX);
  requestAnimationFrame(frame);
 }
 const off=document.createElement('canvas'),octx=off.getContext('2d');
