@@ -26,3 +26,4 @@
 2026-11-19｜bailu hurt 5（ChatGPT v1）｜animations/hurt-5pose-384.png｜—｜—｜APPROVED_BY_USER（受擊動作）｜使用者：「定案」
 2026-11-19｜bailu ult 8（終審判決）＋cut-in｜animations/ult-8pose-512.png、ult-cutin-800.webp；原檔 animations/chatgpt_ult_v1/｜8×512、cut-in 1600×800→800×400｜使用者以 ChatGPT 生成並打包｜CANDIDATE｜審查：8 格畫風與已定案一致、動作有儀式感（開箱→抽契約→書寫→高舉→劃下）；縮放 410/451；cut-in 精緻、筆蓋裂紋可見。時序 v19/bailu-timing.mjs：特寫 700ms＋8 格 1420ms，第 6 格命中；特效為程式繪製獨立層（金白審判印、斜劃、白閃、震動）
 2026-11-19｜bailu ult vfx 9 件（天秤、法陣、契約、鎖鏈、光柱、審判印、爆發、斬光、紙屑）｜art/characters/office-lawyer/vfx/*.webp；原檔 vfx/src/｜512×512 黑底｜使用者以 ChatGPT 生成並打包｜CANDIDATE｜審查：9 件皆為手繪質感、黑底乾淨（邊緣亮度 ≤73）、契約無文字；以 screen 疊加，取代程式幾何特效
+2026-11-19｜bailu ult（8 格＋cut-in＋9 件繪製特效）｜animations/ult-8pose-512.png、ult-cutin-800.webp、vfx/*.webp｜—｜—｜APPROVED_BY_USER（大招演出）｜使用者：「很好」
