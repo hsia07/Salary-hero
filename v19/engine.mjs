@@ -11,8 +11,8 @@ import {LITE_PRESET_COUNT,liteNormalizePresets,liteSavePresetSnapshot,liteApplyP
 import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
-import {SQUAD_JOBS,normalizeSquadDraft,assignSquadMember} from './v21-squad-core.mjs';
-import {advanceLiveColleagues,routeLiveRetaliation} from './s1-formation-live.mjs';
+import {SQUAD_JOBS,normalizeSquadDraft,assignSquadMember,memberIdFor} from './v21-squad-core.mjs';
+import {advanceLiveColleagues,routeLiveRetaliation,activeDispeller,DISPELLABLE_TRAITS} from './s1-formation-live.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
 export function cleanPlayerName(value){
@@ -377,6 +377,15 @@ function lootRoll(s,rng,guaranteed=false,now=Date.now()){
    s.pendingDrops.push(id);notice(s,'🎁 敵人掉落 '+ITEMS.find(it=>it.id===id).name+'！');
  }
 }
+/** 白律無效條款：部署且存活時，當前敵人的 guard/rage/leech 特性無效；每個敵人只提示一次。 */
+function enemyTraitNullified(s){
+ if(!s?.enemy||!DISPELLABLE_TRAITS.includes(s.enemy.trait))return false;
+ const lawyer=activeDispeller(s.colleagueFormation,s.formationCombat);
+ if(!lawyer)return false;
+ if(!s.enemy.nullifiedBy){s.enemy.nullifiedBy=lawyer.id;notice(s,'【無效條款】白律解除敵方「'+(s.enemy.traitText||s.enemy.trait)+'」。');}
+ return true;
+}
+
 export function transition(raw,action,rng=Math.random,now=Date.now()){
  const s=normalize(raw,now),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
@@ -387,7 +396,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(s.trainingIsolated){notice(s,'美術練習模式不允許招募。');break;}
    const job=SQUAD_JOBS.find(x=>x.id===a.id);
    if(!job){s.last={type:'colleagueRecruit',ok:false,reason:'unknown-job'};break;}
-   const id='starter-'+job.id;
+   const id=memberIdFor(job);
    if(s.colleagueProgress.members.some(m=>m.id===id)){s.last={type:'colleagueRecruit',ok:false,reason:'already-owned'};break;}
    const recruited=enrollColleague(s.colleagueProgress,id,s.level);
    if(!recruited.ok){s.last={type:'colleagueRecruit',ok:false,reason:recruited.reason};break;}
@@ -399,7 +408,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    if(s.trainingIsolated){notice(s,'美術練習模式不允許編隊。');break;}
    const index=Number(a.slot);
    const job=SQUAD_JOBS.find(x=>x.id===a.id);
-   const owned=job&&s.colleagueProgress.members.find(m=>m.id==='starter-'+job.id);
+   const owned=job&&s.colleagueProgress.members.find(m=>m.id===memberIdFor(job));
    if(!Number.isInteger(index)||index<0||index>=6||!owned){
      s.last={type:'colleagueDeploy',ok:false,reason:'invalid-slot-or-member'};break;
    }
@@ -674,7 +683,8 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
    const attackValue=(liteStats.weaponAttack||weapon.attack)+liteStats.attack;
    const baseDamage=Math.round((attackValue+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*(crit?1.7:1)*legend.attackMultiplier);
    const boosted=skill?.id==='burst'?Math.round(baseDamage*(2+s.skillRank*.15)*skillMods.damageMultiplier):Math.round(baseDamage*skillMods.damageMultiplier);
-   let damage=s.enemy.trait==='guard'?Math.max(1,Math.round(boosted*.75)):boosted;
+   const nullified=enemyTraitNullified(s);
+   let damage=s.enemy.trait==='guard'&&!nullified?Math.max(1,Math.round(boosted*.75)):boosted;
    s.liteCombo++;
    const specialistHit=liteBuildHit(s,damage,s.enemy,s.liteCombo);
    const tactical=liteTacticalHit(s,{
@@ -817,7 +827,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      s.enemy.turns=(s.enemy.turns||0)+1;
      const eliteSkill=s.enemy.tier==='elite'&&s.enemy.turns%3===0;
      const bossSkill=s.enemy.tier==='boss'&&s.enemy.turns%4===0;
-     const baseRetaliation=s.enemy.attack+(s.enemy.trait==='rage'?Math.max(2,Math.floor(s.wave/3)):0);
+     const baseRetaliation=s.enemy.attack+(s.enemy.trait==='rage'&&!enemyTraitNullified(s)?Math.max(2,Math.floor(s.wave/3)):0);
      const retaliationBase=baseRetaliation+(eliteSkill?Math.max(3,Math.round(baseRetaliation*.45)):
        bossSkill?Math.max(5,Math.round(baseRetaliation*.65)):0);
      const weekendChaos=s.activeMode==='dungeon'&&!s.trainingIsolated&&dailyDungeonFor(now).weekend&&s.weekendChaosEvent?.floor===s.wave?weekendChaosById(s.weekendChaosEvent.id):null;
@@ -861,6 +871,11 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
      });
      s.formationCombat=routed.state;
      s.heroHp=Math.max(0,s.heroHp-routed.heroDamage);
+     if(routed.counterDamage>0){
+       // 反擊條款：與既有公事包反擊相同，反擊階段不直接擊殺（勝利流程由玩家回合結算）
+       const countered=Math.min(s.enemy.hp-1,routed.counterDamage);
+       if(countered>0){s.enemy.hp-=countered;s.last.colleagueCounter=countered;notice(s,'【反擊條款】白律回擊 '+countered+' 傷害。');}
+     }
      s.last.colleagueHits=routed.events.filter(e=>e.type.startsWith('colleague-'));
      s.last.retaliationTargetId=routed.targetId;
      s.last.enemyAttackEvents=routed.events;
@@ -880,7 +895,7 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
          if(reflected>0){s.enemy.hp-=reflected;s.last.reflected=reflected;notice(s,'🛡️ 公事包反擊！反彈 '+reflected+' 傷害！');}
        }
      }
-     if(s.enemy.trait==='leech'){
+     if(s.enemy.trait==='leech'&&!enemyTraitNullified(s)){
        const healed=Math.min(s.enemy.maxHp-s.enemy.hp,Math.max(2,Math.ceil(s.enemy.maxHp*.06)));
        s.enemy.hp+=healed;
        if(healed>0)notice(s,'🩹 '+s.enemy.name+' 回復 '+healed+' HP！');

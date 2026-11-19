@@ -1,7 +1,8 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {xpToNext,teamAura,colleagueCap,colleagueUpgradeCost} from './s1-progression.mjs';
-import {SQUAD_JOBS} from './v21-squad-core.mjs';
+import {SQUAD_JOBS,memberIdFor} from './v21-squad-core.mjs';
+import {openSquadBattle,squadBattleAvailable} from './squad-battle.mjs?v=6';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -890,6 +891,7 @@ function renderCombatBars(now){
  $('#hero-hp-fill').style.width=(view.heroHp/view.maxHero*100)+'%';
  $('#enemy-hp-fill').style.width=(view.enemyHp/view.maxEnemy*100)+'%';
 }
+const ROLE_NAMES={tank:'坦克',melee:'近戰',assassin:'刺客',caster:'法術',healer:'治療',support:'輔助'};
 function renderSquadStage(){
  const stage=$('#s1-squad-stage');
  if(!stage)return;
@@ -911,12 +913,14 @@ function renderSquadStage(){
   const kind=injured?'hurt':action?(action.heal?'heal':action.shield?'shield':'damage'):'';
   const detail=action?(action.heal?'治療 +'+action.heal:action.shield?'護盾 +'+action.shield:'傷害 '+action.damage):'Lv.'+member.level;
   const role=job.role==='tank'?'防':job.role==='melee'?'戰':job.role==='assassin'?'刺':job.role==='caster'?'法':job.role==='healer'?'療':'輔';
-  return '<div class="s1-squad-unit" data-row="'+(i<3?'front':'rear')+'" data-action-kind="'+kind+'" data-alive="'+(unit?.hp===0?'false':'true')+'" title="'+escapeHTML(job.name)+'"><span class="s1-squad-role">'+role+'</span><span class="s1-squad-copy"><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(detail)+'</small><span class="s1-squad-hp"><span style="width:'+hpRatio.toFixed(1)+'%"></span></span></span></div>';
+  const face=job.art?.avatar?'<img class="s1-squad-face" src="'+escapeHTML(job.art.avatar)+'" alt="" decoding="async">':'<span class="s1-squad-role">'+role+'</span>';
+  return '<div class="s1-squad-unit" data-row="'+(i<3?'front':'rear')+'" data-rarity="'+(job.rarity||'')+'" data-action-kind="'+kind+'" data-alive="'+(unit?.hp===0?'false':'true')+'" title="'+escapeHTML(job.name)+'">'+face+'<span class="s1-squad-copy"><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(detail)+'</small><span class="s1-squad-hp"><span style="width:'+hpRatio.toFixed(1)+'%"></span></span></span></div>';
  }).join('');
 }
 
 function render(){
  renderSquadStage();
+ // 首頁戰鬥只有薪奴（V21_SQUAD_COMBAT_REDESIGN §5：編隊戰鬥在冒險專用頁，不塞回首頁）；同事骨架角色只在小隊戰鬥頁使用
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  const enemyTier=state.enemy.tier||'normal';
@@ -1079,6 +1083,10 @@ function renderPanel(type){
      const d=DAILY_DUNGEONS[day],isToday=d.id===daily.id;
      return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'本日':day===1?'高獎勵':day===5?'偷跑魔王':day===6?'週六／日':'每週輪替')+'</b></div>';
    }).join('')+'</div><p class="mode-caveat">平日副本依台灣時間 00:00 換日重置；週六與週日是同一個副本，直到週一 00:00 才重置。普通怪使用現有逐格美術循環；菁英與 Boss 目前使用暫代造型。</p>';
+  {const squadReady=squadBattleAvailable(state.colleagueFormation);
+   // 試玩不寫存檔：未部署白律時以試玩身分上場，入口永遠可進（使用者 2026-11-19「根本進不去小隊戰鬥」）
+   body.insertAdjacentHTML('afterbegin','<button class="squad-entry" data-action="openSquadBattle"><strong>小隊戰鬥</strong><small>'+(squadReady?'同事上場：勞權律師・白律（試玩）':'試玩：勞權律師・白律客串上場（不寫存檔）')+'</small></button>');}
+
  }else if(type==='letter'){
    const note=state.fridayNote;
    body.innerHTML=note?
@@ -1095,18 +1103,21 @@ function renderPanel(type){
   const formation=state.colleagueFormation.slots;
   const formationHtml='<div class="s1-colleague-formation">'+formation.map((member,index)=>{
     const slotName=['前排左','前排右','中排左','中排右','後排左','後排右'][index];
-    const deployedJob=member&&SQUAD_JOBS.find(job=>member.id==='starter-'+job.id);
-    const available=SQUAD_JOBS.filter(job=>progress.members.some(m=>m.id==='starter-'+job.id)).map(job=>'<button data-action="s1DeployColleague" data-slot="'+index+'" data-value="'+job.id+'">'+escapeHTML(job.name)+'</button>').join('');
+    const deployedJob=member&&SQUAD_JOBS.find(job=>member.id===memberIdFor(job));
+    const available=SQUAD_JOBS.filter(job=>progress.members.some(m=>m.id===memberIdFor(job))).map(job=>'<button data-action="s1DeployColleague" data-slot="'+index+'" data-value="'+job.id+'">'+escapeHTML(job.name)+'</button>').join('');
     return '<div class="s1-formation-slot"><strong>'+slotName+'</strong><small>'+(deployedJob?escapeHTML(deployedJob.name)+' Lv.'+member.level:'空位')+'</small><details><summary>選擇同事</summary><div class="s1-formation-choices">'+available+(member?'<button data-action="s1RemoveColleague" data-slot="'+index+'">撤下</button>':'')+'</div></details></div>';
   }).join('')+'</div>';
   const cards=SQUAD_JOBS.map(job=>{
-   const member=progress.members.find(m=>m.id==='starter-'+job.id);
-   if(!member)return '<article class="s1-colleague-card"><div class="s1-colleague-emblem" aria-hidden="true">✦</div><div><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(job.role)+' · 尚未招募</small></div><button data-action="s1RecruitColleague" data-value="'+job.id+'">招募</button></article>';
+   const member=progress.members.find(m=>m.id===memberIdFor(job));
+   const portrait=job.art?.card?'<figure class="s1-colleague-portrait"><img src="'+escapeHTML(job.art.card)+'" alt="'+escapeHTML(job.name)+'" decoding="async">'+(job.rarity?'<span class="s1-rarity" data-rarity="'+job.rarity+'">'+job.rarity+'</span>':'')+(job.art.status==='candidate'?'<span class="s1-art-candidate">候選美術</span>':'')+'</figure>':'<div class="s1-colleague-emblem" aria-hidden="true">✦</div>';
+   const role=job.roleLabel||ROLE_NAMES[job.role]||job.role;
+   const skills=job.memberId?'<small class="s1-colleague-skills">'+job.paths.map(p=>escapeHTML(p.name)).join('・')+'</small>':'';
+   if(!member)return '<article class="s1-colleague-card" data-rarity="'+(job.rarity||'')+'">'+portrait+'<div><strong>'+escapeHTML(job.name)+'</strong><small>'+escapeHTML(role)+' · 尚未招募</small>'+skills+'</div><button data-action="s1RecruitColleague" data-value="'+job.id+'">招募</button></article>';
    const cap=colleagueCap(state.level,member.breakthrough);
    const cost=colleagueUpgradeCost(member.level);
    const ready=member.level<cap&&cost&&materials.trainingXp>=cost.trainingXp&&state.gold>=cost.coins;
    const breakthroughReady=member.breakthrough<4&&member.level===[20,40,60,80][member.breakthrough]&&state.level>=member.level;
-   return '<article class="s1-colleague-card"><div class="s1-colleague-emblem" aria-hidden="true">✦</div><div><strong>'+escapeHTML(job.name)+'</strong><small>Lv.'+member.level+' / '+cap+' · 突破 '+member.breakthrough+'/4</small><small>升級：訓練點 '+(cost?.trainingXp??'MAX')+'／薪幣 '+(cost?.coins??'MAX')+'</small></div><div class="s1-colleague-actions"><button data-action="s1TrainColleague" data-value="'+member.id+'" '+(!ready?'disabled':'')+'>升級</button><button data-action="s1BreakthroughColleague" data-value="'+member.id+'" '+(!breakthroughReady?'disabled':'')+'>突破</button></div></article>';
+   return '<article class="s1-colleague-card" data-rarity="'+(job.rarity||'')+'">'+portrait+'<div><strong>'+escapeHTML(job.name)+'</strong>'+skills+'<small>Lv.'+member.level+' / '+cap+' · 突破 '+member.breakthrough+'/4</small><small>升級：訓練點 '+(cost?.trainingXp??'MAX')+'／薪幣 '+(cost?.coins??'MAX')+'</small></div><div class="s1-colleague-actions"><button data-action="s1TrainColleague" data-value="'+member.id+'" '+(!ready?'disabled':'')+'>升級</button><button data-action="s1BreakthroughColleague" data-value="'+member.id+'" '+(!breakthroughReady?'disabled':'')+'>突破</button></div></article>';
   }).join('');
   body.innerHTML='<section class="s1-colleague-panel"><p class="s1-colleague-note">養成系統試玩版 · 角色正式分層美術與進階動畫製作中</p><div class="s1-colleague-resources"><span>薪奴 Lv.'+state.level+'</span><span>薪幣 '+format(state.gold)+'</span><span>訓練 '+format(materials.trainingXp)+'</span><span>突破章 '+format(materials.seals)+'</span><span>徽記 '+format(materials.emblems)+'</span></div><h3>六人編隊</h3>'+formationHtml+'<h3>同事養成</h3><div class="s1-colleague-grid">'+cards+'</div></section>';
   return;
@@ -1218,6 +1229,7 @@ body.addEventListener('click',e=>{
  }
  else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(act==='openSquadBattle'){$('#panel')?.close?.();openSquadBattle({draft:squadBattleAvailable(state.colleagueFormation)?state.colleagueFormation:{slots:[{id:'trial-office-lawyer',job:'lawyer',level:1,stars:1}]},level:state.level,heroIdleSrc:assetPaths.chibiIdle});}
  else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague','s1DeployColleague','s1RemoveColleague'].includes(act)){
   commit({type:act,id:b.dataset.value,slot:b.dataset.slot});
   renderPanel('colleagues');
