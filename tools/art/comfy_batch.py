@@ -60,6 +60,13 @@ def workflow(plan, job, seed, rembg_node):
         g["5"]["inputs"]["latent_image"] = ["42", 0]
         g["5"]["inputs"]["denoise"] = job.get("denoise", 0.5)
         del g["4"]
+    cn = job.get("controlnet", plan.get("controlnet"))
+    if cn:  # 骨架姿勢控制（OpenPose）：image 為 ComfyUI/input 內的骨架圖
+        g["60"] = {"class_type": "ControlNetLoader", "inputs": {"control_net_name": cn["model"]}}
+        g["61"] = {"class_type": "LoadImage", "inputs": {"image": cn["image"]}}
+        g["62"] = {"class_type": "ControlNetApplyAdvanced", "inputs": {"positive": ["2", 0], "negative": ["3", 0], "control_net": ["60", 0],
+                   "image": ["61", 0], "strength": cn.get("strength", 0.8), "start_percent": 0.0, "end_percent": cn.get("end", 0.8), "vae": ["1", 2]}}
+        g["5"]["inputs"]["positive"] = ["62", 0]; g["5"]["inputs"]["negative"] = ["62", 1]
     ipa = job.get("ipa", plan.get("ipa"))
     if ipa:  # 參考圖約束（IP-Adapter）：image 為 ComfyUI/input 內的檔名
         g["30"] = {"class_type": "LoadImage", "inputs": {"image": ipa["image"]}}
