@@ -21,3 +21,4 @@
 2026-11-19｜bailu attack 7（審判筆突刺，白律專屬）｜animations/attack-7pose-512.png（取代借用薪奴動作的版本）｜3584×512｜分層白律擺 7 個突刺構圖 → 本機 img2img 重繪（denoise 0.55、LoRA 0.85、參考圖畫風 0.6）｜CANDIDATE｜白律專屬時序 v19/bailu-timing.mjs [130,150,125,45,165,110,150]、突進 52px；受擊 5 格沿用上一版
 2026-11-19｜bailu attack 7（ChatGPT v1，審判筆突刺）｜animations/attack-7pose-512.png；原檔 animations/chatgpt_v1/｜7×512 RGBA，腳底距底 18px｜使用者以 ChatGPT＋防跑提示詞生成並由 ChatGPT 切格打包 zip｜CANDIDATE｜畫風一致、全身動作明確；缺陷：第 3、5 格缺公文包（已備修正提示詞）
 2026-11-19｜bailu attack 7（ChatGPT v2，更可愛＋薪奴頭身比）｜animations/attack-7pose-512.png；原檔 animations/chatgpt_v2/｜7×512｜使用者以 ChatGPT v2 提示詞生成並打包｜CANDIDATE｜審查：7 格都有公文包、畫風一致、頭身比接近薪奴（頭寬/身高 0.57 vs 薪奴 0.56）；縮到薪奴身高 410px、同腳底線。小缺陷：第 6 格白色聖帶消失；部分格頭髮偏淡紫
+2026-11-19｜bailu attack 7（ChatGPT v2）｜animations/attack-7pose-512.png｜—｜—｜APPROVED_BY_USER（突刺動作）｜使用者：「定案」「沒人會注意到那一幀」（第 6 格聖帶缺漏接受）
