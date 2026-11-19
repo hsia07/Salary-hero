@@ -7,6 +7,7 @@ const EASE={lin:u=>u,out:u=>1-(1-u)**3,in:u=>u**3,io:u=>u<.5?4*u**3:1-(-2*u+2)**
 const REST=Object.freeze({x:0,y:0,lean:0,sq:1,torso:0,head:0,arm:0,armX:0,armY:0,case:0,caseX:0,caseY:0,legL:0,legR:0,legLy:0,legRy:0,red:0,alpha:1});
 /** 出筆角度：持筆手原圖筆尖朝右上約 35°，順時針轉回水平前刺 */
 export const THRUST_ARM=34;
+let thrust=THRUST_ARM;
 const TORSO=new Set(['arm_r_pen','case_sleeve','body','case_front','head']);
 
 export async function loadRig(base){
@@ -16,7 +17,7 @@ export async function loadRig(base){
 }
 
 export function createRigActor(mount,rig,base,{height=180,facing=1}={}){
- const scale=height/rig.height;
+ const scale=height/rig.height;thrust=rig.thrustArm??THRUST_ARM;
  const root=document.createElement('div');
  root.className='rig-actor';
  root.style.cssText=`position:absolute;left:0;top:0;width:${rig.width}px;height:${rig.height}px;transform-origin:${rig.pivots.body[0]}px ${rig.pivots.body[1]}px;will-change:transform;pointer-events:none`;
@@ -33,7 +34,7 @@ export function createRigActor(mount,rig,base,{height=180,facing=1}={}){
  // 腿在軀幹後面：先放腿，再放軀幹群組（軀幹群組內部維持 order 的前後關係）
  root.appendChild(torso);
  for(const leg of ['leg_l','leg_r'])if(el[leg])root.insertBefore(el[leg],torso);
- if(el.arm_r_pen)torso.insertBefore(el.arm_r_pen,torso.firstChild);
+ if(el.arm_r_pen&&!rig.armFront)torso.insertBefore(el.arm_r_pen,torso.firstChild);
  mount.appendChild(root);
 
  const P={...REST};let queued=null,busy=false,face=facing,base0={x:0,y:0},t0=performance.now(),hitstop=0,raf=0,walking=false;
@@ -66,12 +67,13 @@ export function createRigActor(mount,rig,base,{height=180,facing=1}={}){
   async walk(ms=900){walking=true;await wait(ms);walking=false;},
   /** reach：需要前進的距離（mount 像素），讓筆尖抵達目標身體 */
   async attack({reach=80,onHit}={}){
-   await to({lean:-6,torso:-8,arm:-22,armX:-12,armY:-4,legL:8,legR:-6,x:-6,sq:.97},150,'out');   // 預備：舉筆收肘
-   walking=true;await to({x:reach,lean:8,torso:10,legL:22,legR:-26},170,'in');walking=false;      // 突進
-   await to({arm:THRUST_ARM,armX:30,armY:10,torso:12,head:-3},80,'out');                                // 出筆：筆尖水平前刺
-   hitstop=performance.now()+70;onHit?.(penTip());await wait(110);                                       // 命中停頓
-   await to({x:(reach-12),arm:-8,armX:8,torso:4,lean:2},120,'out');                               // 收招
-   walking=true;await to({x:0,y:0,lean:-3,legL:-10,legR:12},240,'io');walking=false;                   // 退回
+   await to({lean:-10,torso:-12,arm:-40,armX:-22,armY:-8,head:4,legL:10,legR:-8,x:-14,sq:.94},170,'out');     // 預備：大幅後拉蓄力
+   await wait(60);
+   walking=true;await to({x:reach*.85,lean:12,torso:12,legL:26,legR:-30,sq:1.02},120,'in');walking=false;      // 突進
+   await to({x:reach,arm:thrust,armX:34,armY:10,torso:16,head:-4,lean:14},55,'lin');                          // 出筆：快速直刺
+   hitstop=performance.now()+110;onHit?.(penTip());await wait(150);                                         // 命中停頓＋特效
+   await to({x:reach-18,arm:thrust-12,armX:12,torso:6,lean:4},140,'out');                                     // 收招
+   walking=true;await to({x:0,y:0,lean:-3,legL:-10,legR:12},260,'io');walking=false;
    await to(REST,180,'out');
   },
   async hurt(){

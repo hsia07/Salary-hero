@@ -16,3 +16,4 @@
 2026-11-19｜bailu_leg_l／leg_r｜rig/leg_l.webp、leg_r.webp｜—｜由服裝候選膝下切出｜CANDIDATE（切圖）｜樞紐在膝蓋，上緣藏於披風下擺
 2026-11-19｜rig 驗收｜QA/2026-11-19_*｜—｜—｜QA_PENDING（待使用者核准）｜375px 無頭 Edge 逐格：普攻筆尖接觸敵人、受擊紅閃、格擋、驅散；未在實機手機測
 2026-11-19｜rig 修正｜rig/rig.json｜—｜使用者回饋「頭接在奇怪的地方」｜CANDIDATE｜頭部右移 38、下移 6（rig 像素），下巴對準衣領；頸部樞紐同步；rig.json 改存 UTF-8
+2026-11-19｜rig v2｜layers/rig/*.webp（原始全尺寸：layers/v2_src/）｜—｜全部由 references/bailu_reference.png 拆出；頸部、公文包後方以本機 inpaint 補畫（LoRA 0.7＋IPA 0.6，seed 33），遮罩內輪廓取參考圖｜CANDIDATE｜組回與參考圖平均像素差 0.18；使用者回饋「頭完全接歪」已解決（同一張圖角度一致）；v1 保留於 layers/rig_v1

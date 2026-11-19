@@ -15,27 +15,42 @@ html,body{margin:0;height:100%;background:#0d0914;color:#efe6d2;font-family:"Not
 #panel h1{font-size:16px;margin:0 0 6px;color:#f3dfa0;letter-spacing:.1em}#panel p{font-size:11px;color:#b9aecb;margin:0 0 10px}
 .b{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 button{border:1px solid #d8b25a;border-radius:8px;background:linear-gradient(#3a2957,#22173a);color:#f6ecd0;font:600 14px/1 inherit;padding:12px 0}
+
+#stage.shake{animation:shake .24s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%{transform:translate(-7px,3px)}30%{transform:translate(6px,-4px)}50%{transform:translate(-4px,2px)}70%{transform:translate(3px,-1px)}90%{transform:translate(-1px,1px)}}
+#foe.struck{animation:knock .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes knock{0%{transform:translateX(0);filter:brightness(4) saturate(0)}18%{transform:translateX(22px) rotate(4deg);filter:brightness(3) saturate(0)}45%{filter:brightness(1.4)}100%{transform:none;filter:none}}
+.spark{position:absolute;width:0;height:0;pointer-events:none;z-index:9}
+.spark i{position:absolute;left:0;top:0;width:44px;height:4px;margin:-2px 0 0 0;transform-origin:0 50%;border-radius:2px;background:linear-gradient(90deg,#fffbe8,#f3d27a 55%,transparent);animation:ray .26s ease-out forwards}
+.spark b{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;background:radial-gradient(#fffef6 0 30%,#f6dc8a 45%,transparent 70%);animation:flash .22s ease-out forwards}
+@keyframes ray{from{transform:rotate(var(--a)) scaleX(.2);opacity:1}to{transform:rotate(var(--a)) translateX(18px) scaleX(1);opacity:0}}
+@keyframes flash{from{transform:scale(.4);opacity:1}to{transform:scale(1.8);opacity:0}}
+.num{font-size:28px!important}.num.crit{font-size:34px!important;color:#fff1a8!important}
+@keyframes up{0%{transform:translate(-50%,6px) scale(.6);opacity:0}15%{transform:translate(-50%,-8px) scale(1.35);opacity:1}100%{transform:translate(-50%,-52px) scale(1);opacity:0}}
 </style></head><body>
 <div id="stage"><div id="foe"></div></div>
 <div id="panel"><h1>勞權律師・白律｜分層動作驗收</h1>
-<p>七個獨立部件（頭、身體、持筆右臂、公文包手、袖、雙腿）由骨架驅動。部件取自使用者提供的造型圖，狀態：候選。</p>
+<p>六個獨立部件（頭、身體、持筆前臂、公文包手、左右小腿）全部由同一張參考圖拆出，被遮住的地方以本機模型補畫；狀態：候選。</p>
 <div class="b"><button data-a="walk">走位</button><button data-a="attack">普攻</button><button data-a="block">格擋</button>
 <button data-a="dispel">驅散</button><button data-a="hurt">受擊</button><button data-a="victory">勝利</button></div></div>
 <script type="module">
-import {loadRig,createRigActor,THRUST_ARM} from './rig-actor.mjs?v=3';
+import {loadRig,createRigActor,THRUST_ARM} from './rig-actor.mjs?v=6';
 const base='../art/characters/office-lawyer/layers/rig/';
 const stage=document.getElementById('stage'),foe=document.getElementById('foe');
 const rig=await loadRig(base);
 const H=()=>stage.clientHeight*.46;
 const actor=createRigActor(stage,rig,base,{height:H()});
 const place=()=>actor.setPosition(stage.clientWidth*.28,stage.clientHeight*.93);place();addEventListener('resize',place);
-function foeHit(n){foe.classList.remove('hurt');void foe.offsetWidth;foe.classList.add('hurt');setTimeout(()=>foe.classList.remove('hurt'),340);
- const d=document.createElement('div');d.className='num';d.textContent=n;const r=foe.getBoundingClientRect(),s=stage.getBoundingClientRect();d.style.left=(r.left-s.left+r.width/2)+'px';d.style.top=(r.top-s.top)+'px';stage.appendChild(d);setTimeout(()=>d.remove(),800);}
+function spark(p){if(!p)return;const s=document.createElement('div');s.className='spark';s.style.left=p.x+'px';s.style.top=p.y+'px';
+ let h='<b></b>';for(let i=0;i<9;i++)h+='<i style="--a:'+(i*40+Math.random()*20)+'deg"></i>';s.innerHTML=h;stage.appendChild(s);setTimeout(()=>s.remove(),320);}
+function impact(p){spark(p);stage.classList.remove('shake');void stage.offsetWidth;stage.classList.add('shake');foe.classList.remove('struck');void foe.offsetWidth;foe.classList.add('struck');}
+function foeHit(n,p,crit){impact(p);foe.classList.remove('hurt');void foe.offsetWidth;foe.classList.add('hurt');setTimeout(()=>foe.classList.remove('hurt'),340);
+ const d=document.createElement('div');d.className='num'+(crit?' crit':'');d.textContent=n;const r=foe.getBoundingClientRect(),s=stage.getBoundingClientRect();d.style.left=(r.left-s.left+r.width/2)+'px';d.style.top=(r.top-s.top)+'px';stage.appendChild(d);setTimeout(()=>d.remove(),800);}
 // 目標點：敵人身體左側 35%；以出筆姿勢實測筆尖位置計算需要前進的距離
-function reach(){const f=foe.getBoundingClientRect(),s=stage.getBoundingClientRect();actor.pose({arm:THRUST_ARM,armX:30,armY:10,torso:12,lean:8});const tip=actor.penTip();actor.pose({});return Math.max(0,(f.left-s.left+f.width*.35)-tip.x);}
-const A={walk:()=>actor.play('walk',900),attack:()=>actor.play('attack',{reach:reach(),onHit:()=>foeHit(18+Math.floor(Math.random()*8))}),
- block:()=>{foe.animate([{transform:'none'},{transform:'translateX(-60px)'},{transform:'none'}],{duration:500});return actor.play('block',{onBlock:()=>{}})},
- dispel:()=>actor.play('dispel',{onSeal:()=>foeHit(9)}),hurt:()=>{foe.animate([{transform:'none'},{transform:'translateX(-60px)'},{transform:'none'}],{duration:420});return actor.play('hurt')},victory:()=>actor.play('victory')};
+function reach(){const f=foe.getBoundingClientRect(),s=stage.getBoundingClientRect();actor.pose({arm:rig.thrustArm??THRUST_ARM,armX:34,armY:10,torso:16,lean:14});const tip=actor.penTip();actor.pose({});return Math.max(0,(f.left-s.left+f.width*.35)-tip.x);}
+const A={walk:()=>actor.play('walk',900),attack:()=>actor.play('attack',{reach:reach(),onHit:p=>foeHit(18+Math.floor(Math.random()*8),p,Math.random()<.3)}),
+ block:()=>{foe.animate([{transform:'none'},{transform:'translateX(-60px)'},{transform:'none'}],{duration:500});return actor.play('block',{onBlock:()=>{const r=foe.getBoundingClientRect(),s=stage.getBoundingClientRect();spark({x:r.left-s.left,y:r.top-s.top+r.height*.5});stage.classList.remove('shake');void stage.offsetWidth;stage.classList.add('shake');}})},
+ dispel:()=>actor.play('dispel',{onSeal:p=>foeHit(9,p)}),hurt:()=>{foe.animate([{transform:'none'},{transform:'translateX(-60px)'},{transform:'none'}],{duration:420});return actor.play('hurt')},victory:()=>actor.play('victory')};
 for(const b of document.querySelectorAll('button'))b.onclick=()=>A[b.dataset.a]();
 window.__rig={actor,A,reach,THRUST_ARM};
 </script></body></html>
