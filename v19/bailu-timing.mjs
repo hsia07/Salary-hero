@@ -1,7 +1,6 @@
 /** 白律專屬普攻「審判筆突刺」時序（與薪奴 attack-timing 相同的逐格硬切方式，數值為白律自己的節奏）。
  * 白律的蓄力較長、出手更快（筆比公文包輕），突進距離較短（筆的攻擊距離較長）。 */
-// 使用者 2026-11-19：再快一點、像薪奴那樣俐落 → 總長 690ms（薪奴 805ms）；蓄力短、出手極快、命中停留讓打擊清楚
-export const BAILU_ATTACK_MS=Object.freeze([90,110,105,40,140,90,115]);
+export const BAILU_ATTACK_MS=Object.freeze([130,150,125,45,165,110,150]);
 export const BAILU_ATTACK_KEYS=Object.freeze(['ready','brace','windup','step','impact','followthrough','recover']);
 export const BAILU_ATTACK_TOTAL_MS=BAILU_ATTACK_MS.reduce((a,b)=>a+b,0);
 export const BAILU_IMPACT_FRAME=4;
