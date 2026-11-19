@@ -11,13 +11,14 @@ button{border:1px solid #d8b25a;border-radius:8px;background:linear-gradient(#3a
 </style></head><body><div id="wrap">
 <canvas id="world" width="720" height="620"></canvas>
 <div id="panel"><h1>勞權律師・白律｜逐格動作驗收</h1>
-<p>與薪奴相同做法：攻擊 7 個獨立姿勢、受擊 5 個獨立姿勢，沿用遊戲現有的非等速時序（attack-timing / hurt-timing / hurt-effects），不改薪奴檔案。素材狀態：候選。</p>
+<p>白律專屬「審判筆突刺」：7 個獨立姿勢、白律自己的非等速節奏與突進距離；做法與薪奴相同：攻擊 7 個獨立姿勢、受擊 5 個獨立姿勢，沿用遊戲現有的非等速時序（attack-timing / hurt-timing / hurt-effects），不改薪奴檔案。素材狀態：候選。</p>
 <div class="b"><button data-a="attack">普攻</button><button data-a="hurt">受擊</button><button data-a="loop">連續演示</button>
 <button data-a="hero">對照：薪奴普攻</button><button data-a="herohurt">對照：薪奴受擊</button><button data-a="slow">慢速 ×0.25</button></div></div></div>
 <script type="module">
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {validateHurtAtlas} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,hurtEffectAt} from './hurt-effects.mjs';
+import {BAILU_ATTACK_TOTAL_MS,bailuFrameAt,bailuLungeAt,BAILU_IMPACT_MS,BAILU_IMPACT_FRAME} from './bailu-timing.mjs';
 const cv=document.getElementById('world'),ctx=cv.getContext('2d');
 const load=s=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=s;});
 const B='../art/characters/office-lawyer/animations/',H='../art/v19/candidates/characters/starter/chibi/';
@@ -31,8 +32,9 @@ function frame(now){
  const t=(now-start)*speed;
  ctx.drawImage(bg,0,0,720,620);
  // 敵人（遊戲既有逐格怪物）
- const ph=mode==='attack'?attackPhaseAt(t):null;
- const hitT=ph&&!ph.finished?t-405:-1;
+ const impactAt=who==='bailu'?BAILU_IMPACT_MS:405;
+ const done=who==='bailu'?bailuFrameAt(t)<0:attackFrameAt(t)<0;
+ const hitT=mode==='attack'&&!done?t-impactAt:-1;
  const struck=hitT>=0&&hitT<300;
  const gimg=struck?golemHurt:golem,gc=struck?3:4,gi=struck?Math.min(2,Math.floor(hitT/100)):Math.floor(now/225)%4;
  const knock=struck?Math.max(0,1-hitT/300)*26:0;
@@ -40,12 +42,13 @@ function frame(now){
  const s=SETS[who];
  let drawn=false;
  // 與 app.mjs 薪奴相同的突進曲線：345ms 前站定 → 60ms 衝 106px → 命中保持 → 155ms 退回
- const lunge=mode==='attack'?(t<345?0:t<405?(t-345)/60*106:t<650?106:106*Math.max(0,1-(t-650)/155)):0;
+ const heroLunge=t<345?0:t<405?(t-345)/60*106:t<650?106:106*Math.max(0,1-(t-650)/155);
+ const lunge=mode==='attack'?(who==='bailu'?bailuLungeAt(t):heroLunge):0;
  ctx.save();ctx.translate(lunge,0);
  if(mode==='attack'){
-  const f=attackFrameAt(t);
+  const f=who==='bailu'?bailuFrameAt(t):attackFrameAt(t);
   if(f>=0){const c=validateAttackAtlas(s.atk.naturalWidth,s.atk.naturalHeight)||512;ctx.drawImage(s.atk,f*c,0,c,c,HERO_X-25,FLOOR-298,306,306);drawn=true;
-   if(f===4){spark(ENEMY_X+40,FLOOR-150,(t-405)/145);}}
+   if(f===4){spark(ENEMY_X+40,FLOOR-150,(t-impactAt)/145);}}
   else mode='idle';
  }else if(mode==='hurt'){
   const e=hurtEffectAt(t);
@@ -75,7 +78,7 @@ requestAnimationFrame(frame);
 const play=(m,w='bailu')=>{who=w;mode=m;start=performance.now();};
 const A={attack:()=>play('attack'),hurt:()=>play('hurt'),hero:()=>play('attack','hero'),herohurt:()=>play('hurt','hero'),
  slow:()=>{speed=speed===1?.25:1;document.querySelector('[data-a=slow]').textContent=speed===1?'慢速 ×0.25':'正常速度';},
- loop:async()=>{const s=ms=>new Promise(r=>setTimeout(r,ms));for(const m of ['attack','attack','hurt','attack']){play(m);await s((m==='attack'?CHIBI_ATTACK_V2_TOTAL_MS:HIT_FEEDBACK_MS)/speed+250);}}};
+ loop:async()=>{const s=ms=>new Promise(r=>setTimeout(r,ms));for(const m of ['attack','attack','hurt','attack']){play(m);await s((m==='attack'?BAILU_ATTACK_TOTAL_MS:HIT_FEEDBACK_MS)/speed+250);}}};
 for(const b of document.querySelectorAll('button'))b.onclick=()=>A[b.dataset.a]();
 window.__frames={A,play};
 </script></body></html>
