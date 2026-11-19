@@ -5,4 +5,4 @@ A. 最簡單：開新對話 → 上傳 bailu_attack_reference_board.png（一張
 B. 上傳本整合包 zip 給 ChatGPT，並說：「請解壓縮，讀取 PROMPT_貼給ChatGPT.txt 的指示，以 bailu_attack_reference_board.png 為參考圖，生成圖片。」
 
 某一格跑掉：用 PROMPT_單格修正.txt，把 N 和問題填上，只修那一格。
-完成後：下載原圖，存成 Salary-hero/art/characters/office-lawyer/incoming/bailu_attack_strip.png，跟 Claude 說「收圖」。
+完成後：ChatGPT 會給 bailu_attack_frames.zip，下載後放到 Salary-hero/art/characters/office-lawyer/incoming/，跟 Claude 說「收圖」。

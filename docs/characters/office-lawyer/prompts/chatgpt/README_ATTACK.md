@@ -18,7 +18,7 @@
 2. 依序上傳三張圖：`ref_bailu_white.png`、`pose_guide_attack.png`、`format_example_hero.png`。
 3. 貼上下面「主提示詞」整段。
 4. 對照「驗收清單」看結果；有一格不對就用「單格修正」提示詞。
-5. 下載原圖，存到 `art/characters/office-lawyer/incoming/bailu_attack_strip.png`，跟 Claude 說「收圖」。
+5. 讓 ChatGPT 直接把 7 格切好、去背、對齊後打包成 zip（使用者建議：直接輸出壓縮檔比較不會跑掉、也不會被壓縮畫質）；下載 `bailu_attack_frames.zip` 放到 `art/characters/office-lawyer/incoming/`，跟 Claude 說「收圖」。
 
 ## 主提示詞（整段貼上）
 ```text
@@ -53,6 +53,16 @@
 ‧7 格的腳底都在同一條水平線上。
 ‧背景：純白色，沒有地面、陰影、漸層、場景。
 ‧畫面中不可有任何文字、數字、標記、特效光、速度線、殘影、其他角色。
+
+【完成後請直接打包成壓縮檔，不要只給我圖片】
+圖片生成完成後，請用你的程式工具（Python）處理這張原圖，然後提供 zip 下載連結：
+1. 把 7 格切成 7 張獨立 PNG，依序命名 bailu_attack_01_ready.png、02_brace、03_windup、04_step、05_impact、06_followthrough、07_recover。
+2. 每張統一為 512×512 的正方形畫布，背景改成透明（去掉白底，邊緣不要留白邊）。
+3. 7 張的角色縮放比例完全相同（以第 1 張的身高為準，不要各自放大縮小）。
+4. 7 張的腳底都對齊到同一高度（距離畫布底部約 18 像素），左右以腳底中心置中。
+5. 另外附上一張原始未切割的大圖 bailu_attack_strip_original.png。
+6. 全部打包成 bailu_attack_frames.zip 給我下載。
+處理時只能切割、去背、縮放、平移，不可以重畫或修改任何一格的內容。
 ```
 
 ## 驗收清單（看到任何一項不符就修那一格）
