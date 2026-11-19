@@ -22,3 +22,4 @@
 2026-11-19｜bailu attack 7（ChatGPT v1，審判筆突刺）｜animations/attack-7pose-512.png；原檔 animations/chatgpt_v1/｜7×512 RGBA，腳底距底 18px｜使用者以 ChatGPT＋防跑提示詞生成並由 ChatGPT 切格打包 zip｜CANDIDATE｜畫風一致、全身動作明確；缺陷：第 3、5 格缺公文包（已備修正提示詞）
 2026-11-19｜bailu attack 7（ChatGPT v2，更可愛＋薪奴頭身比）｜animations/attack-7pose-512.png；原檔 animations/chatgpt_v2/｜7×512｜使用者以 ChatGPT v2 提示詞生成並打包｜CANDIDATE｜審查：7 格都有公文包、畫風一致、頭身比接近薪奴（頭寬/身高 0.57 vs 薪奴 0.56）；縮到薪奴身高 410px、同腳底線。小缺陷：第 6 格白色聖帶消失；部分格頭髮偏淡紫
 2026-11-19｜bailu attack 7（ChatGPT v2）｜animations/attack-7pose-512.png｜—｜—｜APPROVED_BY_USER（突刺動作）｜使用者：「定案」「沒人會注意到那一幀」（第 6 格聖帶缺漏接受）
+2026-11-19｜bailu hurt 5（ChatGPT v1，以公文包護身）｜animations/hurt-5pose-384.png；原檔 animations/chatgpt_hurt_v1/｜5×384｜使用者以 ChatGPT＋受擊提示詞生成並打包（bailu_hurt_retry.zip）｜CANDIDATE｜審查：5 格畫風與突刺一致、白律專屬擋擊動作明確；縮放 0.932 與攻擊同身高、同腳底線；沿用遊戲 hurt-timing／hurt-effects（紅閃、停頓、震動）
