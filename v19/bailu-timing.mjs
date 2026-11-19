@@ -18,8 +18,9 @@ export function bailuLungeAt(ms){
  return BAILU_LUNGE_PX*Math.max(0,1-(ms-s6)/BAILU_ATTACK_MS[6]);
 }
 /** 大招「終審判決」：先放 0.7 秒半身特寫（cut-in），再播 8 格；第 6 格（定讞）為命中。 */
-export const BAILU_CUTIN_MS=700;
-export const BAILU_ULT_MS=Object.freeze([150,170,160,190,240,110,220,180]);
+// UR 大招：特寫 0.9 秒＋8 格 2.09 秒（蓄勢格放慢做慢動作，定讞格極短做爆發）
+export const BAILU_CUTIN_MS=900;
+export const BAILU_ULT_MS=Object.freeze([170,240,240,380,420,120,300,220]);
 export const BAILU_ULT_TOTAL_MS=BAILU_CUTIN_MS+BAILU_ULT_MS.reduce((a,b)=>a+b,0);
 export const BAILU_ULT_IMPACT_FRAME=5;
 export const BAILU_ULT_IMPACT_MS=BAILU_CUTIN_MS+BAILU_ULT_MS.slice(0,5).reduce((a,b)=>a+b,0);
