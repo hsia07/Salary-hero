@@ -922,7 +922,7 @@ function renderSquadStage(){
 
 function render(){
  renderSquadStage();
- try{syncRigActors(state,{canvas:world});}catch(e){console.warn('rig actors',e);}
+ // 首頁戰鬥只有薪奴（V21_SQUAD_COMBAT_REDESIGN §5：編隊戰鬥在冒險專用頁，不塞回首頁）；同事骨架角色只在小隊戰鬥頁使用
  $('#gold').textContent=format(state.gold);$('#gems').textContent=format(state.gems);
  const ticketCounter=$('#skin-tickets');if(ticketCounter)ticketCounter.textContent=format(state.skinTickets);
  const enemyTier=state.enemy.tier||'normal';
