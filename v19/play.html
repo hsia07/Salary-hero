@@ -316,7 +316,17 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 #squad-battle{position:fixed;inset:0;z-index:9999;background:#0b0712;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #squad-battle .sb-wrap{position:relative;width:min(100vw,calc((100dvh - 80px)*720/1220));max-width:560px}
 #squad-battle canvas{display:block;width:100%;height:auto;aspect-ratio:720/1220}
-#squad-battle .sb-bar{display:grid;grid-template-columns:56px 1fr auto auto;gap:8px;align-items:center;padding:8px 10px;background:linear-gradient(#241836,#140d1f);border-top:2px solid #d8b25a;color:#efe6d2}
+#squad-battle .sb-bar{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 8px;background:linear-gradient(#241836,#140d1f);border-top:2px solid #d8b25a;color:#efe6d2}
+#squad-battle .sb-party{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;min-width:0}
+#squad-battle .sb-pc{display:grid;justify-items:center;gap:2px;min-height:0;padding:4px 2px 5px;border-radius:9px;background:linear-gradient(#33244a,#1b1229);font:inherit;color:#efe6d2;position:relative}
+#squad-battle .sb-pc img{width:40px;height:40px;object-fit:cover;object-position:50% 14%;border-radius:50%;border:1px solid #8a7aa0;background:#2b2140}
+#squad-battle .sb-pc b{font-size:11px;line-height:1.1;color:#f3dfa0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#squad-battle .sb-pc small{font-size:9px;line-height:1.1;color:#cbb9d9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#squad-battle .sb-pc .sb-hp,#squad-battle .sb-pc .sb-en{width:100%;height:5px}
+#squad-battle .sb-pc[data-noult=true] .sb-en{visibility:hidden}
+#squad-battle .sb-pc[data-ready=true]{border-color:#ffe7a6;animation:sbUltReady 1s ease-in-out infinite}
+#squad-battle .sb-pc[data-ready=true] img{border-color:#ffe7a6}
+#squad-battle .sb-pc[data-down=true]{filter:grayscale(1) brightness(.55)}
 #squad-battle .sb-cmd{margin:0;text-align:center}#squad-battle .sb-cmd img{width:48px;height:48px;object-fit:cover;object-position:50% 12%;border-radius:50%;border:1px solid #d8b25a;background:#2b2140}
 #squad-battle .sb-cmd figcaption{font-size:10px;color:#cbb9d9}
 #squad-battle .sb-unit{display:grid;gap:4px;font-size:12px;min-width:0}#squad-battle .sb-unit strong{color:#f3dfa0;letter-spacing:.06em;white-space:nowrap}#squad-battle .sb-unit em{font-style:normal;color:#cbb9d9;font-size:11px;letter-spacing:0}#squad-battle .sb-unit small{color:#d9cdea;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -617,4 +627,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=squad-ch1-1"></script><script type="module" src="./v20-art-live.mjs?v=p0-illustration-1"></script></body></html>
+<script type="module" src="./app.mjs?v=v2-party-1"></script><script type="module" src="./v20-art-live.mjs?v=p0-illustration-1"></script></body></html>

@@ -1,9 +1,11 @@
 /* Salary Hero V19 — scene renderer and interaction. Never draw home-master concept screenshot. */
-import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
+import {heroCombatProfile,ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {xpToNext,teamAura,colleagueCap,colleagueUpgradeCost} from './s1-progression.mjs';
 import {SQUAD_JOBS,memberIdFor} from './v21-squad-core.mjs';
-import {openSquadBattle,squadBattleAvailable} from './squad-battle.mjs?v=7';
-import {nextStage as squadNextStage,normalizeCampaign as squadNormalizeCampaign} from './squad-campaign.mjs?v=1';
+import {openSquadBattle} from './squad-battle.mjs?v=8';
+import {nextStage as squadNextStage,normalizeCampaign as squadNormalizeCampaign,lawyerUnit} from './squad-campaign.mjs?v=2';
+import {heroUnit,jobById as heroJobById} from './hero-jobs.mjs?v=1';
+import {squadStats} from './v21-squad-core.mjs';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -1232,12 +1234,16 @@ body.addEventListener('click',e=>{
  else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
  else if(act==='openSquadBattle'){$('#panel')?.close?.();
-  // 上場的白律：已部署→編隊資料；已招募未部署→養成資料；都沒有→1 級試玩（不影響存檔）
-  const lawyerId=memberIdFor(SQUAD_JOBS.find(j=>j.id==='lawyer'));
-  const deployed=(state.colleagueFormation?.slots||[]).find(m=>m?.job==='lawyer');
+  // GAME_V2（2026-11-20 裁決 B）：薪奴親自上場＋前排 3／後排 3 同事。只有已有正式逐格美術的角色上場（目前：薪奴、白律）。
+  const heroJob=heroJobById(state.heroJob?.current)||heroJobById('commoner');
+  const party=[{id:'salary-hero',name:'薪奴',sub:heroJob.name+' Lv.'+state.level,portrait:assetPaths.chibiIdle,anim:'salaryman',unit:heroUnit(heroCombatProfile(state),heroJob.id)}];
+  const lawyerJob=SQUAD_JOBS.find(j=>j.id==='lawyer'),lawyerId=memberIdFor(lawyerJob);
+  const slots=state.colleagueFormation?.slots||[],slotIdx=slots.findIndex(m=>m?.job==='lawyer');
   const owned=state.colleagueProgress?.members?.find(m=>m.id===lawyerId);
-  const unit=deployed?{id:deployed.id,level:deployed.level,stars:deployed.stars||1}:owned?{id:owned.id,level:owned.level,stars:1}:{id:'trial-office-lawyer',level:1,stars:1,trial:true};
-  openSquadBattle({unit,level:state.level,heroIdleSrc:assetPaths.chibiIdle,campaign:state.squadCampaign,
+  const lw=slotIdx>=0?{id:slots[slotIdx].id,level:slots[slotIdx].level,stars:slots[slotIdx].stars||1,row:slotIdx<3?'front':'rear'}:owned?{id:owned.id,level:owned.level,stars:1,row:'rear'}:{id:'trial-office-lawyer',level:1,stars:1,row:'rear',trial:true};
+  const lst=squadStats({slots:[{id:lw.id,job:'lawyer',level:lw.level,stars:lw.stars}]},state.level)[0];
+  party.push({id:lw.id,name:'白律',sub:(lw.trial?'客串 ':'')+'Lv.'+lw.level,portrait:lawyerJob.art?.avatar||'',anim:'lawyer',trial:!!lw.trial,unit:{...lawyerUnit(lst,lw.id),row:lw.row}});
+  openSquadBattle({party,campaign:state.squadCampaign,
    onClear:(stage,stars)=>{commit({type:'squadStageClear',stage,stars});return state.last;}});}
  else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague','s1DeployColleague','s1RemoveColleague'].includes(act)){
   commit({type:act,id:b.dataset.value,slot:b.dataset.slot});

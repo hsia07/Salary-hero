@@ -21,6 +21,8 @@ export function chooseAttackTarget(attacker,enemies,{focus={},tauntTargetId=null
  if(!pool.length)return null;
  const taunter=pool.find(x=>x.id===tauntTargetId||x.taunting===true);
  if(taunter&&!attacker.ignoreTaunt)return taunter;
+ // 前排保護後排（GAME_V2 7 人編隊）：前排還有人站著時，刺客以外不優先打後排
+ const frontStanding=pool.some(x=>row(x)==='front');
  const scored=pool.map(target=>{
   const dist=distance(attacker,target);
   const rear=row(target)==='rear';
@@ -28,6 +30,7 @@ export function chooseAttackTarget(attacker,enemies,{focus={},tauntTargetId=null
   const pressure=Math.max(0,finite(focus[target.id]));
   let score=50-dist*9+Math.min(16,finite(target.threat)*2);
   if(role(attacker)==='assassin')score+=rear?38:0;
+  if(rear&&frontStanding&&role(attacker)!=='assassin')score-=30;
   if(role(attacker)==='tank')score+=row(target)==='front'?22:0;
   if(role(attacker)==='caster')score+=Math.min(22,finite(target.nearbyAllies)*7);
   if(role(attacker)==='melee')score+=row(target)==='front'?10:0;

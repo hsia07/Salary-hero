@@ -13,6 +13,7 @@ import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
 import {SQUAD_JOBS,normalizeSquadDraft,assignSquadMember,memberIdFor} from './v21-squad-core.mjs';
 import {stageById,stageUnlocked,normalizeCampaign,rewardFor} from './squad-campaign.mjs';
+import {normalizeHeroJob,canUnlockJob,jobById} from './hero-jobs.mjs';
 import {advanceLiveColleagues,routeLiveRetaliation,activeDispeller,DISPELLABLE_TRAITS} from './s1-formation-live.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
@@ -166,6 +167,7 @@ export function initial(){
    colleagueProgress:{version:1,members:[],materials:{trainingXp:0,coins:0,seals:0,emblems:0}},
    colleagueFormation:{version:1,commanderPath:'strategist',slots:[null,null,null,null,null,null]},
    squadCampaign:{version:1,stars:{}},
+   heroJob:{version:1,current:'commoner',unlocked:['commoner']},
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,liteActiveBuild:'none',liteBuildProgress:{clockout:0,coffee:0},liteBuildBranch:{clockout:'rush',coffee:'heal'},liteToxinStacks:0,liteToxinKey:'',liteMarks:0,liteSkillUses:{burst:0,guard:0,drain:0},liteSkillPaths:{burst:null,guard:null,drain:null},litePresets:[null,null],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
@@ -231,7 +233,8 @@ export function normalize(raw,now=Date.now()){
  }:null;
  n.level=Math.max(1,Math.min(100,Math.floor(Number(n.level)||1)));
  n.colleagueProgress=normalizeColleagueProgress(raw.colleagueProgress,n.level);
- n.squadCampaign=normalizeCampaign(raw.squadCampaign); // 小隊戰鬥第一章進度（新增欄位，舊存檔沒有就從零開始）
+ n.squadCampaign=normalizeCampaign(raw.squadCampaign);
+ n.heroJob=normalizeHeroJob(raw.heroJob); // 薪奴職業樹（新增欄位） // 小隊戰鬥第一章進度（新增欄位，舊存檔沒有就從零開始）
  // Salary Hero's existing gold is the single source of truth for training coins.
  n.colleagueProgress.materials.coins=Math.max(0,Math.floor(Number(raw.gold)||0));
  const ownedColleagues=new Map(n.colleagueProgress.members.map(m=>[m.id,m]));
@@ -393,6 +396,20 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  const s=normalize(raw,now),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
  switch(a.type){
+ case 'heroUnlockJob':{
+   // 轉職解鎖：等級達標且上一階已解鎖（轉職試煉關卡實作後再加入通關條件）
+   if(s.trainingIsolated)break;
+   if(!canUnlockJob(s.heroJob,a.id,s.level)){s.last={type:'heroUnlockJob',ok:false};break;}
+   s.heroJob.unlocked=[...s.heroJob.unlocked,a.id];s.heroJob=normalizeHeroJob(s.heroJob);
+   s.last={type:'heroUnlockJob',ok:true,id:a.id};notice(s,'轉職解鎖：'+jobById(a.id).name+'。');
+   break;
+ }
+ case 'heroSetJob':{
+   // 切換主要職業：只能在主城（非戰鬥）操作；小隊戰鬥是獨立畫面，進行中不會派送此動作
+   if(s.trainingIsolated||!s.heroJob.unlocked.includes(a.id)){s.last={type:'heroSetJob',ok:false};break;}
+   s.heroJob={...s.heroJob,current:a.id};s.last={type:'heroSetJob',ok:true,id:a.id};notice(s,'薪奴轉為：'+jobById(a.id).name+'。');
+   break;
+ }
  case 'squadStageClear':{
    // 小隊戰鬥通關結算：獎勵由規則表計算，不接受畫面傳入的數量；星級只會變好不會變差。
    if(s.trainingIsolated)break;
@@ -1002,4 +1019,14 @@ export function salaryAt(now=Date.now(),monthly=40000){
  const on=workday(y,m,d)&&now>=localStamp(y,m,d,8)&&now<localStamp(y,m,d,17);
  return {today,week,month,monthly,day:d,monthNumber:m,year:y,on,workedHours:workedUntil(y,m,d,now)/HOUR,
    status:on?'計薪中':workday(y,m,d)&&now>=localStamp(y,m,d,17)?'已下班':workday(y,m,d)?'等待上班':'休息日'};
+}
+
+/** 薪奴戰鬥基礎數值（小隊戰鬥用）：沿用首頁單挑的攻擊公式（武器＋裝備＋等級＋鍛造＋寵物），不另立一套。 */
+export function heroCombatProfile(raw){
+ const s=normalize(raw);
+ const weapon=ITEMS.find(it=>it.id===s.equipped)||ITEMS[0];
+ const eq=liteEquipmentStats(s),legend=liteLegendaryEffects(s);
+ const attackValue=(eq.weaponAttack||weapon.attack)+eq.attack;
+ return {attack:Math.round((attackValue+4+s.level*2+s.forgeLevel*2+s.petLevel-1)*legend.attackMultiplier),
+  maxHp:s.maxHp,armor:eq.armor||0,lifeSteal:eq.lifeSteal||0,level:s.level,job:s.heroJob.current};
 }

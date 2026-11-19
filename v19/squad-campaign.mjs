@@ -23,6 +23,8 @@ export const CHAPTER1 = Object.freeze([
   { id: '1-5', name: '深夜加班區', mul: 1.5, par: 65, waves: [W('keyboard-piranha'), W('keyboard-piranha', 'coffee-mimic'), W('deadline-clock', 'keyboard-piranha', 'meeting-ghost')] },
   { id: '1-6', name: '打卡閘門', mul: 1.65, par: 80, boss: true, waves: [W('paper-gremlin', 'coffee-mimic'), W('meeting-ghost', 'deadline-clock'), [BOSS('chair-golem'), { type: 'keyboard-piranha' }]] },
 ]);
+/** 7 人編隊（薪奴＋同事）後的敵人強度補正：怪物基礎值以白律單人校準，薪奴上場後依此放大（平衡測試決定） */
+export const PARTY_SCALE = Object.freeze({ hp: 1.6, atk: 1.4 });
 export const stageById = id => CHAPTER1.find(s => s.id === id) || null;
 
 /** 一波敵人的站位：依數量排開；fy＝前後景深（負值在後排） */
@@ -38,13 +40,13 @@ export function waveEnemies(stage, waveIndex) {
     return {
       id: `w${waveIndex}e${i}`, type: w.type, name: m.name, boss: !!w.boss, ext: m.ext,
       x: w.boss ? 560 : x, fy: w.boss ? -55 : fy, size: m.size,
-      maxHp: Math.round(m.hp * k), attack: Math.round(m.atk * k), attackInterval: m.interval,
+      maxHp: Math.round(m.hp * k * PARTY_SCALE.hp), attack: Math.round(m.atk * k * PARTY_SCALE.atk), attackInterval: m.interval,
     };
   });
 }
 
-/** 星級：★1 勝利；★2 白律剩餘 HP ≥ 50%；★3 在時限內通關 */
-export const STAR_RULES = Object.freeze(['擊敗所有敵人', '同事剩餘生命 ≥ 50%', '時限內通關']);
+/** 星級：★1 勝利；★2 全隊剩餘 HP 合計 ≥ 50%；★3 在時限內通關 */
+export const STAR_RULES = Object.freeze(['擊敗所有敵人', '隊伍剩餘生命 ≥ 50%', '時限內通關']);
 export function starsFor({ won, hpRatio, seconds, par }) {
   if (!won) return [false, false, false];
   return [true, hpRatio >= 0.5, seconds <= par];

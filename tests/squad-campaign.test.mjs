@@ -3,24 +3,26 @@ import assert from 'node:assert/strict';
 import {createFormationBattle,tickFormationBattle,castUltimate} from '../v19/formation-combat-runtime.mjs';
 import {CHAPTER1,MONSTERS,waveEnemies,starsFor,normalizeCampaign,stageUnlocked,nextStage,rewardFor,lawyerUnit,enemyUnits} from '../v19/squad-campaign.mjs';
 import {squadStats} from '../v19/v21-squad-core.mjs';
-import {initial,normalize,transition} from '../v19/engine.mjs';
+import {initial,normalize,transition,heroCombatProfile} from '../v19/engine.mjs';
+import {heroUnit} from '../v19/hero-jobs.mjs';
 import {readFileSync} from 'node:fs';
 
 const stat=L=>squadStats({slots:[{id:'t',job:'lawyer',level:L,stars:1}]},L)[0];
 
-/** 與畫面相同的整關模擬：波次之間保留白律 HP 與能量；玩家能量滿就放大招（打 Boss／最高生命） */
-function playStage(stage,L){
- let ally=lawyerUnit(stat(L),'law'),t=0;
+/** 與畫面相同的整關模擬：薪奴＋白律；波次之間保留 HP 與能量；能量滿就放大招 */
+function party(hL,lL){const s=normalize({...initial(),level:hL,maxHp:110+(hL-1)*8});return [heroUnit(heroCombatProfile(s),'commoner'),{...lawyerUnit(stat(lL),'law'),row:'rear'}];}
+function playStage(stage,P){
+ let units=P.map(u=>({...u})),t=0;
  for(let w=0;w<stage.waves.length;w++){
-  let b=createFormationBattle({allies:[ally],enemies:enemyUnits(waveEnemies(stage,w))});
+  let b=createFormationBattle({allies:units.filter(u=>u.hp>0),enemies:enemyUnits(waveEnemies(stage,w))});
   while(!b.winner&&t<600){
-   if(b.allies[0].energy>=100)b=castUltimate(b,'law');
+   for(const a of b.allies)if(a.ultimate&&a.energy>=100&&a.hp>0)b=castUltimate(b,a.id);
    if(!b.winner){b=tickFormationBattle(b,.1);t+=.1;}
   }
   if(b.winner!=='allies')return {won:false,t};
-  ally={...ally,hp:b.allies[0].hp,energy:b.allies[0].energy};
+  units=units.map(u=>{const x=b.allies.find(a=>a.id===u.id);return {...u,hp:x?.hp??0,energy:x?.energy??u.energy};});
  }
- return {won:true,t,hpRatio:ally.hp/ally.maxHp};
+ return {won:true,t};
 }
 
 test('只使用 manifest 已核准的怪物美術',()=>{
@@ -82,10 +84,17 @@ test('引擎結算：寫入金幣、經驗、同事訓練經驗與進度；未�
  assert.deepEqual(normalize(JSON.parse(JSON.stringify(again))).squadCampaign.stars['1-1'],[true,true,true],'存檔讀回不遺失');
 });
 
-test('平衡：1 級白律能打過 1-1～1-2；Boss 關 1 級打不過、需要養成',()=>{
- const r=CHAPTER1.map(s=>[s.id,playStage(s,1),playStage(s,20)]);
- const msg=JSON.stringify(r.map(([id,a,b])=>[id,a.won,Math.round(a.t),b.won,Math.round(b.t)]));
- assert.ok(r[0][1].won&&r[1][1].won,msg);
- assert.equal(r[5][1].won,false,msg);
- assert.ok(r.every(([,,b])=>b.won),msg);
+test('平衡（薪奴＋白律）：1 級能打過 1-1～1-2；Boss 關 1 級打不過、薪奴 20／白律 15 級全通',()=>{
+ const low=CHAPTER1.map(s=>playStage(s,party(1,1))),high=CHAPTER1.map(s=>playStage(s,party(20,15)));
+ const msg=JSON.stringify([low.map(r=>r.won),high.map(r=>r.won)]);
+ assert.ok(low[0].won&&low[1].won,msg);
+ assert.equal(low[5].won,false,msg);
+ assert.ok(high.every(r=>r.won),msg);
+});
+
+test('集火後排的大招：castUltimate 指定目標優先於預設選敵',()=>{
+ const b=createFormationBattle({allies:[{...lawyerUnit(stat(1),'law'),energy:100}],enemies:enemyUnits(waveEnemies(CHAPTER1[5],2))});
+ const boss=b.enemies.find(e=>e.boss),other=b.enemies.find(e=>!e.boss);
+ assert.equal(castUltimate(b,'law').events[0].targetId,boss.id,'預設打 Boss');
+ assert.equal(castUltimate(b,'law',other.id).events[0].targetId,other.id,'集火時打指定目標');
 });

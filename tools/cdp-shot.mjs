@@ -26,6 +26,8 @@ ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.id&&pending.has(m.id)){pending.
 const send=(method,params={})=>new Promise(r=>{const i=++id;pending.set(i,r);ws.send(JSON.stringify({id:i,method,params}));});
 const evalJS=async src=>{const r=await send('Runtime.evaluate',{expression:`(async()=>{${src}})()`,awaitPromise:true,returnByValue:true});return r.result?.result?.value??r.result?.exceptionDetails?.exception?.description;};
 await send('Runtime.enable');await send('Page.enable');await send('Log.enable');
+// 無頭模式下頁面可能被視為背景而暫停 requestAnimationFrame：帶到前景並模擬焦點
+await send('Page.bringToFront');await send('Emulation.setFocusEmulationEnabled',{enabled:true});
 await send('Emulation.setDeviceMetricsOverride',{width:W,height:H,deviceScaleFactor:2,mobile:true});
 await send('Page.navigate',{url});await sleep(WAIT);
 // --clip x,y,w,h（CSS 像素）只擷取局部並用 JPEG，加快逐格擷取

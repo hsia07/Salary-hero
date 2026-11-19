@@ -4,10 +4,29 @@
  */
 import {BAILU_ATTACK_MS,BAILU_IMPACT_MS,BAILU_CUTIN_MS,BAILU_ULT_MS,BAILU_ULT_IMPACT_MS,BAILU_IDLE_MS,BAILU_WALK_MS,bailuLungeAt,BAILU_LUNGE_PX} from './bailu-timing.mjs';
 import {CHIBI_HURT_MS} from './hurt-timing.mjs';
+import {CHIBI_ATTACK_V2_MS} from './attack-timing.mjs';
 import {hurtEffectAt,HIT_FEEDBACK_MS} from './hurt-effects.mjs';
 
 const sum=a=>a.reduce((x,y)=>x+y,0);
+/** 薪奴普攻突進：第 3 格起衝、命中格（第 5 格，405ms）貼上目標、收招時退回 */
+const SALARY_IMPACT_MS=CHIBI_ATTACK_V2_MS.slice(0,4).reduce((x,y)=>x+y,0);
+const ease=u=>u<.5?2*u*u:1-(-2*u+2)**2/2;
+function salaryLunge(t){
+ const a=CHIBI_ATTACK_V2_MS,go=a[0]+a[1],hit=SALARY_IMPACT_MS,back=hit+a[4],end=sum(a);
+ if(t<go)return 0;if(t<hit)return ease((t-go)/(hit-go));if(t<back)return 1;if(t<end)return 1-ease((t-back)/(end-back));return 0;
+}
 export const CHAR_ANIMS=Object.freeze({
+ salaryman:{
+  // 薪奴現行素材（重製中，完成前沿用）：普攻 7 格、受擊 5 格；待機只有單張，尚無移動與大招影格
+  base:'../art/v19/candidates/characters/starter/chibi/',
+  drawSize:306,anchor:{x:25,y:298},
+  actions:{
+   idle:  {file:'idle-candidate.webp',cell:384,ms:[1000],loop:true},
+   attack:{file:'attack-v2-7pose-512.png',cell:512,ms:CHIBI_ATTACK_V2_MS,impactMs:SALARY_IMPACT_MS,lunge:salaryLunge},
+   hurt:  {file:'hurt-v1-5pose-384.webp',cell:384,ms:CHIBI_HURT_MS,hurtFx:true},
+  },
+  cutin:null,
+ },
  lawyer:{
   base:'../art/characters/office-lawyer/animations/',
   drawSize:306,anchor:{x:25,y:298},           // 與預覽頁、薪奴相同的繪製尺寸與腳底偏移
