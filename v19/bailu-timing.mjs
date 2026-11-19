@@ -25,3 +25,7 @@ export const BAILU_ULT_TOTAL_MS=BAILU_CUTIN_MS+BAILU_ULT_MS.reduce((a,b)=>a+b,0)
 export const BAILU_ULT_IMPACT_FRAME=5;
 export const BAILU_ULT_IMPACT_MS=BAILU_CUTIN_MS+BAILU_ULT_MS.slice(0,5).reduce((a,b)=>a+b,0);
 export function bailuUltFrameAt(ms){let t=(Number(ms)||0)-BAILU_CUTIN_MS;if(t<0)return -2;for(let i=0;i<BAILU_ULT_MS.length;i++){if(t<BAILU_ULT_MS[i])return i;t-=BAILU_ULT_MS[i];}return -1;}
+/** 待機「冷靜等候」4 格循環（非等速：吸氣慢、眨眼快）；移動「快步赴庭」6 格循環 */
+export const BAILU_IDLE_MS=Object.freeze([360,300,140,320]);
+export const BAILU_WALK_MS=Object.freeze([105,95,110,105,95,110]);
+export function loopFrameAt(ms,list){const total=list.reduce((a,b)=>a+b,0);let t=((Number(ms)||0)%total+total)%total;for(let i=0;i<list.length;i++){if(t<list[i])return i;t-=list[i];}return 0;}

@@ -5,3 +5,5 @@ test('逐格硬切與結束回待機',()=>{assert.equal(bailuFrameAt(0),0);asser
 test('命中時突進到位、結束時回原位',()=>{assert.equal(bailuLungeAt(BAILU_IMPACT_MS+10),BAILU_LUNGE_PX);assert.equal(bailuLungeAt(BAILU_ATTACK_TOTAL_MS),0);assert.ok(bailuLungeAt(300)<0);});
 import {bailuUltFrameAt,BAILU_ULT_TOTAL_MS,BAILU_ULT_IMPACT_MS,BAILU_CUTIN_MS} from './bailu-timing.mjs';
 test('大招：先特寫、再 8 格、第 6 格命中、結束回待機',()=>{assert.equal(bailuUltFrameAt(100),-2);assert.equal(bailuUltFrameAt(BAILU_CUTIN_MS),0);assert.equal(bailuUltFrameAt(BAILU_ULT_IMPACT_MS),5);assert.equal(bailuUltFrameAt(BAILU_ULT_TOTAL_MS+1),-1);});
+import {loopFrameAt,BAILU_IDLE_MS,BAILU_WALK_MS} from './bailu-timing.mjs';
+test('待機與移動循環：會回到第 1 格',()=>{const it=BAILU_IDLE_MS.reduce((a,b)=>a+b,0);assert.equal(loopFrameAt(0,BAILU_IDLE_MS),0);assert.equal(loopFrameAt(it,BAILU_IDLE_MS),0);assert.equal(loopFrameAt(BAILU_IDLE_MS[0],BAILU_IDLE_MS),1);assert.equal(loopFrameAt(BAILU_WALK_MS.reduce((a,b)=>a+b,0)-1,BAILU_WALK_MS),5);});

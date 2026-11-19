@@ -13,12 +13,12 @@ button{border:1px solid #d8b25a;border-radius:8px;background:linear-gradient(#3a
 <div id="panel"><h1>勞權律師・白律｜逐格動作驗收</h1>
 <p>白律專屬「審判筆突刺」：7 個獨立姿勢、白律自己的非等速節奏與突進距離；做法與薪奴相同：攻擊 7 個獨立姿勢、受擊 5 個獨立姿勢，沿用遊戲現有的非等速時序（attack-timing / hurt-timing / hurt-effects），不改薪奴檔案。素材狀態：候選。</p>
 <div class="b"><button data-a="attack">普攻</button><button data-a="hurt">受擊</button><button data-a="loop">連續演示</button>
-<button data-a="ult">大招</button><button data-a="herohurt">對照：薪奴受擊</button><button data-a="slow">慢速 ×0.25</button></div></div></div>
+<button data-a="ult">大招</button><button data-a="walk">走位</button><button data-a="slow">慢速 ×0.25</button></div></div></div>
 <script type="module">
 import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
 import {validateHurtAtlas} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,hurtEffectAt} from './hurt-effects.mjs';
-import {BAILU_ATTACK_TOTAL_MS,bailuFrameAt,bailuLungeAt,BAILU_IMPACT_MS,BAILU_IMPACT_FRAME,BAILU_CUTIN_MS,BAILU_ULT_MS,BAILU_ULT_TOTAL_MS,BAILU_ULT_IMPACT_MS,bailuUltFrameAt} from './bailu-timing.mjs';
+import {BAILU_ATTACK_TOTAL_MS,bailuFrameAt,bailuLungeAt,BAILU_IMPACT_MS,BAILU_IMPACT_FRAME,BAILU_CUTIN_MS,BAILU_ULT_MS,BAILU_ULT_TOTAL_MS,BAILU_ULT_IMPACT_MS,bailuUltFrameAt,BAILU_IDLE_MS,BAILU_WALK_MS,loopFrameAt} from './bailu-timing.mjs';
 import {ultPhases,drawUltBack,drawUltFront,ultCamera,drawCutin,loadUltVfx} from './bailu-ult-fx.mjs?v=4';
 const UP=ultPhases(BAILU_CUTIN_MS,BAILU_ULT_MS);
 const cv=document.getElementById('world'),ctx=cv.getContext('2d');
@@ -27,6 +27,7 @@ const B='../art/characters/office-lawyer/animations/',H='../art/v19/candidates/c
 const [bg,golem,golemHurt,bAtk,bHurt,hAtk,hHurt,hIdle,bUlt,bCut]=await Promise.all([
  load('../art/v20/runtime/backgrounds/battle-library-v20-p10.webp'),load('../art/v19/runtime/monsters/chair-golem/idle.webp'),load('../art/v19/runtime/monsters/chair-golem/hurt.webp'),
  load(B+'attack-7pose-512.png'),load(B+'hurt-5pose-384.png'),load(H+'attack-v2-7pose-512.png'),load(H+'hurt-v1-5pose-384.webp'),load(H+'idle-candidate.webp'),load(B+'ult-8pose-512.png'),load(B+'ult-cutin-800.webp')]);
+const [bIdle,bWalk]=await Promise.all([load(B+'idle-4pose-384.png'),load(B+'walk-6pose-384.png')]);
 const VFX=await loadUltVfx('../art/characters/office-lawyer/vfx/');
 const SETS={bailu:{atk:bAtk,hurt:bHurt,idleFrom:'atk'},hero:{atk:hAtk,hurt:hHurt,idle:hIdle}};
 let who='bailu',mode='idle',start=0,speed=1;
@@ -50,7 +51,9 @@ function frame(now){
  let drawn=false;
  // 與 app.mjs 薪奴相同的突進曲線：345ms 前站定 → 60ms 衝 106px → 命中保持 → 155ms 退回
  const heroLunge=t<345?0:t<405?(t-345)/60*106:t<650?106:106*Math.max(0,1-(t-650)/155);
- const lunge=mode==='attack'?(who==='bailu'?bailuLungeAt(t):heroLunge):0;
+ const WALK_MS=1300;
+ const walkX=mode==='walk'?-260*(1-Math.min(1,t/WALK_MS)):0;
+ const lunge=mode==='attack'?(who==='bailu'?bailuLungeAt(t):heroLunge):walkX;
  ctx.save();ctx.translate(lunge,0);
  if(mode==='attack'){
   const f=who==='bailu'?bailuFrameAt(t):attackFrameAt(t);
@@ -72,6 +75,11 @@ function frame(now){
    if(e.sparkAlpha>0)hitSpark(HERO_X+150,FLOOR-170,e.sparkProgress,e.sparkAlpha);
   }else mode='idle';
  }
+ if(mode==='walk'){
+  if(t>WALK_MS)mode='idle';
+  else{const f=loopFrameAt(t,BAILU_WALK_MS);ctx.drawImage(bWalk,f*384,0,384,384,HERO_X-25,FLOOR-298,306,306);drawn=true;}
+ }
+ if(!drawn&&who==='bailu'){const f=loopFrameAt(now,BAILU_IDLE_MS);ctx.drawImage(bIdle,f*384,0,384,384,HERO_X-25,FLOOR-298,306,306);drawn=true;}
  if(!drawn){
   if(s.idle)ctx.drawImage(s.idle,HERO_X-7,FLOOR-262,270,270);
   else{const c=512;ctx.drawImage(s.atk,0,0,c,c,HERO_X-25,FLOOR-298,306,306);}
@@ -92,9 +100,9 @@ function spark(x,y,p){if(p<0||p>1)return;ctx.save();ctx.globalAlpha=1-p;ctx.stro
 function hitSpark(x,y,p,a){ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#ff7a3c';for(let i=0;i<8;i++){const ang=i/8*6.283,r=10+p*40;ctx.beginPath();ctx.arc(x+Math.cos(ang)*r,y+Math.sin(ang)*r,5*(1-p)+1,0,6.283);ctx.fill();}ctx.restore();}
 requestAnimationFrame(frame);
 const play=(m,w='bailu')=>{who=w;mode=m;start=performance.now();};
-const A={ult:()=>play('ult'),attack:()=>play('attack'),hurt:()=>play('hurt'),hero:()=>play('attack','hero'),herohurt:()=>play('hurt','hero'),
+const A={walk:()=>play('walk'),ult:()=>play('ult'),attack:()=>play('attack'),hurt:()=>play('hurt'),hero:()=>play('attack','hero'),herohurt:()=>play('hurt','hero'),
  slow:()=>{speed=speed===1?.25:1;document.querySelector('[data-a=slow]').textContent=speed===1?'慢速 ×0.25':'正常速度';},
- loop:async()=>{const s=ms=>new Promise(r=>setTimeout(r,ms));for(const m of ['attack','hurt','attack','ult']){play(m);await s((m==='attack'?BAILU_ATTACK_TOTAL_MS:m==='ult'?BAILU_ULT_TOTAL_MS:HIT_FEEDBACK_MS)/speed+300);}}};
+ loop:async()=>{const s=ms=>new Promise(r=>setTimeout(r,ms));for(const m of ['walk','idle','attack','hurt','attack','ult']){play(m);await s((m==='walk'?1300:m==='idle'?1100:m==='attack'?BAILU_ATTACK_TOTAL_MS:m==='ult'?BAILU_ULT_TOTAL_MS:HIT_FEEDBACK_MS)/speed+300);}}};
 for(const b of document.querySelectorAll('button'))b.onclick=()=>A[b.dataset.a]();
 window.__frames={A,play};
 </script></body></html>
