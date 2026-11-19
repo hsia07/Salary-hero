@@ -42,7 +42,7 @@ export function createRigActor(mount,rig,base,{height=180,facing=1}={}){
  function apply(now){
   const t=(now-t0)/1000,idle=busy?.3:1,br=Math.sin(t*2.2),sw=Math.sin(t*1.25+.6);
   const walk=walking?Math.sin(t*9):0,wb=walking?Math.abs(Math.cos(t*9)):0;
-  root.style.transform=`translate(${base0.x+P.x*face}px,${base0.y+P.y-wb*3}px) scale(${scale*face},${scale}) rotate(${P.lean}deg) scaleY(${P.sq+br*.008*idle})`;
+  root.style.transform=`translate(${base0.x+P.x*face}px,${base0.y+P.y-wb*6}px) scale(${scale*face},${scale}) rotate(${P.lean}deg) scaleY(${P.sq+br*.008*idle})`;
   root.style.opacity=P.alpha;
   torso.style.transform=`rotate(${P.torso+br*.6*idle}deg)`;
   el.head&&(el.head.style.transform=`rotate(${P.head+sw*1.8*idle}deg)`);
@@ -50,11 +50,13 @@ export function createRigActor(mount,rig,base,{height=180,facing=1}={}){
   el.case_front&&(el.case_front.style.transform=`translate(${P.caseX}px,${P.caseY}px) rotate(${P.case+sw*2.2*idle}deg)`);
   el.leg_l&&(el.leg_l.style.transform=`translateY(${P.legLy-(walk>0?walk*6:0)}px) rotate(${P.legL+walk*9}deg)`);
   el.leg_r&&(el.leg_r.style.transform=`translateY(${P.legRy-(walk<0?-walk*6:0)}px) rotate(${P.legR-walk*9}deg)`);
-  root.style.filter=P.red>0?`drop-shadow(0 0 0 transparent) sepia(${P.red}) saturate(${1+P.red*5}) hue-rotate(${-50*P.red}deg) brightness(${1+P.red*.25})`:'';
+  root.style.filter=P.red>0?`sepia(${P.red*.55}) saturate(${1+P.red*2.2}) hue-rotate(${-38*P.red}deg) brightness(${1+P.red*.18})`:'';
  }
  apply(performance.now());
  raf=requestAnimationFrame(frame);
  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ /** 突進殘影：複製目前外觀，淡出 */
+ function ghost(n){for(let i=0;i<n;i++)setTimeout(()=>{const g=root.cloneNode(true);g.style.opacity='.35';g.style.filter='brightness(1.6) saturate(.4)';g.style.transition='opacity .22s linear';mount.insertBefore(g,root);requestAnimationFrame(()=>g.style.opacity='0');setTimeout(()=>g.remove(),240);},i*35);}
  function to(target,ms,ease='out'){return new Promise(res=>{const from={...P},s=performance.now();(function step(n){
   if(hitstop>n){requestAnimationFrame(step);return;}
   const u=Math.min(1,(n-s)/ms),e=EASE[ease](u);for(const k in target)P[k]=from[k]+(target[k]-from[k])*e;u<1?requestAnimationFrame(step):res();})(s);});}
@@ -66,29 +68,31 @@ export function createRigActor(mount,rig,base,{height=180,facing=1}={}){
  const actions={
   async walk(ms=900){walking=true;await wait(ms);walking=false;},
   /** reach：需要前進的距離（mount 像素），讓筆尖抵達目標身體 */
+  // 手遊 Q 版切片動畫原則：身體保持直立（整體傾斜 ≤6°），用位移、壓縮伸展、小角度擺臂表現力道；
+  // 手臂旋轉 ≤30° 以免露出未繪製的關節；被公文包擋住的身體區域不大幅揭露。
   async attack({reach=80,onHit}={}){
-   await to({lean:-10,torso:-12,arm:-40,armX:-22,armY:-8,head:4,legL:10,legR:-8,x:-14,sq:.94},170,'out');     // 預備：大幅後拉蓄力
-   await wait(60);
-   walking=true;await to({x:reach*.85,lean:12,torso:12,legL:26,legR:-30,sq:1.02},120,'in');walking=false;      // 突進
-   await to({x:reach,arm:thrust,armX:34,armY:10,torso:16,head:-4,lean:14},55,'lin');                          // 出筆：快速直刺
-   hitstop=performance.now()+110;onHit?.(penTip());await wait(150);                                         // 命中停頓＋特效
-   await to({x:reach-18,arm:thrust-12,armX:12,torso:6,lean:4},140,'out');                                     // 收招
-   walking=true;await to({x:0,y:0,lean:-3,legL:-10,legR:12},260,'io');walking=false;
-   await to(REST,180,'out');
+   await to({x:-10,y:2,sq:.93,torso:-4,head:3,arm:-28,armX:-16,armY:-4,legL:6,legR:-6},150,'out');           // 蓄力：下蹲、收肘
+   await wait(50);
+   ghost(3);walking=true;await to({x:reach*.9,y:-4,sq:1.04,torso:3,lean:4,arm:-8,legL:18,legR:-20},110,'in');walking=false; // 突進（殘影）
+   await to({x:reach,y:0,sq:.98,arm:thrust,armX:30,armY:6,torso:5,lean:5,head:-2},50,'lin');                   // 直刺
+   hitstop=performance.now()+110;onHit?.(penTip());await wait(140);                                           // 命中停頓
+   await to({x:reach-14,sq:1,arm:thrust-6,armX:14,torso:2,lean:2},130,'out');                                  // 收招
+   walking=true;await to({x:0,y:-6,lean:-2,legL:-8,legR:10},200,'io');walking=false;await to({y:0,sq:.96},70,'in');
+   await to(REST,150,'out');
   },
   async hurt(){
-   await to({x:-14,lean:-12,torso:-10,head:14,arm:22,case:-14,legL:-10,legR:10,red:1,sq:.95},110,'out');
-   await wait(120);await to({red:0,x:-6,lean:-4,torso:-3,head:5,sq:1},200,'io');await to(REST,220,'io');
+   await to({x:-16,y:-2,sq:.92,lean:-5,torso:-5,head:8,arm:14,case:-8,red:1},90,'out');                      // 被擊退：後仰小幅＋壓縮
+   await to({red:.55},90,'lin');await to({red:0,x:-8,sq:1,lean:-2,head:3},180,'io');await to(REST,200,'io');
   },
   async block({onBlock}={}){
-   await to({case:-58,caseX:46,caseY:-58,lean:5,torso:6,legL:10,legR:-10,arm:16,sq:.97},200,'back');       // 公文包盾移到受擊方向
-   onBlock?.();hitstop=performance.now()+60;await to({x:-10,case:-52},90,'out');
-   await wait(140);await to(REST,240,'io');
+   await to({x:-6,sq:.95,case:-16,caseX:22,caseY:-26,torso:3,arm:10,legL:8,legR:-8},150,'back');              // 公文包往前頂（不大幅舉起）
+   onBlock?.();hitstop=performance.now()+70;await to({x:-16,case:-12,sq:.97},90,'out');
+   await wait(120);await to(REST,220,'io');
   },
   async dispel({onSeal}={}){
-   await to({arm:-70,armX:10,armY:-18,head:-8,torso:-6,lean:-3},260,'out');                              // 舉筆
-   await wait(100);onSeal?.(penTip());
-   await to({arm:24,armX:18,torso:10,lean:6},150,'in');await wait(260);await to(REST,260,'io');            // 落筆一劃
+   await to({y:-4,sq:1.03,arm:-30,armX:6,armY:-10,head:-4,torso:-3},240,'out');                              // 舉筆
+   await wait(90);onSeal?.(penTip());
+   await to({y:0,sq:.97,arm:12,armX:16,torso:4,lean:3},120,'in');await wait(240);await to(REST,240,'io');     // 落筆一劃
   },
   async victory(){await to({arm:-60,armY:-14,head:-6,torso:-4,y:-10},300,'back');await wait(700);await to(REST,300,'io');},
   async defeat(){await to({lean:-70,y:20,torso:-14,head:20,alpha:.85},500,'in');},
