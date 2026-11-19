@@ -2,7 +2,8 @@
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {xpToNext,teamAura,colleagueCap,colleagueUpgradeCost} from './s1-progression.mjs';
 import {SQUAD_JOBS,memberIdFor} from './v21-squad-core.mjs';
-import {openSquadBattle,squadBattleAvailable} from './squad-battle.mjs?v=6';
+import {openSquadBattle,squadBattleAvailable} from './squad-battle.mjs?v=7';
+import {nextStage as squadNextStage,normalizeCampaign as squadNormalizeCampaign} from './squad-campaign.mjs?v=1';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -1083,9 +1084,10 @@ function renderPanel(type){
      const d=DAILY_DUNGEONS[day],isToday=d.id===daily.id;
      return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'本日':day===1?'高獎勵':day===5?'偷跑魔王':day===6?'週六／日':'每週輪替')+'</b></div>';
    }).join('')+'</div><p class="mode-caveat">平日副本依台灣時間 00:00 換日重置；週六與週日是同一個副本，直到週一 00:00 才重置。普通怪使用現有逐格美術循環；菁英與 Boss 目前使用暫代造型。</p>';
-  {const squadReady=squadBattleAvailable(state.colleagueFormation);
-   // 試玩不寫存檔：未部署白律時以試玩身分上場，入口永遠可進（使用者 2026-11-19「根本進不去小隊戰鬥」）
-   body.insertAdjacentHTML('afterbegin','<button class="squad-entry" data-action="openSquadBattle"><strong>小隊戰鬥</strong><small>'+(squadReady?'同事上場：勞權律師・白律（試玩）':'試玩：勞權律師・白律客串上場（不寫存檔）')+'</small></button>');}
+  {
+   // 入口永遠可進（使用者 2026-11-19「根本進不去小隊戰鬥」）；第一章進度與獎勵由引擎 squadStageClear 寫入存檔
+   const camp=squadNormalizeCampaign(state.squadCampaign),cur=squadNextStage(camp),cleared=Object.keys(camp.stars).length;
+   body.insertAdjacentHTML('afterbegin','<button class="squad-entry" data-action="openSquadBattle"><strong>小隊戰鬥・第一章</strong><small>'+(cleared>=6?'第一章全數通關，可重複挑戰拿星':'下一關 '+cur.id+' '+escapeHTML(cur.name)+'・已通關 '+cleared+'/6')+'</small></button>');}
 
  }else if(type==='letter'){
    const note=state.fridayNote;
@@ -1229,7 +1231,14 @@ body.addEventListener('click',e=>{
  }
  else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
- else if(act==='openSquadBattle'){$('#panel')?.close?.();openSquadBattle({draft:squadBattleAvailable(state.colleagueFormation)?state.colleagueFormation:{slots:[{id:'trial-office-lawyer',job:'lawyer',level:1,stars:1}]},level:state.level,heroIdleSrc:assetPaths.chibiIdle});}
+ else if(act==='openSquadBattle'){$('#panel')?.close?.();
+  // 上場的白律：已部署→編隊資料；已招募未部署→養成資料；都沒有→1 級試玩（不影響存檔）
+  const lawyerId=memberIdFor(SQUAD_JOBS.find(j=>j.id==='lawyer'));
+  const deployed=(state.colleagueFormation?.slots||[]).find(m=>m?.job==='lawyer');
+  const owned=state.colleagueProgress?.members?.find(m=>m.id===lawyerId);
+  const unit=deployed?{id:deployed.id,level:deployed.level,stars:deployed.stars||1}:owned?{id:owned.id,level:owned.level,stars:1}:{id:'trial-office-lawyer',level:1,stars:1,trial:true};
+  openSquadBattle({unit,level:state.level,heroIdleSrc:assetPaths.chibiIdle,campaign:state.squadCampaign,
+   onClear:(stage,stars)=>{commit({type:'squadStageClear',stage,stars});return state.last;}});}
  else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague','s1DeployColleague','s1RemoveColleague'].includes(act)){
   commit({type:act,id:b.dataset.value,slot:b.dataset.slot});
   renderPanel('colleagues');

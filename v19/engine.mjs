@@ -12,6 +12,7 @@ import {liteTacticalHit} from './lite-tactics.mjs';
 import {gainSlaveXp,teamAura,xpToNext} from './s1-progression.mjs';
 import {normalizeColleagueProgress,enrollColleague,trainColleague,breakthroughColleague} from './s1-colleague-progression.mjs';
 import {SQUAD_JOBS,normalizeSquadDraft,assignSquadMember,memberIdFor} from './v21-squad-core.mjs';
+import {stageById,stageUnlocked,normalizeCampaign,rewardFor} from './squad-campaign.mjs';
 import {advanceLiveColleagues,routeLiveRetaliation,activeDispeller,DISPELLABLE_TRAITS} from './s1-formation-live.mjs';
 export {WEEKEND_CHAOS_EVENTS} from './weekend-chaos.mjs';
 export const PLAYER_TITLE='平凡社畜・';
@@ -164,6 +165,7 @@ export function initial(){
    playerName:'',styleWishlist:[],defeatedTypes:[],activeMode:'campaign',modeWaves:{campaign:1,tower:1,dungeon:1},skillCooldowns:{burst:0,guard:0,drain:0},dailyDungeonDay:todayTW(),dailyDungeonKey:dungeonPeriodKey(),fridayBossRolls:{},fridayNote:null,weekendChaosRolls:{},weekendChaosEvent:null,weekendChaosHistory:[],weeklyDungeonClaims:[],weeklyDungeonProgress:{week:taiwanWeekKey(),completed:[]},specialChests:0,skillBooks:0,skillFragments:0,skillRank:0,petXp:0,petFood:0,petLevel:1,craftingMaterial:0,rareMaterials:0,forgeLevel:0,
    colleagueProgress:{version:1,members:[],materials:{trainingXp:0,coins:0,seals:0,emblems:0}},
    colleagueFormation:{version:1,commanderPath:'strategist',slots:[null,null,null,null,null,null]},
+   squadCampaign:{version:1,stars:{}},
    skinTickets:0,ownedSkins:['starter'],activeSkin:'starter',skinDraws:0,skinHistory:[],
    activityDaily:{day:'',wins:0,bosses:0},activityClaims:[],equipped:'briefcase',owned:['briefcase'],liteInventory:[],liteLoadout:{weapon:null,armor:null,badge:null,relic:null},liteItemSeq:0,liteCombo:0,liteAutoEquip:false,liteAutoStrategy:'balanced',liteLastSeenAt:0,liteOfflineReport:null,liteActiveBuild:'none',liteBuildProgress:{clockout:0,coffee:0},liteBuildBranch:{clockout:'rush',coffee:'heal'},liteToxinStacks:0,liteToxinKey:'',liteMarks:0,liteSkillUses:{burst:0,guard:0,drain:0},liteSkillPaths:{burst:null,guard:null,drain:null},litePresets:[null,null],potions:2,chests:0,pendingDrops:[],enemy:loopEnemyFor(1),
    auto:true,speed:1,encounterDay:'',encounterPending:null,encounterHistory:[],autoEncounter:false,log:['勇者甦醒，開始第一場冒險。'],last:null};
@@ -229,6 +231,7 @@ export function normalize(raw,now=Date.now()){
  }:null;
  n.level=Math.max(1,Math.min(100,Math.floor(Number(n.level)||1)));
  n.colleagueProgress=normalizeColleagueProgress(raw.colleagueProgress,n.level);
+ n.squadCampaign=normalizeCampaign(raw.squadCampaign); // 小隊戰鬥第一章進度（新增欄位，舊存檔沒有就從零開始）
  // Salary Hero's existing gold is the single source of truth for training coins.
  n.colleagueProgress.materials.coins=Math.max(0,Math.floor(Number(raw.gold)||0));
  const ownedColleagues=new Map(n.colleagueProgress.members.map(m=>[m.id,m]));
@@ -390,6 +393,21 @@ export function transition(raw,action,rng=Math.random,now=Date.now()){
  const s=normalize(raw,now),a=typeof action==='string'?{type:action}:action||{},item=ITEMS.find(it=>it.id===a.id);
  s.last=null;
  switch(a.type){
+ case 'squadStageClear':{
+   // 小隊戰鬥通關結算：獎勵由規則表計算，不接受畫面傳入的數量；星級只會變好不會變差。
+   if(s.trainingIsolated)break;
+   const stage=stageById(a.stage);
+   const stars=Array.isArray(a.stars)?[a.stars[0]===true,a.stars[1]===true,a.stars[2]===true]:null;
+   if(!stage||!stars||!stars[0]||!stageUnlocked(s.squadCampaign,stage.id)){s.last={type:'squadStageClear',ok:false};break;}
+   const prev=s.squadCampaign.stars[stage.id]||null;
+   const r=rewardFor(stage,prev,stars);
+   s.squadCampaign.stars[stage.id]=prev?prev.map((x,i)=>x||stars[i]):stars;
+   s.gold+=r.gold;s.gems+=r.gems;awardXP(s,r.xp);
+   s.colleagueProgress.materials.trainingXp+=r.trainingXp;
+   s.last={type:'squadStageClear',ok:true,stage:stage.id,stars,...r};
+   notice(s,'小隊戰鬥 '+stage.id+' '+stage.name+' 勝利：金幣 +'+r.gold+'、EXP +'+r.xp+(r.trainingXp?'、同事訓練經驗 +'+r.trainingXp:'')+(r.gems?'、寶石 +'+r.gems:'')+'。');
+   break;
+ }
  case 's1RecruitColleague':{
    // Prototype recruitment: one initial colleague per currently implemented job.
    // Expanded 24-colleague gacha/recruitment is not yet implemented.

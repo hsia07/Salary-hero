@@ -20,6 +20,29 @@ function damage(target,amount){
  target.hp-=dealt;
  return {dealt,blocked};
 }
+function applyUltimate(s,actor,pick){
+ const buffs=pick.statuses.filter(x=>BUFF_TYPES.has(x.type));
+ const removedShield=pick.shield;
+ pick.shield=0;pick.statuses=pick.statuses.filter(x=>!BUFF_TYPES.has(x.type));
+ const {dealt}=damage(pick,actor.attack*Math.max(1,Number(actor.ultimate.multiplier)||4));
+ actor.energy=0;
+ s.events.push({type:'ultimate',actorId:actor.id,targetId:pick.id,damage:dealt,removedShield,removedStatuses:buffs.map(x=>x.type),name:actor.ultimate.name||'ultimate'});
+ if(pick.hp===0)s.events.push({type:'defeat',targetId:pick.id});
+}
+/** 玩家手動施放大招（能量滿才成立）。目標：指定的存活敵人；未指定則 Boss／最高生命優先。
+ * 回傳新狀態，events 只含這次施放產生的事件；條件不成立時原樣回傳（events 為空）。 */
+export function castUltimate(previous,actorId,targetId=null){
+ const s={...previous,allies:previous.allies.map(copy),enemies:previous.enemies.map(copy),events:[]};
+ if(previous.winner)return s;
+ const actor=s.allies.find(u=>u.id===actorId);
+ if(!actor||actor.hp<=0||!actor.ultimate||actor.energy<100)return s;
+ const alive=s.enemies.filter(u=>u.hp>0);
+ const pick=alive.find(u=>u.id===targetId)||alive.sort((x,y)=>(y.boss?1:0)-(x.boss?1:0)||y.maxHp-x.maxHp)[0];
+ if(!pick)return s;
+ applyUltimate(s,actor,pick);
+ if(!s.enemies.some(u=>u.hp>0))s.winner='allies';
+ return s;
+}
 export function tickFormationBattle(previous,dt=0.1){
  const elapsed=clamp(dt,0,1),s={...previous,time:previous.time+elapsed,allies:previous.allies.map(copy),enemies:previous.enemies.map(copy),events:[]};
  if(previous.winner||!elapsed)return {...s,winner:previous.winner};
@@ -48,8 +71,10 @@ export function tickFormationBattle(previous,dt=0.1){
  }
  // Both teams plan from the same tick snapshot. An actor killed earlier in the
  // tick cannot perform its queued action.
+ // 玩家集火：指定的敵人存活時，我方一般攻擊改打它（治療、護盾不受影響）
+ const focus=s.enemies.find(u=>u.id===s.focusTargetId&&u.hp>0);
  const queue=[
-  ...planFormationActions(s.allies.filter(u=>u.hp>0&&u.cooldown<=0&&!u.statuses.some(x=>x.type==='stun'&&x.duration>0)),s.enemies,s.allies).map(x=>({...x,side:'ally'})),
+  ...planFormationActions(s.allies.filter(u=>u.hp>0&&u.cooldown<=0&&!u.statuses.some(x=>x.type==='stun'&&x.duration>0)),s.enemies,s.allies).map(x=>({...x,side:'ally',...(focus&&x.type==='attack'?{targetId:focus.id}:{})})),
   ...planFormationActions(s.enemies.filter(u=>u.hp>0&&u.cooldown<=0&&!u.statuses.some(x=>x.type==='stun'&&x.duration>0)),s.allies,s.enemies).map(x=>({...x,side:'enemy'}))
  ];
  for(const action of queue){
@@ -75,17 +100,11 @@ export function tickFormationBattle(previous,dt=0.1){
    actor.shieldReady=false;
    actor.shieldCooldown=Math.max(1,Number(actor.shieldInterval)||8);
    s.events.push({type:'shield',actorId:actor.id,targetId:target.id,amount:added});
-  }else if(actor.ultimate&&actor.energy>=100){
+  }else if(actor.ultimate&&!actor.ultimate.manual&&actor.energy>=100){
    // 大招（白律「終審判決」：使用者 2026-11-19 裁決方案 A）：單體高倍率傷害，先解除目標全部護盾與增益。
    // 目標：敵方 Boss／最高威脅（maxHp 最高、存活）優先，不沿用一般選敵。
    const pick=opponents.filter(u=>u.hp>0).sort((x,y)=>(y.boss?1:0)-(x.boss?1:0)||y.maxHp-x.maxHp)[0]||target;
-   const buffs=pick.statuses.filter(x=>BUFF_TYPES.has(x.type));
-   const removedShield=pick.shield;
-   pick.shield=0;pick.statuses=pick.statuses.filter(x=>!BUFF_TYPES.has(x.type));
-   const {dealt}=damage(pick,actor.attack*Math.max(1,Number(actor.ultimate.multiplier)||4));
-   actor.energy=0;
-   s.events.push({type:'ultimate',actorId:actor.id,targetId:pick.id,damage:dealt,removedShield,removedStatuses:buffs.map(x=>x.type),name:actor.ultimate.name||'ultimate'});
-   if(pick.hp===0)s.events.push({type:'defeat',targetId:pick.id});
+   applyUltimate(s,actor,pick);
   }else{
    // 驅散（白律「無效條款」）：攻擊前先解除目標護盾與增益狀態，有冷卻。
    if(actor.dispelPower>0&&actor.dispelCooldown<=0){

@@ -316,15 +316,39 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 #squad-battle{position:fixed;inset:0;z-index:9999;background:#0b0712;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #squad-battle .sb-wrap{position:relative;width:min(100vw,calc((100dvh - 80px)*720/1220));max-width:560px}
 #squad-battle canvas{display:block;width:100%;height:auto;aspect-ratio:720/1220}
-#squad-battle .sb-bar{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:8px 10px;background:linear-gradient(#241836,#140d1f);border-top:2px solid #d8b25a;color:#efe6d2}
-#squad-battle .sb-cmd{margin:0;text-align:center}#squad-battle .sb-cmd img{width:52px;height:52px;object-fit:cover;object-position:50% 12%;border-radius:50%;border:1px solid #d8b25a;background:#2b2140}
+#squad-battle .sb-bar{display:grid;grid-template-columns:56px 1fr auto auto;gap:8px;align-items:center;padding:8px 10px;background:linear-gradient(#241836,#140d1f);border-top:2px solid #d8b25a;color:#efe6d2}
+#squad-battle .sb-cmd{margin:0;text-align:center}#squad-battle .sb-cmd img{width:48px;height:48px;object-fit:cover;object-position:50% 12%;border-radius:50%;border:1px solid #d8b25a;background:#2b2140}
 #squad-battle .sb-cmd figcaption{font-size:10px;color:#cbb9d9}
-#squad-battle .sb-unit{display:grid;gap:4px;font-size:12px}#squad-battle .sb-unit strong{color:#f3dfa0;letter-spacing:.08em}#squad-battle .sb-unit small{color:#b9aecb;font-size:10px}
+#squad-battle .sb-unit{display:grid;gap:4px;font-size:12px;min-width:0}#squad-battle .sb-unit strong{color:#f3dfa0;letter-spacing:.06em;white-space:nowrap}#squad-battle .sb-unit em{font-style:normal;color:#cbb9d9;font-size:11px;letter-spacing:0}#squad-battle .sb-unit small{color:#d9cdea;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #squad-battle .sb-hp,#squad-battle .sb-en{display:block;height:7px;border:1px solid #d8b25a;border-radius:4px;background:#0c0812;overflow:hidden}
 #squad-battle .sb-hp i,#squad-battle .sb-en i{display:block;height:100%;transition:width .25s}#squad-battle .sb-hp i{background:linear-gradient(#ffe9a8,#c9963a)}#squad-battle .sb-en i{background:linear-gradient(#bfe8ff,#4f8fd8)}
-#squad-battle button{border:1px solid #d8b25a;border-radius:8px;background:linear-gradient(#3a2957,#22173a);color:#f6ecd0;font:600 14px/1 inherit;padding:10px 14px}
-#squad-battle .sb-result{position:absolute;inset:0;display:grid;place-content:center;gap:12px;text-align:center;background:#0b0712cc;color:#f3dfa0}
-#squad-battle .sb-result[hidden]{display:none}#squad-battle .sb-result h2{font-size:44px;margin:0;letter-spacing:.3em}#squad-battle .sb-result p{color:#e7dcef;font-size:13px}#squad-battle .sb-result div{display:flex;gap:10px;justify-content:center}
+#squad-battle button{border:1px solid #d8b25a;border-radius:8px;background:linear-gradient(#3a2957,#22173a);color:#f6ecd0;font:600 14px/1 inherit;padding:10px 14px;min-height:44px}
+#squad-battle button:disabled{opacity:.45}
+#squad-battle .sb-ult{width:64px;height:64px;padding:0;border-radius:50%;font:900 14px/1.15 "Noto Serif TC","Microsoft JhengHei",serif;letter-spacing:.08em;color:#fff6d6;background:radial-gradient(circle at 50% 35%,#f6d27a,#a2702a 62%,#4a2d12);border:2px solid #ffe7a6}
+#squad-battle .sb-ult:not(:disabled){animation:sbUltReady 1s ease-in-out infinite}
+#squad-battle .sb-ult:disabled{background:radial-gradient(circle at 50% 35%,#5d4a6e,#2a1f3a);color:#a99bb8;border-color:#6b5a80;opacity:1}
+@keyframes sbUltReady{50%{box-shadow:0 0 18px 4px #ffd46e,0 0 0 2px #fff3c4 inset;transform:scale(1.06)}}
+#squad-battle .sb-exit{padding:8px 10px;font-size:13px}
+#squad-battle .sb-top{position:absolute;left:0;right:0;top:0;display:flex;gap:10px;justify-content:space-between;padding:10px 12px;color:#f3dfa0;font:700 13px "Noto Serif TC","Microsoft JhengHei",serif;background:linear-gradient(#0b0712ee,#0b071200);pointer-events:none}
+#squad-battle .sb-top[hidden]{display:none}#squad-battle .sb-wave{color:#fff6d6}#squad-battle .sb-time{color:#d9cdea;font-variant-numeric:tabular-nums}
+#squad-battle .sb-select,#squad-battle .sb-result{position:absolute;inset:0 0 auto 0;bottom:82px;display:grid;place-items:center;padding:16px;background:#0b0712a8;color:#f3dfa0;text-align:center}
+#squad-battle .sb-select[hidden],#squad-battle .sb-result[hidden]{display:none}
+#squad-battle .sb-card{width:min(100%,360px);display:grid;gap:10px;padding:18px 16px;border:1px solid #d8b25a;border-radius:14px;background:linear-gradient(#2a1d3cf2,#160f22f2);box-shadow:0 10px 30px #0008}
+#squad-battle .sb-card h2{margin:0;font:900 22px "Noto Serif TC","Microsoft JhengHei",serif;letter-spacing:.06em;color:#fff1c8}
+#squad-battle .sb-result .sb-card h2{font-size:40px;letter-spacing:.3em}
+#squad-battle .sb-card h2 b{margin-left:8px;padding:2px 6px;border-radius:4px;background:#8a2a1c;color:#ffe2c4;font-size:12px;letter-spacing:.1em;vertical-align:middle}
+#squad-battle .sb-chapter{margin:0;font-size:12px;letter-spacing:.2em;color:#cbb9d9}
+#squad-battle .sb-nav{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:6px}#squad-battle .sb-nav button{padding:0;font-size:24px}
+#squad-battle .sb-dots{display:flex;gap:8px;justify-content:center}#squad-battle .sb-dots i{width:10px;height:10px;border-radius:50%;background:#4a3a5c;border:1px solid #8a7aa0}
+#squad-battle .sb-dots i[data-state=clear]{background:#e2b44e;border-color:#ffe7a6}#squad-battle .sb-dots i[data-state=open]{background:#7a68a0}#squad-battle .sb-dots i[data-cur=true]{outline:2px solid #fff3c4;outline-offset:2px}
+#squad-battle .sb-meta,#squad-battle .sb-note,#squad-battle .sb-lock{margin:0;font-size:12px;line-height:1.6;color:#e2d8ee}#squad-battle .sb-note{color:#b9aecb}#squad-battle .sb-lock{color:#ffb3a5}
+#squad-battle .sb-rules{list-style:none;margin:0;padding:0;display:grid;gap:5px;text-align:left;font-size:13px;color:#b9aecb}#squad-battle .sb-rules li[data-on=true]{color:#fff1c8}
+#squad-battle .sb-star{display:inline-block;margin-right:6px;color:#4a3d58;font-size:16px}#squad-battle .sb-star[data-on=true]{color:#ffd46e;text-shadow:0 0 6px #ffb52e}
+#squad-battle .sb-stars .sb-star{font-size:40px;margin:0 4px}
+#squad-battle .sb-go{justify-self:center;width:70%;font:900 18px "Noto Serif TC","Microsoft JhengHei",serif;letter-spacing:.3em;background:linear-gradient(#c9963a,#7a4f1c);color:#fff6d6}
+#squad-battle .sb-loot-title{margin:0;font-size:12px;color:#cbb9d9;letter-spacing:.15em}
+#squad-battle .sb-loot{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}#squad-battle .sb-loot li{padding:6px 10px;border:1px solid #8a6f3a;border-radius:8px;background:#1d1428;font-size:12px;color:#e2d8ee}#squad-battle .sb-loot b{color:#ffd46e;margin-right:4px}
+#squad-battle .sb-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 /* 卡片列（.item）內的按鈕不撐滿整行，避免文字欄被擠成 0 寬變直排（2026-11-19 社畜遠征卡片） */
 .item>.panel-button{width:auto;flex:0 0 auto;min-width:72px;margin:0;white-space:nowrap}.item>.detail{min-width:0;flex:1 1 auto}
 </style><link rel="stylesheet" href="../art/v19/runtime/ui/ornate-theme.css"><link rel="stylesheet" href="./portrait-home.css?v=portrait-home-v19-34a"><link rel="stylesheet" href="./portrait-one-screen.css?v=portrait-one-screen-v19-35"><link rel="stylesheet" href="./storybook-skin.css?v=storybook-v19-37"><link rel="stylesheet" href="./iphone-hud-fixes.css?v=iphone-fixes-v19-37"><link rel="stylesheet" href="./v20-home.css?v=v20-home-first-1"><link rel="stylesheet" href="./v20-art-live.css?v=p11-town-1"><link rel="stylesheet" href="./v20-royal-material.css?v=p08-royal-1"><link rel="stylesheet" href="./v20-p09-composition.css?v=p09-center-1"><link rel="stylesheet" href="./v20-p11-town.css?v=p11-town-1"><link rel="stylesheet" href="./v21-unified-stage.css?v=v21-stage-1"><link rel="stylesheet" href="./v21-research-lab.css?v=v21-lab-1"><link rel="stylesheet" href="./v21-forge-atelier.css?v=v21-art-forge-1"></head><body>
@@ -593,4 +617,4 @@ a{color:#ffda87}button:focus-visible,a:focus-visible{outline:3px solid #fff3ce;o
 <input id="player-name-input" autocomplete="nickname" maxlength="24" enterkeyhint="done" placeholder="例如：悟空、社畜王、夜班星人" required />
 <div id="name-preview">平凡社畜・你的名字</div><p id="name-message" role="status"></p>
 <button type="submit">開始我的冒險</button></form></dialog>
-<script type="module" src="./app.mjs?v=bailu-v1-4"></script><script type="module" src="./v20-art-live.mjs?v=p0-illustration-1"></script></body></html>
+<script type="module" src="./app.mjs?v=squad-ch1-1"></script><script type="module" src="./v20-art-live.mjs?v=p0-illustration-1"></script></body></html>
