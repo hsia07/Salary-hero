@@ -32,3 +32,14 @@ test('引擎：可招募並部署白律，舊存檔不受影響',()=>{
  assert.equal(s.colleagueFormation.slots[3]?.id,'office-lawyer');
  assert.equal(s.colleagueFormation.slots[3]?.job,'lawyer');
 });
+test('引擎：guard 敵人在白律部署時不再減傷（無效條款）',()=>{
+ const base=transition({},{type:'s1RecruitColleague',id:'lawyer'});
+ const mk=withLawyer=>{
+  let s=withLawyer?transition(base,{type:'s1DeployColleague',id:'lawyer',slot:4}):base;
+  s={...s,enemy:{...s.enemy,trait:'guard',traitText:'防禦',hp:100000,maxHp:100000,attack:0}};
+  const r=transition(s,{type:'attack'},()=>.5);
+  return 100000-r.enemy.hp-(r.last?.colleagueAssist||0);
+ };
+ const without=mk(false),withL=mk(true);
+ assert.ok(withL>without,`有白律主角傷害 ${withL} 應大於無白律 ${without}`);
+});

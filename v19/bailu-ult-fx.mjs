@@ -31,7 +31,7 @@ export function drawUltBack(ctx, t, P, { floor, enemyX }, V) {
   if (!V || t < 0 || t > P.end + 500) return;
   const ex = enemyX + 130;
   const dim = t < P.frame[0] ? 0 : t < P.end ? ease.out(seg(t, P.frame[0], P.frame[0] + 260)) : 1 - seg(t, P.end, P.end + 500);
-  ctx.save(); ctx.globalAlpha = .62 * dim; ctx.fillStyle = '#0d0618'; ctx.fillRect(0, 0, 720, 620); ctx.restore();
+  ctx.save(); ctx.globalAlpha = .62 * dim; ctx.fillStyle = '#0d0618'; ctx.fillRect(-200, -600, 1120, 1600); ctx.restore();
   // 天秤：開庭時由上方浮現、輕晃；蓄勢時往目標側傾；定讞時亮起
   const sa = dim * ease.out(seg(t, P.frame[1], P.frame[1] + 320));
   const tilt = t < P.frame[4] ? Math.sin(t / 420) * .03 : t < P.impact ? .12 * ease.io(seg(t, P.frame[4], P.impact)) : .16;
@@ -89,7 +89,7 @@ export function drawUltFront(ctx, t, P, { floor, enemyX, penTip }, V) {
     }
   }
   // 白閃（短）
-  if (t >= P.impact && t < P.impact + 100) { ctx.save(); ctx.globalAlpha = .5 * (1 - seg(t, P.impact, P.impact + 100)); ctx.fillStyle = '#fffbea'; ctx.fillRect(0, 0, 720, 620); ctx.restore(); }
+  if (t >= P.impact && t < P.impact + 100) { ctx.save(); ctx.globalAlpha = .5 * (1 - seg(t, P.impact, P.impact + 100)); ctx.fillStyle = '#fffbea'; ctx.fillRect(-200, -600, 1120, 1600); ctx.restore(); }
 }
 
 /** 鏡頭：蓄勢時推近目標，命中瞬間大震動 */
@@ -105,7 +105,7 @@ export function ultCamera(t, P, { enemyX, floor }) {
 export function drawCutin(ctx, t, P, img, V, name = '終審判決') {
   const [a, b] = P.cutin; if (t < a || t > b + 120) return;
   const p = seg(t, a, b), out = seg(t, b - 120, b + 120);
-  ctx.save(); ctx.fillStyle = '#05030a'; ctx.globalAlpha = .84 * (1 - out); ctx.fillRect(0, 0, 720, 620); ctx.restore();
+  ctx.save(); ctx.fillStyle = '#05030a'; ctx.globalAlpha = .84 * (1 - out); ctx.fillRect(-200, -600, 1120, 1600); ctx.restore();
   const bar = 80 * ease.out(seg(t, a, a + 160)) * (1 - out);
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 720, bar); ctx.fillRect(0, 620 - bar, 720, bar);
   const x = p < .2 ? 720 * (1 - ease.out(p / .2)) : -720 * ease.in(out);

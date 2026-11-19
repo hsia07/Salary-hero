@@ -2,9 +2,7 @@
 import {ITEMS,ENCOUNTERS,STORAGE_KEY,initial,normalize,enemyFor,todayTW,transition,salaryAt,playerTitle,cleanPlayerName,autoEncounterChoice,GAME_MODES,GAME_SKILLS,DAILY_DUNGEONS,dailyDungeonFor,WEEKEND_CHAOS_EVENTS} from './engine.mjs';
 import {xpToNext,teamAura,colleagueCap,colleagueUpgradeCost} from './s1-progression.mjs';
 import {SQUAD_JOBS,memberIdFor} from './v21-squad-core.mjs';
-import {syncRigActors,rigLog,rigStats,debugRigPlay,debugRigTip} from './rig-battle-actors.mjs';
-window.__rigLog=rigLog;window.__rigStats=rigStats;
-window.__rigDebug={play:(id,a)=>debugRigPlay(state,id,a),tip:debugRigTip};
+import {openSquadBattle,squadBattleAvailable} from './squad-battle.mjs?v=6';
 import {HERO_STYLES,ALL_ENEMIES,COMMON_ENEMIES,ELITE_ENEMIES,BOSSES} from './roster.mjs';
 import {SKINS,skinById,taiwanWeekKey,weekdayTaiwan} from './skins.mjs';
 import {LITE_SLOTS,LITE_SETS,liteBase,liteRarity,liteEquipmentStats,liteStatLine,liteAffixLine} from './lite-equipment.mjs';
@@ -1085,6 +1083,9 @@ function renderPanel(type){
      const d=DAILY_DUNGEONS[day],isToday=d.id===daily.id;
      return '<div class="weekday-entry '+(isToday?'is-today':'')+'"><span>'+d.icon+'</span><div><strong>'+escapeHTML(d.name)+'</strong><small>'+escapeHTML(d.story)+'</small></div><b>'+(isToday?'本日':day===1?'高獎勵':day===5?'偷跑魔王':day===6?'週六／日':'每週輪替')+'</b></div>';
    }).join('')+'</div><p class="mode-caveat">平日副本依台灣時間 00:00 換日重置；週六與週日是同一個副本，直到週一 00:00 才重置。普通怪使用現有逐格美術循環；菁英與 Boss 目前使用暫代造型。</p>';
+  {const squadReady=squadBattleAvailable(state.colleagueFormation);
+   body.insertAdjacentHTML('afterbegin','<button class="squad-entry" data-action="openSquadBattle" '+(squadReady?'':'disabled')+'><strong>小隊戰鬥</strong><small>'+(squadReady?'同事上場：勞權律師・白律（試玩）':'先在「角色 → 同事招募與養成」部署白律')+'</small></button>');}
+
  }else if(type==='letter'){
    const note=state.fridayNote;
    body.innerHTML=note?
@@ -1227,6 +1228,7 @@ body.addEventListener('click',e=>{
  }
  else if(act==='studySkillBook'||act==='weekendChest')commit(act);
  else if(act==='autoEncounter')commit({type:'autoEncounter',value:!state.autoEncounter});
+ else if(act==='openSquadBattle'){$('#panel')?.close?.();openSquadBattle({draft:state.colleagueFormation,level:state.level,heroIdleSrc:assetPaths.chibiIdle});}
  else if(['s1RecruitColleague','s1TrainColleague','s1BreakthroughColleague','s1DeployColleague','s1RemoveColleague'].includes(act)){
   commit({type:act,id:b.dataset.value,slot:b.dataset.slot});
   renderPanel('colleagues');

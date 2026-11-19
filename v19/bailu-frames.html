@@ -19,7 +19,7 @@ import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas
 import {validateHurtAtlas} from './hurt-timing.mjs';
 import {HIT_FEEDBACK_MS,hurtEffectAt} from './hurt-effects.mjs';
 import {BAILU_ATTACK_TOTAL_MS,bailuFrameAt,bailuLungeAt,BAILU_IMPACT_MS,BAILU_IMPACT_FRAME,BAILU_CUTIN_MS,BAILU_ULT_MS,BAILU_ULT_TOTAL_MS,BAILU_ULT_IMPACT_MS,bailuUltFrameAt,BAILU_IDLE_MS,BAILU_WALK_MS,loopFrameAt} from './bailu-timing.mjs';
-import {ultPhases,drawUltBack,drawUltFront,ultCamera,drawCutin,loadUltVfx} from './bailu-ult-fx.mjs?v=4';
+import {ultPhases,drawUltBack,drawUltFront,ultCamera,drawCutin,loadUltVfx} from './bailu-ult-fx.mjs?v=5';
 const UP=ultPhases(BAILU_CUTIN_MS,BAILU_ULT_MS);
 const cv=document.getElementById('world'),ctx=cv.getContext('2d');
 const load=s=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=s;});
