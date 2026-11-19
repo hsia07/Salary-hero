@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>白律 逐格動作驗收</title>
+<style>
+html,body{margin:0;height:100%;background:#0d0914;color:#efe6d2;font-family:"Noto Serif TC","Microsoft JhengHei",serif;overflow:hidden}
+#wrap{max-width:520px;margin:0 auto}
+canvas{display:block;width:100%;height:auto;aspect-ratio:720/620}
+#panel{padding:10px 14px}#panel h1{font-size:16px;margin:0 0 6px;color:#f3dfa0;letter-spacing:.1em}#panel p{font-size:11px;color:#b9aecb;margin:0 0 10px;line-height:1.5}
+.b{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+button{border:1px solid #d8b25a;border-radius:8px;background:linear-gradient(#3a2957,#22173a);color:#f6ecd0;font:600 14px/1 inherit;padding:12px 0}
+</style></head><body><div id="wrap">
+<canvas id="world" width="720" height="620"></canvas>
+<div id="panel"><h1>勞權律師・白律｜逐格動作驗收</h1>
+<p>與薪奴相同做法：攻擊 7 個獨立姿勢、受擊 5 個獨立姿勢，沿用遊戲現有的非等速時序（attack-timing / hurt-timing / hurt-effects），不改薪奴檔案。素材狀態：候選。</p>
+<div class="b"><button data-a="attack">普攻</button><button data-a="hurt">受擊</button><button data-a="loop">連續演示</button>
+<button data-a="hero">對照：薪奴普攻</button><button data-a="herohurt">對照：薪奴受擊</button><button data-a="slow">慢速 ×0.25</button></div></div></div>
+<script type="module">
+import {CHIBI_ATTACK_V2_TOTAL_MS,attackFrameAt,attackPhaseAt,validateAttackAtlas} from './attack-timing.mjs';
+import {validateHurtAtlas} from './hurt-timing.mjs';
+import {HIT_FEEDBACK_MS,hurtEffectAt} from './hurt-effects.mjs';
+const cv=document.getElementById('world'),ctx=cv.getContext('2d');
+const load=s=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=s;});
+const B='../art/characters/office-lawyer/animations/',H='../art/v19/candidates/characters/starter/chibi/';
+const [bg,golem,golemHurt,bAtk,bHurt,hAtk,hHurt,hIdle]=await Promise.all([
+ load('../art/v20/runtime/backgrounds/battle-library-v20-p10.webp'),load('../art/v19/runtime/monsters/chair-golem/idle.webp'),load('../art/v19/runtime/monsters/chair-golem/hurt.webp'),
+ load(B+'attack-7pose-512.png'),load(B+'hurt-5pose-384.png'),load(H+'attack-v2-7pose-512.png'),load(H+'hurt-v1-5pose-384.webp'),load(H+'idle-candidate.webp')]);
+const SETS={bailu:{atk:bAtk,hurt:bHurt,idleFrom:'atk'},hero:{atk:hAtk,hurt:hHurt,idle:hIdle}};
+let who='bailu',mode='idle',start=0,speed=1;
+const HERO_X=116,FLOOR=525,ENEMY_X=334;
+function frame(now){
+ const t=(now-start)*speed;
+ ctx.drawImage(bg,0,0,720,620);
+ // 敵人（遊戲既有逐格怪物）
+ const ph=mode==='attack'?attackPhaseAt(t):null;
+ const hitT=ph&&!ph.finished?t-405:-1;
+ const struck=hitT>=0&&hitT<300;
+ const gimg=struck?golemHurt:golem,gc=struck?3:4,gi=struck?Math.min(2,Math.floor(hitT/100)):Math.floor(now/225)%4;
+ const knock=struck?Math.max(0,1-hitT/300)*26:0;
+ ctx.drawImage(gimg,gi*(gimg.naturalWidth/gc),0,gimg.naturalWidth/gc,gimg.naturalHeight,ENEMY_X+knock,FLOOR-262,262,262);
+ const s=SETS[who];
+ let drawn=false;
+ // 與 app.mjs 薪奴相同的突進曲線：345ms 前站定 → 60ms 衝 106px → 命中保持 → 155ms 退回
+ const lunge=mode==='attack'?(t<345?0:t<405?(t-345)/60*106:t<650?106:106*Math.max(0,1-(t-650)/155)):0;
+ ctx.save();ctx.translate(lunge,0);
+ if(mode==='attack'){
+  const f=attackFrameAt(t);
+  if(f>=0){const c=validateAttackAtlas(s.atk.naturalWidth,s.atk.naturalHeight)||512;ctx.drawImage(s.atk,f*c,0,c,c,HERO_X-25,FLOOR-298,306,306);drawn=true;
+   if(f===4){spark(ENEMY_X+40,FLOOR-150,(t-405)/145);}}
+  else mode='idle';
+ }else if(mode==='hurt'){
+  const e=hurtEffectAt(t);
+  if(e.active){
+   ctx.translate(e.shakeX,e.shakeY);
+   const c=validateHurtAtlas(s.hurt.naturalWidth,s.hurt.naturalHeight)||384,f=Math.max(0,e.frame);
+   tinted(s.hurt,f*c,0,c,c,HERO_X-25,FLOOR-298,306,306,e);drawn=true;
+   if(e.sparkAlpha>0)hitSpark(HERO_X+150,FLOOR-170,e.sparkProgress,e.sparkAlpha);
+  }else mode='idle';
+ }
+ if(!drawn){
+  if(s.idle)ctx.drawImage(s.idle,HERO_X-7,FLOOR-262,270,270);
+  else{const c=512;ctx.drawImage(s.atk,0,0,c,c,HERO_X-25,FLOOR-298,306,306);}
+ }
+ ctx.restore();
+ requestAnimationFrame(frame);
+}
+const off=document.createElement('canvas'),octx=off.getContext('2d');
+function tinted(img,sx,sy,sw,sh,dx,dy,dw,dh,e){
+ off.width=dw;off.height=dh;octx.clearRect(0,0,dw,dh);octx.drawImage(img,sx,sy,sw,sh,0,0,dw,dh);
+ if(e.flashAlpha>0){octx.globalCompositeOperation='source-atop';octx.globalAlpha=e.flashAlpha;octx.fillStyle=e.flashColor;octx.fillRect(0,0,dw,dh);octx.globalAlpha=1;octx.globalCompositeOperation='source-over';}
+ ctx.drawImage(off,dx,dy);
+}
+function spark(x,y,p){if(p<0||p>1)return;ctx.save();ctx.globalAlpha=1-p;ctx.strokeStyle='#fff3c4';ctx.lineWidth=5;for(let i=0;i<9;i++){const a=i/9*6.283,r1=10+p*20,r2=30+p*48;ctx.beginPath();ctx.moveTo(x+Math.cos(a)*r1,y+Math.sin(a)*r1);ctx.lineTo(x+Math.cos(a)*r2,y+Math.sin(a)*r2);ctx.stroke();}ctx.restore();}
+function hitSpark(x,y,p,a){ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#ff7a3c';for(let i=0;i<8;i++){const ang=i/8*6.283,r=10+p*40;ctx.beginPath();ctx.arc(x+Math.cos(ang)*r,y+Math.sin(ang)*r,5*(1-p)+1,0,6.283);ctx.fill();}ctx.restore();}
+requestAnimationFrame(frame);
+const play=(m,w='bailu')=>{who=w;mode=m;start=performance.now();};
+const A={attack:()=>play('attack'),hurt:()=>play('hurt'),hero:()=>play('attack','hero'),herohurt:()=>play('hurt','hero'),
+ slow:()=>{speed=speed===1?.25:1;document.querySelector('[data-a=slow]').textContent=speed===1?'慢速 ×0.25':'正常速度';},
+ loop:async()=>{const s=ms=>new Promise(r=>setTimeout(r,ms));for(const m of ['attack','attack','hurt','attack']){play(m);await s((m==='attack'?CHIBI_ATTACK_V2_TOTAL_MS:HIT_FEEDBACK_MS)/speed+250);}}};
+for(const b of document.querySelectorAll('button'))b.onclick=()=>A[b.dataset.a]();
+window.__frames={A,play};
+</script></body></html>
